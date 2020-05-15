@@ -7,7 +7,7 @@ defmodule Remit.Repo.Migrations.CreateAuthors do
       add :email, :string, null: false
       add :username, :string, null: false
 
-      timestamps()
+      timestamps([type: :utc_datetime])
     end
   end
 end

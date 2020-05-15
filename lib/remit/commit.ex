@@ -2,6 +2,8 @@ defmodule Remit.Commit do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @timestamps_opts [type: :utc_datetime]
+
   schema "commits" do
     field :sha, :string
     field :payload, :map
@@ -17,7 +19,7 @@ defmodule Remit.Commit do
   @doc false
   def changeset(commit, attrs) do
     commit
-    |> cast(attrs, [:sha, :payload, :review_started_at, :reviewed_at, :author_id, :review_started_by_author_id, :reviewed_by_author_id])
+    |> cast(attrs, [:sha, :payload, :review_started_at, :reviewed_at, :author_id, :review_started_by_author_id, :reviewed_by_author_id, :inserted_at])
     |> validate_required([:sha, :payload])
   end
 end

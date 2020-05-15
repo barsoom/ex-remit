@@ -2,6 +2,8 @@ defmodule Remit.Author do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @timestamps_opts [type: :utc_datetime]
+
   schema "authors" do
     field :email, :string
     field :name, :string

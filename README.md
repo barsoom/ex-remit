@@ -1,5 +1,21 @@
 # Remit
 
+## Dev
+
+First time:
+
+    # Creates DB, migrates, seeds
+    mix ecto.setup
+
+## Example queries
+
+Because we don't work with Ecto often and may forget.
+
+    alias Remit.{Repo,Commit}
+    Repo.aggregate(Commit, :count)
+
+## Original instructions
+
 To start your Phoenix server:
 
   * Setup the project with `mix setup`

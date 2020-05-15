@@ -11,7 +11,7 @@ defmodule Remit.Repo.Migrations.CreateCommits do
       add :review_started_by_author_id, references(:authors, on_delete: :nothing)
       add :reviewed_by_author_id, references(:authors, on_delete: :nothing)
 
-      timestamps()
+      timestamps([type: :utc_datetime])
     end
 
     create index(:commits, [:author_id])
