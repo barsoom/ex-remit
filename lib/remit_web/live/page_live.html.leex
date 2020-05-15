@@ -1,3 +1,7 @@
+<p>
+  Left to review: <%= @unreviewed_count %>
+</p>
+
 <%= for commit <- @commits do %>
    <div style="margin-bottom: 10px; text-align: left;
       <%= if commit.reviewed_at do %>

@@ -1,11 +1,13 @@
 defmodule RemitWeb.PageLive do
   use RemitWeb, :live_view
+
   alias Remit.{Repo,Commit}
+  import Ecto.Query
 
   @impl true
   def mount(_params, _session, socket) do
     commits = get_commits()
-    {:ok, assign(socket, query: "", commits: commits, results: %{})}
+    {:ok, assign(socket, get_data())}
   end
 
   @impl true
@@ -18,27 +20,30 @@ defmodule RemitWeb.PageLive do
       |> Repo.update!()
 
     # TODO: We could probably change `commits` in place instead of re-querying.
-    commits = get_commits()
-
-    {:noreply, socket |> assign(results: %{}, commits: commits, query: "")}
+    {:noreply, assign(socket, get_data())}
   end
 
   @impl true
   def handle_event("mark_unreviewed", %{"commit_id" => cid}, socket) do
-
     Repo.get_by(Commit, id: cid)
       |> Ecto.Changeset.change(%{reviewed_at: nil})
       |> Repo.update!()
 
     # TODO: We could probably change `commits` in place instead of re-querying.
-    commits = get_commits()
+    {:noreply, assign(socket, get_data())}
+  end
 
-    {:noreply, socket |> assign(results: %{}, commits: commits, query: "")}
+  defp get_data do
+    unreviewed_count = (from c in Commit, where: is_nil(c.reviewed_at))
+      |> Repo.aggregate(:count)
+
+    %{
+      commits: get_commits(),
+      unreviewed_count: unreviewed_count,
+    }
   end
 
   defp get_commits do
-    import Ecto.Query
-
     query = from c in Commit,
         limit: 200,
         order_by: [desc: c.inserted_at],
