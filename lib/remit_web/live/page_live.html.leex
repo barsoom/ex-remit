@@ -1,17 +1,23 @@
+<%= for commit <- @commits do %>
+  <div style="margin-bottom: 10px; text-align: left">
+    <%= commit |> Remit.Commit.commit_message %>
+    <br>
+    in <b><%= commit |> Remit.Commit.repo_name %></b> by <b><%= commit.author.name %></b> on <%= commit.inserted_at %>
+    <%= if commit.reviewed_at do %>
+      <form phx-submit="mark_unreviewed">
+        <input type="hidden" name="commit_id" value=<%= commit.id %>>
+        <button>Mark as unreviewed</button>
+      </form>
+    <% else %>
+      <form phx-submit="mark_reviewed">
+        <input type="hidden" name="commit_id" value=<%= commit.id %>>
+        <button>Mark as reviewed</button>
+      </form>
+    <% end %>
+  </div>
+<% end %>
+
 <section class="phx-hero">
-  <h1><%= gettext "Welcome to %{name}!", name: "Phoenix" %></h1>
-
-  <h2>Commits</h2>
-  <%= for commit <- @commits do %>
-    <div>
-      <%= commit |> Remit.Commit.commit_message %>
-      <br>
-      in <b><%= commit |> Remit.Commit.repo_name %></b> by <b><%= commit.author.name %></b> on <%= commit.inserted_at %>
-      <button>Mark as reviewed</button>
-    </div>
-    <hr>
-  <% end %>
-
   <h2>Old stuff</h2>
   <form phx-change="suggest" phx-submit="search">
     <input type="text" name="q" value="<%= @query %>" placeholder="Live dependency search" list="results" autocomplete="off"/>
