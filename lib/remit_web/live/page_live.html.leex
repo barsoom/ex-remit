@@ -14,15 +14,9 @@
       <br>
       in <b><%= commit |> Remit.Commit.repo_name %></b> by <b><%= commit.author.name %></b> on <%= commit.inserted_at %>
       <%= if commit.reviewed_at do %>
-        <form phx-submit="mark_unreviewed">
-          <input type="hidden" name="commit_id" value=<%= commit.id %>>
-          <button>Mark as unreviewed</button>
-        </form>
+        <button phx-click="mark_unreviewed" phx-value-cid=<%= commit.id %>>Mark as unreviewed</button>
       <% else %>
-        <form phx-submit="mark_reviewed">
-          <input type="hidden" name="commit_id" value=<%= commit.id %>>
-          <button>Mark as reviewed</button>
-        </form>
+        <button phx-click="mark_reviewed" phx-value-cid=<%= commit.id %>>Mark as reviewed</button>
       <% end %>
     </div>
   <% end %>

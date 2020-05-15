@@ -16,18 +16,18 @@ defmodule RemitWeb.PageLive do
   end
 
   @impl true
-  def handle_event("mark_reviewed", %{"commit_id" => cid}, socket) do
+  def handle_event("mark_reviewed", %{"cid" => commit_id}, socket) do
     # TODO: Allow useconds in DB so we don't need this dance
     now = DateTime.utc_now() |> DateTime.truncate(:second)
-    commit = Repo.get_by(Commit, id: cid) |> Ecto.Changeset.change(%{reviewed_at: now}) |> Repo.update!() |> Repo.preload(:author)
+    commit = Repo.get_by(Commit, id: commit_id) |> Ecto.Changeset.change(%{reviewed_at: now}) |> Repo.update!() |> Repo.preload(:author)
 
     # Can send the single commit thanks to https://hexdocs.pm/phoenix_live_view/Phoenix.LiveView.html#module-dom-patching-and-temporary-assigns
     {:noreply, assign(socket, %{ commits: [commit], unreviewed_count: unreviewed_count() })}
   end
 
   @impl true
-  def handle_event("mark_unreviewed", %{"commit_id" => cid}, socket) do
-    commit = Repo.get_by(Commit, id: cid) |> Ecto.Changeset.change(%{reviewed_at: nil}) |> Repo.update!() |> Repo.preload(:author)
+  def handle_event("mark_unreviewed", %{"cid" => commit_id}, socket) do
+    commit = Repo.get_by(Commit, id: commit_id) |> Ecto.Changeset.change(%{reviewed_at: nil}) |> Repo.update!() |> Repo.preload(:author)
 
     # Can send the single commit thanks to https://hexdocs.pm/phoenix_live_view/Phoenix.LiveView.html#module-dom-patching-and-temporary-assigns
     {:noreply, assign(socket, %{ commits: [commit], unreviewed_count: unreviewed_count() })}
