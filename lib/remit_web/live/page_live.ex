@@ -3,12 +3,21 @@ defmodule RemitWeb.PageLive do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, query: "", results: %{})}
+    import Ecto.Query
+
+    query = from c in Remit.Commit,
+        limit: 200,
+        order_by: [desc: c.inserted_at],
+        preload: :author
+
+    commits = Remit.Repo.all(query)
+
+    {:ok, assign(socket, query: "", commits: commits, results: %{})}
   end
 
   @impl true
   def handle_event("suggest", %{"q" => query}, socket) do
-    {:noreply, assign(socket, results: search(query), query: query)}
+    {:noreply, assign(socket, commits: [], results: search(query), query: query)}
   end
 
   @impl true
@@ -21,7 +30,7 @@ defmodule RemitWeb.PageLive do
         {:noreply,
          socket
          |> put_flash(:error, "No dependencies found matching \"#{query}\"")
-         |> assign(results: %{}, query: query)}
+         |> assign(results: %{}, commits: [], query: query)}
     end
   end
 

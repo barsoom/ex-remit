@@ -7,13 +7,22 @@ defmodule Remit.Commit do
   schema "commits" do
     field :sha, :string
     field :payload, :map
-    field :author_id, :id
     field :review_started_at, :utc_datetime
     field :reviewed_at, :utc_datetime
     field :review_started_by_author_id, :id
     field :reviewed_by_author_id, :id
 
+    belongs_to :author, Remit.Author
+
     timestamps()
+  end
+
+  def repo_name(commit) do
+    commit.payload |> get_in(["repository", "name"])
+  end
+
+  def commit_message(commit) do
+    commit.payload |> Map.fetch!("message")
   end
 
   @doc false

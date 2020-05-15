@@ -2,17 +2,30 @@
 
 ## Dev
 
+Assumed to be run *outside* of devbox, at the time of writing.
+
 First time:
 
     # Creates DB, migrates, seeds
     mix ecto.setup
 
+Every time:
+
+    mix phx.server
+
+Then visit <http://localhost:4000>
+
 ## Example queries
 
 Because we don't work with Ecto often and may forget.
 
+    # TODO: Make this automatically happen in a console
+    import Ecto.Query
     alias Remit.{Repo,Commit}
+
     Repo.aggregate(Commit, :count)
+
+    Repo.one(from c in Commit, limit: 1)
 
 ## Original instructions
 

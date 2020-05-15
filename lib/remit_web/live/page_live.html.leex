@@ -1,6 +1,18 @@
 <section class="phx-hero">
   <h1><%= gettext "Welcome to %{name}!", name: "Phoenix" %></h1>
 
+  <h2>Commits</h2>
+  <%= for commit <- @commits do %>
+    <div>
+      <%= commit |> Remit.Commit.commit_message %>
+      <br>
+      in <b><%= commit |> Remit.Commit.repo_name %></b> by <b><%= commit.author.name %></b> on <%= commit.inserted_at %>
+      <button>Mark as reviewed</button>
+    </div>
+    <hr>
+  <% end %>
+
+  <h2>Old stuff</h2>
   <form phx-change="suggest" phx-submit="search">
     <input type="text" name="q" value="<%= @query %>" placeholder="Live dependency search" list="results" autocomplete="off"/>
     <datalist id="results">
