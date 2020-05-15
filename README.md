@@ -1,4 +1,8 @@
-# Remit
+# Remit with Elixir LiveView
+
+A lab by Henrik ca 2020-05-15.
+
+Focused on experimenting with LiveView so not very polished.
 
 
 ## Dev
