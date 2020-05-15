@@ -1,5 +1,9 @@
 <%= for commit <- @commits do %>
-  <div style="margin-bottom: 10px; text-align: left">
+   <div style="margin-bottom: 10px; text-align: left;
+      <%= if commit.reviewed_at do %>
+      opacity: 0.25;
+      <% end %>
+    ">
     <%= commit |> Remit.Commit.commit_message %>
     <br>
     in <b><%= commit |> Remit.Commit.repo_name %></b> by <b><%= commit.author.name %></b> on <%= commit.inserted_at %>
@@ -16,16 +20,3 @@
     <% end %>
   </div>
 <% end %>
-
-<section class="phx-hero">
-  <h2>Old stuff</h2>
-  <form phx-change="suggest" phx-submit="search">
-    <input type="text" name="q" value="<%= @query %>" placeholder="Live dependency search" list="results" autocomplete="off"/>
-    <datalist id="results">
-      <%= for {app, _vsn} <- @results do %>
-        <option value="<%= app %>"><%= app %></option>
-      <% end %>
-    </datalist>
-    <button type="submit" phx-disable-with="Searching...">Go to Hexdocs</button>
-  </form>
-</section>
