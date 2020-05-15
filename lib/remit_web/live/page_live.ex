@@ -6,41 +6,36 @@ defmodule RemitWeb.PageLive do
 
   @impl true
   def mount(_params, _session, socket) do
-    commits = get_commits()
-    {:ok, assign(socket, get_data())}
+    socket = assign(socket, %{
+      commits: get_commits(),
+      unreviewed_count: unreviewed_count(),
+    })
+
+    # https://hexdocs.pm/phoenix_live_view/Phoenix.LiveView.html#module-dom-patching-and-temporary-assigns
+    {:ok, socket, temporary_assigns: [commits: []]}
   end
 
   @impl true
   def handle_event("mark_reviewed", %{"commit_id" => cid}, socket) do
-
     # TODO: Allow useconds in DB so we don't need this dance
     now = DateTime.utc_now() |> DateTime.truncate(:second)
-    Repo.get_by(Commit, id: cid)
-      |> Ecto.Changeset.change(%{reviewed_at: now})
-      |> Repo.update!()
+    commit = Repo.get_by(Commit, id: cid) |> Ecto.Changeset.change(%{reviewed_at: now}) |> Repo.update!() |> Repo.preload(:author)
 
-    # TODO: We could probably change `commits` in place instead of re-querying.
-    {:noreply, assign(socket, get_data())}
+    # Can send the single commit thanks to https://hexdocs.pm/phoenix_live_view/Phoenix.LiveView.html#module-dom-patching-and-temporary-assigns
+    {:noreply, assign(socket, %{ commits: [commit], unreviewed_count: unreviewed_count() })}
   end
 
   @impl true
   def handle_event("mark_unreviewed", %{"commit_id" => cid}, socket) do
-    Repo.get_by(Commit, id: cid)
-      |> Ecto.Changeset.change(%{reviewed_at: nil})
-      |> Repo.update!()
+    commit = Repo.get_by(Commit, id: cid) |> Ecto.Changeset.change(%{reviewed_at: nil}) |> Repo.update!() |> Repo.preload(:author)
 
-    # TODO: We could probably change `commits` in place instead of re-querying.
-    {:noreply, assign(socket, get_data())}
+    # Can send the single commit thanks to https://hexdocs.pm/phoenix_live_view/Phoenix.LiveView.html#module-dom-patching-and-temporary-assigns
+    {:noreply, assign(socket, %{ commits: [commit], unreviewed_count: unreviewed_count() })}
   end
 
-  defp get_data do
-    unreviewed_count = (from c in Commit, where: is_nil(c.reviewed_at))
-      |> Repo.aggregate(:count)
-
-    %{
-      commits: get_commits(),
-      unreviewed_count: unreviewed_count,
-    }
+  defp unreviewed_count do
+    (from c in Commit, where: is_nil(c.reviewed_at))
+    |> Repo.aggregate(:count)
   end
 
   defp get_commits do

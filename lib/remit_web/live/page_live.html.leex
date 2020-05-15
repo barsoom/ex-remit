@@ -2,25 +2,28 @@
   Left to review: <%= @unreviewed_count %>
 </p>
 
-<%= for commit <- @commits do %>
-   <div style="margin-bottom: 10px; text-align: left;
+<%# IDs are for https://hexdocs.pm/phoenix_live_view/Phoenix.LiveView.html#module-dom-patching-and-temporary-assigns %>
+<div phx-update="prepend" id="commits-wrapper">
+  <%= for commit <- @commits do %>
+    <div id="commit-<%= commit.id %>" style="margin-bottom: 10px; text-align: left;
+        <%= if commit.reviewed_at do %>
+        opacity: 0.25;
+        <% end %>
+      ">
+      <%= commit |> Remit.Commit.commit_message %>
+      <br>
+      in <b><%= commit |> Remit.Commit.repo_name %></b> by <b><%= commit.author.name %></b> on <%= commit.inserted_at %>
       <%= if commit.reviewed_at do %>
-      opacity: 0.25;
+        <form phx-submit="mark_unreviewed">
+          <input type="hidden" name="commit_id" value=<%= commit.id %>>
+          <button>Mark as unreviewed</button>
+        </form>
+      <% else %>
+        <form phx-submit="mark_reviewed">
+          <input type="hidden" name="commit_id" value=<%= commit.id %>>
+          <button>Mark as reviewed</button>
+        </form>
       <% end %>
-    ">
-    <%= commit |> Remit.Commit.commit_message %>
-    <br>
-    in <b><%= commit |> Remit.Commit.repo_name %></b> by <b><%= commit.author.name %></b> on <%= commit.inserted_at %>
-    <%= if commit.reviewed_at do %>
-      <form phx-submit="mark_unreviewed">
-        <input type="hidden" name="commit_id" value=<%= commit.id %>>
-        <button>Mark as unreviewed</button>
-      </form>
-    <% else %>
-      <form phx-submit="mark_reviewed">
-        <input type="hidden" name="commit_id" value=<%= commit.id %>>
-        <button>Mark as reviewed</button>
-      </form>
-    <% end %>
-  </div>
-<% end %>
+    </div>
+  <% end %>
+</div>
