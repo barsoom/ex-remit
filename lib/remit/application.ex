@@ -12,7 +12,7 @@ defmodule Remit.Application do
       # Start the Telemetry supervisor
       RemitWeb.Telemetry,
       # Start the PubSub system
-      {Phoenix.PubSub, [name: Remit.PubSub, adapter: Phoenix.PubSub.PG2]},
+      {Phoenix.PubSub, [name: Remit.PubSub]},
       # Start the Endpoint (http/https)
       RemitWeb.Endpoint
       # Start a worker by calling: Remit.Worker.start_link(arg)
