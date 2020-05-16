@@ -22,10 +22,15 @@ Then visit <http://localhost:4000>
 
 ## Production
 
+The `POOL_SIZE` for the running dyno is 18, so we've got 2 spare on a Heroku hobby plan.
+
 Migrate:
 
-    # The POOL_SIZE for the running dyno is 18, so we've got 2 spare on a Heroku hobby plan.
     heroku run "POOL_SIZE=2 mix ecto.migrate"
+
+Console:
+
+    heroku run "POOL_SIZE=2 iex -S mix"
 
 ## Example queries
 
