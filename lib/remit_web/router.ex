@@ -17,7 +17,8 @@ defmodule RemitWeb.Router do
   scope "/", RemitWeb do
     pipe_through :browser
 
-    live "/", PageLive, :index
+    live "/", PageLive
+    live "/comments", CommentsLive
   end
 
   # Other scopes may use custom stacks.
