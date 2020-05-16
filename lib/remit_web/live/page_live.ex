@@ -30,7 +30,7 @@ defmodule RemitWeb.PageLive do
     commit = Repo.get_by(Commit, id: commit_id) |> Ecto.Changeset.change(%{reviewed_at: now}) |> Repo.update!() |> Repo.preload(:author)
 
     new_assigns = %{ commits: [commit], unreviewed_count: unreviewed_count() }  # Only assign the new commit: see above about "temporary assigns".
-    RemitWeb.Endpoint.broadcast_from(self(), @broadcast_topic, "I am an unused value", new_assigns)
+    RemitWeb.Endpoint.broadcast_from(self(), @broadcast_topic, "_event_name", new_assigns)
 
     {:noreply, assign(socket, new_assigns)}
   end
@@ -40,7 +40,7 @@ defmodule RemitWeb.PageLive do
     commit = Repo.get_by(Commit, id: commit_id) |> Ecto.Changeset.change(%{reviewed_at: nil}) |> Repo.update!() |> Repo.preload(:author)
 
     new_assigns = %{ commits: [commit], unreviewed_count: unreviewed_count() }  # Only assign the new commit: see above about "temporary assigns".
-    RemitWeb.Endpoint.broadcast_from(self(), @broadcast_topic, "I am an unused value", new_assigns)
+    RemitWeb.Endpoint.broadcast_from(self(), @broadcast_topic, "_event_name", new_assigns)
 
     {:noreply, assign(socket, new_assigns)}
   end
