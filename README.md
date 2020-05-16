@@ -20,6 +20,13 @@ Every time:
 
 Then visit <http://localhost:4000>
 
+## Production
+
+Migrate:
+
+    # The POOL_SIZE for the running dyno is 18, so we've got 2 spare on a Heroku hobby plan.
+    heroku run "POOL_SIZE=2 mix ecto.migrate"
+
 ## Example queries
 
 Because we don't work with Ecto often and may forget.
