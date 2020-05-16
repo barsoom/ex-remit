@@ -1,6 +1,8 @@
 defmodule Remit.Commit do
   use Ecto.Schema
   import Ecto.Changeset
+  import Ecto.Query
+  alias Remit.{Commit,Repo}
 
   @timestamps_opts [type: :utc_datetime]
 
@@ -15,6 +17,30 @@ defmodule Remit.Commit do
     belongs_to :author, Remit.Author
 
     timestamps()
+  end
+
+  def load_latest(count) do
+    Repo.all(
+      from c in Commit,
+        limit: ^count,
+        order_by: [desc: c.inserted_at],
+        preload: :author
+    )
+  end
+
+  def unreviewed_count do
+    (from c in Commit, where: is_nil(c.reviewed_at)) |> Repo.aggregate(:count)
+  end
+
+  def mark_as_reviewed!(id) do
+    # TODO: Allow useconds in DB so we don't need this dance.
+    now = DateTime.utc_now() |> DateTime.truncate(:second)
+
+    Repo.get_by(Commit, id: id) |> Ecto.Changeset.change(reviewed_at: now) |> Repo.update!()
+  end
+
+  def mark_as_unreviewed!(id) do
+    Repo.get_by(Commit, id: id) |> Ecto.Changeset.change(reviewed_at: nil) |> Repo.update!()
   end
 
   def repo_name(commit) do

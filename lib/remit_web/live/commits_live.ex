@@ -1,8 +1,10 @@
 defmodule RemitWeb.CommitsLive do
   use RemitWeb, :live_view
-
   alias Remit.{Repo,Commit}
-  import Ecto.Query
+  alias RemitWeb.Endpoint
+
+  # Fairly arbitrary number. If too low, we may miss unreviewed stuff. If too high, performance may suffer.
+  @commits_count 200
 
   # We subscribe on mount, and then when one client updates state, it broadcasts the new state to other clients.
   # Read more: https://elixirschool.com/blog/live-view-with-pub-sub/
@@ -10,11 +12,11 @@ defmodule RemitWeb.CommitsLive do
 
   @impl true
   def mount(_params, _session, socket) do
-    RemitWeb.Endpoint.subscribe(@broadcast_topic)
+    Endpoint.subscribe(@broadcast_topic)
 
     socket = assign(socket, %{
       page_title: "Commits",
-      commits: get_commits(),
+      commits: Commit.load_latest(@commits_count),
       unreviewed_count: unreviewed_count(),
     })
 
@@ -26,22 +28,20 @@ defmodule RemitWeb.CommitsLive do
 
   @impl true
   def handle_event("mark_reviewed", %{"cid" => commit_id}, socket) do
-    # TODO: Allow useconds in DB so we don't need this dance
-    now = DateTime.utc_now() |> DateTime.truncate(:second)
-    commit = Repo.get_by(Commit, id: commit_id) |> Ecto.Changeset.change(%{reviewed_at: now}) |> Repo.update!() |> Repo.preload(:author)
+    commit = Commit.mark_as_reviewed!(commit_id) |> Repo.preload(:author)
 
     new_assigns = %{ commits: [commit], unreviewed_count: unreviewed_count() }  # Only assign the new commit: see above about "temporary assigns".
-    RemitWeb.Endpoint.broadcast_from(self(), @broadcast_topic, "_event_name", new_assigns)
+    Endpoint.broadcast_from(self(), @broadcast_topic, "_event_name", new_assigns)
 
     {:noreply, assign(socket, new_assigns)}
   end
 
   @impl true
   def handle_event("mark_unreviewed", %{"cid" => commit_id}, socket) do
-    commit = Repo.get_by(Commit, id: commit_id) |> Ecto.Changeset.change(%{reviewed_at: nil}) |> Repo.update!() |> Repo.preload(:author)
+    commit = Commit.mark_as_unreviewed!(commit_id) |> Repo.preload(:author)
 
     new_assigns = %{ commits: [commit], unreviewed_count: unreviewed_count() }  # Only assign the new commit: see above about "temporary assigns".
-    RemitWeb.Endpoint.broadcast_from(self(), @broadcast_topic, "_event_name", new_assigns)
+    Endpoint.broadcast_from(self(), @broadcast_topic, "_event_name", new_assigns)
 
     {:noreply, assign(socket, new_assigns)}
   end
@@ -52,16 +52,5 @@ defmodule RemitWeb.CommitsLive do
     {:noreply, assign(socket, new_assigns)}
   end
 
-  defp unreviewed_count do
-    (from c in Commit, where: is_nil(c.reviewed_at)) |> Repo.aggregate(:count)
-  end
-
-  defp get_commits do
-    Repo.all(
-      from c in Commit,
-        limit: 200,
-        order_by: [desc: c.inserted_at],
-        preload: :author
-    )
-  end
+  defp unreviewed_count, do: Commit.unreviewed_count()
 end
