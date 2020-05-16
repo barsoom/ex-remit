@@ -20,9 +20,15 @@
       </div>
       <div class="flex-none ml-2">
         <%= if commit.reviewed_at do %>
-          <button phx-click="mark_unreviewed" phx-value-cid=<%= commit.id %>>Mark as unreviewed</button>
+          <button phx-click="mark_unreviewed" phx-value-cid=<%= commit.id %>>
+          <i class="far fa-eye-slash"></i>
+            Mark as unreviewed
+          </button>
         <% else %>
-          <button phx-click="mark_reviewed" phx-value-cid=<%= commit.id %>>Mark as reviewed</button>
+        <button phx-click="mark_reviewed" phx-value-cid=<%= commit.id %>>
+          <i class="far fa-eye"></i>
+          Mark as reviewed
+        </button>
         <% end %>
       </div>
     </div>
