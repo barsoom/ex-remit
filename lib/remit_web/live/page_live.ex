@@ -4,13 +4,21 @@ defmodule RemitWeb.PageLive do
   alias Remit.{Repo,Commit}
   import Ecto.Query
 
+  # We subscribe on mount, and then when one client updates state, it broadcasts the new state to other clients.
+  # Read more: https://elixirschool.com/blog/live-view-with-pub-sub/
+  @broadcast_topic "commits"
+
   @impl true
   def mount(_params, _session, socket) do
+    RemitWeb.Endpoint.subscribe(@broadcast_topic)
+
     socket = assign(socket, %{
       commits: get_commits(),
       unreviewed_count: unreviewed_count(),
     })
 
+    # Flag `commits` as a "temporary assign" defaulting to `[]`.
+    # This means we don't have to keep the full list of commits in memory: we just assign new or updated ones, and LiveView knows to replace or append/prepend them.
     # https://hexdocs.pm/phoenix_live_view/Phoenix.LiveView.html#module-dom-patching-and-temporary-assigns
     {:ok, socket, temporary_assigns: [commits: []]}
   end
@@ -21,29 +29,38 @@ defmodule RemitWeb.PageLive do
     now = DateTime.utc_now() |> DateTime.truncate(:second)
     commit = Repo.get_by(Commit, id: commit_id) |> Ecto.Changeset.change(%{reviewed_at: now}) |> Repo.update!() |> Repo.preload(:author)
 
-    # Can send the single commit thanks to https://hexdocs.pm/phoenix_live_view/Phoenix.LiveView.html#module-dom-patching-and-temporary-assigns
-    {:noreply, assign(socket, %{ commits: [commit], unreviewed_count: unreviewed_count() })}
+    new_assigns = %{ commits: [commit], unreviewed_count: unreviewed_count() }  # Only assign the new commit: see above about "temporary assigns".
+    RemitWeb.Endpoint.broadcast_from(self(), @broadcast_topic, "I am an unused value", new_assigns)
+
+    {:noreply, assign(socket, new_assigns)}
   end
 
   @impl true
   def handle_event("mark_unreviewed", %{"cid" => commit_id}, socket) do
     commit = Repo.get_by(Commit, id: commit_id) |> Ecto.Changeset.change(%{reviewed_at: nil}) |> Repo.update!() |> Repo.preload(:author)
 
-    # Can send the single commit thanks to https://hexdocs.pm/phoenix_live_view/Phoenix.LiveView.html#module-dom-patching-and-temporary-assigns
-    {:noreply, assign(socket, %{ commits: [commit], unreviewed_count: unreviewed_count() })}
+    new_assigns = %{ commits: [commit], unreviewed_count: unreviewed_count() }  # Only assign the new commit: see above about "temporary assigns".
+    RemitWeb.Endpoint.broadcast_from(self(), @broadcast_topic, "I am an unused value", new_assigns)
+
+    {:noreply, assign(socket, new_assigns)}
+  end
+
+  # Receive broadcasts when other clients update their state.
+  @impl true
+  def handle_info(%{topic: @broadcast_topic, payload: new_assigns}, socket) do
+    {:noreply, assign(socket, new_assigns)}
   end
 
   defp unreviewed_count do
-    (from c in Commit, where: is_nil(c.reviewed_at))
-    |> Repo.aggregate(:count)
+    (from c in Commit, where: is_nil(c.reviewed_at)) |> Repo.aggregate(:count)
   end
 
   defp get_commits do
-    query = from c in Commit,
+    Repo.all(
+      from c in Commit,
         limit: 200,
         order_by: [desc: c.inserted_at],
         preload: :author
-
-    Repo.all(query)
+    )
   end
 end
