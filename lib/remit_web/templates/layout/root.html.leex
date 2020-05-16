@@ -10,18 +10,9 @@
     <script defer type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
   </head>
   <body>
-    <header>
-      <section class="container">
-        <nav role="navigation">
-          <ul>
-            <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
-              <li><%= link "LiveDashboard", to: Routes.live_dashboard_path(@conn, :home) %></li>
-            <% end %>
-          </ul>
-        </nav>
-        <b>Remit</b>
-      </section>
-    </header>
+    <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
+      <%= link "LiveDashboard", to: Routes.live_dashboard_path(@conn, :home) %>
+    <% end %>
     <%= @inner_content %>
   </body>
 </html>
