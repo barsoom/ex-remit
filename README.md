@@ -4,6 +4,22 @@ A lab by Henrik ca 2020-05-15.
 
 Focused on experimenting with LiveView so not very polished.
 
+## Plan
+
+- [x] Basics
+- [ ] Add Tailwind
+- [ ] Styling
+- [ ] Get commits via webhook, cause clients to update
+- [ ] Get comments via webhook, cause clients to update
+  - [ ] Make separate copies of comments for each person who gets to see it
+  - [ ] Include reactions on comments in feed, not just comments proper
+- [ ] Settings tab
+- [ ] Polish commits view
+- [ ] Comments view
+- [ ] "Oldest commit" and similar stats at top
+- [ ] Handle missed messages on reconnection
+- [ ] Tests
+- [ ] Consider open sourcing
 
 ## Dev
 
