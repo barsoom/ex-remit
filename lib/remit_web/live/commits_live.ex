@@ -13,6 +13,7 @@ defmodule RemitWeb.CommitsLive do
     RemitWeb.Endpoint.subscribe(@broadcast_topic)
 
     socket = assign(socket, %{
+      page_title: "Commits",
       commits: get_commits(),
       unreviewed_count: unreviewed_count(),
     })

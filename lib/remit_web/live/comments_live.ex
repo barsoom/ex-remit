@@ -5,7 +5,12 @@ defmodule RemitWeb.CommentsLive do
   def mount(_params, _session, socket) do
     if connected?(socket), do: :timer.send_interval(100, self(), :tick)
 
-    {:ok, assign(socket, :time, now())}
+    socket = assign(socket, %{
+      page_title: "Comments",
+      time: now(),
+    })
+
+    {:ok, socket}
   end
 
   def handle_info(:tick, socket) do
