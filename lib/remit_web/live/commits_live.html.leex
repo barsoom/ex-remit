@@ -14,9 +14,9 @@
         opacity: 0.25;
         <% end %>
       ">
-      <%= commit |> Remit.Commit.commit_message %>
+      <%= commit |> Commit.commit_message() %>
       <br>
-      in <b><%= commit |> Remit.Commit.repo_name %></b> by <b><%= commit.author.name %></b> on <%= commit.inserted_at %>
+      in <b><%= commit |> Commit.repo_name() %></b> by <b><%= commit.author.name %></b> on <%= commit.inserted_at %>
       <%= if commit.reviewed_at do %>
         <button phx-click="mark_unreviewed" phx-value-cid=<%= commit.id %>>Mark as unreviewed</button>
       <% else %>
