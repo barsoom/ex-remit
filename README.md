@@ -9,6 +9,7 @@ Focused on experimenting with LiveView so not very polished.
 - [x] Basics
 - [ ] Add Tailwind
 - [ ] Styling
+- [ ] Lock down prod access
 - [ ] Get commits via webhook, cause clients to update
 - [ ] Get comments via webhook, cause clients to update
   - [ ] Make separate copies of comments for each person who gets to see it
@@ -18,7 +19,9 @@ Focused on experimenting with LiveView so not very polished.
 - [ ] Comments view
 - [ ] "Oldest commit" and similar stats at top
 - [ ] Handle missed messages on reconnection
+- [ ] Indicate when a commit is being viewed by someone (Except by its author?)
 - [ ] Tests
+- [ ] Docs (e.g. Fluid.app)
 - [ ] Consider open sourcing
 
 ## Dev
