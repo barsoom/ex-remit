@@ -3,7 +3,6 @@
 /* Custom base styles go here, like styling all "h1"s. */
 
 body {
-  padding: 20px 0;
   @apply text-xs;
 }
 
@@ -17,6 +16,15 @@ button {
 Custom components go here.
 Want to extract this CSS? Mind this gotcha: https://pragmaticstudio.com/tutorials/adding-tailwind-css-to-phoenix
 */
+
+.tabs {
+  @apply flex;
+
+  a {
+    @apply text-base py-2 flex-1 text-center border-r border-b border-gray-500;
+    &:last-child { border-right: 0; }
+  }
+}
 
 @tailwind utilities;
 
