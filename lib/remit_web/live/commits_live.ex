@@ -1,4 +1,4 @@
-defmodule RemitWeb.PageLive do
+defmodule RemitWeb.CommitsLive do
   use RemitWeb, :live_view
 
   alias Remit.{Repo,Commit}

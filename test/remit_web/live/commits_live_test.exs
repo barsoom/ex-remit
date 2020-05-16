@@ -1,10 +1,10 @@
-defmodule RemitWeb.PageLiveTest do
+defmodule RemitWeb.CommitsLiveTest do
   use RemitWeb.ConnCase
 
   import Phoenix.LiveViewTest
 
   test "disconnected and connected render", %{conn: conn} do
-    {:ok, page_live, disconnected_html} = live(conn, "/")
+    {:ok, commits_live, disconnected_html} = live(conn, "/")
     assert disconnected_html =~ "Welcome to Phoenix!"
     assert render(page_live) =~ "Welcome to Phoenix!"
   end

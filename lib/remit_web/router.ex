@@ -17,7 +17,7 @@ defmodule RemitWeb.Router do
   scope "/", RemitWeb do
     pipe_through :browser
 
-    live "/", PageLive
+    live "/", CommitsLive
     live "/comments", CommentsLive
   end
 
