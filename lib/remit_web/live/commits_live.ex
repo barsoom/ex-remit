@@ -1,7 +1,6 @@
 defmodule RemitWeb.CommitsLive do
   use RemitWeb, :live_view
   alias Remit.{Repo,Commit}
-  alias RemitWeb.Endpoint
 
   # Fairly arbitrary number. If too low, we may miss unreviewed stuff. If too high, performance may suffer.
   @commits_count 200
@@ -12,7 +11,7 @@ defmodule RemitWeb.CommitsLive do
 
   @impl true
   def mount(_params, _session, socket) do
-    Endpoint.subscribe(@broadcast_topic)
+    Phoenix.PubSub.subscribe(Remit.PubSub, @broadcast_topic)
 
     socket = assign(socket, %{
       page_title: "Commits",
@@ -31,7 +30,7 @@ defmodule RemitWeb.CommitsLive do
     commit = Commit.mark_as_reviewed!(commit_id) |> Repo.preload(:author)
 
     new_assigns = %{ commits: [commit], unreviewed_count: unreviewed_count() }  # Only assign the new commit: see above about "temporary assigns".
-    Endpoint.broadcast_from(self(), @broadcast_topic, "_event_name", new_assigns)
+    broadcast(new_assigns)
 
     {:noreply, assign(socket, new_assigns)}
   end
@@ -41,15 +40,19 @@ defmodule RemitWeb.CommitsLive do
     commit = Commit.mark_as_unreviewed!(commit_id) |> Repo.preload(:author)
 
     new_assigns = %{ commits: [commit], unreviewed_count: unreviewed_count() }  # Only assign the new commit: see above about "temporary assigns".
-    Endpoint.broadcast_from(self(), @broadcast_topic, "_event_name", new_assigns)
+    broadcast(new_assigns)
 
     {:noreply, assign(socket, new_assigns)}
   end
 
   # Receive broadcasts when other clients update their state.
   @impl true
-  def handle_info(%{topic: @broadcast_topic, payload: new_assigns}, socket) do
+  def handle_info({:set_assigns, new_assigns}, socket) do
     {:noreply, assign(socket, new_assigns)}
+  end
+
+  defp broadcast(assigns) do
+    Phoenix.PubSub.broadcast_from(Remit.PubSub, self(), @broadcast_topic, {:set_assigns, assigns})
   end
 
   defp unreviewed_count, do: Commit.unreviewed_count()

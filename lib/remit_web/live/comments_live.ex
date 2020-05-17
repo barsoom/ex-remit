@@ -13,6 +13,7 @@ defmodule RemitWeb.CommentsLive do
     {:ok, socket}
   end
 
+  @impl true
   def handle_info(:tick, socket) do
     {:noreply, assign(socket, :time, now())}
   end
