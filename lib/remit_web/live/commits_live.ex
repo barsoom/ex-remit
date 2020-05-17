@@ -13,12 +13,12 @@ defmodule RemitWeb.CommitsLive do
   def mount(_params, session, socket) do
     Phoenix.PubSub.subscribe(Remit.PubSub, @broadcast_topic)
 
-    IO.inspect {"MOUNT", session}
+    commits = Commit.load_latest(@commits_count)
 
     socket = assign(socket, %{
       page_title: "Commits",
-      commits: Commit.load_latest(@commits_count),
-      unreviewed_count: unreviewed_count(),
+      commits: commits,
+      unreviewed_count: commits |> Enum.count(& !&1.reviewed_at)
     })
 
     # Flag `commits` as a "temporary assign" defaulting to `[]`.
@@ -29,9 +29,10 @@ defmodule RemitWeb.CommitsLive do
 
   @impl true
   def handle_event("mark_reviewed", %{"cid" => commit_id}, socket) do
+    IO.inspect {socket, socket}
     commit = Commit.mark_as_reviewed!(commit_id) |> Repo.preload(:author)
 
-    new_assigns = %{ commits: [commit], unreviewed_count: unreviewed_count() }  # Only assign the new commit: see above about "temporary assigns".
+    new_assigns = %{ commits: [commit], unreviewed_count: (socket.assigns.unreviewed_count - 1) }  # Only assign the new commit: see above about "temporary assigns".
     broadcast(new_assigns)
 
     IO.inspect socket
@@ -43,7 +44,7 @@ defmodule RemitWeb.CommitsLive do
   def handle_event("mark_unreviewed", %{"cid" => commit_id}, socket) do
     commit = Commit.mark_as_unreviewed!(commit_id) |> Repo.preload(:author)
 
-    new_assigns = %{ commits: [commit], unreviewed_count: unreviewed_count() }  # Only assign the new commit: see above about "temporary assigns".
+    new_assigns = %{ commits: [commit], unreviewed_count: (socket.assigns.unreviewed_count + 1) }  # Only assign the new commit: see above about "temporary assigns".
     broadcast(new_assigns)
 
     {:noreply, assign(socket, new_assigns)}
@@ -58,6 +59,4 @@ defmodule RemitWeb.CommitsLive do
   defp broadcast(assigns) do
     Phoenix.PubSub.broadcast_from(Remit.PubSub, self(), @broadcast_topic, {:set_assigns, assigns})
   end
-
-  defp unreviewed_count, do: Commit.unreviewed_count()
 end

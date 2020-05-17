@@ -28,10 +28,6 @@ defmodule Remit.Commit do
     )
   end
 
-  def unreviewed_count do
-    (from c in Commit, where: is_nil(c.reviewed_at)) |> Repo.aggregate(:count)
-  end
-
   def mark_as_reviewed!(id) do
     # TODO: Allow useconds in DB so we don't need this dance.
     now = DateTime.utc_now() |> DateTime.truncate(:second)
