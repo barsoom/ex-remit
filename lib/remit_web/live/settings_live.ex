@@ -13,8 +13,8 @@ defmodule RemitWeb.SettingsLive do
   end
 
   @impl true
-  def handle_event("name_change", %{"name" => name}, socket) do
-    {:noreply, assign(socket, :name, name)}
+  def handle_event("form_change", %{"email" => email, "name" => name}, socket) do
+    {:noreply, assign(socket, email: email, name: name)}
   end
 
   @impl true
