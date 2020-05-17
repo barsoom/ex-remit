@@ -6,6 +6,7 @@ defmodule RemitWeb.Endpoint do
   # Set :encryption_salt if you would also like to encrypt it.
   @session_options [
     store: :cookie,
+    max_age: 9999999999,  # A long time.
     key: "_remit_key",
     signing_salt: "ndGdfBhJ"
   ]

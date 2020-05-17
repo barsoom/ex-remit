@@ -1,3 +1,9 @@
+<%= if @settings.name do %>
+  <p>Hello, <%= @settings.name %>!</p>
+<% else %>
+  <p>Hello, stranger. Please set a name.</p>
+<% end %>
+
 <div class="bg-gray-200 py-2 text-center">
   <b><%= @unreviewed_count %></b>
   commit<%= if @unreviewed_count != 1, do: "s" %> to review

@@ -7,14 +7,17 @@ Focused on experimenting with LiveView so not very polished.
 ## Plan
 
 - [x] Basics
-- [ ] Add Tailwind
+- [x] Add Tailwind
 - [ ] Styling
 - [ ] Lock down prod access
 - [ ] Get commits via webhook, cause clients to update
 - [ ] Get comments via webhook, cause clients to update
   - [ ] Make separate copies of comments for each person who gets to see it
   - [ ] Include reactions on comments in feed, not just comments proper
-- [ ] Settings tab
+- [x] Settings tab
+- [ ] Polish settings tab
+- [ ] Settings: nilify blanks
+- [ ] Store when Settings are read; expire old ones
 - [ ] Polish commits view
 - [ ] Comments view
 - [ ] "Oldest commit" and similar stats at top

@@ -8,6 +8,7 @@ defmodule RemitWeb.Router do
     plug :put_root_layout, {RemitWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :assign_session_id
   end
 
   pipeline :api do
@@ -20,6 +21,15 @@ defmodule RemitWeb.Router do
     live "/", CommitsLive
     live "/comments", CommentsLive
     live "/settings", SettingsLive
+  end
+
+  defp assign_session_id(conn, _) do
+    if get_session(conn, :session_id) do
+      conn
+    else
+      session_id = Ecto.UUID.generate()
+      conn |> put_session(:session_id, session_id)
+    end
   end
 
   # Other scopes may use custom stacks.

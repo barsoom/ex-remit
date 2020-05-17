@@ -1,6 +1,6 @@
 defmodule RemitWeb.CommitsLive do
   use RemitWeb, :live_view
-  alias Remit.{Repo,Commit}
+  alias Remit.{Repo,Commit,Settings}
 
   # Fairly arbitrary number. If too low, we may miss unreviewed stuff. If too high, performance may suffer.
   @commits_count 200
@@ -13,12 +13,14 @@ defmodule RemitWeb.CommitsLive do
   def mount(_params, session, socket) do
     Phoenix.PubSub.subscribe(Remit.PubSub, @broadcast_topic)
 
+    settings = Settings.for_session(session)
     commits = Commit.load_latest(@commits_count)
 
     socket = assign(socket, %{
       page_title: "Commits",
       commits: commits,
-      unreviewed_count: commits |> Enum.count(& !&1.reviewed_at)
+      unreviewed_count: commits |> Enum.count(& !&1.reviewed_at),
+      settings: settings,
     })
 
     # Flag `commits` as a "temporary assign" defaulting to `[]`.
