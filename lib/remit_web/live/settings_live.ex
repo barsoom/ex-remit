@@ -5,6 +5,7 @@ defmodule RemitWeb.SettingsLive do
   def mount(_params, _session, socket) do
     socket = assign(socket, %{
       page_title: "Settings",
+      email: "",
       name: "",
     })
 
@@ -14,5 +15,10 @@ defmodule RemitWeb.SettingsLive do
   @impl true
   def handle_event("name_change", %{"name" => name}, socket) do
     {:noreply, assign(socket, :name, name)}
+  end
+
+  @impl true
+  def handle_event("restore", %{"email" => email, "name" => name}, socket) do
+    {:noreply, assign(socket, email: email, name: name)}
   end
 end

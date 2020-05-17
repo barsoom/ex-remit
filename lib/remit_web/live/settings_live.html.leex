@@ -1,16 +1,16 @@
 <div class="m-3">
-  <form phx-change="name_change">
+  <form phx-change="name_change" phx-hook="StoreSettings">
     <p class="my-3">
       <label>
         Email:
-        <input type="email" name="email" autocomplete="off" />
+        <input type="email" name="email" autocomplete="off" value="<%= @email %>" />
       </label>
     </p>
 
     <p class="my-3"c>
       <label>
         Name:
-        <input type="text" name="name" autocomplete="off" />
+        <input type="text" name="name" autocomplete="off" value="<%= @name %>" />
       </label>
     </p>
     <p>Determines <i>your</i> commits and comments by substring.</p>
@@ -19,9 +19,5 @@
     <% else %>
       <p>If your name is "Charles Babbage", a commit authored e.g. by "Charles Babbage" or by "Ada Lovelace and Charles Babbage" will be considered yours.</p>
     <% end %>
-
-    <p class="my-3">
-      <button>Save</button>
-    </p>
   </form>
 </div>
