@@ -13,8 +13,6 @@ defmodule Remit.Application do
       RemitWeb.Telemetry,
       # Start the PubSub system
       {Phoenix.PubSub, [name: Remit.PubSub]},
-      # Redis client
-      {Redix, Keyword.merge(Redix.URI.opts_from_uri(System.get_env("REDIS_URL", "redis://127.0.0.1:6379")), name: :redix)},
       # Start the Endpoint (http/https)
       RemitWeb.Endpoint
       # Start a worker by calling: Remit.Worker.start_link(arg)
