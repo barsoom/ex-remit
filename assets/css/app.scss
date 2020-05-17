@@ -10,6 +10,12 @@ button {
   @apply px-1 border border-solid border-gray-500 rounded bg-gray-200;
 }
 
+input[type=text],
+input[type=email],
+{
+  @apply border border-gray-500 py-1 px-2;
+}
+
 @tailwind components;
 
 /*

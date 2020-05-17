@@ -1,3 +1,27 @@
-<p>
-  Settings! The time is now <%= @time %>.
-</p>
+<div class="m-3">
+  <form phx-change="name_change">
+    <p class="my-3">
+      <label>
+        Email:
+        <input type="email" name="email" autocomplete="off" />
+      </label>
+    </p>
+
+    <p class="my-3"c>
+      <label>
+        Name:
+        <input type="text" name="name" autocomplete="off" />
+      </label>
+    </p>
+    <p>Determines <i>your</i> commits and comments by substring.</p>
+    <%= if @name != "" do %>
+    <p>A commit authored e.g. by "<b><%= @name %></b>" or by "Ada Lovelace and <b><%= @name %></b>" will be considered yours.</p>
+    <% else %>
+      <p>If your name is "Charles Babbage", a commit authored e.g. by "Charles Babbage" or by "Ada Lovelace and Charles Babbage" will be considered yours.</p>
+    <% end %>
+
+    <p class="my-3">
+      <button>Save</button>
+    </p>
+  </form>
+</div>
