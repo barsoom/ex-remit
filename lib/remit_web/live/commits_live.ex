@@ -10,8 +10,10 @@ defmodule RemitWeb.CommitsLive do
   @broadcast_topic "commits"
 
   @impl true
-  def mount(_params, _session, socket) do
+  def mount(_params, session, socket) do
     Phoenix.PubSub.subscribe(Remit.PubSub, @broadcast_topic)
+
+    IO.inspect {"MOUNT", session}
 
     socket = assign(socket, %{
       page_title: "Commits",
@@ -31,6 +33,8 @@ defmodule RemitWeb.CommitsLive do
 
     new_assigns = %{ commits: [commit], unreviewed_count: unreviewed_count() }  # Only assign the new commit: see above about "temporary assigns".
     broadcast(new_assigns)
+
+    IO.inspect socket
 
     {:noreply, assign(socket, new_assigns)}
   end

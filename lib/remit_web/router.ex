@@ -19,6 +19,7 @@ defmodule RemitWeb.Router do
 
     live "/", CommitsLive
     live "/comments", CommentsLive
+    live "/settings", SettingsLive
   end
 
   # Other scopes may use custom stacks.
