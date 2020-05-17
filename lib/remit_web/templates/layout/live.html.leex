@@ -1,3 +1,17 @@
+<div class="tabs">
+  <%= live_patch(to: Routes.live_path(@socket, RemitWeb.CommitsLive)) do %>
+    <i class="fas fa-eye"></i>
+    Commits
+  <% end %>
+  <%= live_patch(to: Routes.live_path(@socket, RemitWeb.CommentsLive)) do %>
+    <i class="fas fa-watch"></i>
+    Comments
+  <%= end %>
+  <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
+    <%= link "LiveDashboard", to: Routes.live_dashboard_path(@socket, :home) %>
+  <% end %>
+</div>
+
 <main role="main">
   <p class="alert alert-info" role="alert"
     phx-click="lv:clear-flash"

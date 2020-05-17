@@ -11,20 +11,6 @@
     <script defer type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
   </head>
   <body>
-    <div class="tabs">
-      <%= live_patch(to: Routes.live_path(@conn, RemitWeb.CommitsLive)) do %>
-        <i class="fas fa-eye"></i>
-        Commits
-      <% end %>
-      <%= live_patch(to: Routes.live_path(@conn, RemitWeb.CommentsLive)) do %>
-        <i class="fas fa-watch"></i>
-        Comments
-      <%= end %>
-      <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
-        <%= link "LiveDashboard", to: Routes.live_dashboard_path(@conn, :home) %>
-      <% end %>
-    </div>
-
     <%= @inner_content %>
   </body>
 </html>
