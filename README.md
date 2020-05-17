@@ -33,11 +33,13 @@ First time:
     # Creates DB, migrates, seeds
     mix ecto.setup
 
+    # You are expected to have Redis running
+    brew install redis
+
 Every time:
 
     mix phx.server
-
-Then visit <http://localhost:4000>
+    open http://localhost:4000
 
 ## Production
 
