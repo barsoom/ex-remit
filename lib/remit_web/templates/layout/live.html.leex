@@ -1,9 +1,9 @@
 <div class="tabs">
-  <%= live_patch(to: Routes.live_path(@socket, RemitWeb.CommitsLive)) do %>
+  <%= live_redirect(to: Routes.live_path(@socket, RemitWeb.CommitsLive)) do %>
     <i class="fas fa-eye"></i>
     Commits
   <% end %>
-  <%= live_patch(to: Routes.live_path(@socket, RemitWeb.CommentsLive)) do %>
+  <%= live_redirect(to: Routes.live_path(@socket, RemitWeb.CommentsLive)) do %>
     <i class="fas fa-watch"></i>
     Comments
   <%= end %>
