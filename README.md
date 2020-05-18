@@ -21,7 +21,7 @@ Focused on experimenting with LiveView so not very polished.
 - [ ] Polish commits view
 - [ ] Comments view
 - [ ] "Oldest commit" and similar stats at top
-- [ ] Handle missed messages on reconnection
+- [ ] Handle missed messages on reconnection (https://curiosum.dev/blog/elixir-phoenix-liveview-messenger-part-4?)
 - [ ] Indicate when a commit is being viewed by someone (Except by its author?)
 - [ ] Tests
 - [ ] Docs (e.g. Fluid.app)
