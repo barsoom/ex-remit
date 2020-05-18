@@ -12,7 +12,6 @@ defmodule RemitWeb.CommitsLiveTest do
 
     Repo.insert! %Settings{
       session_id: session_id,
-      email: "user@example.com",
       name: "Banani",
     }
 
