@@ -27,6 +27,7 @@ Focused on experimenting with LiveView so not very polished.
 - [ ] Docs (e.g. Fluid.app)
 - [ ] Error reporting (Honeybadger)
 - [ ] Consider open sourcing
+- [ ] Consider making it a single LiveView with multiple subcomponents, so switching between tabs is snappier
 
 ## Dev
 
