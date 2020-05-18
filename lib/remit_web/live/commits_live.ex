@@ -31,13 +31,13 @@ defmodule RemitWeb.CommitsLive do
 
   @impl true
   def handle_event("mark_reviewed", %{"cid" => commit_id}, socket) do
-    IO.inspect {socket, socket}
     commit = Commit.mark_as_reviewed!(commit_id) |> Repo.preload(:author)
 
-    new_assigns = %{ commits: [commit], unreviewed_count: (socket.assigns.unreviewed_count - 1) }  # Only assign the new commit: see above about "temporary assigns".
+    new_assigns = %{
+      commits: [commit],  # Only the new commit because of "temporary assigns".
+      unreviewed_count: (socket.assigns.unreviewed_count - 1),
+    }
     broadcast(new_assigns)
-
-    IO.inspect socket
 
     {:noreply, assign(socket, new_assigns)}
   end
@@ -46,7 +46,10 @@ defmodule RemitWeb.CommitsLive do
   def handle_event("mark_unreviewed", %{"cid" => commit_id}, socket) do
     commit = Commit.mark_as_unreviewed!(commit_id) |> Repo.preload(:author)
 
-    new_assigns = %{ commits: [commit], unreviewed_count: (socket.assigns.unreviewed_count + 1) }  # Only assign the new commit: see above about "temporary assigns".
+    new_assigns = %{
+      commits: [commit],  # Only the new commit because of "temporary assigns".
+      unreviewed_count: (socket.assigns.unreviewed_count + 1),
+    }
     broadcast(new_assigns)
 
     {:noreply, assign(socket, new_assigns)}
