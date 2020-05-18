@@ -25,6 +25,7 @@ Focused on experimenting with LiveView so not very polished.
 - [ ] Indicate when a commit is being viewed by someone (Except by its author?)
 - [ ] Tests
 - [ ] Docs (e.g. Fluid.app)
+- [ ] Error reporting (Honeybadger)
 - [ ] Consider open sourcing
 
 ## Dev
