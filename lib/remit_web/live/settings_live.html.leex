@@ -14,7 +14,7 @@
       </label>
     </p>
     <p>Determines <i>your</i> commits and comments by substring.</p>
-    <%= if @settings.name != "" do %>
+    <%= if @settings.name && @settings.name != "" do %>
     <p>A commit authored e.g. by "<b><%= @settings.name %></b>" or by "Ada Lovelace and <b><%= @settings.name %></b>" will be considered yours.</p>
     <% else %>
       <p>If your name is "Charles Babbage", a commit authored e.g. by "Charles Babbage" or by "Ada Lovelace and Charles Babbage" will be considered yours.</p>

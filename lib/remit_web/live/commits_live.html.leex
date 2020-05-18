@@ -1,4 +1,4 @@
-<%= if @settings.name do %>
+<%= if @settings.name && @settings.name != "" do %>
   <p>Hello, <%= @settings.name %>!</p>
 <% else %>
   <p>Hello, stranger. Please set a name.</p>
