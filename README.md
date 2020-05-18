@@ -10,6 +10,7 @@ Focused on experimenting with LiveView so not very polished.
 - [x] Add Tailwind
 - [ ] Styling
 - [ ] Lock down prod access
+- [ ] Gravatars
 - [ ] Get commits via webhook, cause clients to update
 - [ ] Get comments via webhook, cause clients to update
   - [ ] Make separate copies of comments for each person who gets to see it
