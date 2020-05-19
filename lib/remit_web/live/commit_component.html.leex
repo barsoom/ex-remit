@@ -1,0 +1,24 @@
+<div class="border border-solid border-gray-300 rounded my-1 p-1 flex" style="
+    <%= if @commit.reviewed_at do %>
+    opacity: 0.25;
+    <% end %>
+  ">
+  <div class="flex-1">
+    <%= @commit |> Commit.commit_message() %>
+    in <b><%= @commit |> Commit.repo_name() %></b>
+    by <b><%= @commit.author.name %></b> on <%= @commit.inserted_at %>
+  </div>
+  <div class="flex-none ml-2">
+    <%= if @commit.reviewed_at do %>
+      <button phx-click="mark_unreviewed" phx-value-cid=<%= @commit.id %>>
+      <i class="far fa-eye-slash"></i>
+        Mark as unreviewed
+      </button>
+    <% else %>
+    <button phx-click="mark_reviewed" phx-value-cid=<%= @commit.id %>>
+      <i class="far fa-eye"></i>
+      Mark as reviewed
+    </button>
+    <% end %>
+  </div>
+</div>

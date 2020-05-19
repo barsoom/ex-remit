@@ -5,36 +5,10 @@
 <% end %>
 
 <div class="bg-gray-200 py-2 text-center">
-  <b><%= @unreviewed_count %></b>
-  commit<%= if @unreviewed_count != 1, do: "s" %> to review
+  <b><%= @unreviewed_count %></b> commit<%= if @unreviewed_count != 1, do: "s" %> to review
+  (<b><%= @others_unreviewed_count %></b> by others; <b><%= @my_unreviewed_count %></b> by you)
 </div>
 
-<%# IDs are for https://hexdocs.pm/phoenix_live_view/Phoenix.LiveView.html#module-dom-patching-and-temporary-assigns %>
-<div phx-update="prepend" id="commits-wrapper">
-  <%= for commit <- @commits do %>
-    <div id="commit-<%= commit.id %>" class="border border-solid border-gray-300 rounded my-1 p-1 flex" style="
-        <%= if commit.reviewed_at do %>
-        opacity: 0.25;
-        <% end %>
-      ">
-      <div class="flex-1">
-        <%= commit |> Commit.commit_message() %>
-        in <b><%= commit |> Commit.repo_name() %></b>
-        by <b><%= commit.author.name %></b> on <%= commit.inserted_at %>
-      </div>
-      <div class="flex-none ml-2">
-        <%= if commit.reviewed_at do %>
-          <button phx-click="mark_unreviewed" phx-value-cid=<%= commit.id %>>
-          <i class="far fa-eye-slash"></i>
-            Mark as unreviewed
-          </button>
-        <% else %>
-        <button phx-click="mark_reviewed" phx-value-cid=<%= commit.id %>>
-          <i class="far fa-eye"></i>
-          Mark as reviewed
-        </button>
-        <% end %>
-      </div>
-    </div>
-  <% end %>
-</div>
+<%= for commit <- @commits do %>
+  <%= live_component @socket, RemitWeb.CommitComponent, id: commit.id, commit: commit %>
+<% end %>

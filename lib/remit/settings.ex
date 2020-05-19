@@ -22,6 +22,13 @@ defmodule Remit.Settings do
     |> validate_required([:session_id])
   end
 
+  # TODO: nilify blanks so we handle " " etc.
+  def authored?(%Settings{name: nil}, commit), do: false
+  def authored?(%Settings{name: ""}, commit), do: false
+  def authored?(settings, commit) do
+    String.contains?(commit.author.name, settings.name)
+  end
+
   def for_session(%{"session_id" => sid}) do
     settings = Repo.get_by(Settings, session_id: sid)
 
