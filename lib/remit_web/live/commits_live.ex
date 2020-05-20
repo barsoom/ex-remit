@@ -16,9 +16,6 @@ defmodule RemitWeb.CommitsLive do
     settings = Settings.for_session(session)
     commits = Commit.load_latest(@commits_count)
 
-    # We previously used temporary assigns (https://hexdocs.pm/phoenix_live_view/Phoenix.LiveView.html#module-dom-patching-and-temporary-assigns) for `commits` to avoid sending a lot of data over the wire when a single commit is updated (e.g. reviewed), but it had the downside of not having the full list of commits available to run logic on.
-    #
-    # So instead, we keep the full list of commits in memory, but render each commit via a stateful component, which has the effect of not re-sending all the commits each time a single commit is changed.
     socket = socket
       |> assign(page_title: "Commits", settings: settings)
       |> assign_commits_and_stats(commits)
