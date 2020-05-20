@@ -7,6 +7,10 @@
 <div class="bg-gray-200 py-2 text-center">
   <b><%= @unreviewed_count %></b> commit<%= if @unreviewed_count != 1, do: "s" %> to review
   (<b><%= @others_unreviewed_count %></b> by others; <b><%= @my_unreviewed_count %></b> by you)
+  <%= if @oldest_unreviewed_for_me do %>
+    <%# FIXME: Should probably be some "committed at" value. %>
+    <p>Oldest by others: <%= @oldest_unreviewed_for_me.inserted_at %></p>
+  <% end %>
 </div>
 
 <%= for commit <- @commits do %>

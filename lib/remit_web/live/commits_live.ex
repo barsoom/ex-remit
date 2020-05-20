@@ -56,13 +56,15 @@ defmodule RemitWeb.CommitsLive do
 
   defp assign_commits_and_stats(socket, commits) do
     unreviewed_count = commits |> Enum.count(& !&1.reviewed_at)
-    my_unreviewed_count = commits |> Enum.count(& !&1.reviewed_at && Settings.authored?(socket.assigns.settings, &1))
+    my_unreviewed_count = commits |> Enum.count(& !&1.reviewed_at && authored?(socket, &1))
+    oldest_unreviewed_for_me = commits |> Enum.reverse() |> Enum.find(& !&1.reviewed_at && !authored?(socket, &1))
 
     assign(socket, %{
       commits: commits,
       unreviewed_count: unreviewed_count,
       my_unreviewed_count: my_unreviewed_count,
       others_unreviewed_count: unreviewed_count - my_unreviewed_count,
+      oldest_unreviewed_for_me: oldest_unreviewed_for_me,
     })
   end
 
@@ -76,4 +78,6 @@ defmodule RemitWeb.CommitsLive do
     Phoenix.PubSub.broadcast_from(Remit.PubSub, self(), @broadcast_topic, {:changed_commit, commit})
     commit
   end
+
+  defp authored?(socket, commit), do: Settings.authored?(socket.assigns.settings, commit)
 end
