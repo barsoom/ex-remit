@@ -1,6 +1,5 @@
 defmodule Remit.Commit do
   use Ecto.Schema
-  import Ecto.Changeset
   import Ecto.Query
   alias Remit.{Commit,Repo,Settings}
 
@@ -8,13 +7,17 @@ defmodule Remit.Commit do
 
   schema "commits" do
     field :sha, :string
-    field :payload, :map
+    field :author_email, :string
+    field :author_name, :string
+    field :owner, :string
+    field :repo, :string
+    field :message, :string
+    field :committed_at, :utc_datetime
+
     field :review_started_at, :utc_datetime
     field :reviewed_at, :utc_datetime
     field :review_started_by_email, :string
     field :reviewed_by_email, :string
-
-    belongs_to :author, Remit.Author
 
     timestamps()
   end
@@ -23,8 +26,7 @@ defmodule Remit.Commit do
     Repo.all(
       from c in Commit,
         limit: ^count,
-        order_by: [desc: c.inserted_at],
-        preload: :author
+        order_by: [desc: c.inserted_at]
     )
   end
 
@@ -44,21 +46,6 @@ defmodule Remit.Commit do
     now = DateTime.utc_now() |> DateTime.truncate(:second)
 
     Repo.get_by(Commit, id: id) |> Ecto.Changeset.change(review_started_at: now, review_started_by_email: email) |> Repo.update!()
-  end
-
-  def repo_name(commit) do
-    commit.payload |> get_in(["repository", "name"])
-  end
-
-  def commit_message(commit) do
-    commit.payload |> Map.fetch!("message")
-  end
-
-  @doc false
-  def changeset(commit, attrs) do
-    commit
-    |> cast(attrs, [:sha, :payload, :review_started_at, :reviewed_at, :author_id, :review_started_by_email, :reviewed_by_email, :inserted_at])
-    |> validate_required([:sha, :payload])
   end
 
   def subscribe_to_changed_commits do

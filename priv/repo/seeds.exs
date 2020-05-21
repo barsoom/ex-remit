@@ -14,35 +14,24 @@ unless Application.get_env(:remit, :allow_seeding) do
   raise "Not allowed to seed!"
 end
 
-alias Remit.{Repo,Author,Commit}
+alias Remit.{Repo,Commit}
 
-Repo.delete_all Author
 Repo.delete_all Commit
-
-authors = (1..20) |> Enum.map(fn (i) ->
-  name = Enum.random(["Fred", "Ada", "Enya", "Snorre", "Harry", "Maud"]) <> " " <> Enum.random(["Skog", "Lund", "Flod", "Träd", "Fisk"]) <> Enum.random(["berg", "kvist", "bäck", "zon", "plopp", "is"])
-
-  Repo.insert! %Author{
-    name: name,
-    email: "user#{i}@example.com",
-    username: "user#{i}",
-  }
-end)
 
 (1..500) |> Enum.each(fn (i) ->
   sha = :crypto.hash(:sha, to_string(i)) |> Base.encode16 |> String.downcase
-  timestamp = DateTime.utc_now() |> DateTime.add(-i, :second) |> DateTime.to_iso8601
+  author_name = Enum.random(["Fred", "Ada", "Enya", "Snorre", "Harry", "Maud"]) <> " " <> Enum.random(["Skog", "Lund", "Flod", "Träd", "Fisk"]) <> Enum.random(["berg", "kvist", "bäck", "zon", "plopp", "is"])
+  committed_at = DateTime.utc_now() |> DateTime.add(-i, :second) |> DateTime.truncate(:second)
   inserted_at = DateTime.utc_now() |> DateTime.add(-i * 60, :second) |> DateTime.truncate(:second)
 
   Repo.insert! %Commit{
-    author_id: Enum.random(authors).id,
     sha: sha,
-    payload: %{
-      message: "Foo bar #{i}",
-      timestamp: timestamp,
-      url: "https://github.com/example/example/commit/#{sha}",
-      repository: %{ name: "example" },
-    },
+    author_email: "author#{i}@example.com",
+    author_name: author_name,
+    owner: "acme",
+    repo: Enum.random([ "catpics", "dogpics", "birdsounds" ]),
+    message: "Foo bar #{i}",
+    committed_at: committed_at,
     inserted_at: inserted_at,
   }
 end)

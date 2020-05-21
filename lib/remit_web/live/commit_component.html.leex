@@ -6,9 +6,9 @@
     <%= if @commit.reviewed_at, do: "opacity: 0.25" %>
   ">
   <div class="flex-1">
-    <%= @commit |> Commit.commit_message() %>
-    in <b><%= @commit |> Commit.repo_name() %></b>
-    by <b><%= @commit.author.name %></b> on <%= @commit.inserted_at %>
+    <%= @commit.message %>
+    in <b><%= @commit.repo %></b>
+    by <b><%= @commit.author_name %></b> on <%= @commit.committed_at %>
   </div>
   <%= cond do %>
     <%= !@settings.email || Settings.authored?(@settings, @commit) -> %>

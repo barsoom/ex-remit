@@ -77,7 +77,6 @@ defmodule RemitWeb.CommitsLive do
   # Private
 
   defp assign_and_broadcast_changed_commit(socket, commit) do
-    commit = commit |> Repo.preload(:author)
     commits = socket.assigns.commits |> replace_commit(commit)
 
     Commit.broadcast_changed_commit(commit)

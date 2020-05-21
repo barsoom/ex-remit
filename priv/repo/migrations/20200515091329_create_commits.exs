@@ -4,18 +4,19 @@ defmodule Remit.Repo.Migrations.CreateCommits do
   def change do
     create table(:commits) do
       add :sha, :string, null: false
-      add :payload, :map, null: false
+      add :author_email, :string, null: false
+      add :author_name, :string, null: false
+      add :owner, :string, null: false
+      add :repo, :string, null: false
+      add :message, :text, null: false
+      add :committed_at, :utc_datetime, null: false
+
       add :review_started_at, :utc_datetime
       add :reviewed_at, :utc_datetime
-      add :author_id, references(:authors, on_delete: :nothing)
-      add :review_started_by_author_id, references(:authors, on_delete: :nothing)
-      add :reviewed_by_author_id, references(:authors, on_delete: :nothing)
+      add :review_started_by_email, :string
+      add :reviewed_by_email, :string
 
       timestamps([type: :utc_datetime])
     end
-
-    create index(:commits, [:author_id])
-    create index(:commits, [:review_started_by_author_id])
-    create index(:commits, [:reviewed_by_author_id])
   end
 end

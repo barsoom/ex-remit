@@ -25,7 +25,7 @@ defmodule Remit.Settings do
 
   def authored?(%Settings{name: nil}, _commit), do: false
   def authored?(settings, commit) do
-    String.contains?(commit.author.name, settings.name)
+    String.contains?(commit.author_name, settings.name)
   end
 
   def for_session(%{"session_id" => sid}) do
