@@ -65,7 +65,10 @@ defmodule RemitWeb.CommitsLive do
   @impl true
   def handle_info({:changed_settings, settings}, socket) do
     # We need to update the commit stats because they're based on settings.
-    socket = socket |> assign(settings: settings) |> assign_commits_and_stats(socket.assigns.commits)
+    socket = socket
+      |> assign(settings: settings)
+      |> assign_commits_and_stats(socket.assigns.commits)
+
     {:noreply, socket}
   end
 
