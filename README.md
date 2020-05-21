@@ -6,21 +6,18 @@ Focused on experimenting with LiveView so not very polished.
 
 ## Plan
 
-- [ ] Styling
 - [ ] Lock down prod access
 - [ ] Gravatars
 - [ ] Get commits via webhook, cause clients to update
 - [ ] Get comments via webhook, cause clients to update
   - [ ] Make separate copies of comments for each person who gets to see it
   - [ ] Include reactions on comments in feed, not just comments proper
-- [ ] Polish settings tab
 - [ ] Settings: nilify blanks
 - [ ] Polish commits view
 - [ ] Comments view
-- [ ] Indicate when a commit is being viewed by someone (Except by its author?)
-- [ ] Highlight commits you're currently reviewing
-- [ ] Show an indicator when you've been reviewing for a long time
 - [ ] Proper link to oldest commit
+- [ ] Show an indicator when you've been reviewing for a long time
+- [ ] Indicate when a commit is being viewed by someone (Except by its author?)
 
 Last:
 - [ ] Handle missed messages on reconnection (https://curiosum.dev/blog/elixir-phoenix-liveview-messenger-part-4?)
@@ -38,6 +35,9 @@ Done:
 - [x] Add Tailwind
 - [x] Store when Settings are read; expire old ones
 - [x] Consider making it a single LiveView with multiple subcomponents, so switching between tabs is snappier
+- [x] Styling
+- [x] Polish settings tab
+- [x] Highlight commits you're currently reviewing
 
 ## Dev
 
