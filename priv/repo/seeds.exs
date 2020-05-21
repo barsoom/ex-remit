@@ -10,7 +10,7 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
-unless Application.get_env(:remit, :allow_seeding) do
+unless Application.get_env(:remit, :allow_seeding) || System.get_env("ALLOW_SEEDING") do
   raise "Not allowed to seed!"
 end
 
