@@ -27,7 +27,7 @@ defmodule RemitWeb.CommitsLive do
 
   @impl true
   def handle_event("clicked", %{"cid" => commit_id}, socket) do
-    socket = assign(socket, your_last_clicked_commit_id: String.to_integer(commit_id))
+    socket = assign_clicked_commit(socket, commit_id)
 
     {:noreply, socket}
   end
@@ -37,6 +37,7 @@ defmodule RemitWeb.CommitsLive do
     commit = Commit.mark_as_review_started!(commit_id) |> preload() |> broadcast_changed_commit()
     commits = socket.assigns.commits |> replace_commit(commit)
     socket = socket |> assign_commits_and_stats(commits)
+    socket = assign_clicked_commit(socket, commit_id)
 
     {:noreply, socket}
   end
@@ -46,6 +47,7 @@ defmodule RemitWeb.CommitsLive do
     commit = Commit.mark_as_reviewed!(commit_id) |> preload() |> broadcast_changed_commit()
     commits = socket.assigns.commits |> replace_commit(commit)
     socket = socket |> assign_commits_and_stats(commits)
+    socket = assign_clicked_commit(socket, commit_id)
 
     {:noreply, socket}
   end
@@ -55,6 +57,7 @@ defmodule RemitWeb.CommitsLive do
     commit = Commit.mark_as_unreviewed!(commit_id) |> preload() |> broadcast_changed_commit()
     commits = socket.assigns.commits |> replace_commit(commit)
     socket = socket |> assign_commits_and_stats(commits)
+    socket = assign_clicked_commit(socket, commit_id)
 
     {:noreply, socket}
   end
@@ -80,6 +83,10 @@ defmodule RemitWeb.CommitsLive do
   end
 
   # Private
+
+  defp assign_clicked_commit(socket, commit_id_string) do
+    assign(socket, your_last_clicked_commit_id: String.to_integer(commit_id_string))
+  end
 
   defp assign_commits_and_stats(socket, commits) do
     unreviewed_count = commits |> Enum.count(& !&1.reviewed_at)
