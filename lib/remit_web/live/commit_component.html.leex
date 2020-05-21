@@ -9,16 +9,27 @@
     by <b><%= @commit.author.name %></b> on <%= @commit.inserted_at %>
   </div>
   <div class="flex-none ml-2">
-    <%= if @commit.reviewed_at do %>
+    <%= cond do %>
+    <%= @commit.reviewed_at -> %>
       <button phx-click="mark_unreviewed" phx-value-cid=<%= @commit.id %>>
       <i class="far fa-eye-slash"></i>
         Mark as unreviewed
       </button>
-    <% else %>
-    <button phx-click="mark_reviewed" phx-value-cid=<%= @commit.id %>>
-      <i class="far fa-eye"></i>
-      Mark as reviewed
-    </button>
+    <% @commit.review_started_at -> %>
+      <button class="bg-red-100" phx-click="mark_unreviewed" phx-value-cid=<%= @commit.id %>>
+        <i class="far fa-eye-slash"></i>
+        Abandon review
+      </button>
+
+      <button class="bg-green-100" phx-click="mark_reviewed" phx-value-cid=<%= @commit.id %>>
+        <i class="far fa-check"></i>
+        Mark as reviewed
+      </button>
+    <% true -> %>
+      <button phx-click="start_review" phx-value-cid=<%= @commit.id %>>
+        <i class="far fa-eye"></i>
+        Start review
+      </button>
     <% end %>
   </div>
 </div>

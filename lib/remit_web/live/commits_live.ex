@@ -26,9 +26,17 @@ defmodule RemitWeb.CommitsLive do
   end
 
   @impl true
+  def handle_event("start_review", %{"cid" => commit_id}, socket) do
+    commit = Commit.mark_as_review_started!(commit_id) |> preload() |> broadcast_changed_commit()
+    commits = socket.assigns.commits |> replace_commit(commit)
+    socket = socket |> assign_commits_and_stats(commits)
+
+    {:noreply, socket}
+  end
+
+  @impl true
   def handle_event("mark_reviewed", %{"cid" => commit_id}, socket) do
     commit = Commit.mark_as_reviewed!(commit_id) |> preload() |> broadcast_changed_commit()
-
     commits = socket.assigns.commits |> replace_commit(commit)
     socket = socket |> assign_commits_and_stats(commits)
 
@@ -38,7 +46,6 @@ defmodule RemitWeb.CommitsLive do
   @impl true
   def handle_event("mark_unreviewed", %{"cid" => commit_id}, socket) do
     commit = Commit.mark_as_unreviewed!(commit_id) |> preload() |> broadcast_changed_commit()
-
     commits = socket.assigns.commits |> replace_commit(commit)
     socket = socket |> assign_commits_and_stats(commits)
 

@@ -36,7 +36,14 @@ defmodule Remit.Commit do
   end
 
   def mark_as_unreviewed!(id) do
-    Repo.get_by(Commit, id: id) |> Ecto.Changeset.change(reviewed_at: nil) |> Repo.update!()
+    Repo.get_by(Commit, id: id) |> Ecto.Changeset.change(reviewed_at: nil, review_started_at: nil) |> Repo.update!()
+  end
+
+  def mark_as_review_started!(id) do
+    # TODO: Allow useconds in DB so we don't need this dance.
+    now = DateTime.utc_now() |> DateTime.truncate(:second)
+
+    Repo.get_by(Commit, id: id) |> Ecto.Changeset.change(review_started_at: now) |> Repo.update!()
   end
 
   def repo_name(commit) do
