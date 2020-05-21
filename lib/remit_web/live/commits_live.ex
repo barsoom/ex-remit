@@ -82,7 +82,7 @@ defmodule RemitWeb.CommitsLive do
 
     Commit.broadcast_changed_commit(commit)
 
-    socket = socket
+    socket
       |> assign_commits_and_stats(commits)
       |> assign_clicked_commit_id(commit.id)
   end
@@ -106,11 +106,6 @@ defmodule RemitWeb.CommitsLive do
 
   defp replace_commit(commits, commit) do
     commits |> Enum.map(& if(&1.id == commit.id, do: commit, else: &1))
-  end
-
-  defp broadcast_changed_commit(commit) do
-    Phoenix.PubSub.broadcast_from(Remit.PubSub, self(), @broadcast_topic, {:changed_commit, commit})
-    commit
   end
 
   defp authored?(socket, commit), do: Settings.authored?(socket.assigns.settings, commit)
