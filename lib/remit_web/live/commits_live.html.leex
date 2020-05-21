@@ -1,16 +1,18 @@
-<%= if @settings.name && @settings.name != "" do %>
-  <p>Hello, <%= @settings.name %>!</p>
-<% else %>
-  <p>Hello, stranger. Please set a name.</p>
-<% end %>
-
 <div class="bg-gray-200 py-2 text-center">
-  <b><%= @unreviewed_count %></b> commit<%= if @unreviewed_count != 1, do: "s" %> to review
-  (<b><%= @others_unreviewed_count %></b> by others; <b><%= @my_unreviewed_count %></b> by you)
-  <%= if @oldest_unreviewed_for_me do %>
-    <%# FIXME: Should probably be some "committed at" value. %>
-    <p>Oldest by others: <%= @oldest_unreviewed_for_me.inserted_at %></p>
+  <%= if @settings.name && @settings.name != "" do %>
+    <p>Hello, <%= @settings.name %>!</p>
+  <% else %>
+    <p>Hello, stranger. Please <%= live_patch("set a name", to: Routes.tabs_path(@socket, :settings)) %>.</p>
   <% end %>
+
+  <p>
+    There's <b><%= @unreviewed_count %></b> commit<%= if @unreviewed_count != 1, do: "s" %> to review
+    (<b><%= @others_unreviewed_count %></b> by others; <b><%= @my_unreviewed_count %></b> by you).
+    <%= if @oldest_unreviewed_for_me do %>
+      <%# FIXME: Should probably be some "committed at" value. %>
+      <p>Oldest by others: <%= @oldest_unreviewed_for_me.inserted_at %></p>
+    <% end %>
+  </p>
 </div>
 
 <%= for commit <- @commits do %>

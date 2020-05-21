@@ -10,6 +10,10 @@ button {
   @apply px-1 border border-solid border-gray-500 rounded bg-gray-200;
 }
 
+a {
+  @apply underline;
+}
+
 input[type=text],
 input[type=email],
 {
@@ -27,7 +31,7 @@ Want to extract this CSS? Mind this gotcha: https://pragmaticstudio.com/tutorial
   @apply flex;
 
   a {
-    @apply text-base py-2 flex-1 text-center border-r border-b border-gray-500;
+    @apply text-base py-2 flex-1 text-center border-r border-b border-gray-500 no-underline;
     &:last-child { border-right: 0; }
   }
 }
