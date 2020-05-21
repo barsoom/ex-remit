@@ -30,6 +30,10 @@ defmodule Remit.Settings do
   end
 
   def for_session(%{"session_id" => sid}) do
+    # Any process that loads Settings automatically gets subscribed.
+    # Everybody… gets… pitchforks!
+    Phoenix.PubSub.subscribe(Remit.PubSub, broadcast_topic(sid))
+
     settings = Repo.get_by(Settings, session_id: sid)
 
     if settings do
@@ -47,4 +51,12 @@ defmodule Remit.Settings do
       %Settings{session_id: sid}
     end
   end
+
+  def broadcast_changed_settings(settings) do
+    Phoenix.PubSub.broadcast_from(Remit.PubSub, self(), broadcast_topic(settings.session_id), {:changed_settings, settings})
+  end
+
+  # Private
+
+  defp broadcast_topic(sid), do: "settings:#{sid}"
 end

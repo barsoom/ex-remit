@@ -12,12 +12,12 @@ defmodule RemitWeb.CommitsLive do
   @impl true
   def mount(_params, session, socket) do
     Phoenix.PubSub.subscribe(Remit.PubSub, @broadcast_topic)
-
     settings = Settings.for_session(session)
+
     commits = Commit.load_latest(@commits_count)
 
     socket = socket
-      |> assign(page_title: "Commits", settings: settings)
+      |> assign(settings: settings)
       |> assign_commits_and_stats(commits)
 
     {:ok, socket}
@@ -50,6 +50,12 @@ defmodule RemitWeb.CommitsLive do
     socket = socket |> assign_commits_and_stats(commits)
 
     {:noreply, socket}
+  end
+
+  # Receive broadcasts when other LiveViews update settings.
+  @impl true
+  def handle_info({:changed_settings, settings}, socket) do
+    {:noreply, assign(socket, settings: settings)}
   end
 
   # Private

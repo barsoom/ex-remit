@@ -7,7 +7,6 @@ defmodule RemitWeb.SettingsLive do
     settings = Settings.for_session(session)
 
     socket = assign(socket, %{
-      page_title: "Settings",
       settings: settings,
     })
 
@@ -19,6 +18,8 @@ defmodule RemitWeb.SettingsLive do
     settings = socket.assigns.settings
     changeset = settings |> Ecto.Changeset.change(email: email, name: name)
     settings = if settings.id, do: Repo.update!(changeset), else: Repo.insert!(changeset)
+
+    Settings.broadcast_changed_settings(settings)
 
     {:noreply, assign(socket, settings: settings)}
   end

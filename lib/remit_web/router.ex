@@ -18,9 +18,9 @@ defmodule RemitWeb.Router do
   scope "/", RemitWeb do
     pipe_through :browser
 
-    live "/", CommitsLive
-    live "/comments", CommentsLive
-    live "/settings", SettingsLive
+    live "/", TabsLive, :commits
+    live "/comments", TabsLive, :comments
+    live "/settings", TabsLive, :settings
   end
 
   defp assign_session_id(conn, _) do
