@@ -58,9 +58,9 @@ Then visit <http://localhost:4000>
 
 The `POOL_SIZE` for the running dyno is 18, so we've got 2 spare on a Heroku hobby plan.
 
-Migrate:
+Deploy:
 
-    heroku run "POOL_SIZE=2 mix ecto.migrate"
+    script/deploy
 
 Console:
 
