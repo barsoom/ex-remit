@@ -84,14 +84,11 @@ defmodule RemitWeb.CommitsLive do
 
     socket = socket
       |> assign_commits_and_stats(commits)
-      |> assign_clicked_commit(commit)
+      |> assign_clicked_commit_id(commit.id)
   end
 
-  defp assign_clicked_commit(socket, commit), do: assign_clicked_commit_id(socket, commit.id |> to_string)
-
-  defp assign_clicked_commit_id(socket, commit_id_string) do
-    assign(socket, your_last_clicked_commit_id: String.to_integer(commit_id_string))
-  end
+  defp assign_clicked_commit_id(socket, commit_id) when is_integer(commit_id), do: assign(socket, your_last_clicked_commit_id: commit_id)
+  defp assign_clicked_commit_id(socket, commit_id) when is_binary(commit_id), do: assign_clicked_commit_id(socket, String.to_integer(commit_id))
 
   defp assign_commits_and_stats(socket, commits) do
     unreviewed_count = commits |> Enum.count(& !&1.reviewed_at)
