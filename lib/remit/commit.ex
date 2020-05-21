@@ -2,7 +2,7 @@ defmodule Remit.Commit do
   use Ecto.Schema
   import Ecto.Changeset
   import Ecto.Query
-  alias Remit.{Commit,Repo}
+  alias Remit.{Commit,Repo,Settings}
 
   @timestamps_opts [type: :utc_datetime]
 
@@ -11,8 +11,8 @@ defmodule Remit.Commit do
     field :payload, :map
     field :review_started_at, :utc_datetime
     field :reviewed_at, :utc_datetime
-    field :review_started_by_author_id, :id
-    field :reviewed_by_author_id, :id
+    field :review_started_by_email, :string
+    field :reviewed_by_email, :string
 
     belongs_to :author, Remit.Author
 
@@ -28,22 +28,22 @@ defmodule Remit.Commit do
     )
   end
 
-  def mark_as_reviewed!(id) do
+  def mark_as_reviewed!(id, %Settings{email: email}) do
     # TODO: Allow useconds in DB so we don't need this dance.
     now = DateTime.utc_now() |> DateTime.truncate(:second)
 
-    Repo.get_by(Commit, id: id) |> Ecto.Changeset.change(reviewed_at: now) |> Repo.update!()
+    Repo.get_by(Commit, id: id) |> Ecto.Changeset.change(reviewed_at: now, reviewed_by_email: email) |> Repo.update!()
   end
 
   def mark_as_unreviewed!(id) do
-    Repo.get_by(Commit, id: id) |> Ecto.Changeset.change(reviewed_at: nil, review_started_at: nil) |> Repo.update!()
+    Repo.get_by(Commit, id: id) |> Ecto.Changeset.change(reviewed_at: nil, review_started_at: nil, reviewed_by_email: nil, review_started_by_email: nil) |> Repo.update!()
   end
 
-  def mark_as_review_started!(id) do
+  def mark_as_review_started!(id, %Settings{email: email}) do
     # TODO: Allow useconds in DB so we don't need this dance.
     now = DateTime.utc_now() |> DateTime.truncate(:second)
 
-    Repo.get_by(Commit, id: id) |> Ecto.Changeset.change(review_started_at: now) |> Repo.update!()
+    Repo.get_by(Commit, id: id) |> Ecto.Changeset.change(review_started_at: now, review_started_by_email: email) |> Repo.update!()
   end
 
   def repo_name(commit) do
@@ -57,7 +57,7 @@ defmodule Remit.Commit do
   @doc false
   def changeset(commit, attrs) do
     commit
-    |> cast(attrs, [:sha, :payload, :review_started_at, :reviewed_at, :author_id, :review_started_by_author_id, :reviewed_by_author_id, :inserted_at])
+    |> cast(attrs, [:sha, :payload, :review_started_at, :reviewed_at, :author_id, :review_started_by_email, :reviewed_by_email, :inserted_at])
     |> validate_required([:sha, :payload])
   end
 

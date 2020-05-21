@@ -10,30 +10,43 @@
     in <b><%= @commit |> Commit.repo_name() %></b>
     by <b><%= @commit.author.name %></b> on <%= @commit.inserted_at %>
   </div>
-  <div class="flex-none ml-2">
-    <%= cond do %>
-    <%= Settings.authored?(@settings, @commit) -> %>
-      <%# Don't show buttons if you're the author. %>
+  <%= cond do %>
+    <%= !@settings.email || Settings.authored?(@settings, @commit) -> %>
+      <%# Don't show buttons; you can't review. %>
     <%= @commit.reviewed_at -> %>
-      <button phx-click="mark_unreviewed" phx-value-cid=<%= @commit.id %>>
-      <i class="far fa-eye-slash"></i>
-        Mark as new
-      </button>
+      <div class="flex-none ml-2">
+        <button phx-click="mark_unreviewed" phx-value-cid=<%= @commit.id %>>
+        <i class="far fa-eye-slash"></i>
+          Mark as new
+        </button>
+      </div>
+      <div class="flex-none ml-1">
+        <img src="<%= Gravatar.url(@commit.reviewed_by_email, 20) %>" alt="Reviewed by <%= @commit.reviewed_by_email %>">
+      </div>
     <% @commit.review_started_at -> %>
-      <button class="bg-red-100" phx-click="mark_unreviewed" phx-value-cid=<%= @commit.id %>>
-        <i class="fas fa-eye-slash text-red-700"></i>
-        Abandon review
-      </button>
+      <div class="flex-none ml-2">
+        <button class="bg-red-100" phx-click="mark_unreviewed" phx-value-cid=<%= @commit.id %>>
+          <i class="fas fa-eye-slash text-red-700"></i>
+          Abandon review
+        </button>
 
-      <button class="bg-green-100" phx-click="mark_reviewed" phx-value-cid=<%= @commit.id %>>
-        <i class="fas fa-check text-green-700"></i>
-        Mark as reviewed
-      </button>
+        <button class="bg-green-100" phx-click="mark_reviewed" phx-value-cid=<%= @commit.id %>>
+          <i class="fas fa-check text-green-700"></i>
+          Mark as reviewed
+        </button>
+      </div>
+      <div class="flex-none ml-1">
+        <img src="<%= Gravatar.url(@commit.review_started_by_email, 20) %>" alt="Review started by <%= @commit.review_started_by_email %>">
+      </div>
     <% true -> %>
-      <button class="hover:bg-yellow-100 hover:border-yellow-600" phx-click="start_review" phx-value-cid=<%= @commit.id %>>
-        <i class="fas fa-eye text-yellow-600"></i>
-        Start review
-      </button>
-    <% end %>
-  </div>
+      <div class="flex-none ml-2">
+        <button class="hover:bg-yellow-100 hover:border-yellow-600" phx-click="start_review" phx-value-cid=<%= @commit.id %>>
+          <i class="fas fa-eye text-yellow-600"></i>
+          Start review
+        </button>
+      </div>
+      <div class="flex-none ml-2">
+        <div style="width:20px"></div>
+      </div>
+  <% end %>
 </div>

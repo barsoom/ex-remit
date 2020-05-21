@@ -35,14 +35,14 @@ defmodule RemitWeb.CommitsLive do
 
   @impl true
   def handle_event("start_review", %{"cid" => commit_id}, socket) do
-    commit = Commit.mark_as_review_started!(commit_id)
+    commit = Commit.mark_as_review_started!(commit_id, socket.assigns.settings)
 
     {:noreply, assign_and_broadcast_changed_commit(socket, commit)}
   end
 
   @impl true
   def handle_event("mark_reviewed", %{"cid" => commit_id}, socket) do
-    commit = Commit.mark_as_reviewed!(commit_id)
+    commit = Commit.mark_as_reviewed!(commit_id, socket.assigns.settings)
 
     {:noreply, assign_and_broadcast_changed_commit(socket, commit)}
   end
