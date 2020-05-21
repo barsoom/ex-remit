@@ -14,7 +14,7 @@ defmodule RemitWeb.CommitsLive do
     Phoenix.PubSub.subscribe(Remit.PubSub, @broadcast_topic)
 
     settings = Settings.for_session(session)
-    Settings.subscribe_to_changed_settings(settings)
+    if connected?(socket), do: Settings.subscribe_to_changed_settings(settings)
 
     commits = Commit.load_latest(@commits_count)
 
