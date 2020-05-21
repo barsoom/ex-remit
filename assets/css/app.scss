@@ -1,3 +1,5 @@
+$border-color-tw: border-gray-500;
+
 @tailwind base;
 
 /* Custom base styles go here, like styling all "h1"s. */
@@ -7,7 +9,7 @@ body {
 }
 
 button {
-  @apply px-1 border border-solid border-gray-500 rounded bg-gray-200;
+  @apply px-1 border border-solid $border-color-tw rounded bg-gray-200;
   &:focus {
     /* Worse for keyboard navigation, but the outlines don't look good in this UI. */
     outline: none;
@@ -18,10 +20,15 @@ a {
   @apply underline;
 }
 
+label {
+  @apply font-bold mr-3;
+}
+
 input[type=text],
 input[type=email],
 {
-  @apply border border-gray-500 py-1 px-2;
+  @apply border $border-color-tw py-1 px-2;
+  width: 12rem;
 }
 
 @tailwind components;
@@ -35,13 +42,23 @@ Want to extract this CSS? Mind this gotcha: https://pragmaticstudio.com/tutorial
   @apply flex;
 
   a {
-    @apply text-base py-2 flex-1 text-center border-r border-b border-gray-500 no-underline;
+    @apply text-base py-2 flex-1 text-center border-r border-b $border-color-tw no-underline;
     &:last-child { border-right: 0; }
   }
 }
 
 .highlight {
   @apply bg-yellow-200;
+}
+
+.field-wrapper {
+  @apply my-6;
+}
+
+.field-explanation {
+  @apply text-gray-700 mt-3;
+
+  p { @apply my-2; }
 }
 
 @tailwind utilities;
