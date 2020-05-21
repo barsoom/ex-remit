@@ -16,15 +16,14 @@ defmodule Remit.Settings do
   end
 
   @doc false
-  def changeset(settings, attrs) do
+  def form_changeset(settings, attrs) do
     settings
-    |> cast(attrs, [:name, :email, :session_id, :read_at])
-    |> validate_required([:session_id])
+    |> cast(attrs, [:name, :email])
+    |> update_change(:name, &normalize_string/1)
+    |> update_change(:email, &normalize_string/1)
   end
 
-  # TODO: nilify blanks so we handle " " etc.
   def authored?(%Settings{name: nil}, _commit), do: false
-  def authored?(%Settings{name: ""}, _commit), do: false
   def authored?(settings, commit) do
     String.contains?(commit.author.name, settings.name)
   end
@@ -56,4 +55,10 @@ defmodule Remit.Settings do
   # Private
 
   defp broadcast_topic(settings), do: "settings:#{settings.session_id}"
+
+  defp normalize_string(nil), do: nil
+  defp normalize_string(string) do
+    string = String.trim(string)
+    if string == "", do: nil, else: string
+  end
 end

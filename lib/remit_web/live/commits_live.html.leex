@@ -1,5 +1,5 @@
 <div class="bg-gray-200 py-2 mb-4 text-center">
-  <%= if @settings.name && @settings.name != "" do %>
+  <%= if @settings.name do %>
     <p>Hello, <%= @settings.name %>!</p>
   <% else %>
     <p>Hello, stranger. Please <%= live_patch("set a name", to: Routes.tabs_path(@socket, :settings)) %>.</p>

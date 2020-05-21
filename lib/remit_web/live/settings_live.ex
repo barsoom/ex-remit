@@ -14,9 +14,9 @@ defmodule RemitWeb.SettingsLive do
   end
 
   @impl true
-  def handle_event("form_change", %{"email" => email, "name" => name}, socket) do
+  def handle_event("form_change", %{"email" => _, "name" => _} = fields, socket) do
     settings = socket.assigns.settings
-    changeset = settings |> Ecto.Changeset.change(email: email, name: name)
+    changeset = settings |> Settings.form_changeset(fields)
     settings = if settings.id, do: Repo.update!(changeset), else: Repo.insert!(changeset)
 
     Settings.broadcast_changed_settings(settings)
