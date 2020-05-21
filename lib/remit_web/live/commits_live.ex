@@ -5,10 +5,6 @@ defmodule RemitWeb.CommitsLive do
   # Fairly arbitrary number. If too low, we may miss unreviewed stuff. If too high, performance may suffer.
   @commits_count 200
 
-  # We subscribe on mount, and then when one client updates state, it broadcasts the new state to other clients.
-  # Read more: https://elixirschool.com/blog/live-view-with-pub-sub/
-  @broadcast_topic "commits"
-
   @impl true
   def mount(_params, session, socket) do
     settings = Settings.for_session(session)
