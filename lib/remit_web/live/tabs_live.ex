@@ -3,6 +3,7 @@
 defmodule RemitWeb.TabsLive do
   use RemitWeb, :live_view
 
+  @impl true
   def render(assigns) do
     ~L"""
     <div style="display: <%= if @live_action == :commits, do: "block", else: "none" %>">
@@ -25,6 +26,7 @@ defmodule RemitWeb.TabsLive do
   end
 
   # Needs to be defined for re-rendering to happen.
+  @impl true
   def handle_params(_params, _uri, socket) do
     # Since the child LiveViews run concurrently, they can't be relied on to set the title.
     socket =

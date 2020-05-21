@@ -6,11 +6,11 @@
   <%= live_patch(to: Routes.tabs_path(@socket, :comments)) do %>
     <i class="fas fa-watch"></i>
     Comments
-  <%= end %>
+  <% end %>
   <%= live_patch(to: Routes.tabs_path(@socket, :settings)) do %>
     <i class="fas fa-cog"></i>
     Settings
-  <%= end %>
+  <% end %>
   <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
     <%= link(to: Routes.live_dashboard_path(@socket, :home)) do %>
       <i class="fas fa-tachometer-alt"></i>
