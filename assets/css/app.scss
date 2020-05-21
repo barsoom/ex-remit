@@ -40,6 +40,10 @@ Want to extract this CSS? Mind this gotcha: https://pragmaticstudio.com/tutorial
   }
 }
 
+.is-your-last-clicked {
+  @apply bg-yellow-200;
+}
+
 @tailwind utilities;
 
 /* Custom utilities go here. */

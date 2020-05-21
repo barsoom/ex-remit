@@ -19,10 +19,17 @@ defmodule RemitWeb.CommitsLive do
     commits = Commit.load_latest(@commits_count)
 
     socket = socket
-      |> assign(settings: settings)
+      |> assign(settings: settings, your_last_clicked_commit_id: nil)
       |> assign_commits_and_stats(commits)
 
     {:ok, socket}
+  end
+
+  @impl true
+  def handle_event("clicked", %{"cid" => commit_id}, socket) do
+    socket = assign(socket, your_last_clicked_commit_id: String.to_integer(commit_id))
+
+    {:noreply, socket}
   end
 
   @impl true
