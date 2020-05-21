@@ -1,25 +1,10 @@
 <div class="tabs">
-  <%= live_patch(to: Routes.tabs_path(@socket, :commits)) do %>
-    <i class="fad fa-eye"></i>
-    Commits
-  <% end %>
-  <%= live_patch(to: Routes.tabs_path(@socket, :comments)) do %>
-    <i class="fad fa-comments"></i>
-    Comments
-  <% end %>
-  <%= live_patch(to: Routes.tabs_path(@socket, :settings)) do %>
-    <i class="fad fa-cog"></i>
-    Settings
-  <% end %>
-  <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
-    <%= link(to: Routes.live_dashboard_path(@socket, :home)) do %>
-      <i class="fas fa-tachometer-alt"></i>
-      LD
-    <% end %>
-  <% end %>
+  <%= tab :commits, "Commits", "fa-eye", @socket, @live_action %>
+  <%= tab :comments, "Comments", "fa-comments", @socket, @live_action %>
+  <%= tab :settings, "Settings", "fa-cog", @socket, @live_action %>
 </div>
 
-<main role="main">
+<main role="main" class="py-4">
   <p class="alert alert-info" role="alert"
     phx-click="lv:clear-flash"
     phx-value-key="info"><%= live_flash(@flash, :info) %></p>
