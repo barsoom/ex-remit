@@ -6,8 +6,6 @@ Focused on experimenting with LiveView so not very polished.
 
 ## Plan
 
-- [x] Basics
-- [x] Add Tailwind
 - [ ] Styling
 - [ ] Lock down prod access
 - [ ] Gravatars
@@ -15,22 +13,31 @@ Focused on experimenting with LiveView so not very polished.
 - [ ] Get comments via webhook, cause clients to update
   - [ ] Make separate copies of comments for each person who gets to see it
   - [ ] Include reactions on comments in feed, not just comments proper
-- [x] Settings tab
 - [ ] Polish settings tab
 - [ ] Settings: nilify blanks
-- [ ] Store when Settings are read; expire old ones
 - [ ] Polish commits view
 - [ ] Comments view
-- [ ] "Oldest commit" and similar stats at top
-- [ ] Handle missed messages on reconnection (https://curiosum.dev/blog/elixir-phoenix-liveview-messenger-part-4?)
 - [ ] Indicate when a commit is being viewed by someone (Except by its author?)
-- [ ] Tests
-- [ ] Docs (e.g. Fluid.app)
-- [ ] Error reporting (Honeybadger)
-- [ ] Consider open sourcing
-- [ ] Consider making it a single LiveView with multiple subcomponents, so switching between tabs is snappier
 - [ ] Highlight commits you're currently reviewing
 - [ ] Show an indicator when you've been reviewing for a long time
+- [ ] Proper link to oldest commit
+
+Last:
+- [ ] Handle missed messages on reconnection (https://curiosum.dev/blog/elixir-phoenix-liveview-messenger-part-4?)
+- [ ] Tests
+- [ ] Error reporting (Honeybadger)
+- [ ] CI setup
+- [ ] Devbox setup
+- [ ] Docs (e.g. Fluid.app)
+- [ ] Consider open sourcing
+
+Done:
+- [x] "Oldest commit" and similar stats at top
+- [x] Settings tab
+- [x] Basics
+- [x] Add Tailwind
+- [x] Store when Settings are read; expire old ones
+- [x] Consider making it a single LiveView with multiple subcomponents, so switching between tabs is snappier
 
 ## Dev
 
