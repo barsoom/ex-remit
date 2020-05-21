@@ -23,8 +23,8 @@ defmodule Remit.Settings do
   end
 
   # TODO: nilify blanks so we handle " " etc.
-  def authored?(%Settings{name: nil}, commit), do: false
-  def authored?(%Settings{name: ""}, commit), do: false
+  def authored?(%Settings{name: nil}, _commit), do: false
+  def authored?(%Settings{name: ""}, _commit), do: false
   def authored?(settings, commit) do
     String.contains?(commit.author.name, settings.name)
   end
