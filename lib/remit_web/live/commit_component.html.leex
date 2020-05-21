@@ -10,6 +10,8 @@
   </div>
   <div class="flex-none ml-2">
     <%= cond do %>
+    <%= Settings.authored?(@settings, @commit) -> %>
+      <%# Don't show buttons if you're the author. %>
     <%= @commit.reviewed_at -> %>
       <button phx-click="mark_unreviewed" phx-value-cid=<%= @commit.id %>>
       <i class="far fa-eye-slash"></i>
