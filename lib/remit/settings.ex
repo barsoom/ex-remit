@@ -33,14 +33,11 @@ defmodule Remit.Settings do
     settings = Repo.get_by(Settings, session_id: sid)
 
     if settings do
-      now = DateTime.utc_now()
-
       # Update `read_at` so we can track stale Settings.
-      settings = settings |> Ecto.Changeset.change(read_at: now) |> Repo.update!
+      settings = settings |> Ecto.Changeset.change(read_at: DateTime.utc_now()) |> Repo.update!
 
       # Delete stale Settings so DB doesn't keep them forever. It's cheap enough to do on every call.
-      stale_before = now |> DateTime.add(-60 * 60 * 24 * @stale_after_days, :second)
-      Repo.delete_all(from s in Settings, where: s.read_at < ^stale_before)
+      Repo.delete_all(from s in Settings, where: s.read_at < ago(@stale_after_days, "day"))
 
       settings
     else
