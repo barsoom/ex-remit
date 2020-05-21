@@ -13,7 +13,7 @@
     <%= @commit.reviewed_at -> %>
       <button phx-click="mark_unreviewed" phx-value-cid=<%= @commit.id %>>
       <i class="far fa-eye-slash"></i>
-        Mark as unreviewed
+        Mark as new
       </button>
     <% @commit.review_started_at -> %>
       <button class="bg-red-100" phx-click="mark_unreviewed" phx-value-cid=<%= @commit.id %>>
