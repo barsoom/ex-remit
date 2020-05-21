@@ -29,6 +29,8 @@ Focused on experimenting with LiveView so not very polished.
 - [ ] Error reporting (Honeybadger)
 - [ ] Consider open sourcing
 - [ ] Consider making it a single LiveView with multiple subcomponents, so switching between tabs is snappier
+- [ ] Highlight commits you're currently reviewing
+- [ ] Show an indicator when you've been reviewing for a long time
 
 ## Dev
 
