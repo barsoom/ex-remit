@@ -11,12 +11,13 @@ defmodule RemitWeb.CommitsLive do
 
   @impl true
   def mount(_params, session, socket) do
-    Phoenix.PubSub.subscribe(Remit.PubSub, @broadcast_topic)
-
     settings = Settings.for_session(session)
-    if connected?(socket), do: Settings.subscribe_to_changed_settings(settings)
-
     commits = Commit.load_latest(@commits_count)
+
+    if connected?(socket) do
+      Settings.subscribe_to_changed_settings(settings)
+      Commit.subscribe_to_changed_commits()
+    end
 
     socket = socket
       |> assign(settings: settings, your_last_clicked_commit_id: nil)
@@ -27,39 +28,30 @@ defmodule RemitWeb.CommitsLive do
 
   @impl true
   def handle_event("clicked", %{"cid" => commit_id}, socket) do
-    socket = assign_clicked_commit(socket, commit_id)
+    socket = assign_clicked_commit_id(socket, commit_id)
 
     {:noreply, socket}
   end
 
   @impl true
   def handle_event("start_review", %{"cid" => commit_id}, socket) do
-    commit = Commit.mark_as_review_started!(commit_id) |> preload() |> broadcast_changed_commit()
-    commits = socket.assigns.commits |> replace_commit(commit)
-    socket = socket |> assign_commits_and_stats(commits)
-    socket = assign_clicked_commit(socket, commit_id)
+    commit = Commit.mark_as_review_started!(commit_id)
 
-    {:noreply, socket}
+    {:noreply, assign_and_broadcast_changed_commit(socket, commit)}
   end
 
   @impl true
   def handle_event("mark_reviewed", %{"cid" => commit_id}, socket) do
-    commit = Commit.mark_as_reviewed!(commit_id) |> preload() |> broadcast_changed_commit()
-    commits = socket.assigns.commits |> replace_commit(commit)
-    socket = socket |> assign_commits_and_stats(commits)
-    socket = assign_clicked_commit(socket, commit_id)
+    commit = Commit.mark_as_reviewed!(commit_id)
 
-    {:noreply, socket}
+    {:noreply, assign_and_broadcast_changed_commit(socket, commit)}
   end
 
   @impl true
   def handle_event("mark_unreviewed", %{"cid" => commit_id}, socket) do
-    commit = Commit.mark_as_unreviewed!(commit_id) |> preload() |> broadcast_changed_commit()
-    commits = socket.assigns.commits |> replace_commit(commit)
-    socket = socket |> assign_commits_and_stats(commits)
-    socket = assign_clicked_commit(socket, commit_id)
+    commit = Commit.mark_as_unreviewed!(commit_id)
 
-    {:noreply, socket}
+    {:noreply, assign_and_broadcast_changed_commit(socket, commit)}
   end
 
   # Receive broadcasts when other clients update their state.
@@ -84,7 +76,20 @@ defmodule RemitWeb.CommitsLive do
 
   # Private
 
-  defp assign_clicked_commit(socket, commit_id_string) do
+  defp assign_and_broadcast_changed_commit(socket, commit) do
+    commit = commit |> Repo.preload(:author)
+    commits = socket.assigns.commits |> replace_commit(commit)
+
+    Commit.broadcast_changed_commit(commit)
+
+    socket = socket
+      |> assign_commits_and_stats(commits)
+      |> assign_clicked_commit(commit)
+  end
+
+  defp assign_clicked_commit(socket, commit), do: assign_clicked_commit_id(socket, commit.id |> to_string)
+
+  defp assign_clicked_commit_id(socket, commit_id_string) do
     assign(socket, your_last_clicked_commit_id: String.to_integer(commit_id_string))
   end
 
@@ -105,8 +110,6 @@ defmodule RemitWeb.CommitsLive do
   defp replace_commit(commits, commit) do
     commits |> Enum.map(& if(&1.id == commit.id, do: commit, else: &1))
   end
-
-  defp preload(%Commit{} = commit), do: commit |> Repo.preload(:author)
 
   defp broadcast_changed_commit(commit) do
     Phoenix.PubSub.broadcast_from(Remit.PubSub, self(), @broadcast_topic, {:changed_commit, commit})
