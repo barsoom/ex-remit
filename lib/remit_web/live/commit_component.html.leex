@@ -1,7 +1,7 @@
 <div
   phx-click="clicked" phx-value-cid="<%= @commit.id %>"
   class="border border-solid border-gray-300 rounded my-1 p-1 flex
-    <%= if @is_your_last_clicked_commit, do: "is-your-last-clicked" %>
+    <%= if @is_your_last_clicked_commit, do: "highlight" %>
   " style="
     <%= if @commit.reviewed_at, do: "opacity: 0.25" %>
   ">
