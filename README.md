@@ -18,6 +18,7 @@ Focused on experimenting with LiveView so not very polished.
 - [ ] Proper link to oldest commit
 - [ ] Show an indicator when you've been reviewing for a long time
 - [ ] Indicate when a commit is being viewed by someone (Except by its author?)
+- [ ] Store settings in session? https://github.com/martinsvalin/spyfall/pull/1/files
 
 Last:
 - [ ] Handle missed messages on reconnection (https://curiosum.dev/blog/elixir-phoenix-liveview-messenger-part-4?)
