@@ -27,8 +27,7 @@ defmodule RemitWeb.Router do
     if get_session(conn, :session_id) do
       conn
     else
-      session_id = Ecto.UUID.generate()
-      conn |> put_session(:session_id, session_id)
+      put_session(conn, :session_id, Ecto.UUID.generate())
     end
   end
 
