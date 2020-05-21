@@ -8,7 +8,8 @@
 use Mix.Config
 
 config :remit,
-  ecto_repos: [Remit.Repo]
+  ecto_repos: [Remit.Repo],
+  favicon: "favicon.png"
 
 # Configures the endpoint
 config :remit, RemitWeb.Endpoint,

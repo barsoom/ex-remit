@@ -65,7 +65,9 @@ config :remit, RemitWeb.Endpoint,
     ]
   ]
 
-config :remit, allow_seeding: true
+config :remit,
+  allow_seeding: true,
+  favicon: "favicon-dev.png"
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
