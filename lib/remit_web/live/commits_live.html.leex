@@ -1,6 +1,6 @@
-<div class="bg-gray-200 py-2 mb-4 text-center">
-  <%= if @settings.name && @settings.email do %>
-    <p>Hello, <%= @settings.name %>!</p>
+<div class="phx-hook-subscribe-to-session bg-gray-200 py-2 mb-4 text-center">
+  <%= if @name && @email do %>
+    <p>Hello, <%= @name %>!</p>
   <% else %>
     <p>Hello! Please <%= live_patch("set a name and email", to: Routes.tabs_path(@socket, :settings)) %>.</p>
   <% end %>
@@ -18,5 +18,5 @@
 <%= for commit <- @commits do %>
   <%# We use live components specifically so that only changed commits (not all of them) are passed via the socket. %>
   <%# We prefer this to the "temporary assigns" optimisation, as that complicates logic by not holding the full list of commits as state. %>
-  <%= live_component @socket, RemitWeb.CommitComponent, id: commit.id, commit: commit, settings: @settings, is_your_last_clicked_commit: (@your_last_clicked_commit_id == commit.id) %>
+  <%= live_component @socket, RemitWeb.CommitComponent, id: commit.id, commit: commit, email: @email, name: @name, is_your_last_clicked_commit: (@your_last_clicked_commit_id == commit.id) %>
 <% end %>

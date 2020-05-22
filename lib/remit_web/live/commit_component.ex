@@ -1,5 +1,5 @@
 defmodule RemitWeb.CommitComponent do
   use Phoenix.LiveComponent
 
-  alias Remit.Settings
+  alias Remit.Commit
 end

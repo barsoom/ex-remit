@@ -16,7 +16,7 @@
     </p>
   </div>
   <%= cond do %>
-    <%= !@settings.email || Settings.authored?(@settings, @commit) -> %>
+    <%= !@email || Commit.authored_by?(@commit, @name) -> %>
       <%# Don't show buttons; you can't review. %>
     <% @commit.reviewed_at -> %>
       <div class="flex-none ml-2 opacity-25 hover:opacity-100">

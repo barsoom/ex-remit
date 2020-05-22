@@ -8,11 +8,11 @@ defmodule RemitWeb.Router do
     plug :put_root_layout, {RemitWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug :assign_session_id
   end
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug :fetch_session
   end
 
   scope "/", RemitWeb do
@@ -23,16 +23,9 @@ defmodule RemitWeb.Router do
     live "/settings", TabsLive, :settings
   end
 
-  defp assign_session_id(conn, _) do
-    if get_session(conn, :session_id) do
-      conn
-    else
-      put_session(conn, :session_id, Ecto.UUID.generate())
-    end
-  end
+  scope "/api", RemitWeb do
+    pipe_through :api
 
-  # Other scopes may use custom stacks.
-  # scope "/api", RemitWeb do
-  #   pipe_through :api
-  # end
+    post "/session", SessionController, :set
+  end
 end

@@ -19,8 +19,23 @@ import {LiveSocket} from "phoenix_live_view"
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 
+let Hooks = {}
+Hooks.SetSession = {
+  DEBOUNCE_MS: 200,
+
+  mounted() {
+    this.el.addEventListener("input", (e) => {
+      clearTimeout(this.timeout)
+      this.timeout = setTimeout(() => {
+        this.pushEventTo(".phx-hook-subscribe-to-session", "set_session", [e.target.name, e.target.value])
+        fetch(`/api/session?${e.target.name}=${encodeURIComponent(e.target.value)}`, { method: "post" })
+      }, this.DEBOUNCE_MS)
+    })
+  },
+ }
 let liveSocket = new LiveSocket("/live", Socket, {
   params: { _csrf_token: csrfToken },
+  hooks: Hooks,
 })
 
 // Show progress bar on live navigation and form submits
