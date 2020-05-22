@@ -20,19 +20,17 @@
       <% @commit.reviewed_at && @you_authored? -> %>
         <%# Don't show buttons. %>
       <% @commit.reviewed_at && !@you_authored? && @email -> %>
-        <div class="opacity-25 hover:opacity-100">
-          <button phx-click="mark_unreviewed" phx-value-cid=<%= @commit.id %>>
+        <button phx-click="mark_unreviewed" phx-value-cid="<%= @commit.id %>" class="opacity-25 hover:opacity-100">
           <i class="far fa-eye-slash"></i>
-            Mark as new
-          </button>
-        </div>
+          Mark as new
+        </button>
       <% @commit.review_started_at && @you_are_reviewing? -> %>
-        <button class="bg-red-100" phx-click="mark_unreviewed" phx-value-cid=<%= @commit.id %>>
+        <button phx-click="mark_unreviewed" phx-value-cid="<%= @commit.id %>" class="bg-red-100">
           <i class="fas fa-eye-slash text-red-700"></i>
           Abandon review
         </button>
 
-        <button class="bg-green-100 ml-2" phx-click="mark_reviewed" phx-value-cid=<%= @commit.id %>>
+        <button phx-click="mark_reviewed" phx-value-cid="<%= @commit.id %>" class="bg-green-100 ml-2">
           <i class="fas fa-check text-green-700"></i>
           Mark as reviewed
         </button>
@@ -44,7 +42,7 @@
       <% @you_authored? -> %>
         <%# Don't show buttons. %>
       <% !@you_authored? && @email -> %>
-        <button class="hover:bg-yellow-100 hover:border-yellow-600" phx-click="start_review" phx-value-cid=<%= @commit.id %>>
+        <button phx-click="start_review" phx-value-cid="<%= @commit.id %>" class="hover:bg-yellow-100 hover:border-yellow-600">
           <i class="fas fa-eye text-yellow-600"></i>
           Start review
         </button>
