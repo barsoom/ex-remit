@@ -14,6 +14,7 @@ import "../css/app.scss"
 //
 import "phoenix_html"
 import {Socket} from "phoenix"
+import NProgress from "nprogress"
 import {LiveSocket} from "phoenix_live_view"
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
