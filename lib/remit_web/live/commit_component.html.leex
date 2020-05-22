@@ -5,7 +5,7 @@
     <%= if @your_last_clicked_commit?, do: " highlight" %>
   ">
   <div class="flex-none mr-3">
-    <img src="<%= Gravatar.url(@commit.author_email) %>" alt="" class="rounded <%= if @commit.reviewed_at, do: "gravatar--small", else: "gravatar--big" %>" />
+    <%= gravatar(@commit.author_email, "rounded #{if @commit.reviewed_at, do: "gravatar--small", else: "gravatar--big"}") %>
   </div>
   <div class="flex-1">
     <p class="<%= if @commit.reviewed_at, do: "inline", else: "text-sm mb-1" %>"><%= @commit.message %></p>
@@ -34,20 +34,15 @@
           Abandon review
         </button>
 
-        <button class="bg-green-100" phx-click="mark_reviewed" phx-value-cid=<%= @commit.id %>>
+        <button class="bg-green-100 ml-2" phx-click="mark_reviewed" phx-value-cid=<%= @commit.id %>>
           <i class="fas fa-check text-green-700"></i>
           Mark as reviewed
         </button>
       </div>
     <% @commit.review_started_at && !@you_are_reviewing? -> %>
-      <div class="flex-none ml-2">
-        <span class="text-gray-600 mx-1">
-          <img src="<%= Gravatar.url(@commit.review_started_by_email) %>" alt="" class="gravatar--small inline" /> Reviewing…</span>
-
-        <button class="bg-red-100" phx-click="mark_unreviewed" phx-value-cid=<%= @commit.id %>>
-          <i class="fas fa-eye-slash text-red-700"></i>
-          Cancel
-        </button>
+      <div class="flex-none ml-2 text-gray-600">
+        <%= gravatar(@commit.review_started_by_email, "gravatar--small inline") %>
+        Reviewing…
       </div>
     <% @you_authored? -> %>
       <%# Don't show buttons. %>
@@ -58,14 +53,14 @@
           Start review
         </button>
       </div>
-      <div class="flex-none ml-1">
-        <div style="width:20px"></div>
-      </div>
   <% end %>
 
-  <%= if @commit.reviewed_at do %>
-    <div class="flex-none ml-1">
-      <img src="<%= Gravatar.url(@commit.reviewed_by_email) %>" alt="" class="gravatar--small" />
+  <div class="flex-none ml-3">
+    <%= if @commit.reviewed_at do %>
+      <%= gravatar(@commit.reviewed_by_email, "gravatar--small") %>
     </div>
-  <% end %>
+    <% else %>
+      <div class="gravatar--small"></div>
+    <% end %>
+  </div>
 </div>

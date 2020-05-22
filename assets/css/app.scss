@@ -7,7 +7,7 @@ body {
 }
 
 button {
-  @apply px-1 border border-solid border-gray-500 rounded bg-gray-200 mr-2;
+  @apply px-1 border border-solid border-gray-500 rounded bg-gray-200;
   &:focus {
     /* Worse for keyboard navigation, but the outlines don't look good in this UI. */
     outline: none;
