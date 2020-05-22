@@ -38,7 +38,7 @@
           Mark as reviewed
         </button>
       <% @commit.review_started_at && !@commit.reviewed_at && !@you_are_reviewing? -> %>
-        <div class="text-gray-600">
+        <div class="text-gray-600" title="Since <%= Utils.format_datetime(@commit.review_started_at) %>">
           <%= gravatar(@commit.review_started_by_email, "gravatar--small inline") %>
           Reviewing…
         </div>
