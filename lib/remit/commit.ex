@@ -57,6 +57,9 @@ defmodule Remit.Commit do
   def authored_by?(_commit, nil), do: false
   def authored_by?(commit, name), do: String.contains?(commit.author_name, name)
 
+  def being_reviewed_by?(%Commit{review_started_by_email: email}, email) when not is_nil(email), do: true
+  def being_reviewed_by?(_, _), do: false
+
   def subscribe_to_changed_commits do
     Phoenix.PubSub.subscribe(Remit.PubSub, "commits")
   end

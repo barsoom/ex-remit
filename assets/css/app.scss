@@ -63,6 +63,12 @@ Want to extract this CSS? Mind this gotcha: https://pragmaticstudio.com/tutorial
 .highlight {
   @apply bg-yellow-200;
 }
+.reviewed {
+  @apply bg-green-100;
+}
+.highlight.reviewed {
+  background-color: #eaffa8;
+}
 
 .field-wrapper {
   @apply my-6;

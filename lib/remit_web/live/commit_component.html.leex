@@ -1,8 +1,8 @@
 <div
   phx-click="clicked" phx-value-cid="<%= @commit.id %>"
   class="border border-solid border-gray-300 rounded my-1 mx-2 py-2 px-3 flex items-center
-    <%= if @is_your_last_clicked_commit, do: " highlight" %>
-    <%= if @commit.reviewed_at, do: " bg-green-100" %>
+    <%= if @commit.reviewed_at, do: " reviewed" %>
+    <%= if @your_last_clicked_commit?, do: " highlight" %>
   ">
   <div class="flex-none mr-3">
     <img src="<%= Gravatar.url(@commit.author_email) %>" alt="" class="rounded <%= if @commit.reviewed_at, do: "gravatar--small", else: "gravatar--big" %>" />
@@ -28,7 +28,7 @@
       <div class="flex-none ml-1">
         <img src="<%= Gravatar.url(@commit.reviewed_by_email) %>" alt="" class="gravatar--small" />
       </div>
-    <% @commit.review_started_at -> %>
+    <% @commit.review_started_at && Commit.being_reviewed_by?(@commit, @email) -> %>
       <div class="flex-none ml-2">
         <button class="bg-red-100" phx-click="mark_unreviewed" phx-value-cid=<%= @commit.id %>>
           <i class="fas fa-eye-slash text-red-700"></i>
@@ -42,6 +42,19 @@
       </div>
       <div class="flex-none ml-1">
         <img src="<%= Gravatar.url(@commit.review_started_by_email) %>" alt="" class="gravatar--small" />
+      </div>
+    <% @commit.review_started_at && !Commit.being_reviewed_by?(@commit, @email) -> %>
+      <div class="flex-none ml-2">
+        <span class="text-gray-600 mx-1">
+          <img src="<%= Gravatar.url(@commit.review_started_by_email) %>" alt="" class="gravatar--small inline" /> Reviewing…</span>
+
+        <button class="bg-red-100" phx-click="mark_unreviewed" phx-value-cid=<%= @commit.id %>>
+          <i class="fas fa-eye-slash text-red-700"></i>
+          Cancel
+        </button>
+      </div>
+      <div class="flex-none ml-1">
+        <div style="width:20px"></div>
       </div>
     <% true -> %>
       <div class="flex-none ml-2">

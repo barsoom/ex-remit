@@ -18,5 +18,11 @@
 <%= for commit <- @commits do %>
   <%# We use live components specifically so that only changed commits (not all of them) are passed via the socket. %>
   <%# We prefer this to the "temporary assigns" optimisation, as that complicates logic by not holding the full list of commits as state. %>
-  <%= live_component @socket, RemitWeb.CommitComponent, id: commit.id, commit: commit, email: @email, name: @name, is_your_last_clicked_commit: (@your_last_clicked_commit_id == commit.id) %>
+  <%= live_component @socket, RemitWeb.CommitComponent,
+    id: commit.id,
+    commit: commit,
+    email: @email,
+    name: @name,
+    your_last_clicked_commit?: (@your_last_clicked_commit_id == commit.id)
+  %>
 <% end %>
