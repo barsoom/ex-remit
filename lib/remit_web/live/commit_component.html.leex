@@ -54,8 +54,8 @@
   <div class="flex-none ml-3">
     <%= if @commit.reviewed_at do %>
       <%= gravatar(@commit.reviewed_by_email, "gravatar--small") %>
-    </div>
     <% else %>
+      <%# Take up same amount of space as the Gravatar would. %>
       <div class="gravatar--small"></div>
     <% end %>
   </div>
