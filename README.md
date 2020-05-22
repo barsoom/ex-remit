@@ -7,18 +7,15 @@ Focused on experimenting with LiveView so not very polished.
 ## Plan
 
 - [ ] Lock down prod access
-- [ ] Gravatars
 - [ ] Get commits via webhook, cause clients to update
 - [ ] Get comments via webhook, cause clients to update
   - [ ] Make separate copies of comments for each person who gets to see it
   - [ ] Include reactions on comments in feed, not just comments proper
-- [ ] Settings: nilify blanks
 - [ ] Polish commits view
 - [ ] Comments view
 - [ ] Proper link to oldest commit
 - [ ] Show an indicator when you've been reviewing for a long time
 - [ ] Indicate when a commit is being viewed by someone (Except by its author?)
-- [ ] Store settings in session? https://github.com/martinsvalin/spyfall/pull/1/files
 
 Last:
 - [ ] Handle missed messages on reconnection (https://curiosum.dev/blog/elixir-phoenix-liveview-messenger-part-4?)
@@ -39,6 +36,9 @@ Done:
 - [x] Styling
 - [x] Polish settings tab
 - [x] Highlight commits you're currently reviewing
+- [x] Settings: nilify blanks
+- [x] Gravatars
+- [x] Store settings in session? https://github.com/martinsvalin/spyfall/pull/1/files
 
 ## Dev
 
