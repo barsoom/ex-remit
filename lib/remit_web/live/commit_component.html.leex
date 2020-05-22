@@ -24,7 +24,7 @@
           <i class="far fa-eye-slash"></i>
           Mark as new
         </button>
-      <% @commit.review_started_at && @you_are_reviewing? -> %>
+      <% @commit.review_started_at && !@commit.reviewed_at && @you_are_reviewing? -> %>
         <button phx-click="mark_unreviewed" phx-value-cid="<%= @commit.id %>" class="bg-red-100">
           <i class="fas fa-eye-slash text-red-700"></i>
           Abandon review
@@ -39,14 +39,12 @@
           <%= gravatar(@commit.review_started_by_email, "gravatar--small inline") %>
           Reviewing…
         </div>
-      <% @you_authored? -> %>
-        <%# Don't show buttons. %>
       <% !@you_authored? && @email -> %>
         <button phx-click="start_review" phx-value-cid="<%= @commit.id %>" class="hover:bg-yellow-100 hover:border-yellow-600">
           <i class="fas fa-eye text-yellow-600"></i>
           Start review
         </button>
-      <% !@email -> %>
+      <% true -> %>
         <%# Don't show buttons. %>
     <% end %>
   </div>
