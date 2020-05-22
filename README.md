@@ -16,6 +16,8 @@ Focused on experimenting with LiveView so not very polished.
 - [ ] Proper link to oldest commit
 - [ ] Show an indicator when you've been reviewing for a long time
 - [ ] Indicate when a commit is being viewed by someone (Except by its author?)
+- [ ] Decide whether we want usecs in datetimes or not
+- [ ] Maybe skip NProgress? Makes stuff feel slower than it is.
 
 Last:
 - [ ] Handle missed messages on reconnection (https://curiosum.dev/blog/elixir-phoenix-liveview-messenger-part-4?)
