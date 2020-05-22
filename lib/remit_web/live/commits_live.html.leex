@@ -23,6 +23,8 @@
     commit: commit,
     email: @email,
     name: @name,
+    you_authored?: Commit.authored_by?(commit, @name),
+    you_are_reviewing?: Commit.being_reviewed_by?(commit, @email),
     your_last_clicked_commit?: (@your_last_clicked_commit_id == commit.id)
   %>
 <% end %>
