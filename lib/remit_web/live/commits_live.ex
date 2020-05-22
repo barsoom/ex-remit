@@ -1,6 +1,6 @@
 defmodule RemitWeb.CommitsLive do
   use RemitWeb, :live_view
-  alias Remit.{Repo,Commit,Settings}
+  alias Remit.{Commit,Settings}
 
   # Fairly arbitrary number. If too low, we may miss unreviewed stuff. If too high, performance may suffer.
   @commits_count 200

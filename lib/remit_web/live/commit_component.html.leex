@@ -18,7 +18,7 @@
   <%= cond do %>
     <%= !@settings.email || Settings.authored?(@settings, @commit) -> %>
       <%# Don't show buttons; you can't review. %>
-    <%= @commit.reviewed_at -> %>
+    <% @commit.reviewed_at -> %>
       <div class="flex-none ml-2 opacity-25 hover:opacity-100">
         <button phx-click="mark_unreviewed" phx-value-cid=<%= @commit.id %>>
         <i class="far fa-eye-slash"></i>
