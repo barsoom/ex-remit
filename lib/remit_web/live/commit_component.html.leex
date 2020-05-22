@@ -16,11 +16,9 @@
     </p>
   </div>
   <%= cond do %>
-    <% !@email -> %>
-      <%# Don't show buttons. %>
     <% @commit.reviewed_at && @you_authored? -> %>
       <%# Don't show buttons. %>
-    <% @commit.reviewed_at && !@you_authored? -> %>
+    <% @commit.reviewed_at && !@you_authored? && @email -> %>
       <div class="flex-none ml-2 opacity-25 hover:opacity-100">
         <button phx-click="mark_unreviewed" phx-value-cid=<%= @commit.id %>>
         <i class="far fa-eye-slash"></i>
@@ -39,20 +37,22 @@
           Mark as reviewed
         </button>
       </div>
-    <% @commit.review_started_at && !@you_are_reviewing? -> %>
+    <% @commit.review_started_at && !@commit.reviewed_at && !@you_are_reviewing? -> %>
       <div class="flex-none ml-2 text-gray-600">
         <%= gravatar(@commit.review_started_by_email, "gravatar--small inline") %>
         Reviewing…
       </div>
     <% @you_authored? -> %>
       <%# Don't show buttons. %>
-    <% !@you_authored? -> %>
+    <% !@you_authored? && @email -> %>
       <div class="flex-none ml-2">
         <button class="hover:bg-yellow-100 hover:border-yellow-600" phx-click="start_review" phx-value-cid=<%= @commit.id %>>
           <i class="fas fa-eye text-yellow-600"></i>
           Start review
         </button>
       </div>
+    <% !@email -> %>
+      <%# Don't show buttons. %>
   <% end %>
 
   <div class="flex-none ml-3">
