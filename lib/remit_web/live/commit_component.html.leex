@@ -9,11 +9,13 @@
     <%= gravatar(@commit.author_email, "rounded #{if @commit.reviewed_at, do: "gravatar--small", else: "gravatar--big"}") %>
   </div>
   <div class="flex-1">
-    <p class="<%= if @commit.reviewed_at, do: "inline", else: "text-sm mb-1" %>"><%= @commit.message %></p>
+    <p class="<%= if @commit.reviewed_at, do: "inline", else: "mb-1 text-sm leading-snug" %>"><%= @commit.message %></p>
     <p class="<%= if @commit.reviewed_at, do: "inline", else: "" %>">
-      in <b><%= @commit.repo %></b>
-      by <b><%= @commit.author_name %></b>
-      on <%= @commit.committed_at %>
+      in <b title="<%= @commit.owner %>/<%= @commit.repo %>"><%= @commit.repo %></b>
+      <%= unless @commit.reviewed_at do %>
+        by <b><%= @commit.author_name %></b>
+        on <%= Utils.format_datetime(@commit.committed_at) %>
+      <% end %>
     </p>
   </div>
   <div class="flex-none ml-2">
