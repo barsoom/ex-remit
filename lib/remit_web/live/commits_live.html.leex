@@ -1,17 +1,22 @@
 <div class="phx-hook-subscribe-to-session bg-gray-200 py-2 mb-4 text-center">
   <%= if @name && @email do %>
     <p>Hello, <%= @name %>!</p>
+    <p>
+      There's <b><%= @unreviewed_count %></b> commit<%= if @unreviewed_count != 1, do: "s" %> to review
+      (<b><%= @others_unreviewed_count %></b> by others; <b><%= @my_unreviewed_count %></b> by you).
+      <%= if @oldest_unreviewed_for_me do %>
+      <p>Maybe do <a href="#commit-<%= @oldest_unreviewed_for_me.id %>" phx-click="selected" phx-value-cid="<%= @oldest_unreviewed_for_me.id %>">this one from <%= @oldest_unreviewed_for_me.committed_at %></a> next.</p>
+      <% else %>
+        <p>
+          <i class="fas fa-trophy text-yellow-600"></i>
+          Nothing left for you to review!
+        </p>
+      <% end %>
+    </p>
   <% else %>
     <p>Hello! Please <%= live_patch("set a name and email", to: Routes.tabs_path(@socket, :settings)) %>.</p>
+    <p>There's <b><%= @unreviewed_count %></b> commit<%= if @unreviewed_count != 1, do: "s" %> to review.</p>
   <% end %>
-
-  <p>
-    There's <b><%= @unreviewed_count %></b> commit<%= if @unreviewed_count != 1, do: "s" %> to review
-    (<b><%= @others_unreviewed_count %></b> by others; <b><%= @my_unreviewed_count %></b> by you).
-    <%= if @oldest_unreviewed_for_me do %>
-      <p>Oldest by others: <%= @oldest_unreviewed_for_me.committed_at %></p>
-    <% end %>
-  </p>
 </div>
 
 <%= for commit <- @commits do %>
@@ -24,6 +29,6 @@
     name: @name,
     you_authored?: Commit.authored_by?(commit, @name),
     you_are_reviewing?: Commit.being_reviewed_by?(commit, @email),
-    your_last_clicked_commit?: (@your_last_clicked_commit_id == commit.id)
+    your_last_selected_commit?: (@your_last_selected_commit_id == commit.id)
   %>
 <% end %>
