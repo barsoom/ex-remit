@@ -8,7 +8,7 @@
       <p>Maybe do one from <a href="#commit-<%= @oldest_unreviewed_for_me.id %>" phx-click="selected" phx-value-cid="<%= @oldest_unreviewed_for_me.id %>"><%= Utils.format_datetime(@oldest_unreviewed_for_me.committed_at) %></a> next.</p>
       <% else %>
         <p>
-          <i class="fas fa-trophy text-yellow-600"></i>
+          <i class="fas fa-trophy text-yellow-mid"></i>
           Nothing left for you to review!
         </p>
       <% end %>

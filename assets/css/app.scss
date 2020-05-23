@@ -7,7 +7,7 @@ body {
 }
 
 button {
-  @apply px-1 border border-solid border-gray-500 rounded bg-gray-200;
+  @apply px-1 border border-solid border-gray-mid rounded bg-gray-200;
   &:focus {
     /* Worse for keyboard navigation, but the outlines don't look good in this UI. */
     outline: none;
@@ -29,7 +29,7 @@ label {
 input[type=text],
 input[type=email],
 {
-  @apply border border-gray-500 py-1 px-2;
+  @apply border border-gray-mid py-1 px-2;
   width: 11rem;
 }
 
@@ -44,10 +44,10 @@ Want to extract this CSS? Mind this gotcha: https://pragmaticstudio.com/tutorial
   @apply flex;
 
   &__tab {
-    @apply text-base py-2 flex-1 text-center border-r border-b border-gray-500 bg-gray-100;
+    @apply text-base py-2 flex-1 text-center border-r border-b border-gray-mid bg-gray-100;
     @apply no-underline;
 
-    @apply text-gray-600;
+    @apply text-gray-mid;
 
     &:last-child { border-right: 0; }
 
@@ -64,10 +64,10 @@ Want to extract this CSS? Mind this gotcha: https://pragmaticstudio.com/tutorial
   @apply bg-yellow-200;
 }
 .reviewed {
-  @apply bg-green-100;
+  @apply bg-green-light;
 }
 .highlight.reviewed {
-  background-color: #eaffa8;
+  background-color: #eaffa8;  /* Green/yellow. */
 }
 
 .field-wrapper {
@@ -75,7 +75,7 @@ Want to extract this CSS? Mind this gotcha: https://pragmaticstudio.com/tutorial
 }
 
 .field-explanation {
-  @apply text-gray-700 mt-3;
+  @apply text-gray-mid mt-3;
 
   p { @apply my-2; }
 }

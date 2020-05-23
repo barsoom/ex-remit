@@ -1,7 +1,7 @@
 <div
   id="commit-<%= @commit.id %>" 
   phx-click="selected" phx-value-cid="<%= @commit.id %>"
-  class="commit border border-solid border-gray-300 rounded my-1 mx-2 py-2 px-3 flex items-center
+  class="commit border border-solid border-gray-light rounded my-1 mx-2 py-2 px-3 flex items-center
     <%= if @commit.reviewed_at, do: " reviewed" %>
     <%= if @your_last_selected_commit?, do: " highlight" %>
   ">
@@ -33,18 +33,18 @@
           Abandon review
         </button>
 
-        <button phx-click="mark_reviewed" phx-value-cid="<%= @commit.id %>" class="bg-green-100 ml-2">
+        <button phx-click="mark_reviewed" phx-value-cid="<%= @commit.id %>" class="bg-green-light ml-2">
           <i class="fas fa-check text-green-700"></i>
           Mark as reviewed
         </button>
       <% @commit.review_started_at && !@commit.reviewed_at && !@you_are_reviewing? -> %>
-        <div class="text-gray-600" title="Since <%= Utils.format_datetime(@commit.review_started_at) %>">
+        <div class="text-gray-mid" title="Since <%= Utils.format_datetime(@commit.review_started_at) %>">
           <%= gravatar(@commit.review_started_by_email, "gravatar--small inline") %>
           Reviewing…
         </div>
       <% !@you_authored? && @email -> %>
-        <button phx-click="start_review" phx-value-cid="<%= @commit.id %>" class="hover:bg-yellow-100 hover:border-yellow-600">
-          <i class="fas fa-eye text-yellow-600"></i>
+        <button phx-click="start_review" phx-value-cid="<%= @commit.id %>" class="hover:bg-yellow-100 hover:border-yellow-mid">
+          <i class="fas fa-eye text-yellow-mid"></i>
           Start review
         </button>
       <% true -> %>
