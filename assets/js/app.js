@@ -20,6 +20,23 @@ import {LiveSocket} from "phoenix_live_view"
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 
 let Hooks = {}
+
+// Fixes two issues:
+// - Clicking a link with a phx-click did not cause the link default (navigation) to trigger.
+// - Clicking a button inside the link *would* cause the link default to trigger.
+Hooks.AllowLinkDefaultAndPreventNestedDefault = {
+  mounted() {
+    this.el.addEventListener("click", (e) => {
+      // `closest` in case we click an element inside a button, e.g. an icon.
+      if (e.target.closest("button")) {
+        e.preventDefault()
+      } else {
+        location.href = this.el.href
+      }
+    })
+  }
+}
+
 Hooks.SetSession = {
   DEBOUNCE_MS: 200,
 
@@ -33,6 +50,7 @@ Hooks.SetSession = {
     })
   },
  }
+
 let liveSocket = new LiveSocket("/live", Socket, {
   params: { _csrf_token: csrfToken },
   hooks: Hooks,
