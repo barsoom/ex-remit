@@ -1,7 +1,7 @@
 defmodule RemitWeb.CommitComponent do
   use Phoenix.LiveComponent
 
-  alias Remit.{Commit,Utils}
+  alias Remit.Utils
 
   defp gravatar(email, class) do
     assigns = %{}
