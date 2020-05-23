@@ -30,7 +30,7 @@ defmodule Remit.Commit do
     )
   end
 
-  def mark_as_reviewed!(id, reviewer_email) do
+  def mark_as_reviewed!(id, reviewer_email) when is_binary(reviewer_email) do
     # TODO: Allow useconds in DB so we don't need this dance.
     now = DateTime.utc_now() |> DateTime.truncate(:second)
 
@@ -45,7 +45,7 @@ defmodule Remit.Commit do
     |> Repo.update!()
   end
 
-  def mark_as_review_started!(id, reviewer_email) do
+  def mark_as_review_started!(id, reviewer_email) when is_binary(reviewer_email) do
     # TODO: Allow useconds in DB so we don't need this dance.
     now = DateTime.utc_now() |> DateTime.truncate(:second)
 
