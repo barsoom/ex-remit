@@ -17,7 +17,7 @@ config :remit, RemitWeb.Endpoint,
 
 config :remit,
   auth_key: System.get_env("AUTH_KEY") || raise("Missing AUTH_KEY!"),
-  webhook_key: System.get_env("WEBHOOK_KEY") || raise("Missing WEBHOOK_KEY!")
+  webhook_key: System.get_env("WEBHOOK_KEY") || raise("Missing WEBHOOK_KEY!")
 
 # Do not print debug messages in production
 config :logger, level: :info
