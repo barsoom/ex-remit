@@ -13,8 +13,11 @@ config :remit, RemitWeb.Endpoint,
   http: [port: {:system, "PORT"}],
   url: [scheme: "https", host: "ex-remit.herokuapp.com", port: 443],
   force_ssl: [rewrite_on: [:x_forwarded_proto]],
-
   cache_static_manifest: "priv/static/cache_manifest.json"
+
+config :remit,
+  auth_key: System.get_env("AUTH_KEY") || raise("Missing AUTH_KEY!"),
+  webhook_key: System.get_env("WEBHOOK_KEY") || raise("Missing WEBHOOK_KEY!")
 
 # Do not print debug messages in production
 config :logger, level: :info

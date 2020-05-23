@@ -17,6 +17,7 @@ defmodule RemitWeb.UserSocket do
   # performing token verification on connect.
   @impl true
   def connect(_params, socket, _connect_info) do
+    throw "Think about auth if we start using this."
     {:ok, socket}
   end
 

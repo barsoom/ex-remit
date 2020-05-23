@@ -18,5 +18,9 @@ config :remit, RemitWeb.Endpoint,
   http: [port: 4002],
   server: false
 
+config :remit,
+  auth_key: "test_auth_key",
+  webhook_key: "test_webhook_key"
+
 # Print only warnings and errors during test
 config :logger, level: :warn

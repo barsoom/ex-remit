@@ -6,7 +6,6 @@ Focused on experimenting with LiveView so not very polished.
 
 ## Plan
 
-- [ ] Lock down prod access
 - [ ] Get commits via webhook, cause clients to update
 - [ ] Get comments via webhook, cause clients to update
   - [ ] Make separate copies of comments for each person who gets to see it
@@ -41,6 +40,7 @@ Done:
 - [x] Gravatars
 - [x] Store settings in session? https://github.com/martinsvalin/spyfall/pull/1/files
 - [x] Maybe skip NProgress? Makes stuff feel slower than it is.
+- [x] Lock down prod access
 
 ## Dev
 
@@ -55,7 +55,7 @@ Every time:
 
     mix phx.server
 
-Then visit <http://localhost:4000>
+Then visit <http://localhost:4000?auth_key=dev>
 
 ## Production
 

@@ -3,6 +3,8 @@ defmodule RemitWeb.SettingsLive do
 
   @impl true
   def mount(_params, session, socket) do
+    check_auth_key(session)
+
     socket = assign(socket,
       email: session["email"],
       name: session["name"]

@@ -8,11 +8,13 @@ defmodule RemitWeb.Router do
     plug :put_root_layout, {RemitWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :check_auth_key
   end
 
   pipeline :api do
     plug :accepts, ["json"]
     plug :fetch_session
+    plug :check_auth_key
   end
 
   scope "/", RemitWeb do
@@ -28,4 +30,21 @@ defmodule RemitWeb.Router do
 
     post "/session", SessionController, :set
   end
+
+  @expected_auth_key Application.get_env(:remit, :auth_key)
+
+  defp check_auth_key(conn, _opts) do
+    given_auth_key = conn.params["auth_key"] || get_session(conn, :auth_key)
+
+    # Keep it in session so we stay authed without having to pass it around, and so LiveViews can access it on mount.
+    conn |> put_session(:auth_key, given_auth_key)
+
+    if given_auth_key == @expected_auth_key do
+      conn
+    else
+      conn |> deny_access_with("Invalid auth_key")
+    end
+  end
+
+  defp deny_access_with(conn, text), do: conn |> send_resp(403, text) |> halt()
 end
