@@ -39,8 +39,9 @@ let liveSocket = new LiveSocket("/live", Socket, {
 })
 
 // Show progress bar on live navigation and form submits
-//window.addEventListener("phx:page-loading-start", info => NProgress.start())
-//window.addEventListener("phx:page-loading-stop", info => NProgress.done())
+let progressTimeout = null
+window.addEventListener("phx:page-loading-start", () => { clearTimeout(progressTimeout); progressTimeout = setTimeout(NProgress.start, 100) })
+window.addEventListener("phx:page-loading-stop", () => { clearTimeout(progressTimeout); NProgress.done() })
 
 // connect if there are any LiveViews on the page
 liveSocket.connect()
