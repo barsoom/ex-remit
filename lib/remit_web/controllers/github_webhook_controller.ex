@@ -37,7 +37,7 @@ defmodule RemitWeb.GithubWebhookController do
     commits
     |> Enum.map(&build_commit(&1, owner, repo))
   end
-  defp build_commits(_payload), do: nil  # Not on master branch.
+  defp build_commits(_payload), do: []  # Not on master branch.
 
   defp build_commit(%{
     "id" => sha,
