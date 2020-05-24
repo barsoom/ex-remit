@@ -33,7 +33,7 @@
           Mark as new
         </button>
       <% @commit.review_started_at && !@commit.reviewed_at && @you_are_reviewing? -> %>
-        <button phx-click="mark_reviewed" phx-value-cid="<%= @commit.id %>" class="bg-green-light block mb-2">
+        <button phx-click="mark_reviewed" phx-value-cid="<%= @commit.id %>" class="bg-green-light block mb-1">
           <i class="fas fa-check text-green-700"></i>
           Mark as reviewed
         </button>
