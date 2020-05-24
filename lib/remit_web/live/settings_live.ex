@@ -2,8 +2,8 @@ defmodule RemitWeb.SettingsLive do
   use RemitWeb, :live_view
 
   @impl true
-  def mount(params, session, socket) do
-    check_auth_key(params, session)
+  def mount(_params, session, socket) do
+    check_auth_key(session)
 
     socket = assign(socket,
       email: session["email"],
