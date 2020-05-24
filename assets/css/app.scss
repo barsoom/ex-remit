@@ -66,6 +66,9 @@ Want to extract this CSS? Mind this gotcha: https://pragmaticstudio.com/tutorial
 .reviewed {
   @apply bg-green-light;
 }
+.being-reviewed {
+  @apply bg-blue-100;
+}
 .highlight.reviewed {
   background-color: #eaffa8;  /* Green/yellow. */
 }
