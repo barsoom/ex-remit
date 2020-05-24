@@ -14,7 +14,7 @@
     <%= gravatar(@commit.author_email, "rounded #{if @commit.reviewed_at, do: "gravatar--small", else: "gravatar--big"}") %>
   </div>
   <div class="flex-1">
-    <p class="<%= if @commit.reviewed_at, do: "inline", else: "mb-1 text-sm leading-snug" %>"><%= @commit.message %></p>
+    <p class="<%= if @commit.reviewed_at, do: "inline", else: "mb-1 text-sm leading-snug" %>"><%= Commit.message_summary(@commit) %></p>
     <p class="<%= if @commit.reviewed_at, do: "inline", else: "" %>">
       in <b title="<%= @commit.owner %>/<%= @commit.repo %>"><%= @commit.repo %></b>
       <%= unless @commit.reviewed_at do %>

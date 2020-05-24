@@ -60,6 +60,8 @@ defmodule Remit.Commit do
   def being_reviewed_by?(%Commit{review_started_by_email: email}, email) when not is_nil(email), do: true
   def being_reviewed_by?(_, _), do: false
 
+  def message_summary(commit), do: commit.message |> String.split(~r/\R/) |> hd
+
   def subscribe_to_changed_commits do
     Phoenix.PubSub.subscribe(Remit.PubSub, "commits")
   end
