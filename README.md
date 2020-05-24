@@ -69,6 +69,23 @@ Console:
 
     heroku run "POOL_SIZE=2 iex -S mix"
 
+### Setup
+
+Configure ENV variables for `AUTH_KEY` and `WEBHOOK_KEY`.
+
+Add a webhook on each reviewed repo in GitHub (at Auctionet, we've got scripts to do this in batch).
+
+The hook should be something like:
+
+    Payload URL: https://my-remit.herokuapp.com/webhooks/github?auth_key=your_WEBHOOK_KEY_value
+    Content type: application/json
+    Secret: (left empty – it's part of the URL instead)
+    Select events:
+    - Commit comments
+    - Pushes
+
+You should see a happy green checkmark on GitHub, and if you click the hook, "Recent Deliveries" should show a successful ping-pong interaction.
+
 ## Example queries
 
 Because we don't work with Ecto often and may forget.
