@@ -28,9 +28,10 @@ defmodule RemitWeb.GithubWebhookControllerTest do
 
       assert response(conn, 200) == "Thanks!"
 
-      commit = Repo.one!(from Commit, limit: 1)
-      assert commit.sha == "c5472c5276f564621afe4b56b14f50e7c298dff9"
-      assert commit.message == "This is a commit message"
+      [earlier_commit, later_commit] = Repo.all(from Commit, order_by: [asc: :id])
+
+      assert earlier_commit.message == "Earlier commit"
+      assert later_commit.message == "Later commit"
     end
 
     # TODO: Ignores non-master branches.

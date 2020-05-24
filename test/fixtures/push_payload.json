@@ -82,23 +82,21 @@
       "added": null,
       "author": {
           "email": "tomas.skogberg@gmail.com",
-          "name": "Tomas Skogberg",
-          "username": "tskogberg"
+          "name": "Tomas Skogberg"
       },
-      "committer": {
-          "email": "tomas.skogberg@gmail.com",
-          "name": "Tomas Skogberg",
-          "username": "tskogberg"
-      },
-      "distinct": true,
       "id": "c5472c5276f564621afe4b56b14f50e7c298dff9",
-      "message": "This is a commit message",
-      "modified": [
-          "Gemfile.lock"
-      ],
-      "removed": null,
-      "timestamp": "2016-01-25T08:41:25+01:00",
-      "url": "https://github.com/barsoom/gridlook/commit/c5472c5276f564621afe4b56b14f50e7c298dff9"
+      "message": "Earlier commit",
+      "timestamp": "2016-01-25T08:41:25+01:00"
+    },
+    {
+      "added": null,
+      "author": {
+          "email": "tomas.skogberg@gmail.com",
+          "name": "Tomas Skogberg"
+      },
+      "id": "d5472c5276f564621afe4b56b14f50e7c298dff9",
+      "message": "Later commit",
+      "timestamp": "2016-01-25T08:41:26+01:00"
     }
   ]
 }

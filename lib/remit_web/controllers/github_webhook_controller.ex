@@ -16,10 +16,11 @@ defmodule RemitWeb.GithubWebhookController do
   defp handle_event(conn, "push", params) do
     commits =
       build_commits(params)
-      |> Enum.reverse()  # Insert oldest-first, so we can order by ID.
       |> Enum.map(& Repo.insert!(&1))
 
-    Commit.broadcast_new_commits(commits)
+    commits
+    |> Enum.reverse()  # Inserted newest last, but shown newest first.
+    |> Commit.broadcast_new_commits()
 
     conn |> text("Thanks!")
   end
