@@ -6,7 +6,6 @@ Focused on experimenting with LiveView so not very polished.
 
 ## Plan
 
-- [ ] Get commits via webhook, cause clients to update
 - [ ] Get comments via webhook, cause clients to update
   - [ ] Make separate copies of comments for each person who gets to see it
   - [ ] Include reactions on comments in feed, not just comments proper
@@ -41,6 +40,7 @@ Done:
 - [x] Store settings in session? https://github.com/martinsvalin/spyfall/pull/1/files
 - [x] Maybe skip NProgress? Makes stuff feel slower than it is.
 - [x] Lock down prod access
+- [x] Get commits via webhook, cause clients to update
 
 ## Dev
 
