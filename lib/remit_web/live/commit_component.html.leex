@@ -7,18 +7,18 @@
     flex items-center no-underline
     border border-solid border-gray-light rounded
     my-1 mx-2 py-2 px-3
-    <%= if @commit.reviewed_at, do: " reviewed" %>
-    <%= if @commit.review_started_at && !@commit.reviewed_at, do: " being-reviewed" %>
+    <%= if @reviewed?, do: " reviewed" %>
+    <%= if @being_reviewed?, do: " being-reviewed" %>
     <%= if @your_last_selected_commit?, do: " highlight" %>
   ">
   <div class="flex-none mr-3">
-    <%= gravatar(@commit.author_email, "rounded #{if @commit.reviewed_at, do: "gravatar--small", else: "gravatar--big"}") %>
+    <%= gravatar(@commit.author_email, "rounded #{if @reviewed?, do: "gravatar--small", else: "gravatar--big"}") %>
   </div>
   <div class="flex-1">
-    <p class="<%= if @commit.reviewed_at, do: "inline", else: "mb-1 text-sm leading-snug" %>"><%= Commit.message_summary(@commit) %></p>
-    <p class="<%= if @commit.reviewed_at, do: "inline", else: "" %>">
+    <p class="<%= if @reviewed?, do: "inline", else: "mb-1 text-sm leading-snug" %>"><%= Commit.message_summary(@commit) %></p>
+    <p class="<%= if @reviewed?, do: "inline", else: "" %>">
       in <b title="<%= @commit.owner %>/<%= @commit.repo %>"><%= @commit.repo %></b>
-      <%= unless @commit.reviewed_at do %>
+      <%= unless @reviewed? do %>
         by <b><%= @commit.author_name %></b>
         on <%= Utils.format_datetime(@commit.committed_at) %>
       <% end %>
@@ -26,14 +26,14 @@
   </div>
   <div class="flex-none self-start ml-2">
     <%= cond do %>
-      <% @commit.reviewed_at && @you_authored? -> %>
+      <% @reviewed? && @you_authored? -> %>
         <%# Don't show buttons. %>
-      <% @commit.reviewed_at && !@you_authored? && @email -> %>
+      <% @reviewed? && !@you_authored? && @email -> %>
         <button phx-click="mark_unreviewed" phx-value-cid="<%= @commit.id %>" class="opacity-25 hover:opacity-100">
           <i class="far fa-eye-slash"></i>
           Mark as new
         </button>
-      <% @commit.review_started_at && !@commit.reviewed_at && @you_are_reviewing? -> %>
+      <% @being_reviewed? && @you_are_reviewing? -> %>
         <button phx-click="mark_reviewed" phx-value-cid="<%= @commit.id %>" class="bg-green-light block mb-1">
           <i class="fas fa-check text-green-700"></i>
           Mark as reviewed
@@ -43,7 +43,7 @@
           <i class="fas fa-eye-slash text-red-700"></i>
           Cancel
         </button>
-      <% @commit.review_started_at && !@commit.reviewed_at && !@you_are_reviewing? -> %>
+      <% @being_reviewed? && !@you_are_reviewing? -> %>
         <div class="text-gray-mid" title="Since <%= Utils.format_datetime(@commit.review_started_at) %>">
           <%= gravatar(@commit.review_started_by_email, "gravatar--small inline") %>
           Reviewing…
@@ -59,7 +59,7 @@
   </div>
 
   <div class="flex-none ml-3">
-    <%= if @commit.reviewed_at do %>
+    <%= if @reviewed? do %>
       <%= gravatar(@commit.reviewed_by_email, "gravatar--small") %>
     <% else %>
       <%# Take up same amount of space as the Gravatar would. %>

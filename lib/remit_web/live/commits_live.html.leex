@@ -27,6 +27,8 @@
     commit: commit,
     email: @email,
     name: @name,
+    being_reviewed?: commit.review_started_at && !commit.reviewed_at,
+    reviewed?: commit.reviewed_at,
     you_authored?: Commit.authored_by?(commit, @name),
     you_are_reviewing?: Commit.being_reviewed_by?(commit, @email),
     your_last_selected_commit?: (@your_last_selected_commit_id == commit.id)
