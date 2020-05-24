@@ -38,7 +38,7 @@ defmodule RemitWeb.Router do
     given_auth_key = conn.params["auth_key"] || get_session(conn, :auth_key)
 
     # Keep it in session so we stay authed without having to pass it around, and so LiveViews can access it on mount.
-    conn |> put_session(:auth_key, given_auth_key)
+    conn = conn |> put_session(:auth_key, given_auth_key)
 
     if given_auth_key == @expected_auth_key do
       conn

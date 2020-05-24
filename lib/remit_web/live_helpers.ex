@@ -9,6 +9,6 @@ defmodule RemitWeb.LiveHelpers do
   def check_auth_key(:not_mounted_at_router, session), do: check_auth_key(%{}, session)
   def check_auth_key(params, session) do
     given_auth_key = params["auth_key"] || session["auth_key"]
-    if given_auth_key != @expected_auth_key, do: throw("Invalid auth_key in LiveView! params #{params |> inspect()} and session #{session |> inspect()}")
+    if given_auth_key != @expected_auth_key, do: throw("#{self()} Invalid auth_key in LiveView! params #{params |> inspect()} and session #{session |> inspect()}")
   end
 end
