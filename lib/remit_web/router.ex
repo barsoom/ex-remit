@@ -33,6 +33,7 @@ defmodule RemitWeb.Router do
 
   @expected_auth_key Application.get_env(:remit, :auth_key)
 
+  # Also see `RemitWeb.LiveHelpers.check_auth_key/2`.
   defp check_auth_key(conn, _opts) do
     given_auth_key = conn.params["auth_key"] || get_session(conn, :auth_key)
 

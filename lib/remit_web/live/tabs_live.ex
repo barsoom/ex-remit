@@ -21,8 +21,8 @@ defmodule RemitWeb.TabsLive do
   end
 
   @impl true
-  def mount(_params, session, socket) do
-    check_auth_key(session)
+  def mount(params, session, socket) do
+    check_auth_key(params, session)
 
     {:ok, socket}
   end
