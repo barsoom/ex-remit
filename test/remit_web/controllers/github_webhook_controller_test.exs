@@ -15,9 +15,11 @@ defmodule RemitWeb.GithubWebhookControllerTest do
   end
 
   describe "push event" do
-    test "works" do
+    test "creates commits and broadcasts them" do
       json_payload = File.read!("test/fixtures/push_payload.json")
       payload = Jason.decode!(json_payload)
+
+      # TODO: Test broadcast.
 
       conn =
         build_conn()
@@ -30,6 +32,8 @@ defmodule RemitWeb.GithubWebhookControllerTest do
       assert commit.sha == "c5472c5276f564621afe4b56b14f50e7c298dff9"
       assert commit.message == "This is a commit message"
     end
+
+    # TODO: Ignores non-master branches.
   end
 
   describe "with a bad auth_key" do

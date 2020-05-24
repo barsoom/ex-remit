@@ -69,4 +69,8 @@ defmodule Remit.Commit do
   def broadcast_changed_commit(commit) do
     Phoenix.PubSub.broadcast_from(Remit.PubSub, self(), "commits", {:changed_commit, commit})
   end
+
+  def broadcast_new_commits(commits) do
+    Phoenix.PubSub.broadcast_from(Remit.PubSub, self(), "commits", {:new_commits, commits})
+  end
 end

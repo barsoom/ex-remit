@@ -76,6 +76,17 @@ defmodule RemitWeb.CommitsLive do
     {:noreply, socket}
   end
 
+  # Receive broadcasts when new commits arrive.
+  @impl true
+  def handle_info({:new_commits, new_commits}, socket) do
+    # Another option here would be to just reload the latest commits from DB.
+    commits = Enum.slice(new_commits ++ socket.assigns.commits, 0, @commits_count)
+
+    socket = socket |> assign_commits_and_stats(commits)
+
+    {:noreply, socket}
+  end
+
   # Private
 
   defp assign_and_broadcast_changed_commit(socket, commit) do

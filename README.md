@@ -57,6 +57,10 @@ Every time:
 
 Then visit <http://localhost:4000?auth_key=dev>
 
+You can run this to fake new commits coming in via webhook:
+
+    mix wh.commits
+
 ## Production
 
 The `POOL_SIZE` for the running dyno is 18, so we've got 2 spare on a Heroku hobby plan.

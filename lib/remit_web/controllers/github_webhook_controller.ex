@@ -14,10 +14,11 @@ defmodule RemitWeb.GithubWebhookController do
 
   # Pushed commits.
   defp handle_event(conn, "push", params) do
-    build_commits(params)
-    |> Enum.map(& Repo.insert!(&1))
+    commits =
+      build_commits(params)
+      |> Enum.map(& Repo.insert!(&1))
 
-    # TODO: Broadcast event
+    Commit.broadcast_new_commits(commits)
 
     conn |> text("Thanks!")
   end
