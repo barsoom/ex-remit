@@ -33,14 +33,14 @@
           Mark as new
         </button>
       <% @commit.review_started_at && !@commit.reviewed_at && @you_are_reviewing? -> %>
-        <button phx-click="mark_unreviewed" phx-value-cid="<%= @commit.id %>" class="bg-red-100">
-          <i class="fas fa-eye-slash text-red-700"></i>
-          Abandon review
-        </button>
-
-        <button phx-click="mark_reviewed" phx-value-cid="<%= @commit.id %>" class="bg-green-light ml-2">
+        <button phx-click="mark_reviewed" phx-value-cid="<%= @commit.id %>" class="bg-green-light block mb-2">
           <i class="fas fa-check text-green-700"></i>
           Mark as reviewed
+        </button>
+
+        <button phx-click="mark_unreviewed" phx-value-cid="<%= @commit.id %>" class="bg-red-100">
+          <i class="fas fa-eye-slash text-red-700"></i>
+          Cancel
         </button>
       <% @commit.review_started_at && !@commit.reviewed_at && !@you_are_reviewing? -> %>
         <div class="text-gray-mid" title="Since <%= Utils.format_datetime(@commit.review_started_at) %>">
