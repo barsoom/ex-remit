@@ -15,13 +15,13 @@ defmodule Faker do
   end
 
   def repo do
-    Enum.random(["cat", "dog", "fish", "man", "tiger", "power"]) <>
-      Enum.random(["pics", "ballads", "odes"])
+    Enum.random(["cat", "dog", "fish", "man", "tiger", "power", "golden_", "tiki"]) <>
+      Enum.random(["pics", "ballads", "odes", "leaks", "hacks"])
   end
 
   def message do
-    Enum.random(["I", "We"]) <> " " <>
-      Enum.random(["fixed", "broke", "invented", "inverted", "killed", "loved"]) <> " " <>
-      Enum.random(["the thing", "your mom", "the world", "a man", "the truth", "a partridge in a pear tree"])
+    Enum.random(["Fixed", "Broke", "Invented", "Inverted", "Fêted", "Loved", "Spent a summer with", "Removed", "Greatly simplified"]) <> " " <>
+      Enum.random(["the thing", "your mom", "the world", "a man", "the truth", "a partridge", "Jake Lloyd"]) <> " " <>
+      Enum.random(["", "for fun", "with monads", "on a dare", "in jest", "in Reno just to watch them die"])
   end
 end
