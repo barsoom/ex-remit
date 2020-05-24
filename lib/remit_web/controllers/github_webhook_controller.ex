@@ -27,7 +27,7 @@ defmodule RemitWeb.GithubWebhookController do
     "repository" => %{
       "master_branch" => master_branch,
       "name" => repo,
-      "owner" => %{ "name" => owner },
+      "owner" => %{"name" => owner},
     },
     "commits" => commits,
   }) do
@@ -38,7 +38,7 @@ defmodule RemitWeb.GithubWebhookController do
 
   defp build_commit(%{
     "id" => sha,
-    "author" => %{ "email" => author_email, "name" => author_name },
+    "author" => %{"email" => author_email, "name" => author_name},
     "message" => message,
     "timestamp" => raw_committed_at,
   }, owner, repo) do
