@@ -1,5 +1,7 @@
 defmodule RemitWeb.GithubWebhookControllerTest do
   use RemitWeb.ConnCase
+  import Ecto.Query
+  alias Remit.{Repo,Commit}
 
   describe "ping event" do
     test "pongs back" do
@@ -23,6 +25,10 @@ defmodule RemitWeb.GithubWebhookControllerTest do
         |> post("/webhooks/github?auth_key=test_webhook_key", payload)
 
       assert response(conn, 200) == "Thanks!"
+
+      commit = Repo.one!(from Commit, limit: 1)
+      assert commit.sha == "c5472c5276f564621afe4b56b14f50e7c298dff9"
+      assert commit.message == "This is a commit message"
     end
   end
 
