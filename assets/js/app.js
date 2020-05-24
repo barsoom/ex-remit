@@ -21,19 +21,10 @@ let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("
 
 let Hooks = {}
 
-// Fixes two issues:
-// - Clicking a link with a phx-click did not cause the link default (navigation) to trigger.
-// - Clicking a button inside the link *would* cause the link default to trigger.
-Hooks.AllowLinkDefaultAndPreventNestedDefault = {
+// Fixes an issue where clicking a link with a phx-click on it did not cause the link default (navigation) to trigger.
+Hooks.AllowLinkDefault = {
   mounted() {
-    this.el.addEventListener("click", (e) => {
-      // `closest` in case we click an element inside a button, e.g. an icon.
-      if (e.target.closest("button")) {
-        e.preventDefault()
-      } else {
-        location.href = this.el.href
-      }
-    })
+    this.el.addEventListener("click", (e) => location.href = this.el.href)
   }
 }
 

@@ -1,7 +1,7 @@
 <a
   href="https://github.com/<%= @commit.owner %>/<%= @commit.repo %>/commit/<%= @commit.sha %>"
   id="commit-<%= @commit.id %>" 
-  phx-click="selected" phx-value-cid="<%= @commit.id %>" phx-hook="AllowLinkDefaultAndPreventNestedDefault"
+  phx-click="selected" phx-value-cid="<%= @commit.id %>" phx-hook="AllowLinkDefault"
   class="
     commit
     flex items-center no-underline
