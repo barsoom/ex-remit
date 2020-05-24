@@ -17,6 +17,11 @@ defmodule RemitWeb.Router do
     plug :check_auth_key
   end
 
+  pipeline :webhook do
+    plug :accepts, ["json"]
+    plug :check_webhook_key
+  end
+
   scope "/", RemitWeb do
     pipe_through :browser
 
@@ -31,16 +36,32 @@ defmodule RemitWeb.Router do
     post "/session", SessionController, :set
   end
 
-  @expected_auth_key Application.get_env(:remit, :auth_key)
+  scope "/webhooks", RemitWeb do
+    pipe_through :webhook
+
+    post "/github", GithubWebhookController, :create
+  end
 
   # Also see `RemitWeb.LiveHelpers.check_auth_key/1`.
+  @expected_auth_key Application.get_env(:remit, :auth_key)
   defp check_auth_key(conn, _opts) do
-    given_auth_key = conn.params["auth_key"] || get_session(conn, :auth_key)
+    given_key = conn.params["auth_key"] || get_session(conn, :auth_key)
 
     # Keep it in session so we stay authed without having to pass it around, and so LiveViews can access it on mount.
-    conn = conn |> put_session(:auth_key, given_auth_key)
+    conn = conn |> put_session(:auth_key, given_key)
 
-    if given_auth_key == @expected_auth_key do
+    if given_key == @expected_auth_key do
+      conn
+    else
+      conn |> deny_access_with("Invalid auth_key")
+    end
+  end
+
+  @expected_webhook_key Application.get_env(:remit, :webhook_key)
+  defp check_webhook_key(conn, _opts) do
+    given_key = conn.params["auth_key"]
+
+    if given_key == @expected_webhook_key do
       conn
     else
       conn |> deny_access_with("Invalid auth_key")
