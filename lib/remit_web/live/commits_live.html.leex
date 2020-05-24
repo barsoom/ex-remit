@@ -5,7 +5,7 @@
       There's <b><%= @unreviewed_count %></b> commit<%= if @unreviewed_count != 1, do: "s" %> to review
       (<b><%= @others_unreviewed_count %></b> by others; <b><%= @my_unreviewed_count %></b> by you).
       <%= if @oldest_unreviewed_for_me do %>
-      <p>Maybe do one from <a href="#commit-<%= @oldest_unreviewed_for_me.id %>" phx-click="selected" phx-value-cid="<%= @oldest_unreviewed_for_me.id %>"><%= Utils.format_datetime(@oldest_unreviewed_for_me.committed_at) %></a> next.</p>
+      <p>Maybe do one from <a href="#commit-<%= @oldest_unreviewed_for_me.id %>" phx-click="selected" phx-value-cid="<%= @oldest_unreviewed_for_me.id %>" phx-hook="ScrollToTarget"><%= Utils.format_datetime(@oldest_unreviewed_for_me.committed_at) %></a> next.</p>
       <% else %>
         <p>
           <i class="fas fa-trophy text-yellow-mid"></i>

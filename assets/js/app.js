@@ -37,6 +37,16 @@ Hooks.AllowLinkDefaultAndPreventNestedDefault = {
   }
 }
 
+Hooks.ScrollToTarget = {
+  mounted() {
+    this.el.addEventListener("click", (e) => {
+      let id = this.el.href.split("#")[1]
+      e.preventDefault()
+      document.getElementById(id).scrollIntoView()
+    })
+  }
+}
+
 Hooks.SetSession = {
   DEBOUNCE_MS: 200,
 
