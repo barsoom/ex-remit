@@ -1,5 +1,5 @@
 defmodule Remit.CommitTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   alias Remit.Commit
 
   describe "message_summary" do
