@@ -22,9 +22,20 @@ let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("
 let Hooks = {}
 
 // Fixes an issue where clicking a link with a phx-click on it did not cause the link default (navigation) to trigger.
-Hooks.AllowLinkDefault = {
+// Also adds target=_blank outside Fluid.app.
+Hooks.FixLink = {
   mounted() {
-    this.el.addEventListener("click", (e) => location.href = this.el.href)
+    this.el.addEventListener("click", (e) => {
+      if (window.fluid) {
+        // Fluid.app is set to open clicked links in the main GitHub window rather than the Remit panel.
+        // If we used target=_blank, Fluid.app would open a new tab instead.
+        location.href = this.el.href
+      } else {
+        // Outside Fluid.app (e.g. developing this tool in a regular browser), new tabs are less disruptive than opening in the same window.
+        e.preventDefault()
+        window.open(this.el.href, "_blank")
+      }
+    })
   }
 }
 
