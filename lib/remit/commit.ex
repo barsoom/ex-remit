@@ -26,7 +26,7 @@ defmodule Remit.Commit do
     Repo.all(
       from c in Commit,
         limit: ^count,
-        order_by: [desc: c.inserted_at]
+        order_by: [desc: c.id]
     )
   end
 
