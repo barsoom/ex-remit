@@ -1,7 +1,7 @@
 defmodule Remit.Commit do
   use Ecto.Schema
   import Ecto.Query
-  alias Remit.{Commit, Repo}
+  alias Remit.{Commit, Comment, Repo}
 
   @timestamps_opts [type: :utc_datetime]
 
@@ -18,6 +18,8 @@ defmodule Remit.Commit do
     field :reviewed_at, :utc_datetime
     field :review_started_by_email, :string
     field :reviewed_by_email, :string
+
+    has_many :comments, Comment, foreign_key: :commit_sha, references: :sha
 
     timestamps()
   end

@@ -6,6 +6,8 @@ defmodule Faker do
       Enum.random(["berg", "kvist", "bäck", "zon", "plopp", "is"])
   end
 
+  def id, do: Enum.random(1..999)
+
   def sha(i \\ Enum.random(1..999)) do
     :crypto.hash(:sha, to_string(i)) |> Base.encode16() |> String.downcase()
   end

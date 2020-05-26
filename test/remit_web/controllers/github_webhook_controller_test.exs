@@ -1,9 +1,9 @@
 defmodule RemitWeb.GithubWebhookControllerTest do
   use RemitWeb.ConnCase
   import Ecto.Query
-  alias Remit.{Repo, Commit}
+  alias Remit.{Repo, Commit, Comment, CommentNotification}
 
-  describe "ping event" do
+  describe "'ping' event" do
     test "pongs back" do
       conn = build_ping_payload() |> post_payload("ping")
 
@@ -11,7 +11,7 @@ defmodule RemitWeb.GithubWebhookControllerTest do
     end
   end
 
-  describe "push event" do
+  describe "'push' event" do
     test "creates commits and broadcasts them" do
       conn = build_push_payload(branch: "master") |> post_payload("push")
 
@@ -30,6 +30,34 @@ defmodule RemitWeb.GithubWebhookControllerTest do
       # TODO: Test (lack of) broadcast.
       assert response(conn, 200) == "Thanks!"
       assert Repo.aggregate(Commit, :count) == 0
+    end
+  end
+
+  describe "'commit_comment' event" do
+    test "creates a comment and notifications, and broadcasts them" do
+      create_commit(sha: "abc123", author_name: "Riff Raff and Magenta")
+      create_comment(sha: "abc123", username: "charles")
+
+      conn =
+        build_comment_payload(sha: "abc123", username: "ada")
+        |> post_payload("commit_comment")
+
+      # TODO: Test broadcast.
+      # TODO: Test notifications more.
+
+      # Responds politely.
+      assert response(conn, 200) == "Thanks!"
+
+      # Creates a comment.
+      comment = Repo.one(from Comment, limit: 1, order_by: [desc: :id])
+      assert comment.body == "Hello world!"
+
+      # Notifies committer(s).
+      assert Repo.exists?(from CommentNotification, where: [committer_name: "Riff Raff"])
+      assert Repo.exists?(from CommentNotification, where: [committer_name: "Magenta"])
+
+      # Notifies previous commenter.
+      assert Repo.exists?(from CommentNotification, where: [commenter_username: "charles"])
     end
   end
 
@@ -62,7 +90,7 @@ defmodule RemitWeb.GithubWebhookControllerTest do
       ref: "refs/heads/#{branch}",
       repository: %{
         master_branch: "master",
-        name: Faker.repo(),
+        name: "myrepo",
         owner: %{
           name: "acme",
         },
@@ -88,5 +116,46 @@ defmodule RemitWeb.GithubWebhookControllerTest do
         },
       ],
     }
+  end
+
+  defp build_comment_payload(sha: sha, username: username) do
+    # This is a subset of the actual payload.
+    # Reference: https://developer.github.com/webhooks/event-payloads/#commit_comment
+    %{
+      action: "created",
+      comment: %{
+        id: 123,
+        user: %{
+          login: username,
+        },
+        commit_id: sha,
+        position: nil,
+        path: nil,
+        created_at: "2016-01-25T08:41:25+01:00",
+        body: "Hello world!",
+      },
+    }
+  end
+
+  defp create_commit(sha: sha, author_name: author_name) do
+    %Commit{
+      sha: sha,
+      author_email: Faker.email(),
+      author_name: author_name,
+      owner: "acme",
+      repo: Faker.repo(),
+      message: Faker.message(),
+      committed_at: DateTime.utc_now() |> DateTime.truncate(:second),
+    } |> Repo.insert!
+  end
+
+  defp create_comment(sha: sha, username: username) do
+    %Comment{
+      github_id: Faker.id(),
+      commit_sha: sha,
+      body: Faker.message(),
+      commented_at: DateTime.utc_now() |> DateTime.truncate(:second),
+      commenter_username: username,
+    } |> Repo.insert!
   end
 end
