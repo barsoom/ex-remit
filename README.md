@@ -73,7 +73,7 @@ Deploy:
 
 Console:
 
-    heroku run "POOL_SIZE=2 iex -S mix"
+    script/prodc
 
 ### Setup
 
