@@ -24,6 +24,8 @@ Last:
 - [ ] Devbox setup
 - [ ] Docs (e.g. Fluid.app)
 - [ ] Consider open sourcing
+- [ ] Bump Heroku plan if needed
+- [ ] Recurring job to remove old data
 
 Done:
 - [x] "Oldest commit" and similar stats at top
