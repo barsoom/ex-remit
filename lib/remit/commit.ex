@@ -62,7 +62,7 @@ defmodule Remit.Commit do
 
   def message_summary(commit), do: commit.message |> String.split(~r/\R/) |> hd
 
-  def subscribe_to_changed_commits do
+  def subscribe_to_commits do
     Phoenix.PubSub.subscribe(Remit.PubSub, "commits")
   end
 

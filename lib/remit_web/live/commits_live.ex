@@ -10,7 +10,7 @@ defmodule RemitWeb.CommitsLive do
     check_auth_key(session)
 
     commits = Commit.load_latest(@commits_count)
-    if connected?(socket), do: Commit.subscribe_to_changed_commits()
+    if connected?(socket), do: Commit.subscribe_to_commits()
 
     socket =
       socket
