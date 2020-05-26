@@ -23,35 +23,19 @@ defmodule Remit.Commit do
   end
 
   def load_latest(count) do
-    Repo.all(
-      from c in Commit,
-        limit: ^count,
-        order_by: [desc: c.id]
-    )
+    Repo.all(from Commit, limit: ^count, order_by: [desc: :id])
   end
 
   def mark_as_reviewed!(id, reviewer_email) when is_binary(reviewer_email) do
-    # TODO: Allow useconds in DB so we don't need this dance.
-    now = DateTime.utc_now() |> DateTime.truncate(:second)
-
-    Repo.get_by(Commit, id: id)
-    |> Ecto.Changeset.change(reviewed_at: now, reviewed_by_email: reviewer_email)
-    |> Repo.update!()
+    update!(id, reviewed_at: now(), reviewed_by_email: reviewer_email)
   end
 
   def mark_as_unreviewed!(id) do
-    Repo.get_by(Commit, id: id)
-    |> Ecto.Changeset.change(reviewed_at: nil, review_started_at: nil, reviewed_by_email: nil, review_started_by_email: nil)
-    |> Repo.update!()
+    update!(id, reviewed_at: nil, review_started_at: nil, reviewed_by_email: nil, review_started_by_email: nil)
   end
 
   def mark_as_review_started!(id, reviewer_email) when is_binary(reviewer_email) do
-    # TODO: Allow useconds in DB so we don't need this dance.
-    now = DateTime.utc_now() |> DateTime.truncate(:second)
-
-    Repo.get_by(Commit, id: id)
-    |> Ecto.Changeset.change(review_started_at: now, review_started_by_email: reviewer_email)
-    |> Repo.update!()
+    update!(id, review_started_at: now(), review_started_by_email: reviewer_email)
   end
 
   def authored_by?(_commit, nil), do: false
@@ -74,4 +58,15 @@ defmodule Remit.Commit do
   def broadcast_new_commits(commits) do
     Phoenix.PubSub.broadcast_from(Remit.PubSub, self(), "commits", {:new_commits, commits})
   end
+
+  # Private
+
+  defp update!(id, attributes) do
+    Repo.get_by(Commit, id: id)
+    |> Ecto.Changeset.change(attributes)
+    |> Repo.update!()
+  end
+
+  # TODO: Allow useconds in DB so we don't need this dance.
+  defp now(), do: DateTime.utc_now() |> DateTime.truncate(:second)
 end
