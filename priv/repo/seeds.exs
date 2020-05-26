@@ -14,17 +14,18 @@ unless Application.get_env(:remit, :allow_seeding) || System.get_env("ALLOW_SEED
   raise "Not allowed to seed!"
 end
 
-alias Remit.{Repo,Commit}
+alias Remit.{Repo, Commit}
 
-Repo.delete_all Commit
+Repo.delete_all(Commit)
 
-(1..500) |> Enum.each(fn (i) ->
+1..500
+|> Enum.each(fn i ->
   sha = Faker.sha(i)
   author_name = Faker.human_name()
   committed_at = DateTime.utc_now() |> DateTime.add(-i, :second) |> DateTime.truncate(:second)
   inserted_at = DateTime.utc_now() |> DateTime.add(-i * 60, :second) |> DateTime.truncate(:second)
 
-  Repo.insert! %Commit{
+  Repo.insert!(%Commit{
     sha: sha,
     author_email: Faker.email(i),
     author_name: author_name,
@@ -33,5 +34,5 @@ Repo.delete_all Commit
     message: Faker.message(),
     committed_at: committed_at,
     inserted_at: inserted_at,
-  }
+  })
 end)

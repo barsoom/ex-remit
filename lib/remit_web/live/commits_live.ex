@@ -1,6 +1,6 @@
 defmodule RemitWeb.CommitsLive do
   use RemitWeb, :live_view
-  alias Remit.{Commit,Utils}
+  alias Remit.{Commit, Utils}
 
   # Fairly arbitrary number. If too low, we may miss unreviewed stuff. If too high, performance may suffer.
   @commits_count 200
@@ -12,7 +12,8 @@ defmodule RemitWeb.CommitsLive do
     commits = Commit.load_latest(@commits_count)
     if connected?(socket), do: Commit.subscribe_to_changed_commits()
 
-    socket = socket
+    socket =
+      socket
       |> assign(email: session["email"], name: session["name"])
       |> assign(your_last_selected_commit_id: nil)
       |> assign_commits_and_stats(commits)
@@ -52,7 +53,8 @@ defmodule RemitWeb.CommitsLive do
   @impl true
   def handle_event("set_session", ["name", name], socket) do
     # We need to update the commit stats because they're based on this setting.
-    socket = socket
+    socket =
+      socket
       |> assign(name: name)
       |> assign_commits_and_stats(socket.assigns.commits)
 
@@ -95,8 +97,8 @@ defmodule RemitWeb.CommitsLive do
     Commit.broadcast_changed_commit(commit)
 
     socket
-      |> assign_commits_and_stats(commits)
-      |> assign_selected_commit_id(commit.id)
+    |> assign_commits_and_stats(commits)
+    |> assign_selected_commit_id(commit.id)
   end
 
   defp assign_selected_commit_id(socket, commit_id) when is_integer(commit_id), do: assign(socket, your_last_selected_commit_id: commit_id)

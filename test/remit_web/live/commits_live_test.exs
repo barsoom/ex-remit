@@ -4,7 +4,7 @@ defmodule RemitWeb.CommitsLiveTest do
 
   test "says hello", %{conn: conn} do
     # We haven't yet set our name.
-     conn = get(conn, "/?auth_key=test_auth_key")
+    conn = get(conn, "/?auth_key=test_auth_key")
     assert html_response(conn, 200) =~ "Hello!"
 
     {:ok, live_view, disconnected_html} = live(conn, "/")

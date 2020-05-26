@@ -35,8 +35,10 @@ defmodule RemitWeb.TabsLive do
       case socket.assigns.live_action do
         :commits ->
           assign(socket, :page_title, "Commits")
+
         :comments ->
           assign(socket, :page_title, "Comments")
+
         :settings ->
           assign(socket, :page_title, "Settings")
       end

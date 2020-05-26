@@ -1,7 +1,7 @@
 defmodule RemitWeb.GithubWebhookControllerTest do
   use RemitWeb.ConnCase
   import Ecto.Query
-  alias Remit.{Repo,Commit}
+  alias Remit.{Repo, Commit}
 
   describe "ping event" do
     test "pongs back" do

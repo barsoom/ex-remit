@@ -1,7 +1,7 @@
 defmodule Remit.Commit do
   use Ecto.Schema
   import Ecto.Query
-  alias Remit.{Commit,Repo}
+  alias Remit.{Commit, Repo}
 
   @timestamps_opts [type: :utc_datetime]
 

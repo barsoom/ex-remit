@@ -16,7 +16,7 @@ defmodule Remit.Repo.Migrations.CreateCommits do
       add :review_started_by_email, :string
       add :reviewed_by_email, :string
 
-      timestamps([type: :utc_datetime])
+      timestamps(type: :utc_datetime)
     end
   end
 end

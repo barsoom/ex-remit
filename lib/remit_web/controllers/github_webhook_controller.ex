@@ -1,6 +1,6 @@
 defmodule RemitWeb.GithubWebhookController do
   use RemitWeb, :controller
-  alias Remit.{Repo,Commit}
+  alias Remit.{Repo, Commit}
 
   def create(conn, params) do
     handle_event(conn, event_name(conn), params)
@@ -34,17 +34,18 @@ defmodule RemitWeb.GithubWebhookController do
     },
     "commits" => commits,
   }) do
-    commits
-    |> Enum.map(&build_commit(&1, owner, repo))
+    commits |> Enum.map(&build_commit(&1, owner, repo))
   end
   defp build_commits(_payload), do: []  # Not on master branch.
 
-  defp build_commit(%{
-    "id" => sha,
-    "author" => %{"email" => author_email, "name" => author_name},
-    "message" => message,
-    "timestamp" => raw_committed_at,
-  }, owner, repo) do
+  defp build_commit(
+    %{
+      "id" => sha,
+      "author" => %{"email" => author_email, "name" => author_name},
+      "message" => message,
+      "timestamp" => raw_committed_at,
+    }, owner, repo)
+  do
     {:ok, committed_at, _offset} = DateTime.from_iso8601(raw_committed_at)
 
     %Commit{
