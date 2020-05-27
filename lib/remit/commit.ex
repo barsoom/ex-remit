@@ -25,7 +25,7 @@ defmodule Remit.Commit do
   end
 
   def load_latest(count) do
-    Repo.all(Commit, limit: count, order_by: [desc: :id])
+    Repo.all(from Commit, limit: count, order_by: [desc: :id])
   end
 
   def mark_as_reviewed!(id, reviewer_email) when is_binary(reviewer_email) do

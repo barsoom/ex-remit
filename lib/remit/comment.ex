@@ -20,7 +20,7 @@ defmodule Remit.Comment do
   end
 
   def load_latest(count) do
-    Repo.all(Comment, limit: count, order_by: [desc: :id])
+    Repo.all(from Comment, limit: count, order_by: [desc: :id])
   end
 
   # If the comment ID, file path and line position are identical, they're in the same thread.
