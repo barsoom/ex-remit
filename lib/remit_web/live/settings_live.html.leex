@@ -21,9 +21,10 @@
       <div class="field-explanation">
         <p>Determines which commits and comments we show as yours.</p>
         <p>
-          When pairing, commit with emails like
-          <span class="font-mono">devs+ada+<%= if @username, do: Phoenix.HTML.Tag.content_tag(:span, @username, class: "bg-yellow-200 border-yellow-400 border-b"), else: "charles" %>@example.com</span>,
-          with everyone's username in plus addressing. Otherwise we can't tell the commit is yours.</p>
+          Make <i>pair commits</i> with an email like
+          <span class="font-mono">devs+ada+<%= if @username, do: Phoenix.HTML.Tag.content_tag(:span, @username, class: "bg-yellow-200 border-yellow-400 border-b"), else: "charles" %>@example.com</span>
+          that uses "plus addressing" to include everyone's username.
+        </p>
       </div>
     </div>
   </form>
