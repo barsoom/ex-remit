@@ -3,6 +3,11 @@
   id="comment-<%= @comment.id %>"
   class="block"
 >
-  <p><%= @comment.commenter_username %> on <i><%= @commit.message %></i></p>
+  <p>
+    <%= @comment.commenter_username %>
+    on
+    <%# We may have a comment without its commit in DB. %>
+    <i><%= if @commit, do: @commit.message, else: @comment.commit_sha %></i>
+  </p>
   <p><%= @comment.body %></p>
 </a>
