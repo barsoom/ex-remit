@@ -4,11 +4,6 @@ defmodule RemitWeb.CommitComponent do
   alias Remit.{Commit, GithubUrl, Utils}
 
   defp gravatar(email, class) do
-    assigns = %{}
-
-    ~L"""
-    <img src="<%= Gravatar.url(email) %>" alt="" title="<%= email %>" class="<%= class %>" />
-
-    """
+    Phoenix.HTML.Tag.img_tag(Gravatar.url(email), alt: "", title: email, class: class)
   end
 end
