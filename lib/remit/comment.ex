@@ -24,19 +24,24 @@ defmodule Remit.Comment do
     Repo.all(from c in Comment, limit: ^count, order_by: [desc: :id])
   end
 
-  def load_other_comments_in_the_same_thread(commit) do
+  def load_other_comments_in_the_same_thread(%Comment{path: nil} = comment) do
     Repo.all(
-      from c in Comment,
-        where: c.commit_sha == ^commit.commit_sha,
-        where: c.id != ^commit.id
+      from c in other_comments_on_the_same_commit(comment),
+        where: is_nil(c.path)
+    )
+  end
+  def load_other_comments_in_the_same_thread(%Comment{path: path, position: position} = comment) do
+    Repo.all(
+      from c in other_comments_on_the_same_commit(comment),
+        where: c.path == ^path and c.position == ^position
     )
   end
 
-  # If the comment ID, file path and line position are identical, they're in the same thread.
-  # Either in the same thread of line comments, or (if path and pos are nil), in the thread of non-line based commit comments.
-  def same_thread?(
-    %Comment{github_id: id, path: path, position: pos},
-    %Comment{github_id: id, path: path, position: pos}
-  ), do: true
-  def same_thread?(_, _), do: false
+  # Private
+
+  defp other_comments_on_the_same_commit(comment) do
+    from c in Comment,
+      where: c.commit_sha == ^comment.commit_sha,
+      where: c.id != ^comment.id
+  end
 end
