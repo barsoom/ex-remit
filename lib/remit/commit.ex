@@ -1,6 +1,7 @@
 defmodule Remit.Commit do
   use Ecto.Schema
-  alias Remit.{Commit, Comment, Repo}
+  import Ecto.Query
+  alias Remit.{Commit, Repo}
 
   @timestamps_opts [type: :utc_datetime]
 
@@ -19,13 +20,11 @@ defmodule Remit.Commit do
     field :review_started_by_email, :string
     field :reviewed_by_email, :string
 
-    has_many :comments, Comment, foreign_key: :commit_sha, references: :sha
-
     timestamps()
   end
 
   def load_latest(count) do
-    Repo.all(from Commit, limit: count, order_by: [desc: :id])
+    Repo.all(from Commit, limit: ^count, order_by: [desc: :id])
   end
 
   def mark_as_reviewed!(id, reviewer_email) when is_binary(reviewer_email) do

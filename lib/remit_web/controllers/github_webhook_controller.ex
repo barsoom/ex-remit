@@ -29,14 +29,13 @@ defmodule RemitWeb.GithubWebhookController do
   defp handle_event(conn, "commit_comment", params) do
     comment =
       build_comment(params)
-      |> Repo.preload([commit: [:comments]])
       |> Repo.insert!
+      |> Repo.preload(:commit)
 
     # Notify authors and previous commenters.
 
     previous_commenter_usernames =
-      comment.commit.comments
-      |> Enum.filter(& Comment.same_thread?(&1, comment))
+      Comment.load_other_comments_in_the_same_thread(comment)
       |> Enum.map(& &1.commenter_username)
 
     (comment.commit.author_usernames ++ previous_commenter_usernames)

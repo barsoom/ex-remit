@@ -1,5 +1,6 @@
 defmodule Remit.Comment do
   use Ecto.Schema
+  import Ecto.Query
   alias Remit.{Repo, Commit, Comment, CommentNotification}
 
   @timestamps_opts [type: :utc_datetime]
@@ -20,7 +21,15 @@ defmodule Remit.Comment do
   end
 
   def load_latest(count) do
-    Repo.all(from Comment, limit: count, order_by: [desc: :id])
+    Repo.all(from c in Comment, limit: ^count, order_by: [desc: :id])
+  end
+
+  def load_other_comments_in_the_same_thread(commit) do
+    Repo.all(
+      from c in Comment,
+        where: c.commit_sha == ^commit.commit_sha,
+        where: c.id != ^commit.id
+    )
   end
 
   # If the comment ID, file path and line position are identical, they're in the same thread.
