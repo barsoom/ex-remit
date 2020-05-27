@@ -1,5 +1,5 @@
 <a
-  href="https://github.com/<%= @commit.owner %>/<%= @commit.repo %>/commit/<%= @commit.sha %>#r<%= @comment.github_id %>"
+  href="<%= GithubUrl.comment_url(@comment) %>"
   id="comment-<%= @comment.id %>"
   class="block"
 >
