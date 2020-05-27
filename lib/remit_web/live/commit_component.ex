@@ -8,6 +8,7 @@ defmodule RemitWeb.CommitComponent do
 
     ~L"""
     <img src="<%= Gravatar.url(email) %>" alt="" title="<%= email %>" class="<%= class %>" />
+
     """
   end
 end
