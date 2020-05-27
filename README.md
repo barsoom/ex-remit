@@ -7,13 +7,9 @@ Focused on experimenting with LiveView so not very polished.
 ## Plan
 
 - [ ] Get comments via webhook, cause clients to update
-  - [ ] Make separate copies of comments for each person who gets to see it
   - [ ] Include reactions on comments in feed, not just comments proper
-- [ ] Polish commits view
 - [ ] Comments view
-- [ ] Proper link to oldest commit
 - [ ] Show an indicator when you've been reviewing for a long time
-- [ ] Indicate when a commit is being viewed by someone (Except by its author?)
 - [ ] Decide whether we want usecs in datetimes or not
 
 Last:
@@ -44,6 +40,9 @@ Done:
 - [x] Maybe skip NProgress? Makes stuff feel slower than it is.
 - [x] Lock down prod access
 - [x] Get commits via webhook, cause clients to update
+- [x] Proper link to oldest commit
+- [x] Make separate copies of comments for each person who gets to see it
+- [x] Polish commits view
 
 ## Dev
 
