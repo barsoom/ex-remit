@@ -55,7 +55,6 @@ defmodule Remit.MixProject do
   #
   #     $ mix setup
   #
-  # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
       setup: ["deps.get", "ecto.setup", "cmd npm install --prefix assets"],
@@ -67,3 +66,4 @@ defmodule Remit.MixProject do
     ]
   end
 end
+# See the documentation for `Mix` for more info on aliases.

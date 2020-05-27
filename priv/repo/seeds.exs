@@ -14,25 +14,40 @@ unless Application.get_env(:remit, :allow_seeding) || System.get_env("ALLOW_SEED
   raise "Not allowed to seed!"
 end
 
-alias Remit.{Repo, Commit}
+alias Remit.{Repo, Commit, Comment}
 
 Repo.delete_all(Commit)
 
-1..500
-|> Enum.each(fn i ->
-  sha = Faker.sha(i)
-  committed_at = DateTime.utc_now() |> DateTime.add(-i, :second) |> DateTime.truncate(:second)
-  inserted_at = DateTime.utc_now() |> DateTime.add(-i * 60, :second) |> DateTime.truncate(:second)
+commits =
+  1..500
+  |> Enum.map(fn i ->
+    sha = Faker.sha(i)
+    committed_at = DateTime.utc_now() |> DateTime.add(-i, :second) |> DateTime.truncate(:second)
+    inserted_at = DateTime.utc_now() |> DateTime.add(-i * 60, :second) |> DateTime.truncate(:second)
 
-  Repo.insert!(%Commit{
-    sha: sha,
-    author_email: Faker.email(i),
-    author_name: Faker.human_name(),
-    author_usernames: (1..Enum.random(1..2)) |> Enum.map(fn (_) -> Faker.username() end),
-    owner: "acme",
-    repo: Faker.repo(),
-    message: Faker.message(),
-    committed_at: committed_at,
-    inserted_at: inserted_at,
-  })
-end)
+    Repo.insert!(%Commit{
+      sha: sha,
+      author_email: Faker.email(i),
+      author_name: Faker.human_name(),
+      author_usernames: (1..Enum.random(1..2)) |> Enum.map(fn (_) -> Faker.username() end),
+      owner: "acme",
+      repo: Faker.repo(),
+      message: Faker.message(),
+      committed_at: committed_at,
+      inserted_at: inserted_at,
+    })
+  end)
+
+  1..500
+  |> Enum.map(fn i ->
+    commit = Enum.random(commits)
+    commented_at = commit.committed_at |> DateTime.add(i, :second)
+
+    Repo.insert!(%Comment{
+      github_id: i,
+      commit_sha: commit.sha,
+      body: "My comment #{i}",
+      commenter_username: Faker.username(),
+      commented_at: commented_at,
+    })
+  end)

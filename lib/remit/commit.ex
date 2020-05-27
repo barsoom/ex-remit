@@ -1,6 +1,5 @@
 defmodule Remit.Commit do
   use Ecto.Schema
-  import Ecto.Query
   alias Remit.{Commit, Comment, Repo}
 
   @timestamps_opts [type: :utc_datetime]
@@ -26,7 +25,7 @@ defmodule Remit.Commit do
   end
 
   def load_latest(count) do
-    Repo.all(from Commit, limit: ^count, order_by: [desc: :id])
+    Repo.all(Commit, limit: count, order_by: [desc: :id])
   end
 
   def mark_as_reviewed!(id, reviewer_email) when is_binary(reviewer_email) do

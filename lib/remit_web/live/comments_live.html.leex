@@ -1,3 +1,14 @@
-<p class="mx-6">
-  Comments will go here!
-</p>
+<%= if @comments == [] do %>
+  <div class="mx-6 mt-10 text-center">
+    <p><i class="fad fa-star-shooting text-6xl text-yellow-500"></i></p>
+    <p class="text-lg text-gray-mid pt-3">Nothing yet!</p>
+  </div>
+<% else %>
+  <%= for comment <- @comments do %>
+    <%= live_component @socket, RemitWeb.CommentComponent,
+      id: comment.id,
+      comment: comment,
+      commit: comment.commit
+    %>
+  <% end %>
+<% end %>
