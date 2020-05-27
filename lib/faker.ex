@@ -12,6 +12,8 @@ defmodule Faker do
     :crypto.hash(:sha, to_string(i)) |> Base.encode16() |> String.downcase()
   end
 
+  def username, do: "user#{Enum.random(1..999)}"
+
   def email(i \\ Enum.random(1..999)) do
     "user#{i}@example.com"
   end

@@ -14,7 +14,7 @@ defmodule RemitWeb.CommitsLive do
 
     socket =
       socket
-      |> assign(email: session["email"], name: session["name"])
+      |> assign(email: session["email"], username: session["username"])
       |> assign(your_last_selected_commit_id: nil)
       |> assign_commits_and_stats(commits)
 
@@ -51,11 +51,11 @@ defmodule RemitWeb.CommitsLive do
 
   # Receive events when other LiveViews update settings.
   @impl true
-  def handle_event("set_session", ["name", name], socket) do
+  def handle_event("set_session", ["username", username], socket) do
     # We need to update the commit stats because they're based on this setting.
     socket =
       socket
-      |> assign(name: name)
+      |> assign(username: username)
       |> assign_commits_and_stats(socket.assigns.commits)
 
     {:noreply, socket}
@@ -122,5 +122,5 @@ defmodule RemitWeb.CommitsLive do
     commits |> Enum.map(& if(&1.id == commit.id, do: commit, else: &1))
   end
 
-  defp authored?(socket, commit), do: Commit.authored_by?(commit, socket.assigns.name)
+  defp authored?(socket, commit), do: Commit.authored_by?(commit, socket.assigns.username)
 end

@@ -32,26 +32,17 @@ defmodule RemitWeb.GithubWebhookController do
       |> Repo.preload([commit: [:comments]])
       |> Repo.insert!
 
-    # Notify committer(s).
-    committer_names = comment.commit.author_name |> String.split(" and ")
-    committer_names |> Enum.each(fn (committer_name) ->
-      %CommentNotification{
-        comment: comment,
-        committer_name: committer_name,
-      } |> Repo.insert!
-    end)
+    # Notify authors and previous commenters.
 
-    # Notify previous commenters in this thread.
-    comment.commit.comments
-    |> Enum.filter(& CommentNotification.notifiable_commenter?(comment, &1))
-    |> Enum.map(& &1.commenter_username)
+    previous_commenter_usernames =
+      comment.commit.comments
+      |> Enum.filter(& Comment.same_thread?(&1, comment))
+      |> Enum.map(& &1.commenter_username)
+
+    (comment.commit.author_usernames ++ previous_commenter_usernames)
+    |> Enum.reject(& &1 == comment.commenter_username)
     |> Enum.uniq()
-    |> Enum.each(fn (commenter_username) ->
-      %CommentNotification{
-        comment: comment,
-        commenter_username: commenter_username,
-      } |> Repo.insert!
-    end)
+    |> Enum.each(& Repo.insert!(%CommentNotification{comment: comment, username: &1}))
 
     # TODO: Broadcast
 
@@ -74,7 +65,10 @@ defmodule RemitWeb.GithubWebhookController do
   defp build_commit(
     %{
       "id" => sha,
-      "author" => %{"email" => author_email, "name" => author_name},
+      "author" => (%{
+        "email" => author_email,
+        "name" => author_name,
+      } = author),
       "message" => message,
       "timestamp" => raw_committed_at,
     }, owner, repo)
@@ -85,9 +79,19 @@ defmodule RemitWeb.GithubWebhookController do
       sha: sha,
       author_email: author_email,
       author_name: author_name,
+      author_usernames: usernames_from_author(author),
       message: message,
       committed_at: parse_time(raw_committed_at),
     }
+  end
+
+  defp usernames_from_author(%{"username" => username}), do: [ username ]
+  defp usernames_from_author(%{"email" => email}) do
+    email                 # foo+bar+baz@example.com
+    |> String.split("@")  # foo+bar+baz, example.com
+    |> hd                 # foo+bar+baz
+    |> String.split("+")  # foo, bar, baz
+    |> Enum.drop(1)       # bar, baz
   end
 
   defp build_comment(%{

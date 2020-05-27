@@ -21,14 +21,14 @@ Repo.delete_all(Commit)
 1..500
 |> Enum.each(fn i ->
   sha = Faker.sha(i)
-  author_name = Faker.human_name()
   committed_at = DateTime.utc_now() |> DateTime.add(-i, :second) |> DateTime.truncate(:second)
   inserted_at = DateTime.utc_now() |> DateTime.add(-i * 60, :second) |> DateTime.truncate(:second)
 
   Repo.insert!(%Commit{
     sha: sha,
     author_email: Faker.email(i),
-    author_name: author_name,
+    author_name: Faker.human_name(),
+    author_usernames: (1..Enum.random(1..2)) |> Enum.map(fn (_) -> Faker.username() end),
     owner: "acme",
     repo: Faker.repo(),
     message: Faker.message(),

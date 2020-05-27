@@ -2,7 +2,7 @@ defmodule RemitWeb.SessionController do
   use RemitWeb, :controller
 
   def set(conn, %{"email" => email}), do: store_string(conn, :email, email)
-  def set(conn, %{"name" => name}), do: store_string(conn, :name, name)
+  def set(conn, %{"username" => username}), do: store_string(conn, :username, username)
 
   defp store_string(conn, key, value) do
     conn

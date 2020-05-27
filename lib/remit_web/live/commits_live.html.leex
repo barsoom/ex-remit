@@ -4,8 +4,7 @@
     bg-gray-200 py-2 mb-4 text-center
   "
 >
-  <%= if @name && @email do %>
-    <p>Hello, <%= @name %>!</p>
+  <%= if @username && @email do %>
     <p>
       There's <b><%= @unreviewed_count %></b> commit<%= if @unreviewed_count != 1, do: "s" %> to review
       (<b><%= @others_unreviewed_count %></b> by others; <b><%= @my_unreviewed_count %></b> by you).
@@ -19,7 +18,7 @@
       <% end %>
     </p>
   <% else %>
-    <p>Hello! Please <%= live_patch("set a name and email", to: Routes.tabs_path(@socket, :settings)) %>.</p>
+    <p>Hello! Please <%= live_patch("set a username and email", to: Routes.tabs_path(@socket, :settings)) %>.</p>
     <p>There's <b><%= @unreviewed_count %></b> commit<%= if @unreviewed_count != 1, do: "s" %> to review.</p>
   <% end %>
 </div>
@@ -31,10 +30,9 @@
     id: commit.id,
     commit: commit,
     email: @email,
-    name: @name,
     being_reviewed?: commit.review_started_at && !commit.reviewed_at,
     reviewed?: commit.reviewed_at,
-    you_authored?: Commit.authored_by?(commit, @name),
+    you_authored?: Commit.authored_by?(commit, @username),
     you_are_reviewing?: Commit.being_reviewed_by?(commit, @email),
     your_last_selected_commit?: (@your_last_selected_commit_id == commit.id)
   %>

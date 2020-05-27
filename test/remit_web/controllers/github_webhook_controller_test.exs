@@ -35,7 +35,7 @@ defmodule RemitWeb.GithubWebhookControllerTest do
 
   describe "'commit_comment' event" do
     test "creates a comment and notifications, and broadcasts them" do
-      create_commit(sha: "abc123", author_name: "Riff Raff and Magenta")
+      create_commit(sha: "abc123", usernames: ["riffraff", "magenta"])
       create_comment(sha: "abc123", username: "charles")
 
       conn =
@@ -53,11 +53,11 @@ defmodule RemitWeb.GithubWebhookControllerTest do
       assert comment.body == "Hello world!"
 
       # Notifies committer(s).
-      assert Repo.exists?(from CommentNotification, where: [committer_name: "Riff Raff"])
-      assert Repo.exists?(from CommentNotification, where: [committer_name: "Magenta"])
+      assert Repo.exists?(CommentNotification, where: [username: "riffraff"])
+      assert Repo.exists?(CommentNotification, where: [username: "magenta"])
 
       # Notifies previous commenter.
-      assert Repo.exists?(from CommentNotification, where: [commenter_username: "charles"])
+      assert Repo.exists?(CommentNotification, where: [username: "charles"])
     end
   end
 
@@ -100,6 +100,7 @@ defmodule RemitWeb.GithubWebhookControllerTest do
           author: %{
             email: "foo@example.com",
             name: "Foo Barson",
+            username: "foobarson",
           },
           id: "c5472c5276f564621afe4b56b14f50e7c298dff9",
           message: "Earlier commit",
@@ -137,11 +138,12 @@ defmodule RemitWeb.GithubWebhookControllerTest do
     }
   end
 
-  defp create_commit(sha: sha, author_name: author_name) do
+  defp create_commit(sha: sha, usernames: usernames) do
     %Commit{
       sha: sha,
       author_email: Faker.email(),
-      author_name: author_name,
+      author_name: Faker.human_name(),
+      author_usernames: usernames,
       owner: "acme",
       repo: Faker.repo(),
       message: Faker.message(),

@@ -23,12 +23,10 @@ defmodule Remit.Repo.Migrations.CreateComments do
 
     create table(:comment_notifications) do
       add :comment_id, references(:comments), null: false
+      add :username, :string, null: false
       add :resolved_at, :utc_datetime
-      add :commenter_username, :string
-      add :committer_name, :string
 
       timestamps(type: :utc_datetime)
     end
-    create constraint(:comment_notifications, "has_username_or_name", check: "commenter_username IS NOT NULL OR committer_name IS NOT NULL")
   end
 end

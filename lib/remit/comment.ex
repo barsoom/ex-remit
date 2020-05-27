@@ -1,6 +1,6 @@
 defmodule Remit.Comment do
   use Ecto.Schema
-  alias Remit.{Commit, CommentNotification}
+  alias Remit.{Commit, Comment, CommentNotification}
 
   @timestamps_opts [type: :utc_datetime]
 
@@ -18,4 +18,12 @@ defmodule Remit.Comment do
 
     timestamps()
   end
+
+  # If the file path and line position are identical, they're in the same thread.
+  # Either in the same thread of line comments, or (if path and pos are nil), in the thread of non-line based commit comments.
+  def same_thread?(
+    %Comment{path: path, position: pos},
+    %Comment{path: path, position: pos}
+  ), do: true
+  def same_thread?(_, _), do: false
 end

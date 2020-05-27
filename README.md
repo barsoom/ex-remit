@@ -17,6 +17,7 @@ Focused on experimenting with LiveView so not very polished.
 - [ ] Decide whether we want usecs in datetimes or not
 
 Last:
+- [ ] Consider case sensitivity with username matching
 - [ ] Handle missed messages on reconnection (https://curiosum.dev/blog/elixir-phoenix-liveview-messenger-part-4?)
 - [ ] Tests
 - [ ] Error reporting (Honeybadger)

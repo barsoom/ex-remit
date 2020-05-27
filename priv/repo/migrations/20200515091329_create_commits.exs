@@ -6,6 +6,7 @@ defmodule Remit.Repo.Migrations.CreateCommits do
       add :sha, :string, null: false
       add :author_email, :string, null: false
       add :author_name, :string, null: false
+      add :author_usernames, {:array, :string}, null: false
       add :owner, :string, null: false
       add :repo, :string, null: false
       add :message, :text, null: false

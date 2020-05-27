@@ -8,18 +8,18 @@ defmodule RemitWeb.SettingsLive do
     socket =
       assign(socket,
         email: session["email"],
-        name: session["name"]
+        username: session["username"]
       )
 
     {:ok, socket}
   end
 
   @impl true
-  def handle_event("form_change", %{"email" => email, "name" => name}, socket) do
+  def handle_event("form_change", %{"email" => email, "username" => username}, socket) do
     socket =
       assign(socket,
         email: Remit.Utils.normalize_string(email),
-        name: Remit.Utils.normalize_string(name)
+        username: Remit.Utils.normalize_string(username)
       )
 
     {:noreply, socket}
