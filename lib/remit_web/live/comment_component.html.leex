@@ -1,13 +1,17 @@
 <a
   href="<%= @comment.url %>"
   id="comment-<%= @comment.id %>"
-  class="block"
+  class="
+    block rounded no-underline
+    my-2 mx-2
+    bg-gray-200
+  "
 >
-  <p>
-    <%= @comment.commenter_username %>
+  <p class="bg-gray-400 py-1 px-3">
+    <b><%= @comment.commenter_username %></b>
     on
     <%# We may have a comment without its commit in DB. %>
     <i><%= if @commit, do: @commit.message, else: @comment.commit_sha %></i>
   </p>
-  <p><%= @comment.body %></p>
+  <p class="py-1 px-3"><%= @comment.body %></p>
 </a>
