@@ -11,6 +11,9 @@ Focused on experimenting with LiveView so not very polished.
 - [ ] Comments view
 - [ ] Show an indicator when you've been reviewing for a long time
 - [ ] Decide whether we want usecs in datetimes or not
+- [ ] Add email (and thus Gravatars) to comments - via another API call
+- [ ] Add name to comments - via another API call
+- [ ] Handle that a comment may not have an associated commit
 
 Last:
 - [ ] Consider case sensitivity with username matching
