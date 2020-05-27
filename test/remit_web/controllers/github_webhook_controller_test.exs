@@ -103,6 +103,7 @@ defmodule RemitWeb.GithubWebhookControllerTest do
             username: "foobarson",
           },
           id: "c5472c5276f564621afe4b56b14f50e7c298dff9",
+          url: "http://example.com/1",
           message: "Earlier commit",
           timestamp: "2016-01-25T08:41:25+01:00",
         },
@@ -112,6 +113,7 @@ defmodule RemitWeb.GithubWebhookControllerTest do
             name: "Foo Barson",
           },
           id: "d5472c5276f564621afe4b56b14f50e7c298dff9",
+          url: "http://example.com/2",
           message: "Later commit",
           timestamp: "2016-01-25T08:41:26+01:00",
         },
@@ -126,6 +128,7 @@ defmodule RemitWeb.GithubWebhookControllerTest do
       action: "created",
       comment: %{
         id: 123,
+        html_url: "http://example.com/",
         user: %{
           login: username,
         },
@@ -148,6 +151,7 @@ defmodule RemitWeb.GithubWebhookControllerTest do
       repo: Faker.repo(),
       message: Faker.message(),
       committed_at: DateTime.utc_now() |> DateTime.truncate(:second),
+      url: "http://example.com/",
     } |> Repo.insert!
   end
 
@@ -158,6 +162,7 @@ defmodule RemitWeb.GithubWebhookControllerTest do
       body: Faker.message(),
       commented_at: DateTime.utc_now() |> DateTime.truncate(:second),
       commenter_username: username,
+      url: "http://example.com/",
     } |> Repo.insert!
   end
 end

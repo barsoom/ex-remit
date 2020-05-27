@@ -35,6 +35,7 @@ commits =
       message: Faker.message(),
       committed_at: committed_at,
       inserted_at: inserted_at,
+      url: "http://example.com/#{i}",
     })
   end)
 
@@ -49,5 +50,6 @@ commits =
       body: "My comment #{i}",
       commenter_username: Faker.username(),
       commented_at: commented_at,
+      url: "http://example.com/#{i}",
     })
   end)

@@ -14,6 +14,7 @@ defmodule Remit.Commit do
     field :repo, :string
     field :message, :string
     field :committed_at, :utc_datetime
+    field :url, :string
 
     field :review_started_at, :utc_datetime
     field :reviewed_at, :utc_datetime

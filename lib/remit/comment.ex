@@ -13,6 +13,7 @@ defmodule Remit.Comment do
     field :commenter_username, :string
     field :path, :string
     field :position, :integer
+    field :url, :string
 
     has_many :comment_notifications, CommentNotification
     belongs_to :commit, Commit, foreign_key: :commit_sha, references: :sha, define_field: false

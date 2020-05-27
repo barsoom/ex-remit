@@ -1,5 +1,5 @@
 <a
-  href="<%= GithubUrl.commit_url(@commit) %>"
+  href="<%= @commit.url %>"
   id="commit-<%= @commit.id %>"
   phx-click="selected" phx-value-cid="<%= @commit.id %>" phx-hook="FixLink"
   class="

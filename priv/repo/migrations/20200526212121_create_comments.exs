@@ -8,6 +8,7 @@ defmodule Remit.Repo.Migrations.CreateComments do
       add :github_id, :integer, null: false
       add :commit_sha, :string, null: false
       add :body, :text, null: false
+      add :url, :text, null: false
       add :commented_at, :utc_datetime, null: false
       add :commenter_username, :string, null: false
 

@@ -10,6 +10,7 @@ defmodule Remit.Repo.Migrations.CreateCommits do
       add :owner, :string, null: false
       add :repo, :string, null: false
       add :message, :text, null: false
+      add :url, :text, null: false
       add :committed_at, :utc_datetime, null: false
 
       add :review_started_at, :utc_datetime

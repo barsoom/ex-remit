@@ -64,6 +64,7 @@ defmodule RemitWeb.GithubWebhookController do
   defp build_commit(
     %{
       "id" => sha,
+      "url" => url,
       "author" => (%{
         "email" => author_email,
         "name" => author_name,
@@ -81,6 +82,7 @@ defmodule RemitWeb.GithubWebhookController do
       author_usernames: usernames_from_author(author),
       message: message,
       committed_at: parse_time(raw_committed_at),
+      url: url,
     }
   end
 
@@ -97,6 +99,7 @@ defmodule RemitWeb.GithubWebhookController do
     "action" => "created",
     "comment" => %{
       "id" => id,
+      "html_url" => url,
       "user" => %{
         "login" => username,
       },
@@ -115,6 +118,7 @@ defmodule RemitWeb.GithubWebhookController do
       commenter_username: username,
       path: path,
       position: position,
+      url: url,
     }
   end
 
