@@ -43,7 +43,6 @@ defmodule RemitWeb.GithubWebhookControllerTest do
         |> post_payload("commit_comment")
 
       # TODO: Test broadcast.
-      # TODO: Test notifications more.
 
       # Responds politely.
       assert response(conn, 200) == "Thanks!"
@@ -53,11 +52,14 @@ defmodule RemitWeb.GithubWebhookControllerTest do
       assert comment.body == "Hello world!"
 
       # Notifies committer(s).
-      assert Repo.exists?(CommentNotification, where: [username: "riffraff"])
-      assert Repo.exists?(CommentNotification, where: [username: "magenta"])
+      assert Repo.exists?(from CommentNotification, where: [username: "riffraff"])
+      assert Repo.exists?(from CommentNotification, where: [username: "magenta"])
 
       # Notifies previous commenter.
-      assert Repo.exists?(CommentNotification, where: [username: "charles"])
+      assert Repo.exists?(from CommentNotification, where: [username: "charles"])
+
+      # Does not notify commenter.
+      refute Repo.exists?(from CommentNotification, where: [username: "ada"])
     end
   end
 
