@@ -8,9 +8,9 @@ defmodule RemitWeb.CommitsLive do
   @impl true
   def mount(_params, session, socket) do
     check_auth_key(session)
+    if connected?(socket), do: Commit.subscribe()
 
     commits = Commit.load_latest(@commits_count)
-    if connected?(socket), do: Commit.subscribe_to_commits()
 
     socket =
       socket

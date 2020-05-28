@@ -48,9 +48,7 @@ defmodule Remit.Commit do
 
   def message_summary(commit), do: commit.message |> String.split(~r/\R/) |> hd
 
-  def subscribe_to_commits do
-    Phoenix.PubSub.subscribe(Remit.PubSub, "commits")
-  end
+  def subscribe, do: Phoenix.PubSub.subscribe(Remit.PubSub, "commits")
 
   def broadcast_changed_commit(commit) do
     Phoenix.PubSub.broadcast_from(Remit.PubSub, self(), "commits", {:changed_commit, commit})
