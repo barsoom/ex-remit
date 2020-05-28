@@ -11,9 +11,10 @@ defmodule RemitWeb.GithubWebhookControllerTest do
     end
   end
 
-  describe "'push' event" do
-    test "creates commits and broadcasts them" do
+  describe "'push' event (commits)" do
+    setup do
       parent = self()
+
       spawn_link(fn ->
         Commit.subscribe()
 
@@ -22,6 +23,10 @@ defmodule RemitWeb.GithubWebhookControllerTest do
         end
       end)
 
+      :ok
+    end
+
+    test "creates commits and broadcasts them" do
       conn = build_push_payload(branch: "master") |> post_payload("push")
 
       assert response(conn, 200) == "Thanks!"
@@ -40,9 +45,11 @@ defmodule RemitWeb.GithubWebhookControllerTest do
     test "gracefully does nothing on a non-master branch" do
       conn = build_push_payload(branch: "blaster") |> post_payload("push")
 
-      # TODO: Test (lack of) broadcast.
       assert response(conn, 200) == "Thanks!"
       assert Repo.aggregate(Commit, :count) == 0
+
+      # Nothing is broadcast.
+      refute_receive {:subscriber_got, _}
     end
   end
 
