@@ -13,15 +13,28 @@ defmodule RemitWeb.GithubWebhookControllerTest do
 
   describe "'push' event" do
     test "creates commits and broadcasts them" do
-      conn = build_push_payload(branch: "master") |> post_payload("push")
+      parent = self()
+      spawn_link(fn ->
+        Commit.subscribe()
 
-      # TODO: Test broadcast.
+        receive do
+          msg -> send(parent, {:subscriber_got, msg})
+        end
+      end)
+
+      conn = build_push_payload(branch: "master") |> post_payload("push")
 
       assert response(conn, 200) == "Thanks!"
 
       [earlier_commit, later_commit] = Repo.all(from Commit, order_by: [asc: :id])
       assert earlier_commit.message == "Earlier commit"
       assert later_commit.message == "Later commit"
+
+      # Broadcasts to subscribers.
+      assert_receive {:subscriber_got, {:new_commits, [
+        %Commit{message: "Later commit"},
+        %Commit{message: "Earlier commit"},
+      ]}}
     end
 
     test "gracefully does nothing on a non-master branch" do
@@ -35,6 +48,15 @@ defmodule RemitWeb.GithubWebhookControllerTest do
 
   describe "'commit_comment' event" do
     test "creates a comment and notifications, and broadcasts them" do
+      parent = self()
+      spawn_link(fn ->
+        Comment.subscribe()
+
+        receive do
+          msg -> send(parent, {:subscriber_got, msg})
+        end
+      end)
+
       create_commit(sha: "abc123", usernames: ["riffraff", "magenta"])
       create_comment(sha: "abc123", username: "charles")
 
@@ -42,14 +64,15 @@ defmodule RemitWeb.GithubWebhookControllerTest do
         build_comment_payload(sha: "abc123", username: "ada")
         |> post_payload("commit_comment")
 
-      # TODO: Test broadcast.
-
       # Responds politely.
       assert response(conn, 200) == "Thanks!"
 
       # Creates a comment.
       comment = Repo.one(from Comment, limit: 1, order_by: [desc: :id])
       assert comment.body == "Hello world!"
+
+      # Broadcasts to subscribers.
+      assert_receive {:subscriber_got, {:new_comment, %Comment{body: "Hello world!"}}}
 
       # Notifies committer(s).
       assert Repo.exists?(from CommentNotification, where: [username: "riffraff"])
