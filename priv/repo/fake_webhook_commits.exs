@@ -14,6 +14,7 @@ json = Jason.encode!(%{
         name: Faker.human_name(),
       },
       id: Faker.sha(),
+      url: "https://example.com/",
       message: Faker.message(),
       timestamp: (DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_iso8601()),
     }

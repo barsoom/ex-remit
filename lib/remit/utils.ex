@@ -8,6 +8,11 @@ defmodule Remit.Utils do
     if string == "", do: nil, else: string
   end
 
+  def date_time_from_iso8601!(raw_time) do
+    {:ok, time, _offset} = DateTime.from_iso8601(raw_time)
+    time
+  end
+
   def format_datetime(datetime) do
     # Reference: https://hexdocs.pm/timex/Timex.Format.DateTime.Formatters.Default.html
     datetime
