@@ -14,6 +14,8 @@ Focused on experimenting with LiveView so not very polished.
 - [ ] Add email (and thus Gravatars) to comments - via another API call
 - [ ] Add name to comments - via another API call
 - [ ] Handle that a comment may not have an associated commit
+- [ ] Unique index on commit sha (and handle gracefully when pushing)
+- [ ] Save full payload to make future migrations easier?
 
 Last:
 - [ ] Consider case sensitivity with username matching
