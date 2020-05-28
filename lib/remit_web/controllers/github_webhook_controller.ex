@@ -43,7 +43,7 @@ defmodule RemitWeb.GithubWebhookController do
     |> Enum.uniq()
     |> Enum.each(& Repo.insert!(%CommentNotification{comment: comment, username: &1}))
 
-    # TODO: Broadcast
+    Comment.broadcast_new_comment(comment)
 
     conn |> text("Thanks!")
   end
