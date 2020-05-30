@@ -75,10 +75,13 @@ let liveSocket = new LiveSocket("/live", Socket, {
   hooks: Hooks,
 })
 
-// Show progress bar on live navigation and form submits
+// Show progress bar on live navigation and form submits.
 let progressTimeout = null
 window.addEventListener("phx:page-loading-start", () => { clearTimeout(progressTimeout); progressTimeout = setTimeout(NProgress.start, 100) })
 window.addEventListener("phx:page-loading-stop", () => { clearTimeout(progressTimeout); NProgress.done() })
+
+// Don't show a spinner in addition to the progress bar.
+NProgress.configure({ showSpinner: false })
 
 // connect if there are any LiveViews on the page
 liveSocket.connect()
