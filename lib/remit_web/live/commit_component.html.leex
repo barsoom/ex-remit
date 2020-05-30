@@ -3,13 +3,12 @@
   id="commit-<%= @commit.id %>"
   phx-click="selected" phx-value-cid="<%= @commit.id %>" phx-hook="FixLink"
   class="
-    commit
     flex items-center no-underline
     border border-solid border-gray-light rounded
     my-1 mx-2 py-2 px-3
-    <%= if @reviewed?, do: " reviewed" %>
-    <%= if @being_reviewed?, do: " being-reviewed" %>
-    <%= if @your_last_selected_commit?, do: " highlight" %>
+    <%= if @reviewed?, do: " commit--reviewed" %>
+    <%= if @being_reviewed?, do: " commit--being-reviewed" %>
+    <%= if @your_last_selected_commit?, do: " commit--highlight" %>
   ">
   <div class="flex-none mr-3">
     <%= gravatar(@commit.author_email, "rounded #{if @reviewed?, do: "gravatar--small", else: "gravatar--big"}") %>

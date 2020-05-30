@@ -23,36 +23,39 @@
   }
 }
 
-.highlight {
-  @apply bg-yellow-200;
-}
-.reviewed {
-  @apply bg-green-light;
-}
-.being-reviewed {
-  @apply bg-blue-100;
-}
-.highlight.reviewed {
-  background-color: #eaffa8;  /* Green/yellow. */
+.commit {
+  &--highlight {
+    @apply bg-yellow-200;
+  }
+  &--reviewed {
+    @apply bg-green-light;
+  }
+  &--highlight&--reviewed {
+    background-color: #eaffa8;  /* Green/yellow. */
+  }
+  &--being-reviewed {
+    @apply bg-blue-100;
+  }
 }
 
-.field-wrapper {
+.field {
   @apply my-6;
+
+  &__explanation {
+    @apply text-gray-dark mt-3;
+
+    p { @apply my-2; }
+  }
 }
 
-.field-explanation {
-  @apply text-gray-dark mt-3;
+.gravatar {
+  &--big {
+    width: 45px;
+    height: 45px;
+  }
 
-  p { @apply my-2; }
+  &--small {
+    width: 20px;
+    height: 20px;
+  }
 }
-
-.gravatar--big {
-  width: 45px;
-  height: 45px;
-}
-
-.gravatar--small {
-  width: 20px;
-  height: 20px;
-}
-
