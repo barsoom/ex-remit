@@ -24,23 +24,27 @@ let Hooks = {}
 // - Fixes an issue where clicking a link with a phx-click on it did not cause the link default (navigation) to trigger.
 // - Adds target=_blank when outside Fluid.app.
 // - Makes it so that repeat clicks of the same link (or buttons inside that link) don't re-open it every time.
+// - Makes it so clicks in dev don't actually open links, unless inside Fluid.app, for convenience.
 Hooks.FixLink = {
   mounted() {
+    // Outside Fluid.app, in a regular browser, new tabs are less disruptive than opening in the same window.
+    // In Fluid.app, we can't add target="_blank" or they'd open in a new tab instead of in the main window next to the Remit panel.
+    if (!window.fluid) this.el.setAttribute("target", "_blank")
+
     this.el.addEventListener("click", (e) => {
+      // If this is the last link we clicked, don't re-visit it. We'd reload the page (in Fluid) or open yet another tab (in a regular browser).
       if (window.remitLastClickedLink === this.el) {
         e.preventDefault()
-      } else {
-        window.remitLastClickedLink = this.el
+        return
+      }
 
-        if (window.fluid) {
-          // Fluid.app is set to open clicked links in the main GitHub window rather than the Remit panel.
-          // If we used target=_blank, Fluid.app would open a new tab instead.
-          location.href = this.el.href
-        } else {
-          // Outside Fluid.app (e.g. developing this tool in a regular browser), new tabs are less disruptive than opening in the same window.
-          e.preventDefault()
-          window.open(this.el.href, "_blank")
-        }
+      window.remitLastClickedLink = this.el
+
+      // In dev outside Fluid.app, we typically care more about the Remit UI than opening links, so skip it.
+      let isDev = (location.hostname === "localhost")
+      if (isDev && !window.fluid) {
+        console.log("Skipping link opening in dev when outside Fluid.app. Link: ", this.el.href)
+        e.preventDefault()
       }
     })
   }
