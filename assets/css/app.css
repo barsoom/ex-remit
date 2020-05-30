@@ -1,11 +1,11 @@
 @import "tailwindcss/base";
-@import "./_base.scss";
+@import "./_base.css";
 
 @import "tailwindcss/components";
-@import "./_components.scss";
+@import "./_components.css";
 
 @import "tailwindcss/utilities";
-@import "./_utilities.scss";
+@import "./_utilities.css";
 
 /* Progress indicator used by LiveView. */
 @import "../node_modules/nprogress/nprogress.css";
