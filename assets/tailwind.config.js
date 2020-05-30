@@ -17,6 +17,8 @@ module.exports = {
       colors: {
         "gray-light": colors.gray["300"],
         "gray-mid": colors.gray["500"],
+        "gray-dark": colors.gray["600"],
+        "almost-black": colors.gray["900"],
 
         "yellow-mid": colors.yellow["600"],
 

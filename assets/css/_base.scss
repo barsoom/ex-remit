@@ -1,0 +1,36 @@
+/*
+ * For base styling of different elements. No class/ID selectors.
+ */
+
+body {
+  @apply text-xs;
+}
+
+button {
+  @apply px-1 border border-solid border-gray-mid rounded bg-gray-200;
+
+  &:focus {
+    /* Worse for keyboard navigation, but the outlines don't look good in this UI. */
+    outline: none;
+  }
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+a {
+  @apply underline;
+}
+
+label {
+  @apply font-bold mr-3;
+}
+
+input[type=text],
+input[type=email],
+{
+  @apply border border-gray-mid py-1 px-2;
+  width: 200px;
+}
+

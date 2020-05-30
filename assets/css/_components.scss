@@ -1,0 +1,58 @@
+/*
+Custom components go here.
+Want to extract this CSS? Mind this gotcha: https://pragmaticstudio.com/tutorials/adding-tailwind-css-to-phoenix
+*/
+
+.tabs {
+  @apply flex;
+
+  &__tab {
+    @apply text-base py-2 flex-1 text-center border-r border-b border-gray-mid bg-gray-100;
+    @apply no-underline;
+
+    @apply text-gray-dark;
+
+    &:last-child { border-right: 0; }
+
+    &--current {
+      @apply bg-white border-b-0 text-almost-black;
+      &.tabs__tab--commits i { @apply text-green-500; }
+      &.tabs__tab--comments i { @apply text-yellow-500; }
+      &.tabs__tab--settings i { @apply text-blue-500; }
+    }
+  }
+}
+
+.highlight {
+  @apply bg-yellow-200;
+}
+.reviewed {
+  @apply bg-green-light;
+}
+.being-reviewed {
+  @apply bg-blue-100;
+}
+.highlight.reviewed {
+  background-color: #eaffa8;  /* Green/yellow. */
+}
+
+.field-wrapper {
+  @apply my-6;
+}
+
+.field-explanation {
+  @apply text-gray-dark mt-3;
+
+  p { @apply my-2; }
+}
+
+.gravatar--big {
+  width: 45px;
+  height: 45px;
+}
+
+.gravatar--small {
+  width: 20px;
+  height: 20px;
+}
+
