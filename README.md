@@ -6,18 +6,18 @@ Focused on experimenting with LiveView so not very polished.
 
 ## Plan
 
-- [ ] Get comments via webhook, cause clients to update
-  - [ ] Include reactions on comments in feed, not just comments proper
-- [ ] Comments view
-- [ ] Show an indicator when you've been reviewing for a long time
+- [ ] Resolving comments
+- [ ] Filtering comments
+- [ ] Polish comments view
 - [ ] Decide whether we want usecs in datetimes or not
 - [ ] Add email (and thus Gravatars) to comments - via another API call
 - [ ] Add name to comments - via another API call
-- [ ] Handle that a comment may not have an associated commit
 - [ ] Unique index on commit sha (and handle gracefully when pushing)
 - [ ] Save full payload to make future migrations easier?
 
-Last:
+Can wait until after we start using it:
+- [ ] Show an indicator when you've been reviewing for a long time
+- [ ] Include reactions on comments in feed, not just comments proper
 - [ ] Consider case sensitivity with username matching
 - [ ] Handle missed messages on reconnection (https://curiosum.dev/blog/elixir-phoenix-liveview-messenger-part-4?)
 - [ ] Tests
@@ -28,6 +28,7 @@ Last:
 - [ ] Consider open sourcing
 - [ ] Bump Heroku plan if needed
 - [ ] Recurring job to remove old data
+- [ ] Expiring old data
 
 Done:
 - [x] "Oldest commit" and similar stats at top
@@ -48,6 +49,8 @@ Done:
 - [x] Proper link to oldest commit
 - [x] Make separate copies of comments for each person who gets to see it
 - [x] Polish commits view
+- [x] Handle that a comment may not have an associated commit
+- [x] Get comments via webhook, cause clients to update
 
 ## Dev
 
