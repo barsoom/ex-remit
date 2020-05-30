@@ -2,15 +2,14 @@ defmodule RemitWeb.CommitsLive do
   use RemitWeb, :live_view
   alias Remit.{Commit, Utils}
 
-  # Fairly arbitrary number. If too low, we may miss unreviewed stuff. If too high, performance may suffer.
-  @commits_count 200
+  @max_commits Application.get_env(:remit, :max_commits)
 
   @impl true
   def mount(_params, session, socket) do
     check_auth_key(session)
     if connected?(socket), do: Commit.subscribe()
 
-    commits = Commit.load_latest(@commits_count)
+    commits = Commit.load_latest(@max_commits)
 
     socket =
       socket
@@ -82,7 +81,7 @@ defmodule RemitWeb.CommitsLive do
   @impl true
   def handle_info({:new_commits, new_commits}, socket) do
     # Another option here would be to just reload the latest commits from DB.
-    commits = Enum.slice(new_commits ++ socket.assigns.commits, 0, @commits_count)
+    commits = Enum.slice(new_commits ++ socket.assigns.commits, 0, @max_commits)
 
     socket = socket |> assign_commits_and_stats(commits)
 
