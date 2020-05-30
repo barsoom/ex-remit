@@ -1,6 +1,6 @@
 /*
-Custom components go here.
-Want to extract this CSS? Mind this gotcha: https://pragmaticstudio.com/tutorials/adding-tailwind-css-to-phoenix
+ * Components go here.
+ * Typically a class (or component with sub-classes) that gathers a bunch of styles for consistent reuse.
 */
 
 .tabs {
