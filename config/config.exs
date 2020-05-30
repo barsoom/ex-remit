@@ -9,7 +9,10 @@ use Mix.Config
 
 config :remit,
   ecto_repos: [Remit.Repo],
-  favicon: "favicon.png"
+  favicon: "favicon.png",
+  # If too low, we may miss stuff. If too high, performance may suffer.
+  max_commits: 200,
+  max_comments: 200
 
 # Configures the endpoint
 config :remit, RemitWeb.Endpoint,
@@ -17,10 +20,7 @@ config :remit, RemitWeb.Endpoint,
   secret_key_base: "VwHFDH5VSFj8+cVvqb/2V15wtR9RMmkpIVnID1PrHMWTT7LNxSn/Nl0RGDavQGER",  # Overridden in prod.secret.exs.
   render_errors: [view: RemitWeb.ErrorView, accepts: ~w(html json), layout: false],
   pubsub_server: Remit.PubSub,
-  live_view: [signing_salt: "s9WcFK/G"],
-  # If too low, we may miss stuff. If too high, performance may suffer.
-  max_commits: 300,
-  max_comments: 300
+  live_view: [signing_salt: "s9WcFK/G"]
 
 # Configures Elixir's Logger
 config :logger, :console,
