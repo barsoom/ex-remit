@@ -54,7 +54,7 @@ defmodule RemitWeb.CommitsLive do
     # We need to update the commit stats because they're based on this setting.
     socket =
       socket
-      |> assign(username: username)
+      |> assign(username: Utils.normalize_string(username))
       |> assign_commits_and_stats(socket.assigns.commits)
 
     {:noreply, socket}
@@ -63,7 +63,7 @@ defmodule RemitWeb.CommitsLive do
   # Receive events when other LiveViews update settings.
   @impl true
   def handle_event("set_session", ["email", email], socket) do
-    socket = socket |> assign(email: email)
+    socket = socket |> assign(email: Utils.normalize_string(email))
 
     {:noreply, socket}
   end
