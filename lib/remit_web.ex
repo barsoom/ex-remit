@@ -46,7 +46,7 @@ defmodule RemitWeb do
       use Phoenix.LiveView,
         layout: {RemitWeb.LayoutView, "live.html"}
 
-      import RemitWeb.LiveHelpers
+      import RemitWeb.Auth.LiveView
 
       unquote(view_helpers())
     end
