@@ -10,13 +10,13 @@
 /* Progress indicator used by LiveView. */
 @import "../node_modules/nprogress/nprogress.css";
 
-/* LiveView specific classes for your customizations */
-
+/* Applied to a phx-click element while running that event. */
 .phx-click-loading {
   opacity: 0.5;
   transition: opacity 1s ease-out;
 }
 
+/* Applied to a LiveView container if the client doesn't get replies to its heartbeats. */
 .phx-disconnected {
   cursor: wait;
 
