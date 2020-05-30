@@ -68,6 +68,12 @@ You can run this to fake new commits coming in via webhook:
 
     mix wh.commits
 
+### Maintenance
+
+    mix deps.update --all    # Update Hex deps.
+    cd assets && npm update  # Update JS deps.
+    mix test                 # Verify things didn't break.
+
 ## Production
 
 The `POOL_SIZE` for the running dyno is 18, so we've got 2 spare on a Heroku hobby plan.
