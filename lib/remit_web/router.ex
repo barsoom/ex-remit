@@ -12,17 +12,6 @@ defmodule RemitWeb.Router do
     plug :check_auth_key
   end
 
-  pipeline :api do
-    plug :accepts, ["json"]
-    plug :fetch_session
-    plug :check_auth_key
-  end
-
-  pipeline :webhook do
-    plug :accepts, ["json"]
-    plug :check_webhook_key
-  end
-
   scope "/", RemitWeb do
     pipe_through :browser
 
@@ -31,10 +20,21 @@ defmodule RemitWeb.Router do
     live "/settings", TabsLive, :settings
   end
 
+  pipeline :api do
+    plug :accepts, ["json"]
+    plug :fetch_session
+    plug :check_auth_key
+  end
+
   scope "/api", RemitWeb do
     pipe_through :api
 
     post "/session", SessionController, :set
+  end
+
+  pipeline :webhook do
+    plug :accepts, ["json"]
+    plug :check_webhook_key
   end
 
   scope "/webhooks", RemitWeb do
