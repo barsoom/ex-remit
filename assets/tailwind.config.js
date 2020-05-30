@@ -1,5 +1,4 @@
 const { colors } = require("tailwindcss/defaultTheme")
-console.log("col", colors)
 
 module.exports = {
   purge: [
