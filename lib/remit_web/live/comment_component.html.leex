@@ -25,11 +25,17 @@
         <span class="text-gray-dark"><%= Utils.format_datetime(@notification.resolved_at) %></span>
 
         <%= if @at_me? do %>
-          <button phx-click="unresolve" phx-value-nid="<%= @notification.id %>" class="ml-2">Unresolve</button>
+          <button phx-click="unresolve" phx-value-nid="<%= @notification.id %>" class="ml-2">
+            <i class="far fa-eye-slash"></i>
+            Mark as new
+          </button>
         <% end %>
       <% else %>
         <%= if @at_me? do %>
-          <button phx-click="resolve" phx-value-nid="<%= @notification.id %>">Resolve</button>
+          <button phx-click="resolve" phx-value-nid="<%= @notification.id %>" class="bg-green-light">
+            <i class="fas fa-check text-green-dark"></i>
+            Resolve
+          </button>
         <% else %>
           <span title="Since <%= @notification.inserted_at %>">
             <i class="fas fa-gift text-yellow-mid"></i>
