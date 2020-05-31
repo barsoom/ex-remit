@@ -1,3 +1,5 @@
+<img src="assets/static/images/favicon.png" alt="" style="max-width: 200px" />
+
 # Remit
 
 A self-hosted web app for [commit-by-commit code review](https://thepugautomatic.com/2014/02/code-review/), written using [Phoenix](https://www.phoenixframework.org/) [LiveView](https://github.com/phoenixframework/phoenix_live_view).
