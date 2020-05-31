@@ -1,4 +1,4 @@
-<img src="assets/static/images/favicon.png" alt="" style="max-width: 200px" />
+<img src="assets/static/images/favicon.png" alt="" width="200" />
 
 # Remit
 
