@@ -23,6 +23,8 @@ module.exports = {
         "yellow-mid": colors.yellow["600"],
 
         "green-light": colors.green["100"],
+        "green-mid": colors.green["500"],
+        "green-dark": colors.green["700"],
       },
 
     },

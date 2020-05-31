@@ -2,28 +2,36 @@
 <a
   id="comment-<%= @notification.id %>"
   class="
-    block rounded no-underline
-    my-2 mx-2
+    block no-underline rounded-b
+    my-2
     bg-gray-200
   "
 >
-  <p class="bg-gray-400 py-1 px-3">
-    <b><%= @comment.commenter_username %> @ <%= @notification.username %></b>
-    on
-    <%# We may have a comment without its commit in DB. %>
-    <i><%= if @commit, do: @commit.message, else: @comment.commit_sha %></i>
-  </p>
+  <div class="bg-gray-400 py-1 px-3 flex rounded-t">
+    <div class="truncate mr-2">
+      <b><%= @comment.commenter_username %></b>
+      <i class="fas fa-chevron-right text-gray-dark"></i>
+      <b><%= @notification.username %></b>
+      re:
+      <%# We may have a comment without its commit in DB. %>
+      <i><%= if @commit, do: @commit.message, else: @comment.commit_sha %></i>
+      on <%= Utils.format_datetime(@comment.commented_at) %>
+    </div>
+    <div class="ml-auto whitespace-no-wrap">
+      <%= if @notification.resolved_at do %>
+        <%= if @at_me? do %>
+          <button phx-click="unresolve" phx-value-nid="<%= @notification.id %>">Undo resolve</button>
+        <% end %>
+        <i class="fas fa-check text-green-dark"></i> <%= Utils.format_datetime(@notification.resolved_at) %>
+      <% else %>
+        <%= if @at_me? do %>
+          <button phx-click="resolve" phx-value-nid="<%= @notification.id %>">Resolve</button>
+        <% else %>
+          <i class="fas fa-gift text-yellow-mid"></i>
+          Unresolved
+        <% end %>
+      <% end %>
+    </div>
+  </div>
   <p class="py-1 px-3"><%= @comment.body %></p>
-  <%= if @notification.resolved_at do %>
-    <%= if @at_me? do %>
-      <button phx-click="unresolve" phx-value-nid="<%= @notification.id %>">Undo resolve</button>
-    <% end %>
-    CHECK <%= @notification.resolved_at %>
-  <% else %>
-    <%= if @at_me? do %>
-      <button phx-click="resolve" phx-value-nid="<%= @notification.id %>">Resolve</button>
-    <% else %>
-      PENDING since <%= @notification.inserted_at %>
-    <% end %>
-  <% end %>
 </a>

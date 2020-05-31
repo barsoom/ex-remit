@@ -14,8 +14,10 @@ defmodule RemitWeb.CommentsLive do
       socket
       |> assign(
         username: session["username"],
-        resolved_state: "unresolved",
-        direction: "for_me"
+        resolved_state: "all",
+        direction: "all"
+        # resolved_state: "unresolved",
+        # direction: "for_me"
       )
       |> assign_filtered_notifications()
 

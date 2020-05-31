@@ -16,7 +16,7 @@
 
     &--current {
       @apply bg-white border-b-0 text-almost-black;
-      &.tabs__tab--commits i { @apply text-green-500; }
+      &.tabs__tab--commits i { @apply text-green-mid; }
       &.tabs__tab--comments i { @apply text-yellow-500; }
       &.tabs__tab--settings i { @apply text-blue-500; }
     }
