@@ -30,8 +30,10 @@
         <%= if @at_me? do %>
           <button phx-click="resolve" phx-value-nid="<%= @notification.id %>">Resolve</button>
         <% else %>
-          <i class="fas fa-gift text-yellow-mid"></i>
-          <span class="text-gray-dark">Unresolved</span>
+          <span title="Since <%= @notification.inserted_at %>">
+            <i class="fas fa-gift text-yellow-mid"></i>
+            <span class="text-gray-dark">Unresolved</span>
+          </span>
         <% end %>
       <% end %>
     </div>
