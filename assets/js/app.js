@@ -22,14 +22,15 @@ let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("
 let Hooks = {}
 
 // - Fixes an issue where clicking a link with a phx-click on it did not cause the link default (navigation) to trigger.
-// - Adds target=_blank when outside Fluid.app.
+// - Adds a target attribute to links when outside Fluid.app, so Remit stays open.
 // - Makes it so that repeat clicks of the same link (or buttons inside that link) don't re-open it every time.
 // - Makes it so clicks in dev don't actually open links, unless inside Fluid.app, for convenience.
 Hooks.FixLink = {
   mounted() {
     // Outside Fluid.app, in a regular browser, new tabs are less disruptive than opening in the same window.
-    // In Fluid.app, we can't add target="_blank" or they'd open in a new tab instead of in the main window next to the Remit panel.
-    if (!window.fluid) this.el.setAttribute("target", "_blank")
+    // In Fluid.app, we can't add a "target" attribute or they'd open in a new tab instead of in the main window next to the Remit panel.
+    // We use a named target rather than "_blank" so it's reused. This means you put the opened window side-by-side with Remit and have a halfway decent Fluid-like experience.
+    if (!window.fluid) this.el.setAttribute("target", "github_window")
 
     this.el.addEventListener("click", (e) => {
       // If this is the last link we clicked, don't re-visit it. We'd reload the page (in Fluid) or open yet another tab (in a regular browser).
