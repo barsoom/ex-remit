@@ -27,7 +27,7 @@ commits =
 
     Repo.insert!(%Commit{
       sha: sha,
-      author_email: Faker.email(i),
+      author_email: Faker.email(),
       author_name: Faker.human_name(),
       author_usernames: (1..Enum.random(1..2)) |> Enum.map(fn (_) -> Faker.username() end),
       owner: "acme",

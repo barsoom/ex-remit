@@ -6,17 +6,15 @@ defmodule Faker do
       Enum.random(["berg", "kvist", "bäck", "zon", "plopp", "is"])
   end
 
-  def id, do: Enum.random(1..999)
+  defp number, do: Enum.random(1..99999)
 
-  def sha(i \\ Enum.random(1..999)) do
+  def sha(i \\ number()) do
     :crypto.hash(:sha, to_string(i)) |> Base.encode16() |> String.downcase()
   end
 
-  def username, do: "user#{Enum.random(1..999)}"
+  def username, do: "user#{number()}"
 
-  def email(i \\ Enum.random(1..999)) do
-    "user#{i}@example.com"
-  end
+  def email, do: "email#{number()}@example.com"
 
   def repo do
     Enum.random(["cat", "dog", "fish", "man", "tiger", "power", "golden_", "tiki"]) <>
@@ -24,10 +22,11 @@ defmodule Faker do
   end
 
   def message do
-    Enum.random(["Fixed", "Broke", "Invented", "Inverted", "Fêted", "Loved", "Spent a summer with", "Removed", "Greatly simplified"]) <>
+    Enum.random(["Fixed", "Broke", "Reverted", "Removed", "Refactored", "Simplified", "Optimised", "Suboptimised", "Redesigned", "Mocked up", "Uploaded", "Threw out", "Decoupled", "Tightly coupled"]) <>
       " " <>
-      Enum.random(["the thing", "your mom", "the world", "a man", "the truth", "a partridge", "Jake Lloyd"]) <>
+      Enum.random(["the header", "the footer", "the architecture", "our design system", "the UX", "the front-end", "the back-end", "the pipeline", "CI", "production", "the sitemap"]) <>
       " " <>
-      Enum.random(["", "for fun", "with monads", "on a dare", "in jest", "in Reno just to watch them die"])
+      Enum.random(["", "", "", "", "", "", "", "", "", "", "with monads", "in the cloud"])
   end
+
 end

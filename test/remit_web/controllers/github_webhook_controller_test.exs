@@ -189,7 +189,7 @@ defmodule RemitWeb.GithubWebhookControllerTest do
 
   defp create_comment(sha: sha, username: username) do
     %Comment{
-      github_id: Faker.id(),
+      github_id: Faker.number(),
       commit_sha: sha,
       body: Faker.message(),
       commented_at: DateTime.utc_now() |> DateTime.truncate(:second),
