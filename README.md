@@ -56,6 +56,30 @@ Done:
 - [x] Resolving comments
 - [x] Filtering comments
 
+
+## Usage
+
+Remit is a self-hosted web app for [commit-by-commit code review](https://thepugautomatic.com/2014/02/code-review/), written using [Phoenix](https://www.phoenixframework.org/) [LiveView](https://github.com/phoenixframework/phoenix_live_view). See below for instructions on setting it up.
+
+You add a GitHub webhook to each repo you want to review (see instructions below). Then GitHub sends all new commits and comments to Remit.
+
+Remit shows commits and lets you mark them as reviewed. Clicking a commit opens the commit page on GitHub, where you can write comments either line-by-line or on the commit as a whole.
+
+Remit also shows you comments and lets you mark these as resolved, so you don't miss the feedback you got.
+
+We recommend putting Remit inside [Fluid.app](https://fluidapp.com/) or equivalent so you can see Remit and the GitHub commit pages side-by-side.
+
+### Setting up Fluid.app
+
+TODO: Instructions
+
+### Without Fluid.app
+
+Links to commits will open in the same browser window/tab every time. So after clicking a link the first time, you can put this tab/window side-by-side with the Remit window (typically by dragging the tab out of the tab bar into its own window).
+
+It won't be as convenient as with Fluid.app, but good in a pinch!
+
+
 ## Dev
 
 Assumed to be run *outside* of devbox, at the time of writing.
