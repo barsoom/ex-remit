@@ -77,6 +77,7 @@ defmodule RemitWeb.CommentsLive do
 
     {:noreply, socket}
   end
+  def handle_event("set_session", _, socket), do: {:noreply, socket}
 
   # Receive broadcasts when new comments arrive.
   @impl true

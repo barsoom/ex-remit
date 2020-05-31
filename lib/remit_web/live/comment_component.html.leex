@@ -1,6 +1,7 @@
-<%# href="<= @comment.url >" %>
 <a
+   href="<= @comment.url >"
   id="comment-<%= @notification.id %>"
+  phx-hook="FixLink"
   class="
     block no-underline rounded-b
     my-2
