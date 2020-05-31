@@ -1,7 +1,7 @@
 defmodule RemitWeb.CommentsLive do
   use RemitWeb, :live_view
   import Ecto.Query
-  alias Remit.{Repo, Comment, CommentNotification, Utils}
+  alias Remit.{Repo, Comments, Comment, CommentNotification, Utils}
 
   @max_comments Application.get_env(:remit, :max_comments)
 
@@ -93,29 +93,12 @@ defmodule RemitWeb.CommentsLive do
   # Private
 
   defp assign_filtered_notifications(socket) do
-    username = socket.assigns.username
-
-    query = from n in CommentNotification,
+    notifications = Comments.list_notifications(
       limit: @max_comments,
-      join: c in assoc(n, :comment),
-      preload: [comment: {c, :commit}]
-
-    query =
-      case socket.assigns.resolved_state do
-        "unresolved" -> from n in query, where: is_nil(n.resolved_at), order_by: [asc: :id]
-        "resolved" -> from n in query, where: not is_nil(n.resolved_at), order_by: [desc: :resolved_at]
-        "all" -> from query, order_by: [desc: :id]
-      end
-
-    query =
-      case {username, socket.assigns.direction} do
-        {nil, _} -> query
-        {_, "all"} -> query
-        {_, "for_me"} -> from n in query, where: n.username == ^username
-        {_, "by_me"} -> from [n, c] in query, where: c.commenter_username == ^username
-      end
-
-    notifications = Repo.all(query)
+      username: socket.assigns.username,
+      resolved_filter: socket.assigns.resolved_state,
+      user_filter: socket.assigns.direction,
+    )
 
     assign(socket, notifications: notifications)
   end
