@@ -13,10 +13,8 @@ defmodule RemitWeb.CommentsLive do
       socket
       |> assign(
         username: session["username"],
-        resolved_state: "all",
-        direction: "all"
-        # resolved_state: "unresolved",
-        # direction: "for_me"
+        resolved_state: "unresolved",
+        direction: "for_me"
       )
       |> assign_filtered_notifications()
 
@@ -24,7 +22,7 @@ defmodule RemitWeb.CommentsLive do
   end
 
   @impl true
-  def handle_event("change_resolved_state", %{"state" => state}, socket) do
+  def handle_event("change_resolved_state", %{"filter" => state}, socket) do
     socket =
       socket
       |> assign(resolved_state: state)
@@ -34,7 +32,7 @@ defmodule RemitWeb.CommentsLive do
   end
 
   @impl true
-  def handle_event("change_direction", %{"direction" => direction}, socket) do
+  def handle_event("change_direction", %{"filter" => direction}, socket) do
     socket =
       socket
       |> assign(direction: direction)
@@ -91,5 +89,9 @@ defmodule RemitWeb.CommentsLive do
     )
 
     assign(socket, notifications: notifications)
+  end
+
+  defp filter_link(text, event, value, current_value) do
+    Phoenix.HTML.Tag.content_tag(:a, text, href: "#", "phx-click": event, "phx-value-filter": value, class: (if current_value == value, do: "font-bold no-underline"))
   end
 end

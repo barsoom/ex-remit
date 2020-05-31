@@ -1,22 +1,17 @@
 <div class="phx-hook-subscribe-to-session info-box">
-  me: <%= @username %>
-  <br>
-  dir: <%= @direction %>
-  <br>
-  resolved state: <%= @resolved_state %>
-
   <p>
-    <a href="#" phx-click="change_resolved_state" phx-value-state="unresolved">Unresolved</a>
-    /
-    <a href="#" phx-click="change_resolved_state" phx-value-state="resolved">Resolved</a>
-    /
-    <a href="#" phx-click="change_resolved_state" phx-value-state="all">All</a>
+    <%= filter_link "Unresolved", "change_resolved_state", "unresolved", @resolved_state %>
+    ·
+    <%= filter_link "Resolved", "change_resolved_state", "resolved", @resolved_state %>
+    ·
+    <%= filter_link "All comments", "change_resolved_state", "all", @resolved_state %>
+  </p>
   <p>
-    <a href="#" phx-click="change_direction" phx-value-direction="for_me">For me</a>
-    /
-    <a href="#" phx-click="change_direction" phx-value-direction="by_me">By me</a>
-    /
-    <a href="#" phx-click="change_direction" phx-value-direction="all">Everyone</a>
+    <%= filter_link "For me", "change_direction", "for_me", @direction %>
+    ·
+    <%= filter_link "By me", "change_direction", "by_me", @direction %>
+    ·
+    <%= filter_link "For anyone", "change_direction", "all", @direction %>
   </p>
 </div>
 
