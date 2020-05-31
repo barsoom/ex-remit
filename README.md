@@ -99,7 +99,7 @@ Because we don't work with Ecto often and may forget.
 
 ## What came before
 
-We've reimplemented this app a few times to try out new tech.
+We've reimplemented this app a few times to try out new tech:
 
 * 2020: Remit II in Phoenix LiveView (and also to try out [Tailwind](https://tailwindcss.com/))
 * 2016: [Review](https://github.com/barsoom/review) in Phoenix/Elm
