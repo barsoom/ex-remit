@@ -6,13 +6,16 @@ defmodule Faker do
       Enum.random(["berg", "kvist", "bäck", "zon", "plopp", "is"])
   end
 
-  defp number, do: Enum.random(1..99999)
+  def number, do: Enum.random(1..99999)
 
   def sha(i \\ number()) do
     :crypto.hash(:sha, to_string(i)) |> Base.encode16() |> String.downcase()
   end
 
-  def username, do: "user#{number()}"
+  def username do
+    Enum.random(["foo", "bar", "baz", "hat", "frog", "snake", "bat"]) <>
+      Enum.random(["cat", "dog", "master", "wrangler"])
+  end
 
   def email, do: "email#{number()}@example.com"
 
