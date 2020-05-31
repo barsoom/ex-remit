@@ -1,3 +1,9 @@
+count =
+  case System.argv() do
+    [] -> 5
+    [number_string|_] -> String.to_integer(number_string)
+  end
+
 json = Jason.encode!(%{
   ref: "refs/heads/master",
   repository: %{
@@ -7,7 +13,7 @@ json = Jason.encode!(%{
       name: "acme",
     },
   },
-  commits: [
+  commits: (1..count) |> Enum.map(fn (_i) ->
     %{
       author: %{
         email: Faker.email(),
@@ -18,10 +24,12 @@ json = Jason.encode!(%{
       message: Faker.message(),
       timestamp: (DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_iso8601()),
     }
-  ],
+  end),
 }, escape: :unicode_safe)  # Make Erlang happy.
-|> IO.inspect()
 |> String.to_charlist()
+
+IO.puts "Hi! Sending #{count} commit#{unless count == 1, do: "s"} to the webhook…"
+IO.puts("")
 
 # Using :httpc to avoid adding a dependency just for this.
 :httpc.request(

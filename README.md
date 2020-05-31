@@ -48,6 +48,10 @@ You can run this to fake new commits coming in via webhook:
 
     mix wh.commits
 
+It defaults to 5 commits, but you can pass a count:
+
+    mix wh.commits 123
+
 ### Maintenance
 
     mix deps.update --all    # Update Hex deps.
