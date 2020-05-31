@@ -97,6 +97,15 @@ Because we don't work with Ecto often and may forget.
 
     Repo.one(from c in Commit, limit: 1)
 
+## What came before
+
+We've reimplemented this app a few times to try out new tech.
+
+* 2020: Remit II in Phoenix LiveView (and also to try out [Tailwind](https://tailwindcss.com/))
+* 2016: [Review](https://github.com/barsoom/review) in Phoenix/Elm
+* 2014: [Remit I](https://github.com/henrik/remit) in Ruby on Rails with AngularJS and MessageBus
+* 2014: [Hubreview](https://github.com/barsoom/hubreview) in Ruby on Rails with WebSockets
+
 ## Original instructions
 
 To start your Phoenix server:
