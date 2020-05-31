@@ -26,6 +26,7 @@ defmodule RemitWeb.Auth do
         conn
       else
         conn
+        |> put_resp_content_type("text/plain")
         |> send_resp(403, "Invalid auth_key")
         |> halt()
       end
