@@ -1,74 +1,20 @@
-# Remit with Elixir LiveView
+# Remit
 
-A lab by Henrik ca 2020-05-15.
+A self-hosted web app for [commit-by-commit code review](https://thepugautomatic.com/2014/02/code-review/), written using [Phoenix](https://www.phoenixframework.org/) [LiveView](https://github.com/phoenixframework/phoenix_live_view).
 
-Focused on experimenting with LiveView so not very polished.
+A lab project by [Henrik](https://henrik.nyh.se) started ca 2020-05-15. [See status.](https://github.com/barsoom/ex-remit/issues/1)
 
-## Plan
+## What's the big idea?
 
-More important:
-- [ ] Highlighted comments
-- [ ] Polish comments view
-- [ ] Decide whether we want usecs in datetimes or not
-- [ ] Unique index on commit sha (and handle gracefully when pushing)
-- [ ] Save full payload to make future migrations easier?
-- [ ] Error reporting (Honeybadger)
-
-Fun polish:
-- [ ] Tooltips
-- [ ] Include reactions on comments in feed, not just comments proper
-- [ ] Relative times here and there
-- [ ] Show an indicator when you've been reviewing for a long time
-- [ ] Can Remit steal back focus so non-Fluid-app usage works better?
-
-Can wait until after we start using it:
-- [ ] Consider case sensitivity with username matching
-- [ ] Handle missed messages on reconnection (https://curiosum.dev/blog/elixir-phoenix-liveview-messenger-part-4?)
-- [ ] More tests
-- [ ] CI setup
-- [ ] Devbox setup
-- [ ] Docs (e.g. Fluid.app)
-- [ ] Consider open sourcing
-- [ ] Bump Heroku plan if needed
-- [ ] Recurring job to remove old data
-- [ ] Expiring old data
-
-Done:
-- [x] "Oldest commit" and similar stats at top
-- [x] Settings tab
-- [x] Basics
-- [x] Add Tailwind
-- [x] Store when Settings are read; expire old ones
-- [x] Consider making it a single LiveView with multiple subcomponents, so switching between tabs is snappier
-- [x] Styling
-- [x] Polish settings tab
-- [x] Highlight commits you're currently reviewing
-- [x] Settings: nilify blanks
-- [x] Gravatars
-- [x] Store settings in session? https://github.com/martinsvalin/spyfall/pull/1/files
-- [x] Maybe skip NProgress? Makes stuff feel slower than it is.
-- [x] Lock down prod access
-- [x] Get commits via webhook, cause clients to update
-- [x] Proper link to oldest commit
-- [x] Make separate copies of comments for each person who gets to see it
-- [x] Polish commits view
-- [x] Handle that a comment may not have an associated commit
-- [x] Get comments via webhook, cause clients to update
-- [x] Resolving comments
-- [x] Filtering comments
-
-
-## Usage
-
-Remit is a self-hosted web app for [commit-by-commit code review](https://thepugautomatic.com/2014/02/code-review/), written using [Phoenix](https://www.phoenixframework.org/) [LiveView](https://github.com/phoenixframework/phoenix_live_view). See below for instructions on setting it up.
-
-You add a GitHub webhook to each repo you want to review (see instructions below). Then GitHub sends all new commits and comments to Remit.
+You'll add a GitHub webhook to each repo you want to review (see instructions below). This means GitHub sends all new commits and comments to Remit.
 
 Remit shows commits and lets you mark them as reviewed. Clicking a commit opens the commit page on GitHub, where you can write comments either line-by-line or on the commit as a whole.
 
 Remit also shows you comments and lets you mark these as resolved, so you don't miss the feedback you got.
 
-We recommend putting Remit inside [Fluid.app](https://fluidapp.com/) or equivalent so you can see Remit and the GitHub commit pages side-by-side.
+When new commits and comments arrive, or when a co-worker starts a review, you see it all in real time.
+
+We recommend putting Remit inside [Fluid.app](https://fluidapp.com/) or equivalent so you can see Remit and the GitHub commit pages side-by-side. (We can't put GitHub inside an iframe, because they disallow it.)
 
 ### Setting up Fluid.app
 
