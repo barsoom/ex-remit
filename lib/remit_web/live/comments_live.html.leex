@@ -1,14 +1,38 @@
-<%= if @comments == [] do %>
+<div class="phx-hook-subscribe-to-session"></div>
+
+me: <%= @username %>
+<br>
+dir: <%= @direction %>
+<br>
+resolved state: <%= @resolved_state %>
+
+<p>
+  <a href="#" phx-click="change_resolved_state" phx-value-state="unresolved">Unresolved</a>
+  /
+  <a href="#" phx-click="change_resolved_state" phx-value-state="resolved">Resolved</a>
+  /
+  <a href="#" phx-click="change_resolved_state" phx-value-state="all">All</a>
+<p>
+  <a href="#" phx-click="change_direction" phx-value-direction="for_me">For me</a>
+  /
+  <a href="#" phx-click="change_direction" phx-value-direction="by_me">By me</a>
+  /
+  <a href="#" phx-click="change_direction" phx-value-direction="all">Everyone</a>
+</p>
+
+<%= if @notifications == [] do %>
   <div class="mx-6 mt-10 text-center">
     <p><i class="fad fa-star-shooting text-6xl text-yellow-500"></i></p>
     <p class="text-lg text-gray-mid pt-3">Nothing yet!</p>
   </div>
 <% else %>
-  <%= for comment <- @comments do %>
+  <%= for notification <- @notifications do %>
     <%= live_component @socket, RemitWeb.CommentComponent,
-      id: comment.id,
-      comment: comment,
-      commit: comment.commit
+      id: notification.id,
+      notification: notification,
+      comment: notification.comment,
+      commit: notification.comment.commit,
+      at_me: notification.username == @username
     %>
   <% end %>
 <% end %>

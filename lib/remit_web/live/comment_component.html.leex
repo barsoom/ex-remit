@@ -1,6 +1,6 @@
+<%# href="<= @comment.url >" %>
 <a
-  href="<%= @comment.url %>"
-  id="comment-<%= @comment.id %>"
+  id="comment-<%= @notification.id %>"
   class="
     block rounded no-underline
     my-2 mx-2
@@ -8,10 +8,22 @@
   "
 >
   <p class="bg-gray-400 py-1 px-3">
-    <b><%= @comment.commenter_username %></b>
+    <b><%= @comment.commenter_username %> @ <%= @notification.username %></b>
     on
     <%# We may have a comment without its commit in DB. %>
     <i><%= if @commit, do: @commit.message, else: @comment.commit_sha %></i>
   </p>
   <p class="py-1 px-3"><%= @comment.body %></p>
+  <%= if @notification.resolved_at do %>
+    <%= if @at_me do %>
+      <button phx-click="unresolve" phx-value-nid="<%= @notification.id %>">Undo resolve</button>
+    <% end %>
+    CHECK <%= @notification.resolved_at %>
+  <% else %>
+    <%= if @at_me do %>
+      <button phx-click="resolve" phx-value-nid="<%= @notification.id %>">Resolve</button>
+    <% else %>
+      PENDING
+    <% end %>
+  <% end %>
 </a>
