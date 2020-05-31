@@ -1,5 +1,5 @@
 defmodule Remit.IngestComment do
-  alias Remit.{Repo, Comment, CommentNotification, Utils}
+  alias Remit.{Repo, Comments, Comment, CommentNotification, Utils}
 
   def from_params(params) do
     comment =
@@ -18,7 +18,7 @@ defmodule Remit.IngestComment do
     |> Enum.uniq()
     |> Enum.each(& Repo.insert!(%CommentNotification{comment: comment, username: &1}))
 
-    Comment.broadcast_change()
+    Comments.broadcast_change()
   end
 
   # Private

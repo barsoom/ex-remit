@@ -8,7 +8,7 @@ defmodule RemitWeb.CommentsLive do
   @impl true
   def mount(_params, session, socket) do
     check_auth_key(session)
-    if connected?(socket), do: Comment.subscribe()
+    if connected?(socket), do: Comments.subscribe()
 
     socket =
       socket

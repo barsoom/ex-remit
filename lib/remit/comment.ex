@@ -38,12 +38,6 @@ defmodule Remit.Comment do
     )
   end
 
-  def subscribe, do: Phoenix.PubSub.subscribe(Remit.PubSub, "comments")
-
-  def broadcast_change do
-    Phoenix.PubSub.broadcast_from(Remit.PubSub, self(), "comments", :comments_changed)
-  end
-
   # Private
 
   defp other_comments_on_the_same_commit(comment) do

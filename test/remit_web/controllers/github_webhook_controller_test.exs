@@ -57,7 +57,7 @@ defmodule RemitWeb.GithubWebhookControllerTest do
     test "creates a comment and notifications, and broadcasts them" do
       parent = self()
       spawn_link(fn ->
-        Comment.subscribe()
+        Comments.subscribe()
 
         receive do
           msg -> send(parent, {:subscriber_got, msg})

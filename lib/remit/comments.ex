@@ -13,7 +13,7 @@ defmodule Remit.Comments do
       |> Ecto.Changeset.change(resolved_at: now)
       |> Repo.update!()
 
-    Comment.broadcast_change()
+    broadcast_change()
 
     comment
   end
@@ -24,9 +24,15 @@ defmodule Remit.Comments do
       |> Ecto.Changeset.change(resolved_at: nil)
       |> Repo.update!()
 
-    Comment.broadcast_change()
+    broadcast_change()
 
     comment
+  end
+
+  def subscribe, do: Phoenix.PubSub.subscribe(Remit.PubSub, "comments")
+
+  def broadcast_change do
+    Phoenix.PubSub.broadcast_from(Remit.PubSub, self(), "comments", :comments_changed)
   end
 
   # Private
