@@ -15,15 +15,15 @@
   </p>
   <p class="py-1 px-3"><%= @comment.body %></p>
   <%= if @notification.resolved_at do %>
-    <%= if @at_me do %>
+    <%= if @at_me? do %>
       <button phx-click="unresolve" phx-value-nid="<%= @notification.id %>">Undo resolve</button>
     <% end %>
     CHECK <%= @notification.resolved_at %>
   <% else %>
-    <%= if @at_me do %>
+    <%= if @at_me? do %>
       <button phx-click="resolve" phx-value-nid="<%= @notification.id %>">Resolve</button>
     <% else %>
-      PENDING
+      PENDING since <%= @notification.inserted_at %>
     <% end %>
   <% end %>
 </a>

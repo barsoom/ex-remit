@@ -32,7 +32,7 @@ resolved state: <%= @resolved_state %>
       notification: notification,
       comment: notification.comment,
       commit: notification.comment.commit,
-      at_me: notification.username == @username
+      at_me?: notification.username == @username
     %>
   <% end %>
 <% end %>
