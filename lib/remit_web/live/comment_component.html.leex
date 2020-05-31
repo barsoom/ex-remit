@@ -19,10 +19,11 @@
     </div>
     <div class="ml-auto whitespace-no-wrap">
       <%= if @notification.resolved_at do %>
-        <%= if @at_me? do %>
-          <button phx-click="unresolve" phx-value-nid="<%= @notification.id %>">Undo resolve</button>
-        <% end %>
         <i class="fas fa-check text-green-dark"></i> <%= Utils.format_datetime(@notification.resolved_at) %>
+
+        <%= if @at_me? do %>
+          <button phx-click="unresolve" phx-value-nid="<%= @notification.id %>">Unresolve</button>
+        <% end %>
       <% else %>
         <%= if @at_me? do %>
           <button phx-click="resolve" phx-value-nid="<%= @notification.id %>">Resolve</button>
