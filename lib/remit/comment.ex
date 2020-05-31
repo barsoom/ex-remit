@@ -21,10 +21,6 @@ defmodule Remit.Comment do
     timestamps()
   end
 
-  def load_latest(count) do
-    Repo.all(from c in Comment, limit: ^count, order_by: [desc: :id])
-  end
-
   def load_other_comments_in_the_same_thread(%Comment{path: nil} = comment) do
     Repo.all(
       from c in other_comments_on_the_same_commit(comment),
