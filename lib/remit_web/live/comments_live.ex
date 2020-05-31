@@ -93,8 +93,7 @@ defmodule RemitWeb.CommentsLive do
     query = from n in CommentNotification,
       limit: @max_comments,
       join: c in assoc(n, :comment),
-      preload: [comment: {c, [:commit]}],
-      order_by: [desc: :id]
+      preload: [comment: {c, [:commit]}]
 
     query =
       case socket.assigns.resolved_state do
