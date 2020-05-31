@@ -1,6 +1,4 @@
-<div class="phx-hook-subscribe-to-session"></div>
-
-<div class="px-2">
+<div class="phx-hook-subscribe-to-session info-box">
   me: <%= @username %>
   <br>
   dir: <%= @direction %>
@@ -20,22 +18,22 @@
     /
     <a href="#" phx-click="change_direction" phx-value-direction="all">Everyone</a>
   </p>
-
-  <%= if @notifications == [] do %>
-    <div class="mt-10 text-center">
-      <p><i class="fad fa-star-shooting text-6xl text-yellow-500"></i></p>
-      <p class="text-lg text-gray-mid pt-3">Nothing yet!</p>
-    </div>
-  <% else %>
-    <%= for notification <- @notifications do %>
-      <%= live_component @socket, RemitWeb.CommentComponent,
-        id: notification.id,
-        notification: notification,
-        comment: notification.comment,
-        commit: notification.comment.commit,
-        at_me?: notification.username == @username,
-        resolved?: notification.resolved_at
-      %>
-    <% end %>
-  <% end %>
 </div>
+
+<%= if @notifications == [] do %>
+  <div class="mt-10 text-center">
+    <p><i class="fad fa-star-shooting text-6xl text-yellow-500"></i></p>
+    <p class="text-lg text-gray-mid pt-3">Nothing yet!</p>
+  </div>
+<% else %>
+  <%= for notification <- @notifications do %>
+    <%= live_component @socket, RemitWeb.CommentComponent,
+      id: notification.id,
+      notification: notification,
+      comment: notification.comment,
+      commit: notification.comment.commit,
+      at_me?: notification.username == @username,
+      resolved?: notification.resolved_at
+    %>
+  <% end %>
+<% end %>
