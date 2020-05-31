@@ -81,8 +81,7 @@ defmodule RemitWeb.CommentsLive do
 
   # Receive broadcasts when new comments arrive.
   @impl true
-  # TODO: Remove comment from payload, or change to notification and use that?
-  def handle_info({:new_comment, _new_comment}, socket) do
+  def handle_info(:new_comment, socket) do
     socket = assign_filtered_notifications(socket)
 
     {:noreply, socket}
