@@ -1,14 +1,14 @@
 <a
-   href="<= @comment.url >"
+   href="<%= @comment.url %>"
   id="comment-<%= @notification.id %>"
   phx-hook="FixLink"
   class="
-    block no-underline rounded-b
-    my-2
-    bg-gray-200
+    comment
+    block no-underline rounded-b my-2 bg-gray-200
+    <%= if @resolved?, do: "comment--resolved" %>
   "
 >
-  <div class="bg-gray-400 py-1 px-3 flex rounded-t">
+  <div class="comment__metadata bg-gray-400 py-1 px-3 flex rounded-t">
     <div class="truncate mr-2">
       <b><%= @comment.commenter_username %></b>
       <i class="fas fa-chevron-right text-gray-dark"></i>
@@ -19,18 +19,19 @@
       on <%= Utils.format_datetime(@comment.commented_at) %>
     </div>
     <div class="ml-auto whitespace-no-wrap">
-      <%= if @notification.resolved_at do %>
-        <i class="fas fa-check text-green-dark"></i> <%= Utils.format_datetime(@notification.resolved_at) %>
+      <%= if @resolved? do %>
+        <i class="fas fa-check text-green-dark"></i>
+        <span class="text-gray-dark"><%= Utils.format_datetime(@notification.resolved_at) %></span>
 
         <%= if @at_me? do %>
-          <button phx-click="unresolve" phx-value-nid="<%= @notification.id %>">Unresolve</button>
+          <button phx-click="unresolve" phx-value-nid="<%= @notification.id %>" class="ml-2">Unresolve</button>
         <% end %>
       <% else %>
         <%= if @at_me? do %>
           <button phx-click="resolve" phx-value-nid="<%= @notification.id %>">Resolve</button>
         <% else %>
           <i class="fas fa-gift text-yellow-mid"></i>
-          Unresolved
+          <span class="text-gray-dark">Unresolved</span>
         <% end %>
       <% end %>
     </div>

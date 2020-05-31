@@ -38,6 +38,12 @@
   }
 }
 
+.comment {
+  &--resolved {
+    @apply opacity-50;
+  }
+}
+
 .field {
   @apply my-6;
 

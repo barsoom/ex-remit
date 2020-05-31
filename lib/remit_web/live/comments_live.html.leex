@@ -33,7 +33,8 @@
         notification: notification,
         comment: notification.comment,
         commit: notification.comment.commit,
-        at_me?: notification.username == @username
+        at_me?: notification.username == @username,
+        resolved?: notification.resolved_at
       %>
     <% end %>
   <% end %>
