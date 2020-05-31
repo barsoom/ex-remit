@@ -19,6 +19,7 @@ Fun polish:
 - [ ] Include reactions on comments in feed, not just comments proper
 - [ ] Relative times here and there
 - [ ] Show an indicator when you've been reviewing for a long time
+- [ ] Can Remit steal back focus so non-Fluid-app usage works better?
 
 Can wait until after we start using it:
 - [ ] Consider case sensitivity with username matching
