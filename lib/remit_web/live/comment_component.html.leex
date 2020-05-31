@@ -8,15 +8,16 @@
     <%= if @resolved?, do: "comment--resolved" %>
   "
 >
-  <div class="comment__metadata bg-gray-400 py-1 px-3 flex rounded-t">
+  <div class="comment__metadata bg-gray-400 py-1 px-3 flex items-center rounded-t">
     <div class="truncate mr-2">
       <b><%= @comment.commenter_username %></b>
       <i class="fas fa-chevron-right text-gray-dark"></i>
       <b><%= @notification.username %></b>
-      re:
+      on <%= Utils.format_datetime(@comment.commented_at) %>
+      <br>
+      Re:
       <%# We may have a comment without its commit in DB. %>
       <i><%= if @commit, do: @commit.message, else: @comment.commit_sha %></i>
-      on <%= Utils.format_datetime(@comment.commented_at) %>
     </div>
     <div class="ml-auto whitespace-no-wrap">
       <%= if @resolved? do %>
