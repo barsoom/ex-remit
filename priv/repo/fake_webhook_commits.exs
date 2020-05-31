@@ -1,6 +1,6 @@
 count =
   case System.argv() do
-    [] -> 5
+    [] -> 5  # Default
     [number_string|_] -> String.to_integer(number_string)
   end
 
