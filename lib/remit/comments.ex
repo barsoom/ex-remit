@@ -6,6 +6,10 @@ defmodule Remit.Comments do
     do_list_notifications(Enum.into(opts, %{}))
   end
 
+  def list_other_comments_in_the_same_thread(comment) do
+    comment |> Comment.other_comments_in_the_same_thread() |> Repo.all()
+  end
+
   def resolve(id) do
     now = DateTime.utc_now() |> DateTime.truncate(:second)
     comment =

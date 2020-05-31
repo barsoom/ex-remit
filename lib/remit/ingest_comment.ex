@@ -10,7 +10,7 @@ defmodule Remit.IngestComment do
     # Notify authors and previous commenters.
 
     previous_commenter_usernames =
-      Comment.load_other_comments_in_the_same_thread(comment)
+      Comments.list_other_comments_in_the_same_thread(comment)
       |> Enum.map(& &1.commenter_username)
 
     (comment.commit.author_usernames ++ previous_commenter_usernames)

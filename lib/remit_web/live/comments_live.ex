@@ -1,7 +1,6 @@
 defmodule RemitWeb.CommentsLive do
   use RemitWeb, :live_view
-  import Ecto.Query
-  alias Remit.{Repo, Comments, Comment, CommentNotification, Utils}
+  alias Remit.{Comments, Utils}
 
   @max_comments Application.get_env(:remit, :max_comments)
 
@@ -88,7 +87,7 @@ defmodule RemitWeb.CommentsLive do
       limit: @max_comments,
       username: socket.assigns.username,
       resolved_filter: socket.assigns.resolved_state,
-      user_filter: socket.assigns.direction,
+      user_filter: socket.assigns.direction
     )
 
     assign(socket, notifications: notifications)

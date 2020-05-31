@@ -1,7 +1,7 @@
 defmodule Remit.Comment do
   use Ecto.Schema
   import Ecto.Query
-  alias Remit.{Repo, Commit, Comment, CommentNotification}
+  alias Remit.{Commit, Comment, CommentNotification}
 
   @timestamps_opts [type: :utc_datetime]
 
@@ -21,17 +21,13 @@ defmodule Remit.Comment do
     timestamps()
   end
 
-  def load_other_comments_in_the_same_thread(%Comment{path: nil} = comment) do
-    Repo.all(
-      from c in other_comments_on_the_same_commit(comment),
-        where: is_nil(c.path)
-    )
+  def other_comments_in_the_same_thread(%Comment{path: nil} = comment) do
+    from c in other_comments_on_the_same_commit(comment),
+      where: is_nil(c.path)
   end
-  def load_other_comments_in_the_same_thread(%Comment{path: path, position: position} = comment) do
-    Repo.all(
-      from c in other_comments_on_the_same_commit(comment),
-        where: c.path == ^path and c.position == ^position
-    )
+  def other_comments_in_the_same_thread(%Comment{path: path, position: position} = comment) do
+    from c in other_comments_on_the_same_commit(comment),
+      where: c.path == ^path and c.position == ^position
   end
 
   # Private
