@@ -6,12 +6,9 @@ Focused on experimenting with LiveView so not very polished.
 
 ## Plan
 
-- [ ] Resolving comments
-- [ ] Filtering comments
+- [ ] Highlighted comments
 - [ ] Polish comments view
 - [ ] Decide whether we want usecs in datetimes or not
-- [ ] Add email (and thus Gravatars) to comments - via another API call
-- [ ] Add name to comments - via another API call
 - [ ] Unique index on commit sha (and handle gracefully when pushing)
 - [ ] Save full payload to make future migrations easier?
 
@@ -29,6 +26,8 @@ Can wait until after we start using it:
 - [ ] Bump Heroku plan if needed
 - [ ] Recurring job to remove old data
 - [ ] Expiring old data
+- [x] Resolving comments
+- [x] Filtering comments
 
 Done:
 - [x] "Oldest commit" and similar stats at top
