@@ -6,19 +6,24 @@ Focused on experimenting with LiveView so not very polished.
 
 ## Plan
 
+More important:
 - [ ] Highlighted comments
 - [ ] Polish comments view
 - [ ] Decide whether we want usecs in datetimes or not
 - [ ] Unique index on commit sha (and handle gracefully when pushing)
 - [ ] Save full payload to make future migrations easier?
+- [ ] Error reporting (Honeybadger)
+
+Fun polish:
+- [ ] Tooltips
+- [ ] Include reactions on comments in feed, not just comments proper
+- [ ] Relative times here and there
+- [ ] Show an indicator when you've been reviewing for a long time
 
 Can wait until after we start using it:
-- [ ] Show an indicator when you've been reviewing for a long time
-- [ ] Include reactions on comments in feed, not just comments proper
 - [ ] Consider case sensitivity with username matching
 - [ ] Handle missed messages on reconnection (https://curiosum.dev/blog/elixir-phoenix-liveview-messenger-part-4?)
-- [ ] Tests
-- [ ] Error reporting (Honeybadger)
+- [ ] More tests
 - [ ] CI setup
 - [ ] Devbox setup
 - [ ] Docs (e.g. Fluid.app)
@@ -26,8 +31,6 @@ Can wait until after we start using it:
 - [ ] Bump Heroku plan if needed
 - [ ] Recurring job to remove old data
 - [ ] Expiring old data
-- [x] Resolving comments
-- [x] Filtering comments
 
 Done:
 - [x] "Oldest commit" and similar stats at top
@@ -50,6 +53,8 @@ Done:
 - [x] Polish commits view
 - [x] Handle that a comment may not have an associated commit
 - [x] Get comments via webhook, cause clients to update
+- [x] Resolving comments
+- [x] Filtering comments
 
 ## Dev
 
