@@ -79,7 +79,7 @@ defmodule RemitWeb.GithubWebhookControllerTest do
       assert comment.body == "Hello world!"
 
       # Broadcasts to subscribers.
-      assert_receive {:subscriber_got, :new_comment}
+      assert_receive {:subscriber_got, :comments_changed}
 
       # Notifies committer(s).
       assert Repo.exists?(from CommentNotification, where: [username: "riffraff"])

@@ -51,6 +51,7 @@ defmodule RemitWeb.CommentsLive do
     |> Ecto.Changeset.change(resolved_at: now)
     |> Repo.update!()
 
+    Comment.broadcast_change()
     socket = assign_filtered_notifications(socket)
 
     {:noreply, socket}
@@ -62,6 +63,7 @@ defmodule RemitWeb.CommentsLive do
     |> Ecto.Changeset.change(resolved_at: nil)
     |> Repo.update!()
 
+    Comment.broadcast_change()
     socket = assign_filtered_notifications(socket)
 
     {:noreply, socket}
@@ -79,9 +81,10 @@ defmodule RemitWeb.CommentsLive do
   end
   def handle_event("set_session", _, socket), do: {:noreply, socket}
 
-  # Receive broadcasts when new comments arrive.
+  # Receive broadcasts when new comments arrive or have their state changed by another user.
   @impl true
-  def handle_info(:new_comment, socket) do
+  def handle_info(:comments_changed, socket) do
+    # We just re-load from DB; filtering in memory could get fiddly if we need to hang on to both a filtered and an unfiltered list.
     socket = assign_filtered_notifications(socket)
 
     {:noreply, socket}

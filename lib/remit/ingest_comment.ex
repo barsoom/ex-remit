@@ -18,7 +18,7 @@ defmodule Remit.IngestComment do
     |> Enum.uniq()
     |> Enum.each(& Repo.insert!(%CommentNotification{comment: comment, username: &1}))
 
-    Comment.broadcast_new_comment(comment)
+    Comment.broadcast_change()
   end
 
   # Private
