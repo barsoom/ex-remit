@@ -6,6 +6,29 @@ defmodule Remit.Comments do
     do_list_notifications(Enum.into(opts, %{}))
   end
 
+  def resolve(id) do
+    now = DateTime.utc_now() |> DateTime.truncate(:second)
+    comment =
+      Repo.get_by(CommentNotification, id: id)
+      |> Ecto.Changeset.change(resolved_at: now)
+      |> Repo.update!()
+
+    Comment.broadcast_change()
+
+    comment
+  end
+
+  def unresolve(id) do
+    comment =
+      Repo.get_by(CommentNotification, id: id)
+      |> Ecto.Changeset.change(resolved_at: nil)
+      |> Repo.update!()
+
+    Comment.broadcast_change()
+
+    comment
+  end
+
   # Private
 
   defp do_list_notifications(%{username: username, resolved_filter: resolved_filter, user_filter: user_filter, limit: limit}) do

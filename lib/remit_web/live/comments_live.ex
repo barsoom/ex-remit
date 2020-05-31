@@ -46,12 +46,7 @@ defmodule RemitWeb.CommentsLive do
 
   @impl true
   def handle_event("resolve", %{"nid" => id}, socket) do
-    now = DateTime.utc_now() |> DateTime.truncate(:second)
-    Repo.get_by(CommentNotification, id: id)
-    |> Ecto.Changeset.change(resolved_at: now)
-    |> Repo.update!()
-
-    Comment.broadcast_change()
+    Comments.resolve(id)
     socket = assign_filtered_notifications(socket)
 
     {:noreply, socket}
@@ -59,11 +54,7 @@ defmodule RemitWeb.CommentsLive do
 
   @impl true
   def handle_event("unresolve", %{"nid" => id}, socket) do
-    Repo.get_by(CommentNotification, id: id)
-    |> Ecto.Changeset.change(resolved_at: nil)
-    |> Repo.update!()
-
-    Comment.broadcast_change()
+    Comments.unresolve(id)
     socket = assign_filtered_notifications(socket)
 
     {:noreply, socket}
