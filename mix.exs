@@ -62,6 +62,7 @@ defmodule Remit.MixProject do
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate", "test"],
       "wh.commits": ["run priv/repo/fake_webhook_commits.exs"],
+      "wh.comments": ["run priv/repo/fake_webhook_comments.exs"],
     ]
   end
 end

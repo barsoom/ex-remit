@@ -32,4 +32,12 @@ defmodule Faker do
       Enum.random(["", "", "", "", "", "", "", "", "", "", "with monads", "in the cloud"])
   end
 
+  def comment do
+    Enum.random([
+      "Looks great!",
+      "Ship it!",
+      "Sensational!",
+      "Needs more cowbell.",
+    ])
+  end
 end

@@ -40,6 +40,7 @@ First time:
 
     # Get some fake data via the webhook
     mix wh.commits
+    mix wh.comments
 
 Every time:
 
@@ -47,13 +48,21 @@ Every time:
 
 Then visit <http://localhost:4000?auth_key=dev>
 
-You can run this to fake new commits coming in via webhook:
+### Fake new commits/comments coming in via webhook
+
+Just run either or both of these commands:
 
     mix wh.commits
+    mix wh.comments
 
-It defaults to 5 commits, but you can pass a count:
+They default to adding just a few, but you can pass a count:
 
-    mix wh.commits 123
+    # Add 100 commits via one webhook call.
+    mix wh.commits 100
+
+    # Add 100 comments via 100 webhook calls (GitHub sends one per call).
+    # May not be listed exactly 100 times in the UI, because we list based on CommentNotifications.
+    mix wh.comments 100
 
 ### Maintenance
 
