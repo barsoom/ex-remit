@@ -1,38 +1,44 @@
-<div class="
-    phx-hook-subscribe-to-session
-    info-box
-  "
->
-  <%= if @username && @email do %>
-    <p>
-      There's <b><%= @unreviewed_count %></b> commit<%= if @unreviewed_count != 1, do: "s" %> to review
-      (<b><%= @others_unreviewed_count %></b> by others; <b><%= @my_unreviewed_count %></b> by you).
-      <%= if @oldest_unreviewed_for_me do %>
-      <p>Maybe do one from <a href="#commit-<%= @oldest_unreviewed_for_me.id %>" phx-click="selected" phx-value-cid="<%= @oldest_unreviewed_for_me.id %>" phx-hook="ScrollToTarget"><%= Utils.format_datetime(@oldest_unreviewed_for_me.committed_at) %></a> next.</p>
-      <% else %>
-        <p>
-          <i class="fas fa-trophy text-yellow-mid"></i>
-          Nothing left for you to review!
-        </p>
-      <% end %>
-    </p>
-  <% else %>
-    <p>Hello! Please <%= live_patch("set a username and email", to: Routes.tabs_path(@socket, :settings)) %>.</p>
-    <p>There's <b><%= @unreviewed_count %></b> commit<%= if @unreviewed_count != 1, do: "s" %> to review.</p>
-  <% end %>
-</div>
+<div class="phx-hook-subscribe-to-session"></div>
 
-<%= for commit <- @commits do %>
-  <%# We use live components specifically so that only changed commits (not all of them) are passed via the socket. %>
-  <%# We prefer this to the "temporary assigns" optimisation, as that complicates logic by not holding the full list of commits as state. %>
-  <%= live_component @socket, RemitWeb.CommitComponent,
-    id: commit.id,
-    commit: commit,
-    email: @email,
-    being_reviewed?: commit.review_started_at && !commit.reviewed_at,
-    reviewed?: commit.reviewed_at,
-    you_authored?: Commit.authored_by?(commit, @username),
-    you_are_reviewing?: Commit.being_reviewed_by?(commit, @email),
-    your_last_selected_commit?: (@your_last_selected_commit_id == commit.id)
-  %>
+<%= if @commits == [] do %>
+
+  <%= live_component @socket, RemitWeb.NoContentComponent %>
+
+<% else %>
+
+  <div class="info-box">
+    <%= if @username && @email do %>
+      <p>
+        There's <b><%= @unreviewed_count %></b> commit<%= if @unreviewed_count != 1, do: "s" %> to review
+        (<b><%= @others_unreviewed_count %></b> by others; <b><%= @my_unreviewed_count %></b> by you).
+        <%= if @oldest_unreviewed_for_me do %>
+        <p>Maybe do one from <a href="#commit-<%= @oldest_unreviewed_for_me.id %>" phx-click="selected" phx-value-cid="<%= @oldest_unreviewed_for_me.id %>" phx-hook="ScrollToTarget"><%= Utils.format_datetime(@oldest_unreviewed_for_me.committed_at) %></a> next.</p>
+        <% else %>
+          <p>
+            <i class="fas fa-trophy text-yellow-mid"></i>
+            Nothing left for you to review!
+          </p>
+        <% end %>
+      </p>
+    <% else %>
+      <p>Hello! Please <%= live_patch("set a username and email", to: Routes.tabs_path(@socket, :settings)) %>.</p>
+      <p>There's <b><%= @unreviewed_count %></b> commit<%= if @unreviewed_count != 1, do: "s" %> to review.</p>
+    <% end %>
+  </div>
+
+  <%= for commit <- @commits do %>
+    <%# We use live components specifically so that only changed commits (not all of them) are passed via the socket. %>
+    <%# We prefer this to the "temporary assigns" optimisation, as that complicates logic by not holding the full list of commits as state. %>
+    <%= live_component @socket, RemitWeb.CommitComponent,
+      id: commit.id,
+      commit: commit,
+      email: @email,
+      being_reviewed?: commit.review_started_at && !commit.reviewed_at,
+      reviewed?: commit.reviewed_at,
+      you_authored?: Commit.authored_by?(commit, @username),
+      you_are_reviewing?: Commit.being_reviewed_by?(commit, @email),
+      your_last_selected_commit?: (@your_last_selected_commit_id == commit.id)
+    %>
+  <% end %>
+
 <% end %>
