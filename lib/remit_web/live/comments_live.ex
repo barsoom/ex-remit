@@ -13,8 +13,8 @@ defmodule RemitWeb.CommentsLive do
       socket
       |> assign(
         username: session["username"],
-        resolved_state: "unresolved",
-        direction: "for_me"
+        resolved_filter: "unresolved",
+        user_state: "for_me"
       )
       |> assign_filtered_notifications()
 
@@ -22,20 +22,20 @@ defmodule RemitWeb.CommentsLive do
   end
 
   @impl true
-  def handle_event("change_resolved_state", %{"filter" => state}, socket) do
+  def handle_event("change_resolved_filter", %{"filter" => state}, socket) do
     socket =
       socket
-      |> assign(resolved_state: state)
+      |> assign(resolved_filter: state)
       |> assign_filtered_notifications()
 
     {:noreply, socket}
   end
 
   @impl true
-  def handle_event("change_direction", %{"filter" => direction}, socket) do
+  def handle_event("change_user_state", %{"filter" => user_state}, socket) do
     socket =
       socket
-      |> assign(direction: direction)
+      |> assign(user_state: user_state)
       |> assign_filtered_notifications()
 
     {:noreply, socket}
@@ -84,8 +84,8 @@ defmodule RemitWeb.CommentsLive do
     notifications = Comments.list_notifications(
       limit: @max_comments,
       username: socket.assigns.username,
-      resolved_filter: socket.assigns.resolved_state,
-      user_filter: socket.assigns.direction
+      resolved_filter: socket.assigns.resolved_filter,
+      user_filter: socket.assigns.user_state
     )
 
     assign(socket, notifications: notifications)
