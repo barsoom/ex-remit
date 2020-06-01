@@ -66,7 +66,6 @@ config :remit, RemitWeb.Endpoint,
   ]
 
 config :remit,
-  allow_seeding: true,
   favicon: "favicon-dev.png",
   auth_key: "dev",
   webhook_key: "dev"

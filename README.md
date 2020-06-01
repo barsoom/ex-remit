@@ -35,8 +35,11 @@ Assumed to be run *outside* of devbox, at the time of writing.
 
 First time:
 
-    # Creates DB, migrates, seeds
+    # Creates DB and migrates
     mix ecto.setup
+
+    # Get some fake data via the webhook
+    mix wh.commits
 
 Every time:
 
