@@ -14,11 +14,11 @@ Remit shows commits and lets you mark them as reviewed. Clicking a commit opens 
 
 Remit also shows you comments and lets you mark these as resolved, so you don't miss the feedback you got.
 
-When new commits and comments arrive, or when a co-worker starts a review, you see it all in real time.
-
-We recommend putting Remit inside [Fluid.app](https://fluidapp.com/) or equivalent so you can see Remit and the GitHub commit pages side-by-side. (We can't put GitHub inside an iframe, because they disallow it.)
+When new commits and comments arrive, or when a co-worker starts a review, you see it all in real time thanks to the magic of WebSockets.
 
 ### Setting up Fluid.app
+
+We recommend putting Remit inside [Fluid.app](https://fluidapp.com/) or equivalent so you can see Remit and the GitHub commit pages side-by-side. (We can't put GitHub inside an iframe, because they disallow it.)
 
 TODO: Instructions
 
@@ -104,6 +104,16 @@ The hook should be something like:
     - Pushes
 
 You should see a happy green checkmark on GitHub, and if you click the hook, "Recent Deliveries" should show a successful ping-pong interaction.
+
+### Automatically remove old data
+
+So you don't grow out of your database plan.
+
+* Add the free Heroku Scheduler add-on.
+
+* Then schedule something like this task to run daily:
+
+      psql $DATABASE_URL -c "DELETE FROM comment_notifications WHERE inserted_at < NOW() - INTERVAL '100 days'; DELETE FROM comments WHERE inserted_at < NOW() - INTERVAL '100 days'; DELETE FROM commits WHERE inserted_at < NOW() - INTERVAL '100 days'"
 
 ## Example queries
 
