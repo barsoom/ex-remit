@@ -17,6 +17,9 @@ import {Socket} from "phoenix"
 import NProgress from "nprogress"
 import {LiveSocket} from "phoenix_live_view"
 
+
+/* LIVE SOCKET */
+
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 
 let Hooks = {}
@@ -95,3 +98,34 @@ liveSocket.connect()
 // >> liveSocket.enableDebug()
 // >> liveSocket.enableLatencySim(1000)
 window.liveSocket = liveSocket
+
+
+/* USER SOCKET AND CONNECTION CHANNEL */
+
+// We use a socket with a frequent "heartbeat" to detect two situations:
+//
+// 1. You've lost your connection for a while (computer sleep, network blip…). We reload to ensure you didn't miss any updates. Until you reconnect and are reloaded, the .phx-disconnected CSS indicates something is wrong.
+//
+// 2. A new revision of the app is deployed, so the socket is killed on the server-side and then you're reconnected. We reload to ensure you've got the latest app.
+//
+// To achieve this, we set a frequent heartbeat both here in the client, and on the server-side via endpoint.ex. See: https://elixirforum.com/t/can-phoenix-channel-detect-client-offline-immediately-like-wifi-disconnected/25104/18
+//
+// If we set the heartbeat/timeout values too low, any bit of latency will set it off, so we try to strike a balance.
+
+let authKey = document.querySelector("meta[name='auth_key']").getAttribute("content")
+let userSocket = new Socket("/socket", {
+  params: {auth_key: authKey},
+  heartbeatIntervalMs: 5000,  // Should be shorter than endpoint.ex socket timeout.
+})
+userSocket.connect()
+
+let hasJoinedBefore = false
+let connectionChannel = userSocket.channel("connection", {})
+connectionChannel.join().receive("ok", () => {
+  if (hasJoinedBefore) {
+    console.log("It's a re-join, fellows! Reloading the browser.")
+    location.reload()
+  } else {
+    hasJoinedBefore = true
+  }
+})

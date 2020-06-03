@@ -42,4 +42,12 @@ defmodule RemitWeb.Auth do
       if given_auth_key != @expected_auth_key, do: throw("Invalid auth_key in LiveView: #{given_auth_key}")
     end
   end
+
+  defmodule Socket do
+    @expected_auth_key Application.get_env(:remit, :auth_key)
+
+    def authed_via_socket_params?(%{"auth_key" => given_auth_key}) do
+      given_auth_key == @expected_auth_key
+    end
+  end
 end

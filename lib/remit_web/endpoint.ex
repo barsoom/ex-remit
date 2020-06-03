@@ -11,8 +11,9 @@ defmodule RemitWeb.Endpoint do
     signing_salt: "ndGdfBhJ"
   ]
 
+  # Intentionally low timeout: see `userSocket` in app.js for details.
   socket "/socket", RemitWeb.UserSocket,
-    websocket: [timeout: 45_000],
+    websocket: [timeout: 10_000],
     longpoll: false
 
   socket "/live", Phoenix.LiveView.Socket,
