@@ -15,7 +15,8 @@ defmodule RemitWeb.Router do
   scope "/", RemitWeb do
     pipe_through :browser
 
-    live "/", TabsLive, :commits
+    get "/", Redirect, to: "/commits"
+    live "/commits", TabsLive, :commits
     live "/comments", TabsLive, :comments
     live "/settings", TabsLive, :settings
   end
