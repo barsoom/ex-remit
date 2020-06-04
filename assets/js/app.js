@@ -100,34 +100,45 @@ liveSocket.connect()
 window.liveSocket = liveSocket
 
 
-/* CONNECTION DETECTION SOCKET */
+/* CONNECTION DETECTION AND NEW DEPLOY DETECTION
+ *
+ * We set up our own socket and channel to handle two scenarios:
+ *
+ * 1. You've lost your connection for a while (computer sleep, network blip…). We detect it via pings from the server, and reload the page to ensure you didn't miss any updates. See: https://elixirforum.com/t/can-phoenix-channel-detect-client-offline-immediately-like-wifi-disconnected/25104/18
+ *
+ * 2. A new revision of the app is deployed, so we should reload the page to ensure you use the new revision. Heroku will close the socket briefly during deploy, causing a reconnection. We detect that reconnect, and reload the page.
+ *
+ * We can't rely on #1 alone, since the restart may be quicker than our ping-detection threshold. We also can't rely solely on #2, because it is only likely to reconnect quickly when the socket is shut down cleanly on the server and tells the client. Otherwise it can take a minute or so for the client to realise the socket is dead.
+ *
+ * We try to strike a balance between not triggering at every brief connection blip, and detecting longer blips quickly, but there are no guarantees that we can't miss ill-timed broadcasts during a below-the-threshold blip. That's acceptable for this app.
+ */
 
-// We use a socket with a frequent "heartbeat" to detect two situations:
-//
-// 1. You've lost your connection for a while (computer sleep, network blip…). We reload to ensure you didn't miss any updates. Until you reconnect and are reloaded, the .consocket-closed CSS indicates something is wrong.
-//
-// 2. A new revision of the app is deployed, so the socket is killed on the server-side and then you're reconnected. We reload to ensure you've got the latest app.
-//
-// To achieve this, we set a frequent heartbeat both here in the client, and on the server-side via endpoint.ex. See: https://elixirforum.com/t/can-phoenix-channel-detect-client-offline-immediately-like-wifi-disconnected/25104/18
-//
-// If we set the heartbeat/timeout values too low, any bit of latency will set it off, so we try to strike a balance.
+const OFFLINE_IF_UNPUNG_FOR_SECONDS = 5
 
 let authKey = document.querySelector("meta[name='auth_key']").getAttribute("content")
-let conSocket = new Socket("/consocket", {
-  params: {auth_key: authKey},
-  heartbeatIntervalMs: 5000,  // Should be shorter than endpoint.ex socket timeout.
-})
+let socket = new Socket("/socket", {params: {auth_key: authKey}})
+socket.connect()
 
-conSocket.onClose(() => document.body.classList.add("consocket-closed"))
+let pingChannel = socket.channel("ping", {})
 
-let hasConnectedBefore = false
-conSocket.onOpen(() => {
-  if (hasConnectedBefore) {
-    console.log("It's a re-connect, fellows! Reloading the browser.")
+let hasJoinedBefore = false
+pingChannel.join().receive("ok", () => {
+  if (hasJoinedBefore) {
     location.reload()
   } else {
-    hasConnectedBefore = true
+    hasJoinedBefore = true
   }
 })
 
-conSocket.connect()
+let isOffline = false
+let setAsOfflineTimer = null
+pingChannel.on("ping", () => {
+  if (isOffline) { location.reload() }
+
+  clearTimeout(setAsOfflineTimer)
+
+  setAsOfflineTimer = setTimeout(() => {
+    isOffline = true
+    document.body.classList.add("ping-offline")
+  }, OFFLINE_IF_UNPUNG_FOR_SECONDS * 1000)
+})

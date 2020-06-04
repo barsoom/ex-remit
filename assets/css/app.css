@@ -16,9 +16,12 @@
   transition: opacity 1s ease-out;
 }
 
-/* .phx-disconnected is applied to a LiveView container when LiveView thinks it's disconnected. */
-/* .consocket-closed is applied by our own ConnectionDetectionSocket JS when the connection drops. */
-.phx-disconnected, .consocket-closed {
+/*
+ * .phx-disconnected is applied to a LiveView container when LiveView thinks it's disconnected.
+ * .ping-offline is applied by our own connection detection JS when the connection drops.
+ * These don't always co-occur. A LiveView process can crash while we still receive connection detection pings, and connection detection can trigger before LiveView notices.
+ * */
+.phx-disconnected, .ping-offline {
   cursor: wait;
 
   & * {

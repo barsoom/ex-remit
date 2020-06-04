@@ -70,11 +70,11 @@ They default to adding just a few, but you can pass a count:
     cd assets && npm update  # Update JS deps.
     mix test                 # Verify things didn't break.
 
-### Working on the `ConnectionChannel` connection detection
+### Working on the connection detection
 
 You probably want to temporarily set `code_reloading: false` in dev.exs to make sure Phoenix code reloading doesn't come into it.
 
-To trigger a disconnection detection in dev, you can load Remit, turn off the Phoenix server for several seconds, then turn it back on. This should be detected as a disconnection and the page should be automatically reloaded.
+To trigger a disconnection detection in dev, you can load Remit, turn off the Phoenix server for several seconds, then turn it back on. This should be detected as a disconnection and the page should be automatically reloaded. See `app.js`.
 
 ## Production
 

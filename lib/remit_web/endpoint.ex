@@ -12,8 +12,8 @@ defmodule RemitWeb.Endpoint do
   ]
 
   # See app.js for details.
-  socket "/consocket", RemitWeb.ConnectionDetectionSocket,
-    websocket: [timeout: 10_000],
+  socket "/socket", RemitWeb.UserSocket,
+    websocket: [timeout: 45_000],
     longpoll: false
 
   socket "/live", Phoenix.LiveView.Socket,

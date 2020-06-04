@@ -1,5 +1,7 @@
-defmodule RemitWeb.ConnectionDetectionSocket do
+defmodule RemitWeb.UserSocket do
   use Phoenix.Socket
+
+  channel "ping", RemitWeb.PingChannel
 
   @impl true
   def connect(socket_params, socket, _connect_info) do
@@ -10,7 +12,7 @@ defmodule RemitWeb.ConnectionDetectionSocket do
     end
   end
 
-  # Socket id's are topics that allow you to identify all sockets for a given user:
+  # Socket `id`s are topics that allow you to identify all sockets for a given user:
   #
   #     def id(socket), do: "user_socket:#{socket.assigns.user_id}"
   #
