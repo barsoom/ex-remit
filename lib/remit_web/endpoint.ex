@@ -11,8 +11,8 @@ defmodule RemitWeb.Endpoint do
     signing_salt: "ndGdfBhJ"
   ]
 
-  # Intentionally low timeout: see `userSocket` in app.js for details.
-  socket "/socket", RemitWeb.UserSocket,
+  # See app.js for details.
+  socket "/consocket", RemitWeb.ConnectionDetectionSocket,
     websocket: [timeout: 10_000],
     longpoll: false
 

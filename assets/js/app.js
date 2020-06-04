@@ -100,11 +100,11 @@ liveSocket.connect()
 window.liveSocket = liveSocket
 
 
-/* USER SOCKET AND CONNECTION CHANNEL */
+/* CONNECTION DETECTION SOCKET */
 
 // We use a socket with a frequent "heartbeat" to detect two situations:
 //
-// 1. You've lost your connection for a while (computer sleep, network blip…). We reload to ensure you didn't miss any updates. Until you reconnect and are reloaded, the .phx-disconnected CSS indicates something is wrong.
+// 1. You've lost your connection for a while (computer sleep, network blip…). We reload to ensure you didn't miss any updates. Until you reconnect and are reloaded, the .consocket-closed CSS indicates something is wrong.
 //
 // 2. A new revision of the app is deployed, so the socket is killed on the server-side and then you're reconnected. We reload to ensure you've got the latest app.
 //
@@ -113,19 +113,21 @@ window.liveSocket = liveSocket
 // If we set the heartbeat/timeout values too low, any bit of latency will set it off, so we try to strike a balance.
 
 let authKey = document.querySelector("meta[name='auth_key']").getAttribute("content")
-let userSocket = new Socket("/socket", {
+let conSocket = new Socket("/consocket", {
   params: {auth_key: authKey},
   heartbeatIntervalMs: 5000,  // Should be shorter than endpoint.ex socket timeout.
 })
-userSocket.connect()
 
-let hasJoinedBefore = false
-let connectionChannel = userSocket.channel("connection", {})
-connectionChannel.join().receive("ok", () => {
-  if (hasJoinedBefore) {
-    console.log("It's a re-join, fellows! Reloading the browser.")
+conSocket.onClose(() => document.body.classList.add("consocket-closed"))
+
+let hasConnectedBefore = false
+conSocket.onOpen(() => {
+  if (hasConnectedBefore) {
+    console.log("It's a re-connect, fellows! Reloading the browser.")
     location.reload()
   } else {
-    hasJoinedBefore = true
+    hasConnectedBefore = true
   }
 })
+
+conSocket.connect()

@@ -16,8 +16,9 @@
   transition: opacity 1s ease-out;
 }
 
-/* Applied to a LiveView container if the client doesn't get replies to its heartbeats. */
-.phx-disconnected {
+/* .phx-disconnected is applied to a LiveView container when LiveView thinks it's disconnected. */
+/* .consocket-closed is applied by our own ConnectionDetectionSocket JS when the connection drops. */
+.phx-disconnected, .consocket-closed {
   cursor: wait;
 
   & * {
