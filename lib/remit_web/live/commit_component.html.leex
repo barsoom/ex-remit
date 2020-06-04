@@ -39,7 +39,6 @@
         </button>
       <% @being_reviewed? && !@you_are_reviewing? -> %>
         <div class="text-gray-mid" title="Since <%= Utils.format_datetime(@commit.review_started_at) %>">
-          <%= gravatar(@commit.review_started_by_email, "gravatar--small inline") %>
           Reviewing…
         </div>
       <% !@you_authored? && @email -> %>
@@ -60,6 +59,8 @@
         <button phx-click="mark_unreviewed" phx-value-cid="<%= @commit.id %>" class="bg-red-100" title="Cancel review">
           <i class="fas fa-eye-slash text-red-700"></i>
         </button>
+      <% @being_reviewed? && !@you_are_reviewing? -> %>
+          <%= gravatar(@commit.review_started_by_email, "gravatar--small opacity-50") %>
       <% true -> %>
         <%# Take up same amount of space as the Gravatar would. %>
         <div class="gravatar--small"></div>
