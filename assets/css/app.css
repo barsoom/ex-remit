@@ -28,3 +28,9 @@
     pointer-events: none;
   }
 }
+
+.ping-offline__banner {
+  display: none;
+
+  .ping-offline & { display: block; }
+}
