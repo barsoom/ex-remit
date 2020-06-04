@@ -7,12 +7,33 @@
   @apply flex;
 
   &__tab {
-    @apply text-base py-2 flex-1 text-center border-r border-b border-gray-mid bg-gray-100;
+    @apply text-base py-2 px-3 flex-1 text-center border-r border-b border-gray-mid bg-gray-100;
     @apply no-underline;
 
     @apply text-gray-dark;
 
     &:last-child { border-right: 0; }
+
+    .tabs__tab__text {
+      @apply ml-1;
+    }
+
+    &.tabs__tab--settings {
+      @apply flex-none;
+
+      .tabs__tab__text {
+        display: none;
+        @apply ml-0;
+      }
+      &.tabs__tab--current {
+        @apply flex-1;
+
+        .tabs__tab__text {
+          display: inline;
+          @apply ml-1;
+        }
+      }
+    }
 
     &--current {
       @apply bg-white border-b-0 text-almost-black;
