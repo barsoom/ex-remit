@@ -11,13 +11,13 @@
     <%= if @your_last_selected_commit?, do: " commit--highlight" %>
   ">
   <div class="flex-none mr-3">
-    <%= gravatar(@commit.author_email, "rounded #{if @reviewed?, do: "gravatar--small", else: "gravatar--big"}") %>
+    <%= gravatar(@commit.author_email, "rounded #{if @reviewed? || @you_authored?, do: "gravatar--small", else: "gravatar--big"}") %>
   </div>
   <div class="flex-1">
-    <p class="<%= if @reviewed?, do: "inline", else: "mb-1 text-sm leading-snug" %>"><%= Commit.message_summary(@commit) %></p>
-    <p class="<%= if @reviewed?, do: "inline", else: "" %>">
+    <p class="<%= if @reviewed? || @you_authored?, do: "inline", else: "mb-1 text-sm leading-snug" %>"><%= Commit.message_summary(@commit) %></p>
+    <p class="<%= if @reviewed? || @you_authored?, do: "inline", else: "" %>">
       in <b title="<%= @commit.owner %>/<%= @commit.repo %>"><%= @commit.repo %></b>
-      <%= unless @reviewed? do %>
+      <%= unless @reviewed? || @you_authored? do %>
         by <%= author_names(@commit) %>
         on <%= Utils.format_datetime(@commit.committed_at) %>
       <% end %>
