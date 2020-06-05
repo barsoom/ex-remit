@@ -55,12 +55,12 @@ defmodule Remit.Commit do
   def subscribe, do: Phoenix.PubSub.subscribe(Remit.PubSub, "commits")
 
   def broadcast_changed_commit(commit) do
-    Phoenix.PubSub.broadcast_from(Remit.PubSub, self(), "commits", {:changed_commit, commit})
+    Phoenix.PubSub.broadcast_from!(Remit.PubSub, self(), "commits", {:changed_commit, commit})
   end
 
   def broadcast_new_commits([]), do: nil  # No-op.
   def broadcast_new_commits(commits) do
-    Phoenix.PubSub.broadcast_from(Remit.PubSub, self(), "commits", {:new_commits, commits})
+    Phoenix.PubSub.broadcast_from!(Remit.PubSub, self(), "commits", {:new_commits, commits})
   end
 
   # Private
