@@ -1,7 +1,7 @@
 <a
   href="<%= @commit.url %>"
   id="commit-<%= @commit.id %>"
-  phx-click="selected" phx-value-cid="<%= @commit.id %>" phx-hook="FixLink"
+  phx-click="selected" phx-value-id="<%= @commit.id %>" phx-hook="FixLink"
   class="
     flex items-center no-underline
     border border-solid border-gray-light rounded
@@ -28,12 +28,12 @@
       <% @reviewed? && @you_authored? -> %>
         <%# Don't show buttons. %>
       <% @reviewed? && !@you_authored? && @email -> %>
-        <button phx-click="mark_unreviewed" phx-value-cid="<%= @commit.id %>" class="opacity-25 hover:opacity-100">
+        <button phx-click="mark_unreviewed" phx-value-id="<%= @commit.id %>" class="opacity-25 hover:opacity-100">
           <i class="far fa-eye-slash"></i>
           Mark as new
         </button>
       <% @being_reviewed? && @you_are_reviewing? -> %>
-        <button phx-click="mark_reviewed" phx-value-cid="<%= @commit.id %>" class="bg-green-light">
+        <button phx-click="mark_reviewed" phx-value-id="<%= @commit.id %>" class="bg-green-light">
           <i class="fas fa-check text-green-dark"></i>
           Mark as reviewed
         </button>
@@ -42,7 +42,7 @@
           In review
         </div>
       <% !@you_authored? && @email -> %>
-        <button phx-click="start_review" phx-value-cid="<%= @commit.id %>" class="hover:bg-yellow-100 hover:border-yellow-mid">
+        <button phx-click="start_review" phx-value-id="<%= @commit.id %>" class="hover:bg-yellow-100 hover:border-yellow-mid">
           <i class="fas fa-eye text-yellow-mid"></i>
           Start review
         </button>
@@ -56,7 +56,7 @@
       <% @reviewed? -> %>
         <%= gravatar(@commit.reviewed_by_email, "gravatar--small") %>
       <% @being_reviewed? && @you_are_reviewing? -> %>
-        <button phx-click="mark_unreviewed" phx-value-cid="<%= @commit.id %>" class="bg-red-100" title="Cancel review">
+        <button phx-click="mark_unreviewed" phx-value-id="<%= @commit.id %>" class="bg-red-100" title="Cancel review">
           <i class="fas fa-eye-slash text-red-700"></i>
         </button>
       <% @being_reviewed? && !@you_are_reviewing? -> %>

@@ -21,28 +21,25 @@ defmodule RemitWeb.CommitsLive do
   end
 
   @impl true
-  def handle_event("selected", %{"cid" => commit_id}, socket) do
-    {:noreply, assign_selected_commit_id(socket, commit_id)}
+  def handle_event("selected", %{"id" => id}, socket) do
+    {:noreply, assign_selected_id(socket, id)}
   end
 
   @impl true
-  def handle_event("start_review", %{"cid" => commit_id}, socket) do
-    commit = Commit.mark_as_review_started!(commit_id, socket.assigns.email)
-
+  def handle_event("start_review", %{"id" => id}, socket) do
+    commit = Commit.mark_as_review_started!(id, socket.assigns.email)
     {:noreply, assign_and_broadcast_changed_commit(socket, commit)}
   end
 
   @impl true
-  def handle_event("mark_reviewed", %{"cid" => commit_id}, socket) do
-    commit = Commit.mark_as_reviewed!(commit_id, socket.assigns.email)
-
+  def handle_event("mark_reviewed", %{"id" => id}, socket) do
+    commit = Commit.mark_as_reviewed!(id, socket.assigns.email)
     {:noreply, assign_and_broadcast_changed_commit(socket, commit)}
   end
 
   @impl true
-  def handle_event("mark_unreviewed", %{"cid" => commit_id}, socket) do
-    commit = Commit.mark_as_unreviewed!(commit_id)
-
+  def handle_event("mark_unreviewed", %{"id" => id}, socket) do
+    commit = Commit.mark_as_unreviewed!(id)
     {:noreply, assign_and_broadcast_changed_commit(socket, commit)}
   end
 
@@ -61,18 +58,14 @@ defmodule RemitWeb.CommitsLive do
   # Receive events when other LiveViews update settings.
   @impl true
   def handle_event("set_session", ["email", email], socket) do
-    socket = socket |> assign(email: Utils.normalize_string(email))
-
-    {:noreply, socket}
+    {:noreply, assign(socket, email: Utils.normalize_string(email))}
   end
 
   # Receive broadcasts when other clients update their state.
   @impl true
   def handle_info({:changed_commit, commit}, socket) do
     commits = socket.assigns.commits |> replace_commit(commit)
-    socket = socket |> assign_commits_and_stats(commits)
-
-    {:noreply, socket}
+    {:noreply, assign_commits_and_stats(socket, commits)}
   end
 
   # Receive broadcasts when new commits arrive.
@@ -80,10 +73,7 @@ defmodule RemitWeb.CommitsLive do
   def handle_info({:new_commits, new_commits}, socket) do
     # Another option here would be to just reload the latest commits from DB.
     commits = Enum.slice(new_commits ++ socket.assigns.commits, 0, @max_commits)
-
-    socket = socket |> assign_commits_and_stats(commits)
-
-    {:noreply, socket}
+    {:noreply, assign_commits_and_stats(socket, commits)}
   end
 
   # Private
@@ -95,11 +85,11 @@ defmodule RemitWeb.CommitsLive do
 
     socket
     |> assign_commits_and_stats(commits)
-    |> assign_selected_commit_id(commit.id)
+    |> assign_selected_id(commit.id)
   end
 
-  defp assign_selected_commit_id(socket, commit_id) when is_integer(commit_id), do: assign(socket, your_last_selected_commit_id: commit_id)
-  defp assign_selected_commit_id(socket, commit_id) when is_binary(commit_id), do: assign_selected_commit_id(socket, String.to_integer(commit_id))
+  defp assign_selected_id(socket, id) when is_integer(id), do: assign(socket, your_last_selected_commit_id: id)
+  defp assign_selected_id(socket, id) when is_binary(id), do: assign_selected_id(socket, String.to_integer(id))
 
   defp assign_commits_and_stats(socket, commits) do
     unreviewed_count = commits |> Enum.count(& !&1.reviewed_at)
