@@ -1,11 +1,12 @@
 <a
    href="<%= @comment.url %>"
   id="comment-<%= @notification.id %>"
-  phx-hook="FixLink"
+  phx-click="selected" phx-value-id="<%= @notification.id %>" phx-hook="FixLink"
   class="
     comment
+    <%= if @your_last_selected?, do: " comment--highlight" %>
     block no-underline rounded-b my-2 mx-2 bg-gray-200
-    <%= if @resolved?, do: "comment--resolved" %>
+    <%= if @resolved?, do: " comment--resolved" %>
   "
 >
   <div class="comment__metadata bg-gray-400 py-1 px-3 flex items-center rounded-t">
@@ -25,14 +26,14 @@
         <span class="text-gray-dark"><%= Utils.format_datetime(@notification.resolved_at) %></span>
 
         <%= if @at_me? do %>
-          <button phx-click="unresolve" phx-value-nid="<%= @notification.id %>" class="ml-2">
+          <button phx-click="unresolve" phx-value-id="<%= @notification.id %>" class="ml-2">
             <i class="far fa-eye-slash"></i>
             Mark as new
           </button>
         <% end %>
       <% else %>
         <%= if @at_me? do %>
-          <button phx-click="resolve" phx-value-nid="<%= @notification.id %>" class="bg-green-light">
+          <button phx-click="resolve" phx-value-id="<%= @notification.id %>" class="bg-green-light">
             <i class="fas fa-check text-green-dark"></i>
             Resolve
           </button>

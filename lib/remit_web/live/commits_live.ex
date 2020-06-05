@@ -22,9 +22,7 @@ defmodule RemitWeb.CommitsLive do
 
   @impl true
   def handle_event("selected", %{"cid" => commit_id}, socket) do
-    socket = assign_selected_commit_id(socket, commit_id)
-
-    {:noreply, socket}
+    {:noreply, assign_selected_commit_id(socket, commit_id)}
   end
 
   @impl true

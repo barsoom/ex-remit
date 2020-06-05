@@ -86,6 +86,12 @@
   &--resolved {
     @apply opacity-50;
   }
+
+  &--highlight {
+    .comment__metadata {
+      @apply bg-yellow-300;
+    }
+  }
 }
 
 .field {

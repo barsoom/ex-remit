@@ -34,7 +34,9 @@
       comment: notification.comment,
       commit: notification.comment.commit,
       at_me?: notification.username == @username,
-      resolved?: notification.resolved_at
+      resolved?: notification.resolved_at,
+      your_last_selected?: (@your_last_selected_id == notification.id)
+
     %>
   <% end %>
 

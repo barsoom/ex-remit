@@ -16,11 +16,17 @@ defmodule RemitWeb.CommentsLive do
       |> assign(
         username: username,
         resolved_filter: "unresolved",
-        user_state: (if username, do: "for_me", else: "all")
+        user_state: (if username, do: "for_me", else: "all"),
+        your_last_selected_id: nil
       )
       |> assign_filtered_notifications()
 
     {:ok, socket}
+  end
+
+  @impl true
+  def handle_event("selected", %{"id" => id}, socket) do
+    {:noreply, assign_selected_id(socket, id)}
   end
 
   @impl true
@@ -44,16 +50,18 @@ defmodule RemitWeb.CommentsLive do
   end
 
   @impl true
-  def handle_event("resolve", %{"nid" => id}, socket) do
+  def handle_event("resolve", %{"id" => id}, socket) do
     Comments.resolve(id)
+    socket = assign_selected_id(socket, id)
     socket = assign_filtered_notifications(socket)
 
     {:noreply, socket}
   end
 
   @impl true
-  def handle_event("unresolve", %{"nid" => id}, socket) do
+  def handle_event("unresolve", %{"id" => id}, socket) do
     Comments.unresolve(id)
+    socket = assign_selected_id(socket, id)
     socket = assign_filtered_notifications(socket)
 
     {:noreply, socket}
@@ -81,6 +89,9 @@ defmodule RemitWeb.CommentsLive do
   end
 
   # Private
+
+  defp assign_selected_id(socket, id) when is_integer(id), do: assign(socket, your_last_selected_id: id)
+  defp assign_selected_id(socket, id) when is_binary(id), do: assign_selected_id(socket, String.to_integer(id))
 
   defp assign_filtered_notifications(socket) do
     notifications = Comments.list_notifications(
