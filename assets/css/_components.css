@@ -56,10 +56,13 @@
     @apply bg-green-light;
   }
   &--highlight&--reviewed {
-    background-color: #eaffa8;  /* Green/yellow. */
+    @apply bg-chartreuse;
   }
   &--being-reviewed {
     @apply bg-blue-100;
+  }
+  &--highlight&--being-reviewed {
+    @apply bg-chartreuse;
   }
 
   &__reviewing-icon {
