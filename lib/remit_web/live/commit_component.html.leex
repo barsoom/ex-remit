@@ -38,8 +38,8 @@
           Mark as reviewed
         </button>
       <% @being_reviewed? && !@you_are_reviewing? -> %>
-        <div class="text-gray-mid" title="Since <%= Utils.format_datetime(@commit.review_started_at) %>">
-          Reviewing…
+        <div class="text-gray-dark" title="Since <%= Utils.format_datetime(@commit.review_started_at) %>">
+          In review
         </div>
       <% !@you_authored? && @email -> %>
         <button phx-click="start_review" phx-value-cid="<%= @commit.id %>" class="hover:bg-yellow-100 hover:border-yellow-mid">
@@ -60,7 +60,12 @@
           <i class="fas fa-eye-slash text-red-700"></i>
         </button>
       <% @being_reviewed? && !@you_are_reviewing? -> %>
-          <%= gravatar(@commit.review_started_by_email, "gravatar--small opacity-50") %>
+          <div class="relative">
+            <div class="absolute z-10 top-0 left-0 right-0 top-0 bottom-0 flex justify-center items-center">
+              <i class="fas fa-eye commit__reviewing-icon text-almost-black"></i>
+            </div>
+            <%= gravatar(@commit.review_started_by_email, "gravatar--small commit__pending-reviewer-avatar opacity-50") %>
+          </div>
       <% true -> %>
         <%# Take up same amount of space as the Gravatar would. %>
         <div class="gravatar--small"></div>

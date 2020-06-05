@@ -61,6 +61,25 @@
   &--being-reviewed {
     @apply bg-blue-100;
   }
+
+  &__reviewing-icon {
+    @keyframes heartbeat {
+      70% {
+        opacity: 0.8;
+        transform: scale(1);
+      }
+      100% {
+        opacity: 0.6;
+        transform: scale(1.4);
+      }
+    }
+
+    /* 1.6s to be a calm heartrate-like speed. 100 BPM ≈ 1.6s each. */
+    animation: 1.6s ease-in-out infinite alternate both heartbeat;
+    margin-right: 2px;
+
+    text-shadow: 0 0 3px #fff;
+  }
 }
 
 .comment {
