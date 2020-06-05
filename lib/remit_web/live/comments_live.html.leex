@@ -4,19 +4,19 @@
   <% end %>
 
   <p>
-    <%= filter_link "Unresolved", "change_resolved_filter", "unresolved", @resolved_filter %>
+    <%= filter_link @socket, assigns, "Unresolved", is: "unresolved" %>
     ·
-    <%= filter_link "Resolved", "change_resolved_filter", "resolved", @resolved_filter %>
+    <%= filter_link @socket, assigns, "Resolved", is: "resolved" %>
     ·
-    <%= filter_link "All comments", "change_resolved_filter", "all", @resolved_filter %>
+    <%= filter_link @socket, assigns, "All comments", is: "all" %>
   </p>
   <%= if @username do %>
     <p>
-      <%= filter_link "For me", "change_user_state", "for_me", @user_state %>
+      <%= filter_link @socket, assigns, "For me", role: "for_me" %>
       ·
-      <%= filter_link "By me", "change_user_state", "by_me", @user_state %>
+      <%= filter_link @socket, assigns, "By me", role: "by_me" %>
       ·
-      <%= filter_link "For anyone", "change_user_state", "all", @user_state %>
+      <%= filter_link @socket, assigns, "For anyone", role: "all" %>
     </p>
   <% end %>
 </div>

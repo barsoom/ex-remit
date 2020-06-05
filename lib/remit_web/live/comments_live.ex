@@ -15,8 +15,8 @@ defmodule RemitWeb.CommentsLive do
       socket
       |> assign(
         username: username,
-        resolved_filter: "unresolved",
-        user_state: (if username, do: "for_me", else: "all"),
+        is: session["is"] || "unresolved",
+        role: session["role"] || (if username, do: "for_me", else: "all"),
         your_last_selected_id: nil
       )
       |> assign_filtered_notifications()
@@ -27,26 +27,6 @@ defmodule RemitWeb.CommentsLive do
   @impl true
   def handle_event("selected", %{"id" => id}, socket) do
     {:noreply, assign_selected_id(socket, id)}
-  end
-
-  @impl true
-  def handle_event("change_resolved_filter", %{"filter" => state}, socket) do
-    socket =
-      socket
-      |> assign(resolved_filter: state)
-      |> assign_filtered_notifications()
-
-    {:noreply, socket}
-  end
-
-  @impl true
-  def handle_event("change_user_state", %{"filter" => user_state}, socket) do
-    socket =
-      socket
-      |> assign(user_state: user_state)
-      |> assign_filtered_notifications()
-
-    {:noreply, socket}
   end
 
   @impl true
@@ -97,14 +77,17 @@ defmodule RemitWeb.CommentsLive do
     notifications = Comments.list_notifications(
       limit: @max_comments,
       username: socket.assigns.username,
-      resolved_filter: socket.assigns.resolved_filter,
-      user_filter: socket.assigns.user_state
+      resolved_filter: socket.assigns.is,
+      user_filter: socket.assigns.role
     )
 
     assign(socket, notifications: notifications)
   end
 
-  defp filter_link(text, event, value, current_value) do
-    Phoenix.HTML.Tag.content_tag(:a, text, href: "#", "phx-click": event, "phx-value-filter": value, class: (if current_value == value, do: "font-bold no-underline"))
+  defp filter_link(socket, assigns, text, is: is) do
+    live_patch text, to: Routes.tabs_path(socket, :comments, is: is, role: assigns.role), class: (if is == assigns.is, do: "font-bold no-underline")
+  end
+  defp filter_link(socket, assigns, text, role: role) do
+    live_patch text, to: Routes.tabs_path(socket, :comments, is: assigns.is, role: role), class: (if role == assigns.role, do: "font-bold no-underline")
   end
 end
