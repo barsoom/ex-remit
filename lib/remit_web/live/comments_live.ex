@@ -9,12 +9,14 @@ defmodule RemitWeb.CommentsLive do
     check_auth_key(session)
     if connected?(socket), do: Comments.subscribe()
 
+    username = session["username"]
+
     socket =
       socket
       |> assign(
-        username: session["username"],
+        username: username,
         resolved_filter: "unresolved",
-        user_state: "for_me"
+        user_state: (if username, do: "for_me", else: "all")
       )
       |> assign_filtered_notifications()
 

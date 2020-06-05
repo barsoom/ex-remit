@@ -21,7 +21,7 @@
         <% end %>
       </p>
     <% else %>
-      <p>Hello! Please <%= live_patch("set a username and email", to: Routes.tabs_path(@socket, :settings)) %>.</p>
+      <p>Hello, stranger! Please <%= live_patch("set a username and email", to: Routes.tabs_path(@socket, :settings)) %>.</p>
       <p>There's <b><%= @unreviewed_count %></b> commit<%= if @unreviewed_count != 1, do: "s" %> to review.</p>
     <% end %>
   </div>

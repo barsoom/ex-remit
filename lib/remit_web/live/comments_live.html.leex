@@ -1,4 +1,8 @@
 <div class="phx-hook-subscribe-to-session info-box">
+  <%= unless @username do %>
+    <p>Hello, stranger! Please <%= live_patch("set a username", to: Routes.tabs_path(@socket, :settings)) %>.</p>
+  <% end %>
+
   <p>
     <%= filter_link "Unresolved", "change_resolved_filter", "unresolved", @resolved_filter %>
     ·
@@ -6,13 +10,15 @@
     ·
     <%= filter_link "All comments", "change_resolved_filter", "all", @resolved_filter %>
   </p>
-  <p>
-    <%= filter_link "For me", "change_user_state", "for_me", @user_state %>
-    ·
-    <%= filter_link "By me", "change_user_state", "by_me", @user_state %>
-    ·
-    <%= filter_link "For anyone", "change_user_state", "all", @user_state %>
-  </p>
+  <%= if @username do %>
+    <p>
+      <%= filter_link "For me", "change_user_state", "for_me", @user_state %>
+      ·
+      <%= filter_link "By me", "change_user_state", "by_me", @user_state %>
+      ·
+      <%= filter_link "For anyone", "change_user_state", "all", @user_state %>
+    </p>
+  <% end %>
 </div>
 
 <%= if @notifications == [] do %>
