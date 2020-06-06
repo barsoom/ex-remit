@@ -24,3 +24,7 @@ config :remit,
 
 # Print only warnings and errors during test
 config :logger, level: :warn
+
+config :honeybadger,
+  environment_name: :test,
+  api_key: "not-used"
