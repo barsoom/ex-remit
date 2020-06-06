@@ -29,10 +29,10 @@ defmodule Remit.Factory do
   end
 
   def build(name, attributes) do
-    name |> build() |> struct(attributes)
+    name |> build() |> struct!(attributes)
   end
 
-  def insert!(factory_name, attributes \\ []) do
-    build(factory_name, attributes) |> Repo.insert!
+  def insert!(name, attributes \\ []) do
+    name |> build(attributes) |> Repo.insert!()
   end
 end
