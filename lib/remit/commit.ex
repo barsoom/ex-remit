@@ -24,6 +24,8 @@ defmodule Remit.Commit do
     timestamps()
   end
 
+  def latest(count), do: from Commit, limit: ^count, order_by: [desc: :id]
+
   def authored_by?(_commit, nil), do: false
   def authored_by?(commit, username), do: Enum.member?(commit.author_usernames, username)
 

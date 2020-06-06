@@ -3,12 +3,11 @@ defmodule Remit.Commits do
   import Ecto.Query
 
   def list_latest(count) do
-    Repo.all(from Commit, limit: ^count, order_by: [desc: :id])
+    Commit.latest(count) |> Repo.all()
   end
 
   def list_latest_shas(count) do
-    Repo.all(from Commit, limit: ^count, order_by: [desc: :id], select: [:sha])
-    |> Enum.map(& &1.sha)
+    (from Commit.latest(count), select: [:sha]) |> Repo.all() |> Enum.map(& &1.sha)
   end
 
   def mark_as_reviewed!(id, reviewer_email) when is_binary(reviewer_email) do
