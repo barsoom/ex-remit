@@ -1,7 +1,7 @@
 # https://hexdocs.pm/ecto/test-factories.html
 
 defmodule Remit.Factory do
-  alias Remit.{Repo, Commit}
+  alias Remit.{Repo, Commit, Comment}
 
   def build(:commit) do
     %Commit{
@@ -14,6 +14,17 @@ defmodule Remit.Factory do
       message: Faker.message(),
       url: "https://example.com/",
       committed_at: (DateTime.utc_now() |> DateTime.truncate(:second)),
+    }
+  end
+
+  def build(:comment) do
+    %Comment{
+      github_id: Faker.number(),
+      commit_sha: Faker.sha(),
+      body: Faker.message(),
+      url: "http://example.com/",
+      commenter_username: Faker.username(),
+      commented_at: DateTime.utc_now() |> DateTime.truncate(:second),
     }
   end
 

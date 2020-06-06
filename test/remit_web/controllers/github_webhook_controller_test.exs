@@ -1,7 +1,7 @@
 defmodule RemitWeb.GithubWebhookControllerTest do
   use RemitWeb.ConnCase
   import Ecto.Query
-  alias Remit.{Repo, Commits, Commit, Comments, Comment, CommentNotification}
+  alias Remit.{Repo, Commits, Commit, Comments, Comment, CommentNotification, Factory}
 
   describe "'ping' event" do
     test "pongs back" do
@@ -64,8 +64,8 @@ defmodule RemitWeb.GithubWebhookControllerTest do
         end
       end)
 
-      create_commit(sha: "abc123", usernames: ["riffraff", "magenta"])
-      create_comment(sha: "abc123", username: "charles")
+      Factory.insert!(:commit, sha: "abc123", author_usernames: ["riffraff", "magenta"])
+      Factory.insert!(:comment, commit_sha: "abc123", commenter_username: "charles")
 
       conn =
         build_comment_payload(sha: "abc123", username: "ada")
@@ -171,30 +171,5 @@ defmodule RemitWeb.GithubWebhookControllerTest do
         body: "Hello world!",
       },
     }
-  end
-
-  defp create_commit(sha: sha, usernames: usernames) do
-    %Commit{
-      sha: sha,
-      author_email: Faker.email(),
-      author_name: Faker.human_name(),
-      author_usernames: usernames,
-      owner: "acme",
-      repo: Faker.repo(),
-      message: Faker.message(),
-      committed_at: DateTime.utc_now() |> DateTime.truncate(:second),
-      url: "http://example.com/",
-    } |> Repo.insert!
-  end
-
-  defp create_comment(sha: sha, username: username) do
-    %Comment{
-      github_id: Faker.number(),
-      commit_sha: sha,
-      body: Faker.message(),
-      commented_at: DateTime.utc_now() |> DateTime.truncate(:second),
-      commenter_username: username,
-      url: "http://example.com/",
-    } |> Repo.insert!
   end
 end
