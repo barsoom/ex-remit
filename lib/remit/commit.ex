@@ -24,14 +24,6 @@ defmodule Remit.Commit do
     timestamps()
   end
 
-  def load_latest(count) do
-    Repo.all(from Commit, limit: ^count, order_by: [desc: :id])
-  end
-
-  def shas(limit: limit) do
-    Repo.all(from Commit, select: [:sha], order_by: [desc: :id], limit: ^limit) |> Enum.map(& &1.sha)
-  end
-
   def mark_as_reviewed!(id, reviewer_email) when is_binary(reviewer_email) do
     update!(id, reviewed_at: now(), reviewed_by_email: reviewer_email)
   end

@@ -1,6 +1,6 @@
 defmodule RemitWeb.CommitsLive do
   use RemitWeb, :live_view
-  alias Remit.{Commit, Utils}
+  alias Remit.{Commits, Commit, Utils}
 
   @max_commits Application.get_env(:remit, :max_commits)
 
@@ -9,7 +9,7 @@ defmodule RemitWeb.CommitsLive do
     check_auth_key(session)
     if connected?(socket), do: Commit.subscribe()
 
-    commits = Commit.load_latest(@max_commits)
+    commits = Commits.list_latest(@max_commits)
 
     socket =
       socket

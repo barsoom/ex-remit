@@ -4,7 +4,7 @@ count =
     [number_string|_] -> String.to_integer(number_string)
   end
 
-shas = Remit.Commit.shas(limit: 100)
+shas = Remit.Commits.list_latest_shas(100)
 if shas == [] do
   IO.puts(:stderr, "Must have commits first!")
   exit(:shutdown)
