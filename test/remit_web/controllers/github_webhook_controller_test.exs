@@ -1,7 +1,7 @@
 defmodule RemitWeb.GithubWebhookControllerTest do
   use RemitWeb.ConnCase
   import Ecto.Query
-  alias Remit.{Repo, Commit, Comments, Comment, CommentNotification}
+  alias Remit.{Repo, Commits, Commit, Comments, Comment, CommentNotification}
 
   describe "'ping' event" do
     test "pongs back" do
@@ -16,7 +16,7 @@ defmodule RemitWeb.GithubWebhookControllerTest do
       parent = self()
 
       spawn_link(fn ->
-        Commit.subscribe()
+        Commits.subscribe()
 
         receive do
           msg -> send(parent, {:subscriber_got, msg})

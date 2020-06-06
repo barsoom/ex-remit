@@ -1,11 +1,11 @@
 defmodule Remit.IngestCommits do
-  alias Remit.{Repo, Commit, Utils}
+  alias Remit.{Repo, Commits, Commit, Utils}
 
   def from_params(params) do
     build_commits(params)
     |> Enum.map(& Repo.insert!(&1))
     |> Enum.reverse()  # Inserted newest last, but shown newest first.
-    |> Commit.broadcast_new_commits()
+    |> Commits.broadcast_new_commits()
   end
 
   # Private

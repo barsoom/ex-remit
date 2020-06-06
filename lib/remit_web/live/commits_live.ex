@@ -7,7 +7,7 @@ defmodule RemitWeb.CommitsLive do
   @impl true
   def mount(_params, session, socket) do
     check_auth_key(session)
-    if connected?(socket), do: Commit.subscribe()
+    if connected?(socket), do: Commits.subscribe()
 
     commits = Commits.list_latest(@max_commits)
 
@@ -27,19 +27,19 @@ defmodule RemitWeb.CommitsLive do
 
   @impl true
   def handle_event("start_review", %{"id" => id}, socket) do
-    commit = Commit.mark_as_review_started!(id, socket.assigns.email)
+    commit = Commits.mark_as_review_started!(id, socket.assigns.email)
     {:noreply, assign_and_broadcast_changed_commit(socket, commit)}
   end
 
   @impl true
   def handle_event("mark_reviewed", %{"id" => id}, socket) do
-    commit = Commit.mark_as_reviewed!(id, socket.assigns.email)
+    commit = Commits.mark_as_reviewed!(id, socket.assigns.email)
     {:noreply, assign_and_broadcast_changed_commit(socket, commit)}
   end
 
   @impl true
   def handle_event("mark_unreviewed", %{"id" => id}, socket) do
-    commit = Commit.mark_as_unreviewed!(id)
+    commit = Commits.mark_as_unreviewed!(id)
     {:noreply, assign_and_broadcast_changed_commit(socket, commit)}
   end
 
@@ -81,7 +81,7 @@ defmodule RemitWeb.CommitsLive do
   defp assign_and_broadcast_changed_commit(socket, commit) do
     commits = socket.assigns.commits |> replace_commit(commit)
 
-    Commit.broadcast_changed_commit(commit)
+    Commits.broadcast_changed_commit(commit)
 
     socket
     |> assign_commits_and_stats(commits)
