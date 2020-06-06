@@ -7,7 +7,7 @@ defmodule Remit.Commits do
   end
 
   def list_latest_shas(count) do
-    (from Commit.latest(count), select: [:sha]) |> Repo.all() |> Enum.map(& &1.sha)
+    Repo.all(from c in Commit.latest(count), select: c.sha)
   end
 
   def mark_as_reviewed!(id, reviewer_email) when is_binary(reviewer_email) do
