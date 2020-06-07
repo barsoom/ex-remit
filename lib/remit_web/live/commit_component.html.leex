@@ -61,7 +61,7 @@
         </button>
       <% @being_reviewed? && !@you_are_reviewing? -> %>
           <div class="relative">
-            <div class="absolute z-10 top-0 left-0 right-0 top-0 bottom-0 flex justify-center items-center">
+            <div class="absolute z-10 top-0 left-0 right-0 top-0 bottom-0 flex justify-center items-center pointer-events-none">
               <i class="fas fa-eye commit__reviewing-icon text-almost-black"></i>
             </div>
             <%= gravatar(@commit.review_started_by_email, "gravatar--small commit__pending-reviewer-avatar opacity-50") %>
