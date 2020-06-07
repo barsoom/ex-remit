@@ -9,4 +9,15 @@ defmodule Remit.CommitTest do
       assert Commit.message_summary(%Commit{message: "My summary\r\nMore info"}) == "My summary"
     end
   end
+
+  describe "authored_by?" do
+    test "is true if you're among the author usernames, case-insensitive" do
+      commit = %Commit{author_usernames: ["foo", "bar"]}
+      assert Commit.authored_by?(commit, "foo")
+      assert Commit.authored_by?(commit, "bar")
+      assert Commit.authored_by?(commit, "BAr")
+      refute Commit.authored_by?(commit, "baz")
+      refute Commit.authored_by?(commit, nil)
+    end
+  end
 end

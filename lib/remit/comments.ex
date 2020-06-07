@@ -58,8 +58,8 @@ defmodule Remit.Comments do
       case {username, user_filter} do
         {nil, _} -> query
         {_, "all"} -> query
-        {_, "for_me"} -> from n in query, where: n.username == ^username
-        {_, "by_me"} -> from [n, c] in query, where: c.commenter_username == ^username
+        {_, "for_me"} -> from n in query, where: fragment("LOWER(?)", n.username) == ^String.downcase(username)
+        {_, "by_me"} -> from [n, c] in query, where: fragment("LOWER(?)", c.commenter_username) == ^String.downcase(username)
       end
 
     Repo.all(query)
