@@ -78,8 +78,6 @@ To trigger a disconnection detection in dev, you can load Remit, turn off the Ph
 
 ## Production
 
-The `POOL_SIZE` for the running dyno is 18, so we've got 2 spare on a Heroku hobby plan.
-
 Deploy:
 
     script/deploy
@@ -97,6 +95,11 @@ Need to reset the DB on Heroku because you've rethought everything about the DB?
 ### Setup
 
 Configure ENV variables for `AUTH_KEY` and `WEBHOOK_KEY`.
+
+Set e.g.
+
+    # 16 is suitable on a free plan. The max is 20, we'll use 2 for one-off dynos, and 2 as a buffer.
+    heroku config:set POOL_SIZE=16
 
 Add a webhook on each reviewed repo in GitHub (at Auctionet, we've got scripts to do this in batch).
 
