@@ -8,7 +8,7 @@ defmodule Remit.Factory do
       sha: Faker.sha(),
       author_email: Faker.email(),
       author_name: Faker.human_name(),
-      author_usernames: [Faker.username()],
+      usernames: [Faker.username()],
       owner: "acme",
       repo: Faker.repo(),
       message: Faker.message(),

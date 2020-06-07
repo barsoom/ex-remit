@@ -6,7 +6,7 @@ defmodule RemitWeb.CommitComponent do
     img_tag(Gravatar.url(email), alt: "", title: email, class: class)
   end
 
-  defp author_names(%Commit{author_usernames: usernames, author_name: name}) do
+  defp author_names(%Commit{usernames: usernames, author_name: name}) do
     content_tag(:span, title: name) do
       usernames
       |> Enum.map(& content_tag(:b, &1))

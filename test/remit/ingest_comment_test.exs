@@ -6,7 +6,7 @@ defmodule Remit.IngestCommentTest do
   # We're not duplicating some tests that are already covered in GithubWebhookControllerTest.
 
   test "creates a notification for each committer" do
-    Factory.insert!(:commit, sha: "abc123", author_usernames: ["riffraff", "magenta"])
+    Factory.insert!(:commit, sha: "abc123", usernames: ["riffraff", "magenta"])
 
     build_params(sha: "abc123", username: "ada") |> IngestComment.from_params()
 
@@ -15,7 +15,7 @@ defmodule Remit.IngestCommentTest do
   end
 
   test "creates a notification for each previous commenter in the same thread" do
-    Factory.insert!(:commit, sha: "abc123", author_usernames: ["riffraff", "magenta"])
+    Factory.insert!(:commit, sha: "abc123", usernames: ["riffraff", "magenta"])
 
     Factory.insert!(:comment, commit_sha: "abc123", commenter_username: "rocky")
     Factory.insert!(:comment, commit_sha: "abc123", commenter_username: "brad", path: "slab.ff", position: 10)
@@ -39,7 +39,7 @@ defmodule Remit.IngestCommentTest do
   end
 
   test "does not create notifications for the comment author (case-insensitive)" do
-    Factory.insert!(:commit, sha: "abc123", author_usernames: ["riffraff"])
+    Factory.insert!(:commit, sha: "abc123", usernames: ["riffraff"])
     Factory.insert!(:comment, commit_sha: "abc123", commenter_username: "riffraff")
 
     build_params(sha: "abc123", username: "RiffRaff") |> IngestComment.from_params()

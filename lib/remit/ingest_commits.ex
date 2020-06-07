@@ -41,7 +41,7 @@ defmodule Remit.IngestCommits do
       sha: sha,
       author_email: author_email,
       author_name: author_name,
-      author_usernames: usernames_from_author(author),
+      usernames: usernames_from_author(author),
       message: message,
       committed_at: Utils.date_time_from_iso8601!(raw_committed_at),
       url: url,

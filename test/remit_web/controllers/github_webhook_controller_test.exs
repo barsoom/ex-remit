@@ -64,7 +64,7 @@ defmodule RemitWeb.GithubWebhookControllerTest do
         end
       end)
 
-      Factory.insert!(:commit, sha: "abc123", author_usernames: ["riffraff", "magenta"])
+      Factory.insert!(:commit, sha: "abc123", usernames: ["riffraff", "magenta"])
       Factory.insert!(:comment, commit_sha: "abc123", commenter_username: "charles")
 
       conn =

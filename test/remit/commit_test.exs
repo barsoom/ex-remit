@@ -11,8 +11,8 @@ defmodule Remit.CommitTest do
   end
 
   describe "authored_by?" do
-    test "is true if you're among the author usernames, case-insensitive" do
-      commit = %Commit{author_usernames: ["foo", "bar"]}
+    test "is true if you're among the usernames, case-insensitive" do
+      commit = %Commit{usernames: ["foo", "bar"]}
       assert Commit.authored_by?(commit, "foo")
       assert Commit.authored_by?(commit, "bar")
       assert Commit.authored_by?(commit, "BAr")

@@ -9,7 +9,7 @@ defmodule Remit.Commit do
     field :sha, :string
     field :author_email, :string
     field :author_name, :string
-    field :author_usernames, {:array, :string}
+    field :usernames, {:array, :string}
     field :owner, :string
     field :repo, :string
     field :message, :string
@@ -27,7 +27,7 @@ defmodule Remit.Commit do
   def latest(count), do: from Commit, limit: ^count, order_by: [desc: :id]
 
   def authored_by?(_commit, nil), do: false
-  def authored_by?(commit, username), do: commit.author_usernames |> Enum.map(&String.downcase/1) |> Enum.member?(String.downcase(username))
+  def authored_by?(commit, username), do: commit.usernames |> Enum.map(&String.downcase/1) |> Enum.member?(String.downcase(username))
 
   def being_reviewed_by?(%Commit{review_started_by_email: email}, email) when not is_nil(email), do: true
   def being_reviewed_by?(_, _), do: false

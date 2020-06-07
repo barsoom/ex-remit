@@ -10,13 +10,13 @@ defmodule Remit.IngestComment do
     # Notify authors and previous commenters.
 
     lower_commenter_username = String.downcase(comment.commenter_username)
-    author_usernames = if comment.commit, do: comment.commit.author_usernames, else: []
+    commit_usernames = if comment.commit, do: comment.commit.usernames, else: []
 
     previous_commenter_usernames =
       Comments.list_other_comments_in_the_same_thread(comment)
       |> Enum.map(& &1.commenter_username)
 
-    (author_usernames ++ previous_commenter_usernames)
+    (commit_usernames ++ previous_commenter_usernames)
     |> Enum.reject(& String.downcase(&1) == lower_commenter_username)
     |> Enum.uniq()
     |> Enum.each(& Repo.insert!(%CommentNotification{comment: comment, username: &1}))
