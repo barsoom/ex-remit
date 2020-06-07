@@ -19,7 +19,7 @@
       </div>
       Re:
       <%# We may have a comment without its commit in DB. %>
-      <i class="truncate"><%= if @commit, do: @commit.message, else: @comment.commit_sha %></i>
+      <i class="truncate"><%= if @commit, do: Commit.message_summary(@commit), else: @comment.commit_sha %></i>
     </div>
     <div class="ml-auto whitespace-no-wrap">
       <%= if @resolved? do %>

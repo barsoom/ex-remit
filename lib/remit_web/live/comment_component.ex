@@ -1,6 +1,6 @@
 defmodule RemitWeb.CommentComponent do
   use RemitWeb, :live_component
-  alias Remit.Utils
+  alias Remit.{Commit, Utils}
 
   @github_avatar_size 20
 
