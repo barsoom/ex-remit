@@ -11,8 +11,8 @@ config :remit,
   ecto_repos: [Remit.Repo],
   favicon: "favicon.png",
   # If too low, we may miss stuff. If too high, performance may suffer.
-  max_commits: 200,
-  max_comments: 200
+  max_commits: 300,
+  max_comments: 300
 
 # Configures the endpoint
 config :remit, RemitWeb.Endpoint,
