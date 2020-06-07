@@ -1,5 +1,5 @@
 defmodule RemitWeb.NoContentComponent do
-  use Phoenix.LiveComponent
+  use RemitWeb, :live_component
 
   def render(assigns) do
     ~L"""

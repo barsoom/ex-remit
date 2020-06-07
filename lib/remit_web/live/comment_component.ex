@@ -1,4 +1,4 @@
 defmodule RemitWeb.CommentComponent do
-  use Phoenix.LiveComponent
+  use RemitWeb, :live_component
   alias Remit.Utils
 end
