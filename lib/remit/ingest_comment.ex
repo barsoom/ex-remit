@@ -43,7 +43,7 @@ defmodule Remit.IngestComment do
       "created_at" => raw_commented_at,
       "body" => body,
     },
-  }) do
+  } = payload) do
     %Comment{
       github_id: id,
       commit_sha: sha,
@@ -53,6 +53,7 @@ defmodule Remit.IngestComment do
       path: path,
       position: position,
       url: url,
+      payload: payload,
     }
   end
 end

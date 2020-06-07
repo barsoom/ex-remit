@@ -37,7 +37,7 @@ defmodule Remit.IngestCommits do
       "committer" => committer,
       "message" => message,
       "timestamp" => raw_committed_at,
-    }, owner, repo)
+    } = payload, owner, repo)
   do
     %Commit{
       owner: owner,
@@ -48,6 +48,7 @@ defmodule Remit.IngestCommits do
       message: message,
       committed_at: Utils.date_time_from_iso8601!(raw_committed_at),
       url: url,
+      payload: payload,
     }
   end
 

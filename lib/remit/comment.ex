@@ -14,6 +14,7 @@ defmodule Remit.Comment do
     field :path, :string
     field :position, :integer
     field :url, :string
+    field :payload, :map
 
     has_many :comment_notifications, CommentNotification
     belongs_to :commit, Commit, foreign_key: :commit_sha, references: :sha, define_field: false
