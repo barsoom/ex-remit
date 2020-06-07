@@ -17,7 +17,6 @@ json = Jason.encode!(%{
     %{
       author: %{
         email: Faker.email(),
-        name: Faker.human_name(),
         username: Faker.username(),
       },
       id: Faker.sha(),

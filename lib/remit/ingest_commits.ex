@@ -33,7 +33,6 @@ defmodule Remit.IngestCommits do
       "url" => url,
       "author" => (%{
         "email" => author_email,
-        "name" => author_name,
       } = author),
       "committer" => committer,
       "message" => message,
@@ -45,7 +44,6 @@ defmodule Remit.IngestCommits do
       repo: repo,
       sha: sha,
       author_email: author_email,
-      author_name: author_name,
       usernames: usernames(author, committer),
       message: message,
       committed_at: Utils.date_time_from_iso8601!(raw_committed_at),

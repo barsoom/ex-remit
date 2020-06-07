@@ -7,7 +7,6 @@ defmodule Remit.Factory do
     %Commit{
       sha: Faker.sha(),
       author_email: Faker.email(),
-      author_name: Faker.human_name(),
       usernames: [Faker.username()],
       owner: "acme",
       repo: Faker.repo(),

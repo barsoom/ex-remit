@@ -1,11 +1,4 @@
 defmodule Faker do
-  def human_name do
-    Enum.random(["Fred", "Ada", "Enya", "Snorre", "Harry", "Maud"]) <>
-      " " <>
-      Enum.random(["Skog", "Lund", "Flod", "Träd", "Fisk"]) <>
-      Enum.random(["berg", "kvist", "bäck", "zon", "plopp", "is"])
-  end
-
   def number, do: Enum.random(1..99999)
 
   def sha(i \\ number()) do

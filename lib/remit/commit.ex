@@ -8,7 +8,6 @@ defmodule Remit.Commit do
   schema "commits" do
     field :sha, :string
     field :author_email, :string
-    field :author_name, :string
     field :usernames, {:array, :string}
     field :owner, :string
     field :repo, :string

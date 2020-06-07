@@ -18,7 +18,7 @@
     <p class="<%= if @reviewed? || @you_authored?, do: "inline", else: "" %>">
       in <b title="<%= @commit.owner %>/<%= @commit.repo %>"><%= @commit.repo %></b>
       <%= unless @reviewed? || @you_authored? do %>
-        by <%= author_names(@commit) %>
+        by <%= usernames(@commit) %>
         on <%= Utils.format_datetime(@commit.committed_at) %>
       <% end %>
     </p>
