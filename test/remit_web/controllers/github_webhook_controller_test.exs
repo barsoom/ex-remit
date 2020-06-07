@@ -134,6 +134,11 @@ defmodule RemitWeb.GithubWebhookControllerTest do
             name: "Foo Barson",
             username: "foobarson",
           },
+          committer: %{
+            email: "foo@example.com",
+            name: "Foo Barson",
+            username: "foobarson",
+          },
           id: "c5472c5276f564621afe4b56b14f50e7c298dff9",
           url: "http://example.com/1",
           message: "Earlier commit",
@@ -143,6 +148,11 @@ defmodule RemitWeb.GithubWebhookControllerTest do
           author: %{
             email: "foo@example.com",
             name: "Foo Barson",
+            username: "foobar",
+          },
+          committer: %{
+            email: "foo+one+two@example.com",
+            name: "One and Two",
           },
           id: "d5472c5276f564621afe4b56b14f50e7c298dff9",
           url: "http://example.com/2",

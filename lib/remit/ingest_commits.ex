@@ -2,10 +2,14 @@ defmodule Remit.IngestCommits do
   alias Remit.{Repo, Commits, Commit, Utils}
 
   def from_params(params) do
-    build_commits(params)
-    |> Enum.map(& Repo.insert!(&1))
-    |> Enum.reverse()  # Inserted newest last, but shown newest first.
-    |> Commits.broadcast_new_commits()
+    commits =
+      build_commits(params)
+      |> Enum.map(& Repo.insert!(&1))
+      |> Enum.reverse()  # Inserted newest last, but shown newest first.
+
+    Commits.broadcast_new_commits(commits)
+
+    commits
   end
 
   # Private
@@ -31,6 +35,7 @@ defmodule Remit.IngestCommits do
         "email" => author_email,
         "name" => author_name,
       } = author),
+      "committer" => committer,
       "message" => message,
       "timestamp" => raw_committed_at,
     }, owner, repo)
@@ -41,15 +46,20 @@ defmodule Remit.IngestCommits do
       sha: sha,
       author_email: author_email,
       author_name: author_name,
-      usernames: usernames_from_author(author),
+      usernames: usernames(author, committer),
       message: message,
       committed_at: Utils.date_time_from_iso8601!(raw_committed_at),
       url: url,
     }
   end
 
-  defp usernames_from_author(%{"username" => username}), do: [ username ]
-  defp usernames_from_author(%{"email" => email}) do
+  defp usernames(author, committer) do
+    (usernames_from(author) ++ usernames_from(committer))
+    |> Enum.uniq_by(&String.downcase/1)
+  end
+
+  defp usernames_from(%{"username" => username}), do: [ username ]
+  defp usernames_from(%{"email" => email}) do
     email                 # foo+bar+baz@example.com
     |> String.split("@")  # foo+bar+baz, example.com
     |> hd                 # foo+bar+baz

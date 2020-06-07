@@ -3,7 +3,7 @@ defmodule Remit.IngestCommentTest do
   import Ecto.Query
   alias Remit.{IngestComment, Repo, CommentNotification, Factory}
 
-  # We're not duplicating some tests that are already covered in GithubWebhookControllerTest.
+  # Also see GithubWebhookControllerTest.
 
   test "creates a notification for each committer" do
     Factory.insert!(:commit, sha: "abc123", usernames: ["riffraff", "magenta"])
