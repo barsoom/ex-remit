@@ -11,14 +11,15 @@
 >
   <div class="comment__metadata bg-gray-400 py-1 px-3 flex items-center rounded-t">
     <div class="truncate mr-2">
-      <b><%= @comment.commenter_username %></b>
-      <i class="fas fa-chevron-right text-gray-dark"></i>
-      <b><%= @notification.username %></b>
-      on <%= Utils.format_datetime(@comment.commented_at) %>
-      <br>
+      <div class="flex items-center space-x-1">
+        <%= github_avatar @comment.commenter_username %>
+        <i class="fas fa-chevron-right text-gray-dark"></i>
+        <%= github_avatar @notification.username %>
+        <span>on <%= Utils.format_datetime(@comment.commented_at) %></span>
+      </div>
       Re:
       <%# We may have a comment without its commit in DB. %>
-      <i><%= if @commit, do: @commit.message, else: @comment.commit_sha %></i>
+      <i class="truncate"><%= if @commit, do: @commit.message, else: @comment.commit_sha %></i>
     </div>
     <div class="ml-auto whitespace-no-wrap">
       <%= if @resolved? do %>
