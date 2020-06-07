@@ -5,7 +5,7 @@ defmodule Remit.IngestCommentTest do
 
   # Also see GithubWebhookControllerTest.
 
-  test "creates a notification for each committer" do
+  test "creates a notification for each author/commiter" do
     Factory.insert!(:commit, sha: "abc123", usernames: ["riffraff", "magenta"])
 
     build_params(sha: "abc123", username: "ada") |> IngestComment.from_params()
@@ -37,6 +37,16 @@ defmodule Remit.IngestCommentTest do
     refute Repo.exists?(from CommentNotification, where: [comment_id: ^new_slab_15_comment.id, username: "brad"])
     assert Repo.exists?(from CommentNotification, where: [comment_id: ^new_slab_15_comment.id, username: "janet"])
   end
+
+  test "does not create notifications for bot authors" do
+    Factory.insert!(:commit, sha: "abc123", usernames: ["riffraff", "robbie[bot]"])
+
+    build_params(sha: "abc123", username: "ada") |> IngestComment.from_params()
+
+    assert Repo.exists?(from CommentNotification, where: [username: "riffraff"])
+    assert Repo.aggregate(CommentNotification, :count) == 1
+  end
+
 
   test "does not create notifications for the comment author (case-insensitive)" do
     Factory.insert!(:commit, sha: "abc123", usernames: ["riffraff"])

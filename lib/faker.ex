@@ -6,8 +6,14 @@ defmodule Faker do
   end
 
   def username do
-    Enum.random(["foo", "bar", "baz", "hat", "frog", "snake", "bat"]) <>
-      Enum.random(["cat", "dog", "master", "wrangler"])
+    if Enum.random(0..10) == 0 do
+      # This seems to be a naming convention. At least for "dependabot[bot]"
+      Enum.random(["pretendabot", "bananabot", "marvin", "robbie", "robocop", "r2d2"]) <>
+        "[bot]"
+    else
+      Enum.random(["foo", "bar", "baz", "hat", "frog", "snake", "bat"]) <>
+        Enum.random(["cat", "dog", "master", "wrangler"])
+    end
   end
 
   def email, do: "email#{number()}@example.com"

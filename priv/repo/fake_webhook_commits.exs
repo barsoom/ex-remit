@@ -19,6 +19,10 @@ json = Jason.encode!(%{
         email: Faker.email(),
         username: Faker.username(),
       },
+      committer: %{
+        email: Faker.email(),
+        username: Faker.username(),
+      },
       id: Faker.sha(),
       url: "https://example.com/",
       message: Faker.message(),

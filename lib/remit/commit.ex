@@ -31,5 +31,8 @@ defmodule Remit.Commit do
   def being_reviewed_by?(%Commit{review_started_by_email: email}, email) when not is_nil(email), do: true
   def being_reviewed_by?(_, _), do: false
 
+  def bot?(username), do: String.ends_with?(username, "[bot]")
+  def botless_username(username), do: String.replace_trailing(username, "[bot]", "")
+
   def message_summary(commit), do: commit.message |> String.split(~r/\R/) |> hd
 end
