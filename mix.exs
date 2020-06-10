@@ -20,7 +20,11 @@ defmodule Remit.MixProject do
   def application do
     [
       mod: {Remit.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [
+        :logger,
+        :runtime_tools,
+        :os_mon,  # https://hexdocs.pm/phoenix_live_dashboard/os_mon.html
+      ]
     ]
   end
 
