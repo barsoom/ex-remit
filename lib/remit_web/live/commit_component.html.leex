@@ -1,3 +1,9 @@
+<%= if @commit.date_separator_before && @commit.date_separator_before != Utils.tz_today() do %>
+  <h2 class="header-box">
+    <%= @commit.date_separator_before |> Utils.format_date() %>
+  </h2>
+<% end %>
+
 <a
   href="<%= @commit.url %>"
   id="commit-<%= @commit.id %>"
@@ -19,7 +25,7 @@
       in <b title="<%= @commit.owner %>/<%= @commit.repo %>"><%= @commit.repo %></b>
       <%= unless @reviewed? || @you_authored? do %>
         by <%= usernames(@commit) %>
-        on <%= Utils.format_datetime(@commit.committed_at) %>
+        <%= Utils.format_time(@commit.committed_at) %>
       <% end %>
     </p>
   </div>

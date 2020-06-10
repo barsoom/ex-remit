@@ -17,6 +17,8 @@ defmodule Remit.Commit do
     field :review_started_by_email, :string
     field :reviewed_by_email, :string
 
+    field :date_separator_before, :date, virtual: true
+
     timestamps()
   end
 

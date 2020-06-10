@@ -94,10 +94,18 @@ defmodule RemitWeb.CommitsLive do
   defp assign_commits_and_stats(socket, commits) do
     unreviewed_count = commits |> Enum.count(& !&1.reviewed_at)
     my_unreviewed_count = commits |> Enum.count(& !&1.reviewed_at && authored?(socket, &1))
+
     oldest_unreviewed_for_me =
       commits
       |> Enum.reverse()
       |> Enum.find(& !&1.reviewed_at && !authored?(socket, &1) && (being_reviewed_by?(socket, &1) || !&1.review_started_at))
+
+    # Introduce date separators.
+    # Can't `group_by` since maps are unordered.
+    commits =
+      commits
+      |> Enum.chunk_by(& Utils.to_date(&1.committed_at))
+      |> Enum.flat_map(fn [first|rest] -> [%{first | date_separator_before: Utils.to_date(first.committed_at)}|rest] end)
 
     assign(socket, %{
       commits: commits,

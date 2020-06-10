@@ -48,6 +48,10 @@
   @apply bg-gray-200 py-2 mb-4 text-center;
 }
 
+.header-box {
+  @apply bg-gray-200 py-2 text-center;
+}
+
 .commit {
   &--highlight {
     @apply bg-yellow-200;

@@ -15,10 +15,33 @@ defmodule Remit.Utils do
     %{time | microsecond: {0, 6}}
   end
 
+  def to_date(datetime) do
+    datetime |> to_tz() |> DateTime.to_date()
+  end
+
   def format_datetime(datetime) do
     # Reference: https://hexdocs.pm/timex/Timex.Format.DateTime.Formatters.Default.html
-    datetime
-    |> Timex.Timezone.convert(@timezone)
-    |> Timex.format!("{WDshort} {D} {Mshort} at {h24}:{m}")
+    datetime |> to_tz() |> Timex.format!("{WDshort} {D} {Mshort} at {h24}:{m}")
+  end
+
+  def format_time(datetime) do
+    # Reference: https://hexdocs.pm/timex/Timex.Format.DateTime.Formatters.Default.html
+    datetime |> to_tz() |> Timex.format!("at {h24}:{m}")
+  end
+
+  def format_date(date) do
+    date |> Timex.format!("{WDshort} {D} {Mshort}")
+  end
+
+  def tz_today() do
+    tz_now() |> DateTime.to_date()
+  end
+
+  defp tz_now() do
+    DateTime.utc_now() |> to_tz()
+  end
+
+  defp to_tz(datetime) do
+    Timex.Timezone.convert(datetime, @timezone)
   end
 end
