@@ -1,9 +1,5 @@
 defmodule Remit.Commit do
-  use Ecto.Schema
-  import Ecto.Query
-  alias __MODULE__
-
-  @timestamps_opts [type: :utc_datetime_usec]
+  use Remit, :schema
 
   schema "commits" do
     field :sha, :string

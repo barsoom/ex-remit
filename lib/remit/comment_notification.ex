@@ -1,8 +1,6 @@
 defmodule Remit.CommentNotification do
-  use Ecto.Schema
+  use Remit, :schema
   alias Remit.Comment
-
-  @timestamps_opts [type: :utc_datetime_usec]
 
   schema "comment_notifications" do
     field :resolved_at, :utc_datetime_usec
