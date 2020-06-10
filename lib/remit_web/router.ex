@@ -14,12 +14,15 @@ defmodule RemitWeb.Router do
   end
 
   scope "/", RemitWeb do
+    import Phoenix.LiveDashboard.Router
     pipe_through :browser
 
     get "/", Redirect, to: "/commits"
     live "/commits", TabsLive, :commits
     live "/comments", TabsLive, :comments
     live "/settings", TabsLive, :settings
+
+    live_dashboard "/dashboard", metrics: RemitWeb.Telemetry
   end
 
   pipeline :api do
