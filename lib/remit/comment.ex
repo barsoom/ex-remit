@@ -3,13 +3,13 @@ defmodule Remit.Comment do
   import Ecto.Query
   alias Remit.{Commit, Comment, CommentNotification}
 
-  @timestamps_opts [type: :utc_datetime]
+  @timestamps_opts [type: :utc_datetime_usec]
 
   schema "comments" do
     field :github_id, :integer
     field :commit_sha, :string
     field :body, :string
-    field :commented_at, :utc_datetime
+    field :commented_at, :utc_datetime_usec
     field :commenter_username, :string
     field :path, :string
     field :position, :integer

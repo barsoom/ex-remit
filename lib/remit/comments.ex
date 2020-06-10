@@ -11,7 +11,7 @@ defmodule Remit.Comments do
   end
 
   def resolve(id) do
-    now = DateTime.utc_now() |> DateTime.truncate(:second)
+    now = DateTime.utc_now()
     comment =
       Repo.get_by(CommentNotification, id: id)
       |> Ecto.Changeset.change(resolved_at: now)

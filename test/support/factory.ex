@@ -12,7 +12,7 @@ defmodule Remit.Factory do
       repo: Faker.repo(),
       message: Faker.message(),
       url: "https://example.com/",
-      committed_at: (DateTime.utc_now() |> DateTime.truncate(:second)),
+      committed_at: DateTime.utc_now(),
     }
   end
 
@@ -23,7 +23,7 @@ defmodule Remit.Factory do
       body: Faker.message(),
       url: "http://example.com/",
       commenter_username: Faker.username(),
-      commented_at: DateTime.utc_now() |> DateTime.truncate(:second),
+      commented_at: DateTime.utc_now(),
     }
   end
 

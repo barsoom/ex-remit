@@ -41,6 +41,5 @@ defmodule Remit.Commits do
     |> Repo.update!()
   end
 
-  # TODO: Allow useconds in DB so we don't need this dance.
-  defp now(), do: DateTime.utc_now() |> DateTime.truncate(:second)
+  defp now(), do: DateTime.utc_now()
 end

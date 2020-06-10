@@ -3,7 +3,7 @@ defmodule Remit.Commit do
   import Ecto.Query
   alias __MODULE__
 
-  @timestamps_opts [type: :utc_datetime]
+  @timestamps_opts [type: :utc_datetime_usec]
 
   schema "commits" do
     field :sha, :string
@@ -12,12 +12,12 @@ defmodule Remit.Commit do
     field :owner, :string
     field :repo, :string
     field :message, :string
-    field :committed_at, :utc_datetime
+    field :committed_at, :utc_datetime_usec
     field :url, :string
     field :payload, :map
 
-    field :review_started_at, :utc_datetime
-    field :reviewed_at, :utc_datetime
+    field :review_started_at, :utc_datetime_usec
+    field :reviewed_at, :utc_datetime_usec
     field :review_started_by_email, :string
     field :reviewed_by_email, :string
 

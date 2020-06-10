@@ -10,7 +10,9 @@ defmodule Remit.Utils do
 
   def date_time_from_iso8601!(raw_time) do
     {:ok, time, _offset} = DateTime.from_iso8601(raw_time)
-    time
+
+    # Add precision so we can store it in an utc_datetime_usec column.
+    %{time | microsecond: {0, 6}}
   end
 
   def format_datetime(datetime) do

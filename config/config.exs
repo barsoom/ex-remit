@@ -22,6 +22,9 @@ config :remit, RemitWeb.Endpoint,
   pubsub_server: Remit.PubSub,
   live_view: [signing_salt: "s9WcFK/G"]
 
+config :remit, App.Repo,
+  migration_timestamps: [type: :utc_datetime_usec]
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
