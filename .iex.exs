@@ -2,4 +2,4 @@
 # https://hexdocs.pm/iex/IEx.html#module-the-iex-exs-file
 
 import Ecto.Query
-alias Remit.{Repo, Commit, Comment, CommentNotification, Utils}
+alias Remit.{Repo, Commits, Commit, Comments, Comment, CommentNotification, Utils}
