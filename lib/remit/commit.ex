@@ -34,4 +34,16 @@ defmodule Remit.Commit do
   def botless_username(username), do: String.replace_trailing(username, "[bot]", "")
 
   def message_summary(commit), do: commit.message |> String.split(~r/\R/) |> hd
+
+  def add_date_separators(commits) do
+    {new_commits, _acc} =
+      Enum.map_reduce(commits, nil, fn (commit, prev_date) ->
+        date = Remit.Utils.to_date(commit.committed_at)
+        separator = if date == prev_date, do: nil, else: date
+        commit = %{commit | date_separator_before: separator}
+        {commit, date}
+      end)
+
+    new_commits
+  end
 end
