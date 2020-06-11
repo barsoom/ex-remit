@@ -1,4 +1,4 @@
-<%= if @commit.date_separator_before && @commit.date_separator_before != Utils.tz_today() do %>
+<%= if @commit.date_separator_before do %>
   <h2 class="header-box">
     <%= @commit.date_separator_before |> Utils.format_date() %>
   </h2>
