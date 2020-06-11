@@ -42,6 +42,6 @@ defmodule Remit.Utils do
   end
 
   defp to_tz(datetime) do
-    Timex.Timezone.convert(datetime, @timezone)
+    DateTime.shift_zone!(datetime, @timezone)
   end
 end
