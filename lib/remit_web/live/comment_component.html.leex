@@ -12,9 +12,9 @@
   <div class="comment__metadata bg-gray-400 py-1 px-3 flex items-center rounded-t">
     <div class="truncate mr-2">
       <div class="flex items-center space-x-1">
-        <%= github_avatar @comment.commenter_username %>
+        <%= github_avatar @comment.commenter_username, :comment %>
         <i class="fas fa-chevron-right text-gray-dark"></i>
-        <%= github_avatar @notification.username %>
+        <%= github_avatar @notification.username, :comment %>
         <span>on <%= Utils.format_datetime(@comment.commented_at) %></span>
       </div>
       Re:

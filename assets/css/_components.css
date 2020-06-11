@@ -110,15 +110,3 @@
     p { @apply my-2; }
   }
 }
-
-.gravatar {
-  &--big {
-    width: 45px;
-    height: 45px;
-  }
-
-  &--small {
-    width: 25px;
-    height: 25px;
-  }
-}

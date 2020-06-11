@@ -33,10 +33,6 @@ defmodule Remit.Utils do
     date |> Timex.format!("{WDshort} {D} {Mshort}")
   end
 
-  defp tz_now() do
-    DateTime.utc_now() |> to_tz()
-  end
-
   defp to_tz(datetime) do
     DateTime.shift_zone!(datetime, @timezone)
   end

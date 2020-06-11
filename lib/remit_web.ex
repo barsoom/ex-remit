@@ -90,6 +90,7 @@ defmodule RemitWeb do
 
       import RemitWeb.ErrorHelpers
       import RemitWeb.Gettext
+      import RemitWeb.LiveViewHelpers
       alias RemitWeb.Router.Helpers, as: Routes
     end
   end

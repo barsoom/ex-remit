@@ -13,7 +13,7 @@ defmodule RemitWeb.CommitsLive do
 
     socket =
       socket
-      |> assign(email: session["email"], username: session["username"])
+      |> assign(username: session["username"])
       |> assign(your_last_selected_commit_id: nil)
       |> assign_commits_and_stats(commits)
 
@@ -27,13 +27,13 @@ defmodule RemitWeb.CommitsLive do
 
   @impl true
   def handle_event("start_review", %{"id" => id}, socket) do
-    commit = Commits.mark_as_review_started!(id, socket.assigns.email)
+    commit = Commits.mark_as_review_started!(id, socket.assigns.username)
     {:noreply, assign_and_broadcast_changed_commit(socket, commit)}
   end
 
   @impl true
   def handle_event("mark_reviewed", %{"id" => id}, socket) do
-    commit = Commits.mark_as_reviewed!(id, socket.assigns.email)
+    commit = Commits.mark_as_reviewed!(id, socket.assigns.username)
     {:noreply, assign_and_broadcast_changed_commit(socket, commit)}
   end
 
@@ -53,12 +53,6 @@ defmodule RemitWeb.CommitsLive do
       |> assign_commits_and_stats(socket.assigns.commits)
 
     {:noreply, socket}
-  end
-
-  # Receive events when other LiveViews update settings.
-  @impl true
-  def handle_event("set_session", ["email", email], socket) do
-    {:noreply, assign(socket, email: Utils.normalize_string(email))}
   end
 
   # Receive broadcasts when other clients update their state.
@@ -116,5 +110,5 @@ defmodule RemitWeb.CommitsLive do
   end
 
   defp authored?(socket, commit), do: Commit.authored_by?(commit, socket.assigns.username)
-  defp being_reviewed_by?(socket, commit), do: Commit.being_reviewed_by?(commit, socket.assigns.email)
+  defp being_reviewed_by?(socket, commit), do: Commit.being_reviewed_by?(commit, socket.assigns.username)
 end

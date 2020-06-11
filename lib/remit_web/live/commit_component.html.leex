@@ -17,7 +17,12 @@
     <%= if @your_last_selected_commit?, do: " commit--highlight" %>
   ">
   <div class="flex-none mr-3">
-    <%= gravatar(@commit.author_email, "rounded #{if @reviewed? || @you_authored?, do: "gravatar--small", else: "gravatar--big"}") %>
+    <%= for username <- @commit.usernames do %>
+      <%= github_avatar(username,
+        (if @reviewed? || @you_authored?, do: :small_commit, else: 45),
+        class: "rounded"
+      ) %>
+    <% end %>
   </div>
   <div class="flex-1 leading-snug">
     <p class="<%= if @reviewed? || @you_authored?, do: "inline", else: "mb-1" %>"><%= Commit.message_summary(@commit) %></p>
@@ -33,7 +38,7 @@
     <%= cond do %>
       <% @reviewed? && @you_authored? -> %>
         <%# Don't show buttons. %>
-      <% @reviewed? && !@you_authored? && @email -> %>
+      <% @reviewed? && !@you_authored? && @username -> %>
         <button phx-click="mark_unreviewed" phx-value-id="<%= @commit.id %>" class="opacity-25 hover:opacity-100">
           <i class="far fa-eye-slash"></i>
           Mark as new
@@ -47,7 +52,7 @@
         <div class="text-gray-dark" title="Since <%= Utils.format_datetime(@commit.review_started_at) %>">
           In review
         </div>
-      <% !@you_authored? && @email -> %>
+      <% !@you_authored? && @username -> %>
         <button phx-click="start_review" phx-value-id="<%= @commit.id %>" class="hover:bg-yellow-100 hover:border-yellow-mid">
           <i class="fas fa-eye text-yellow-mid"></i>
           Start review
@@ -60,7 +65,7 @@
   <div class="flex-none ml-3">
     <%= cond do %>
       <% @reviewed? -> %>
-        <%= gravatar(@commit.reviewed_by_email, "gravatar--small") %>
+        <%= github_avatar(@commit.reviewed_by_username, :small_commit) %>
       <% @being_reviewed? && @you_are_reviewing? -> %>
         <button phx-click="mark_unreviewed" phx-value-id="<%= @commit.id %>" class="bg-red-100" title="Cancel review">
           <i class="fas fa-eye-slash text-red-700"></i>
@@ -70,7 +75,7 @@
             <div class="absolute z-10 top-0 left-0 right-0 top-0 bottom-0 flex justify-center items-center pointer-events-none">
               <i class="fas fa-eye commit__reviewing-icon text-almost-black"></i>
             </div>
-            <%= gravatar(@commit.review_started_by_email, "gravatar--small commit__pending-reviewer-avatar opacity-50") %>
+            <%= github_avatar(@commit.review_started_by_username, :small_commit, class: "commit__pending-reviewer-avatar opacity-50") %>
           </div>
       <% true -> %>
         <%# Take up same amount of space as the Gravatar would. %>

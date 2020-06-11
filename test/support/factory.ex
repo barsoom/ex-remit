@@ -6,7 +6,6 @@ defmodule Remit.Factory do
   def build(:commit) do
     %Commit{
       sha: Faker.sha(),
-      author_email: Faker.email(),
       usernames: [Faker.username()],
       owner: "acme",
       repo: Faker.repo(),

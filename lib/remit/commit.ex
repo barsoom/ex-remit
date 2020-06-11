@@ -3,7 +3,6 @@ defmodule Remit.Commit do
 
   schema "commits" do
     field :sha, :string
-    field :author_email, :string
     field :usernames, {:array, :string}
     field :owner, :string
     field :repo, :string
@@ -14,8 +13,8 @@ defmodule Remit.Commit do
 
     field :review_started_at, :utc_datetime_usec
     field :reviewed_at, :utc_datetime_usec
-    field :review_started_by_email, :string
-    field :reviewed_by_email, :string
+    field :review_started_by_username, :string
+    field :reviewed_by_username, :string
 
     field :date_separator_before, :date, virtual: true
 
@@ -27,7 +26,7 @@ defmodule Remit.Commit do
   def authored_by?(_commit, nil), do: false
   def authored_by?(commit, username), do: commit.usernames |> Enum.map(&String.downcase/1) |> Enum.member?(String.downcase(username))
 
-  def being_reviewed_by?(%Commit{review_started_by_email: email}, email) when not is_nil(email), do: true
+  def being_reviewed_by?(%Commit{review_started_by_username: username}, username) when not is_nil(username), do: true
   def being_reviewed_by?(_, _), do: false
 
   def bot?(username), do: String.ends_with?(username, "[bot]")

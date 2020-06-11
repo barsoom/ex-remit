@@ -1,25 +1,16 @@
 <div class="mx-6">
-  <%= if @email do %>
-    <img src="<%= Gravatar.url(@email) %>" alt="" class="float-right ml-3"/>
+  <%= if @username do %>
+    <%= github_avatar(@username, 80, alt: "", class: "float-right ml-3") %>
   <% end %>
 
   <%# ID to preserve input field focus: https://github.com/phoenixframework/phoenix_live_view/issues/909 %>
   <form phx-change="form_change" phx-hook="SetSession" id="preserve-form">
     <div class="field">
-      <label for="email">Your email address:</label>
-      <input type="email" name="email" autocomplete="off" phx-debounce="100" value="<%= @email %>"/>
-
-      <div class="field__explanation">
-        <p>Used for your beautiful Gravatar when you review.<%= if @email, do: " 👉" %></p>
-      </div>
-    </div>
-
-    <div class="field">
       <label for="name">Your GitHub username:</label>
       <input type="text" name="username" autocomplete="off" autocorrect="off" spellcheck="false" phx-debounce="100" value="<%= @username %>"/>
 
       <div class="field__explanation">
-        <p>Determines which commits and comments we show as yours.</p>
+        <p>Determines which commits, comments and reviews we show as yours.</p>
         <p>
           Make <i>pair commits</i> with an email like
           <span class="font-mono">devs+ada+<%= if @username, do: Phoenix.HTML.Tag.content_tag(:span, @username, class: "bg-yellow-200 border-yellow-400 border-b"), else: "charles" %>@example.com</span>

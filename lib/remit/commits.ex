@@ -10,16 +10,16 @@ defmodule Remit.Commits do
     Repo.all(from c in Commit.latest(count), select: c.sha)
   end
 
-  def mark_as_reviewed!(id, reviewer_email) when is_binary(reviewer_email) do
-    update!(id, reviewed_at: now(), reviewed_by_email: reviewer_email)
+  def mark_as_reviewed!(id, reviewer_username) when is_binary(reviewer_username) do
+    update!(id, reviewed_at: now(), reviewed_by_username: reviewer_username)
   end
 
   def mark_as_unreviewed!(id) do
-    update!(id, reviewed_at: nil, review_started_at: nil, reviewed_by_email: nil, review_started_by_email: nil)
+    update!(id, reviewed_at: nil, review_started_at: nil, reviewed_by_username: nil, review_started_by_username: nil)
   end
 
-  def mark_as_review_started!(id, reviewer_email) when is_binary(reviewer_email) do
-    update!(id, review_started_at: now(), review_started_by_email: reviewer_email)
+  def mark_as_review_started!(id, reviewer_username) when is_binary(reviewer_username) do
+    update!(id, review_started_at: now(), review_started_by_username: reviewer_username)
   end
 
   def subscribe, do: Phoenix.PubSub.subscribe(Remit.PubSub, "commits")

@@ -7,7 +7,7 @@
 <% else %>
 
   <div class="info-box">
-    <%= if @username && @email do %>
+    <%= if @username do %>
       <p>
         There's <b><%= @unreviewed_count %></b> commit<%= if @unreviewed_count != 1, do: "s" %> to review
         (<b><%= @others_unreviewed_count %></b> by others; <b><%= @my_unreviewed_count %></b> by you).
@@ -21,7 +21,7 @@
         <% end %>
       </p>
     <% else %>
-      <p>Hello, stranger! Please <%= live_patch("set a username and email", to: Routes.tabs_path(@socket, :settings)) %>.</p>
+      <p>Hello, stranger! Please <%= live_patch("set a username", to: Routes.tabs_path(@socket, :settings)) %>.</p>
       <p>There's <b><%= @unreviewed_count %></b> commit<%= if @unreviewed_count != 1, do: "s" %> to review.</p>
     <% end %>
   </div>
@@ -32,11 +32,11 @@
     <%= live_component @socket, RemitWeb.CommitComponent,
       id: commit.id,
       commit: commit,
-      email: @email,
+      username: @username,
       being_reviewed?: commit.review_started_at && !commit.reviewed_at,
       reviewed?: commit.reviewed_at,
       you_authored?: Commit.authored_by?(commit, @username),
-      you_are_reviewing?: Commit.being_reviewed_by?(commit, @email),
+      you_are_reviewing?: Commit.being_reviewed_by?(commit, @username),
       your_last_selected_commit?: (@your_last_selected_commit_id == commit.id)
     %>
   <% end %>
