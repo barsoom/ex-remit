@@ -16,7 +16,7 @@
 
     <div class="field">
       <label for="name">Your GitHub username:</label>
-      <input type="text" name="username" autocomplete="off" phx-debounce="100" value="<%= @username %>"/>
+      <input type="text" name="username" autocomplete="off" autocorrect="off" phx-debounce="100" value="<%= @username %>"/>
 
       <div class="field__explanation">
         <p>Determines which commits and comments we show as yours.</p>
