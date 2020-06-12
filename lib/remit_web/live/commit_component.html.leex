@@ -30,8 +30,8 @@
       in <b title="<%= @commit.owner %>/<%= @commit.repo %>"><%= @commit.repo %></b>
       <%= unless @reviewed? || @you_authored? do %>
         by <%= usernames(@commit) %>
-        <%= Utils.format_time(@commit.committed_at) %>
       <% end %>
+      <%= Utils.format_time(@commit.committed_at) %>
     </p>
   </div>
   <div class="flex-none ml-2 self-center">
