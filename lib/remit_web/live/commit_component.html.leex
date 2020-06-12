@@ -12,6 +12,7 @@
     flex items-center no-underline
     border border-solid border-gray-light rounded
     my-1 mx-2 py-2 px-3
+    <%= if @you_authored?, do: " opacity-50" %>
     <%= if @reviewed?, do: " commit--reviewed" %>
     <%= if @being_reviewed?, do: " commit--being-reviewed" %>
     <%= if @your_last_selected_commit?, do: " commit--highlight" %>
