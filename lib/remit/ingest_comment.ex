@@ -33,7 +33,6 @@ defmodule Remit.IngestComment do
     "action" => "created",
     "comment" => %{
       "id" => id,
-      "html_url" => url,
       "user" => %{
         "login" => username,
       },
@@ -52,7 +51,6 @@ defmodule Remit.IngestComment do
       commenter_username: username,
       path: path,
       position: position,
-      url: url,
       payload: payload,
     }
   end

@@ -71,7 +71,6 @@ defmodule Remit.IngestCommentTest do
       "action" => "created",
       "comment" => %{
         "id" => 123,
-        "html_url" => "http://example.com/",
         "user" => %{
           "login" => username,
         },

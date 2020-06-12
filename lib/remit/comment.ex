@@ -10,7 +10,6 @@ defmodule Remit.Comment do
     field :commenter_username, :string
     field :path, :string
     field :position, :integer
-    field :url, :string
     field :payload, :map
 
     has_many :comment_notifications, CommentNotification

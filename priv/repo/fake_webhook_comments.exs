@@ -20,7 +20,6 @@ IO.puts("")
     action: "created",
     comment: %{
       id: Faker.number(),
-      html_url: "http://example.com/",
       user: %{
         login: Faker.username(),
       },

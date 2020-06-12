@@ -20,7 +20,6 @@ defmodule Remit.Factory do
       github_id: Faker.number(),
       commit_sha: Faker.sha(),
       body: Faker.message(),
-      url: "http://example.com/",
       commenter_username: Faker.username(),
       commented_at: DateTime.utc_now(),
     }
