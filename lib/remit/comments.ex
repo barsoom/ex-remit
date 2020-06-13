@@ -49,7 +49,7 @@ defmodule Remit.Comments do
 
     query =
       case resolved_filter do
-        "unresolved" -> from n in query, where: is_nil(n.resolved_at), order_by: [asc: :id]
+        "unresolved" -> from n in query, where: is_nil(n.resolved_at), order_by: [desc: :id]
         "resolved" -> from n in query, where: not is_nil(n.resolved_at), order_by: [desc: :resolved_at]
         "all" -> from query, order_by: [desc: :id]
       end
