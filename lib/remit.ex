@@ -9,9 +9,8 @@ defmodule Remit do
 
   def schema do
     quote do
-      @timestamps_opts [type: :utc_datetime_usec]
-
       use Ecto.Schema
+      @timestamps_opts [type: :utc_datetime_usec]
       import Ecto.Query
       alias __MODULE__
     end
