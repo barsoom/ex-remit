@@ -37,7 +37,9 @@
           <%= render_tooltip(~s(Read about usernames under the "Settings" tab.), pos: "up-left") %>
         ><i class="fas fa-exclamation-circle text-red-600"></i> no username</span>
       <% end %>
-      in <span class="text-gray-dark"><%= @commit.owner %>/</span><b><%= @commit.repo %></b>
+      <%= unless @reviewed? do %>
+        in <span class="text-gray-dark"><%= @commit.owner %>/</span><b><%= @commit.repo %></b>
+      <% end %>
       <%= Utils.format_time(@commit.committed_at) %>
     </p>
   </div>
