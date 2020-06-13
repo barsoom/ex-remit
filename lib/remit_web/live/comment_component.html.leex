@@ -42,7 +42,7 @@
             Resolve
           </button>
         <% else %>
-          <span title="Since <%= @notification.inserted_at %>">
+          <span <%= render_tooltip("Since #{Utils.format_datetime(@notification.inserted_at)}", pos: "up-right") %>">
             <i class="fas fa-gift text-yellow-mid"></i>
             <span class="text-gray-dark">Unresolved</span>
           </span>
