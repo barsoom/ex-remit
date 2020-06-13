@@ -24,4 +24,13 @@ defmodule RemitWeb.LiveViewHelpers do
       style: "height: #{size}px; min-width: #{size}px; line-height: #{size}px"
     )
   end
+
+  def tooltip_attributes(text) do
+    # http://kazzkiq.github.io/balloon.css/
+    [
+      "data-balloon-pos": "up",  # Above.
+      "data-balloon-blunt": "",  # No animation delay.
+      "aria-label": text,
+    ]
+  end
 end

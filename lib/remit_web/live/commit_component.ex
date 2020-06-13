@@ -4,8 +4,9 @@ defmodule RemitWeb.CommitComponent do
 
   defp usernames(%Commit{usernames: []}) do
     content_tag(:span,
-      title: "Read about commit usernames under the \"Settings\" tab.",
-      class: "bg-gray-light rounded py-px px-1 text-gray-dark"
+      tooltip_attributes("Read about usernames under the \"Settings\" tab.") ++ [
+        class: "bg-gray-light rounded py-px px-1 text-gray-dark",
+      ]
     ) do
       [
         content_tag(:i, "", class: "fas fa-exclamation-circle text-red-600"),

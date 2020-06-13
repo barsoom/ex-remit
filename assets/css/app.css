@@ -10,6 +10,9 @@
 /* Progress indicator used by LiveView. */
 @import "../node_modules/nprogress/nprogress.css";
 
+/* Tooltips */
+@import "../node_modules/balloon-css/balloon.css";
+
 /* Applied to a phx-click element while running that event. */
 .phx-click-loading {
   opacity: 0.5;
