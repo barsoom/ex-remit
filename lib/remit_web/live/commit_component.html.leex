@@ -28,7 +28,7 @@
       <% end %>
     </div>
   <% end %>
-  <div class="flex-1 leading-snug">
+  <div class="flex-1 leading-snug <%= if @reviewed? || @you_authored?, do: "truncate" %>">
     <p class="<%= if @reviewed? || @you_authored?, do: "inline", else: "mb-1" %>"><%= Commit.message_summary(@commit) %></p>
     <p class="<%= if @reviewed? || @you_authored?, do: "inline", else: "" %>">
       <%= if @commit.usernames == [] && !@reviewed? do %>
@@ -37,7 +37,7 @@
           <%= render_tooltip(~s(Read about usernames under the "Settings" tab.), pos: "up-left") %>
         ><i class="fas fa-exclamation-circle text-red-600"></i> no username</span>
       <% end %>
-      <%= unless @reviewed? do %>
+      <%= unless @reviewed? || @you_authored? do %>
         in <span class="text-gray-dark"><%= @commit.owner %>/</span><b><%= @commit.repo %></b>
       <% end %>
       <%= Utils.format_time(@commit.committed_at) %>
