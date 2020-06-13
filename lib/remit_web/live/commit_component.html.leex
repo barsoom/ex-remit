@@ -59,41 +59,41 @@
       </div>
     </div>
   <% else %>
-      <div class="flex-none ml-2 self-center">
-        <%= cond do %>
-          <% @reviewed? && @you_authored? -> %>
-            <%# Don't show buttons. %>
-          <% @reviewed? && !@you_authored? && @username -> %>
-            <button phx-click="mark_unreviewed" phx-value-id="<%= @commit.id %>" class="opacity-25 hover:opacity-100">
-              <i class="far fa-eye-slash"></i>
-              Mark as new
-            </button>
-          <% @being_reviewed? && @you_are_reviewing? -> %>
-            <button phx-click="mark_reviewed" phx-value-id="<%= @commit.id %>" class="bg-green-light">
-              <i class="fas fa-check text-green-dark"></i>
-              Mark as reviewed
-            </button>
-          <% !@you_authored? && @username -> %>
-            <button phx-click="start_review" phx-value-id="<%= @commit.id %>" class="hover:bg-yellow-100 hover:border-yellow-mid">
-              <i class="fas fa-eye text-yellow-mid"></i>
-              Start review
-            </button>
-          <% true -> %>
-            <%# Don't show buttons. %>
-        <% end %>
-      </div>
+    <div class="flex-none ml-2 self-center">
+      <%= cond do %>
+        <% @reviewed? && @you_authored? -> %>
+          <%# Don't show buttons. %>
+        <% @reviewed? && !@you_authored? && @username -> %>
+          <button phx-click="mark_unreviewed" phx-value-id="<%= @commit.id %>" class="opacity-25 hover:opacity-100">
+            <i class="far fa-eye-slash"></i>
+            Mark as new
+          </button>
+        <% @being_reviewed? && @you_are_reviewing? -> %>
+          <button phx-click="mark_reviewed" phx-value-id="<%= @commit.id %>" class="bg-green-light">
+            <i class="fas fa-check text-green-dark"></i>
+            Mark as reviewed
+          </button>
+        <% !@you_authored? && @username -> %>
+          <button phx-click="start_review" phx-value-id="<%= @commit.id %>" class="hover:bg-yellow-100 hover:border-yellow-mid">
+            <i class="fas fa-eye text-yellow-mid"></i>
+            Start review
+          </button>
+        <% true -> %>
+          <%# Don't show buttons. %>
+      <% end %>
+    </div>
 
-      <div class="flex-none ml-3">
-        <%= cond do %>
-          <% @reviewed? -> %>
-            <%= github_avatar(@commit.reviewed_by_username, :small_commit, tooltip_pos: "up-right") %>
-          <% @being_reviewed? && @you_are_reviewing? -> %>
-            <button phx-click="mark_unreviewed" phx-value-id="<%= @commit.id %>" class="bg-red-100" title="Cancel review">
-              <i class="fas fa-eye-slash text-red-700"></i>
-            </button>
-          <% true -> %>
-            <%= github_avatar_sized_spacer(:small_commit) %>
-        <% end %>
-      </div>
+    <div class="flex-none ml-3">
+      <%= cond do %>
+        <% @reviewed? -> %>
+          <%= github_avatar(@commit.reviewed_by_username, :small_commit, tooltip_pos: "up-right") %>
+        <% @being_reviewed? && @you_are_reviewing? -> %>
+          <button phx-click="mark_unreviewed" phx-value-id="<%= @commit.id %>" class="bg-red-100" title="Cancel review">
+            <i class="fas fa-eye-slash text-red-700"></i>
+          </button>
+        <% true -> %>
+          <%= github_avatar_sized_spacer(:small_commit) %>
+      <% end %>
+    </div>
   <% end %>
 </a>
