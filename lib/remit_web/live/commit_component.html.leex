@@ -28,7 +28,7 @@
   <div class="flex-1 leading-snug">
     <p class="<%= if @reviewed? || @you_authored?, do: "inline", else: "mb-1" %>"><%= Commit.message_summary(@commit) %></p>
     <p class="<%= if @reviewed? || @you_authored?, do: "inline", else: "" %>">
-      in <b title="<%= @commit.owner %>/<%= @commit.repo %>"><%= @commit.repo %></b>
+    in <b <%= render_tooltip(@commit.owner <> "/" <> @commit.repo) %>><%= @commit.repo %></b>
       <%= unless @reviewed? || @you_authored? do %>
         by <%= usernames(@commit) %>
       <% end %>
