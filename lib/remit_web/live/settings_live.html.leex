@@ -1,6 +1,6 @@
 <div class="mx-6">
   <%= if @username do %>
-    <%= github_avatar(@username, 80, alt: "", class: "float-right ml-3") %>
+    <%= github_avatar(@username, 80, alt: "", class: "float-right ml-3", tooltip: "Behold! Your GitHub avatar!", tooltip_pos: "left") %>
   <% end %>
 
   <%# ID to preserve input field focus: https://github.com/phoenixframework/phoenix_live_view/issues/909 %>
