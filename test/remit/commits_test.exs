@@ -19,8 +19,8 @@ defmodule Remit.CommitsTest do
       older_commit = Factory.insert!(:commit, inserted_at: days_and_seconds_ago(100, 1))
       newer_commit = Factory.insert!(:commit, inserted_at: days_and_seconds_ago(100, -5))
 
-      older_commit_comment = Factory.insert!(:comment, commit_sha: older_commit.sha)
-      newer_commit_comment = Factory.insert!(:comment, commit_sha: newer_commit.sha)
+      older_commit_comment = Factory.insert!(:comment, commit: older_commit)
+      newer_commit_comment = Factory.insert!(:comment, commit: newer_commit)
 
       older_commit_notification = Factory.insert!(:comment_notification, comment: older_commit_comment)
       newer_commit_notification = Factory.insert!(:comment_notification, comment: newer_commit_comment)

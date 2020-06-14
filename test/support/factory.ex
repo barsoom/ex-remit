@@ -18,16 +18,17 @@ defmodule Remit.Factory do
   def build(:comment) do
     %Comment{
       github_id: Faker.number(),
-      commit_sha: Faker.sha(),
       body: Faker.message(),
       commenter_username: Faker.username(),
       commented_at: DateTime.utc_now(),
+      commit: build(:commit),
     }
   end
 
   def build(:comment_notification) do
     %CommentNotification{
       username: Faker.username(),
+      comment: build(:comment),
     }
   end
 

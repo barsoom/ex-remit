@@ -15,11 +15,11 @@ defmodule Remit.IngestCommentTest do
   end
 
   test "creates a notification for each previous commenter in the same thread" do
-    Factory.insert!(:commit, sha: "abc123", usernames: ["riffraff", "magenta"])
+    commit = Factory.insert!(:commit, sha: "abc123", usernames: ["riffraff", "magenta"])
 
-    Factory.insert!(:comment, commit_sha: "abc123", commenter_username: "rocky")
-    Factory.insert!(:comment, commit_sha: "abc123", commenter_username: "brad", path: "slab.ff", position: 10)
-    Factory.insert!(:comment, commit_sha: "abc123", commenter_username: "janet", path: "slab.ff", position: 15)
+    Factory.insert!(:comment, commit: commit, commenter_username: "rocky")
+    Factory.insert!(:comment, commit: commit, commenter_username: "brad", path: "slab.ff", position: 10)
+    Factory.insert!(:comment, commit: commit, commenter_username: "janet", path: "slab.ff", position: 15)
 
     new_unthreaded_comment = build_params(sha: "abc123", username: "frank", path: nil, position: nil) |> IngestComment.from_params()
     new_slab_10_comment = build_params(sha: "abc123", username: "frank", path: "slab.ff", position: 10) |> IngestComment.from_params()
@@ -49,8 +49,8 @@ defmodule Remit.IngestCommentTest do
 
 
   test "does not create notifications for the comment author (case-insensitive)" do
-    Factory.insert!(:commit, sha: "abc123", usernames: ["riffraff"])
-    Factory.insert!(:comment, commit_sha: "abc123", commenter_username: "riffraff")
+    commit = Factory.insert!(:commit, sha: "abc123", usernames: ["riffraff"])
+    Factory.insert!(:comment, commit: commit, commenter_username: "riffraff")
 
     build_params(sha: "abc123", username: "RiffRaff") |> IngestComment.from_params()
 
