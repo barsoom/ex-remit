@@ -116,13 +116,11 @@ You should see a happy green checkmark on GitHub, and if you click the hook, "Re
 
 ### Automatically remove old data
 
-So you don't grow out of your database plan.
+To avoid growing out of your DB plan, set e.g.
 
-* Add the free Heroku Scheduler add-on.
+    heroku config:set REMOVE_DATA_OLDER_THAN_DAYS=100
 
-* Then schedule something like this task to run daily:
-
-      psql $DATABASE_URL -c "DELETE FROM comment_notifications WHERE inserted_at < NOW() - INTERVAL '100 days'; DELETE FROM comments WHERE inserted_at < NOW() - INTERVAL '100 days'; DELETE FROM commits WHERE inserted_at < NOW() - INTERVAL '100 days'"
+The app will schedule a recurring process (`Remit.Periodically`) to remove older data.
 
 ## Example queries
 

@@ -1,7 +1,7 @@
 # https://hexdocs.pm/ecto/test-factories.html
 
 defmodule Remit.Factory do
-  alias Remit.{Repo, Commit, Comment}
+  alias Remit.{Repo, Commit, Comment, CommentNotification}
 
   def build(:commit) do
     %Commit{
@@ -22,6 +22,12 @@ defmodule Remit.Factory do
       body: Faker.message(),
       commenter_username: Faker.username(),
       commented_at: DateTime.utc_now(),
+    }
+  end
+
+  def build(:comment_notification) do
+    %CommentNotification{
+      username: Faker.username(),
     }
   end
 

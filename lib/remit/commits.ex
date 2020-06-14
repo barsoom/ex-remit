@@ -10,6 +10,10 @@ defmodule Remit.Commits do
     Repo.all(from c in Commit.latest(count), select: c.sha)
   end
 
+  def delete_older_than_days(days) when is_integer(days) do
+    Repo.delete_all(from c in Commit, where: c.inserted_at < ago(^days, "day"))
+  end
+
   def mark_as_reviewed!(id, reviewer_username) when is_binary(reviewer_username) do
     update!(id, reviewed_at: now(), reviewed_by_username: reviewer_username)
   end
