@@ -14,7 +14,7 @@ defmodule Remit.Periodically do
   end
 
   def init(frequency_ms: ms, days: days) do
-    :timer.send_interval(ms, self(), {:run, days})
+    if days, do: :timer.send_interval(ms, self(), {:run, days})
     {:ok, :no_state}
   end
 
@@ -23,8 +23,7 @@ defmodule Remit.Periodically do
     {:noreply, state}
   end
 
-  defp remove_old_data(nil), do: nil
-  defp remove_old_data(days) do
+  defp remove_old_data(days) when is_integer(days) do
     # Deleting commits will remove all other records, via associations.
     Remit.Commits.delete_older_than_days(days)
   end
