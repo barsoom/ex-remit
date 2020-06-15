@@ -58,7 +58,7 @@ defmodule Remit.IngestComment do
 
     (commit_usernames ++ previous_commenter_usernames)
     |> Enum.reject(& String.downcase(&1) == lower_commenter_username)
-    |> Enum.reject(& Commit.bot?(&1))
+    |> Enum.reject(&Commit.bot?/1)
     |> Enum.uniq()
     |> Enum.each(& Repo.insert!(%CommentNotification{comment: comment, username: &1}))
   end
