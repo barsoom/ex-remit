@@ -4,25 +4,12 @@ defmodule Remit.IngestComment do
   def from_params(params) do
     comment =
       build_comment(params)
-      |> Repo.insert!
-      |> Repo.preload(:commit)
+      |> Repo.insert!(on_conflict: :nothing, conflict_target: [:github_id])
 
-    # Notify authors and previous commenters.
-
-    lower_commenter_username = String.downcase(comment.commenter_username)
-    commit_usernames = if comment.commit, do: comment.commit.usernames, else: []
-
-    previous_commenter_usernames =
-      Comments.list_other_comments_in_the_same_thread(comment)
-      |> Enum.map(& &1.commenter_username)
-
-    (commit_usernames ++ previous_commenter_usernames)
-    |> Enum.reject(& String.downcase(&1) == lower_commenter_username)
-    |> Enum.reject(& Commit.bot?(&1))
-    |> Enum.uniq()
-    |> Enum.each(& Repo.insert!(%CommentNotification{comment: comment, username: &1}))
-
-    Comments.broadcast_change()
+    unless already_existed?(comment) do
+      create_notifications(comment)
+      Comments.broadcast_change()
+    end
 
     comment
   end
@@ -53,5 +40,26 @@ defmodule Remit.IngestComment do
       position: position,
       payload: payload,
     }
+  end
+
+  defp already_existed?(%Comment{id: nil}), do: true
+  defp already_existed?(%Comment{}), do: false
+
+  # Notify authors and previous commenters.
+  defp create_notifications(comment) do
+    comment = comment |> Repo.preload(:commit)
+
+    lower_commenter_username = String.downcase(comment.commenter_username)
+    commit_usernames = if comment.commit, do: comment.commit.usernames, else: []
+
+    previous_commenter_usernames =
+      Comments.list_other_comments_in_the_same_thread(comment)
+      |> Enum.map(& &1.commenter_username)
+
+    (commit_usernames ++ previous_commenter_usernames)
+    |> Enum.reject(& String.downcase(&1) == lower_commenter_username)
+    |> Enum.reject(& Commit.bot?(&1))
+    |> Enum.uniq()
+    |> Enum.each(& Repo.insert!(%CommentNotification{comment: comment, username: &1}))
   end
 end

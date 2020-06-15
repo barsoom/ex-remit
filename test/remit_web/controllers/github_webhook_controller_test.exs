@@ -87,7 +87,7 @@ defmodule RemitWeb.GithubWebhookControllerTest do
       Factory.insert!(:comment, commit: commit, commenter_username: "charles")
 
       conn =
-        build_comment_payload(sha: "abc123", username: "ada")
+        build_comment_payload(github_id: 123, sha: "abc123", username: "ada")
         |> post_payload("commit_comment")
 
       # Responds politely.
@@ -109,6 +109,30 @@ defmodule RemitWeb.GithubWebhookControllerTest do
 
       # Does not notify commenter.
       refute Repo.exists?(from CommentNotification, where: [username: "ada"])
+    end
+
+    test "silently skips a comment already present" do
+      parent = self()
+      spawn_link(fn ->
+        Comments.subscribe()
+
+        receive do
+          msg -> send(parent, {:subscriber_got, msg})
+        end
+      end)
+
+      Factory.insert!(:comment, github_id: 123)
+
+      conn =
+        build_comment_payload(github_id: 123, sha: "abc123", username: "ada")
+        |> post_payload("commit_comment")
+
+      assert response(conn, 200) == "Thanks!"
+
+      assert Repo.aggregate(Comment, :count) == 1
+      assert Repo.aggregate(CommentNotification, :count) == 0
+
+      refute_receive {:subscriber_got, :comments_changed}
     end
   end
 
@@ -178,13 +202,13 @@ defmodule RemitWeb.GithubWebhookControllerTest do
     }
   end
 
-  defp build_comment_payload(sha: sha, username: username) do
+  defp build_comment_payload(github_id: id, sha: sha, username: username) do
     # This is a subset of the actual payload.
     # Reference: https://developer.github.com/webhooks/event-payloads/#commit_comment
     %{
       action: "created",
       comment: %{
-        id: 123,
+        id: id,
         user: %{
           login: username,
         },
