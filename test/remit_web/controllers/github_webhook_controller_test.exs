@@ -87,7 +87,7 @@ defmodule RemitWeb.GithubWebhookControllerTest do
       Factory.insert!(:comment, commit: commit, commenter_username: "charles")
 
       conn =
-        build_comment_payload(github_id: 123, sha: "abc123", username: "ada")
+        build_comment_payload(sha: "abc123", username: "ada")
         |> post_payload("commit_comment")
 
       # Responds politely.
@@ -121,13 +121,15 @@ defmodule RemitWeb.GithubWebhookControllerTest do
         end
       end)
 
-      Factory.insert!(:comment, github_id: 123)
+      Factory.insert!(:comment, github_id: 123, body: "Pre-existing comment")
 
       conn =
-        build_comment_payload(github_id: 123, sha: "abc123", username: "ada")
+        build_comment_payload(github_id: 123, body: "New comment")
         |> post_payload("commit_comment")
 
       assert response(conn, 200) == "Thanks!"
+
+      assert [%Comment{body: "Pre-existing comment"}]= Repo.all(Comment)
 
       assert Repo.aggregate(Comment, :count) == 1
       assert Repo.aggregate(CommentNotification, :count) == 0
@@ -202,7 +204,12 @@ defmodule RemitWeb.GithubWebhookControllerTest do
     }
   end
 
-  defp build_comment_payload(github_id: id, sha: sha, username: username) do
+  defp build_comment_payload(opts) do
+    id = Keyword.get_lazy(opts, :github_id, &Faker.number/0)
+    sha = Keyword.get_lazy(opts, :sha, &Faker.sha/0)
+    body = Keyword.get(opts, :body, "Hello world!")
+    username = Keyword.get(opts, :username, "ada")
+
     # This is a subset of the actual payload.
     # Reference: https://developer.github.com/webhooks/event-payloads/#commit_comment
     %{
@@ -216,7 +223,7 @@ defmodule RemitWeb.GithubWebhookControllerTest do
         position: nil,
         path: nil,
         created_at: "2016-01-25T08:41:25+01:00",
-        body: "Hello world!",
+        body: body,
       },
     }
   end
