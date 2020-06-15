@@ -4,7 +4,8 @@ defmodule Remit.IngestCommits do
   def from_params(params) do
     commits =
       build_commits(params)
-      |> Enum.map(& Repo.insert!(&1))
+      |> Enum.map(& Repo.insert!(&1, on_conflict: :nothing, conflict_target: [:sha]))
+      |> Enum.filter(& &1.id)  # Conflicts got a nil ID.
       |> Enum.reverse()  # Inserted newest last, but shown newest first.
 
     Commits.broadcast_new_commits(commits)

@@ -3,6 +3,8 @@ defmodule RemitWeb.GithubWebhookControllerTest do
   import Ecto.Query
   alias Remit.{Repo, Commits, Commit, Comments, Comment, CommentNotification, Factory}
 
+  @earlier_commit_sha "c5472c5276f564621afe4b56b14f50e7c298dff9"
+
   describe "'ping' event" do
     test "pongs back" do
       conn = build_ping_payload() |> post_payload("ping")
@@ -39,6 +41,23 @@ defmodule RemitWeb.GithubWebhookControllerTest do
       assert_receive {:subscriber_got, {:new_commits, [
         %Commit{message: "Later commit"},
         %Commit{message: "Earlier commit"},
+      ]}}
+    end
+
+    test "silently skips any commits already present" do
+      Factory.insert!(:commit, sha: @earlier_commit_sha, message: "Pre-existing commit")
+
+      conn = build_push_payload(branch: "master") |> post_payload("push")
+
+      assert response(conn, 200) == "Thanks!"
+
+      [earlier_commit, later_commit] = Repo.all(from Commit, order_by: [asc: :id])
+      assert earlier_commit.message == "Pre-existing commit"
+      assert later_commit.message == "Later commit"
+
+      # Broadcasts to subscribers.
+      assert_receive {:subscriber_got, {:new_commits, [
+        %Commit{message: "Later commit"},
       ]}}
     end
 
@@ -137,7 +156,7 @@ defmodule RemitWeb.GithubWebhookControllerTest do
             email: "foo@example.com",
             username: "foobarson",
           },
-          id: "c5472c5276f564621afe4b56b14f50e7c298dff9",
+          id: @earlier_commit_sha,
           url: "http://example.com/1",
           message: "Earlier commit",
           timestamp: "2016-01-25T08:41:25+01:00",

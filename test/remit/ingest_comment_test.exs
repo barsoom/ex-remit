@@ -70,7 +70,7 @@ defmodule Remit.IngestCommentTest do
     %{
       "action" => "created",
       "comment" => %{
-        "id" => 123,
+        "id" => Faker.number(),
         "user" => %{
           "login" => username,
         },
