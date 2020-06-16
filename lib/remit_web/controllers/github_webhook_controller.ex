@@ -12,7 +12,6 @@ defmodule RemitWeb.GithubWebhookController do
       params: params,
     })
 
-
     handle_event(conn, event_name, params)
   end
 
