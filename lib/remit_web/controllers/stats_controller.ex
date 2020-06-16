@@ -4,14 +4,15 @@ defmodule RemitWeb.StatsController do
   import Ecto.Query
 
   def show(conn, _params) do
-    unreviewed_count =
+    data =
       Commit
       |> where([c], is_nil(c.reviewed_at))
-      |> Repo.aggregate(:count)
+      |> select([c], %{
+        "unreviewed_count" => count(c.id),
+        "oldest_unreviewed_in_seconds" => fragment("ROUND(EXTRACT(EPOCH FROM (TIMEZONE('utc', NOW()) - MIN(inserted_at))))"),
+      })
+      |> Repo.one()
 
-    conn
-    |> json(%{
-      "unreviewed_count" => unreviewed_count,
-    })
+    json(conn, data)
   end
 end
