@@ -28,7 +28,7 @@
       <% end %>
     </div>
   <% end %>
-  <div class="flex-1 leading-snug <%= if @reviewed? || @you_authored?, do: "truncate" %>">
+  <div class="flex-1 leading-snug <%= if @reviewed? || @you_authored?, do: "truncate", else: "min-w-0 break-words" %>">
     <p class="<%= if @reviewed? || @you_authored?, do: "inline", else: "mb-1" %>"><%= Commit.message_summary(@commit) %></p>
     <p class="<%= if @reviewed? || @you_authored?, do: "inline", else: "" %>">
       <%= if @commit.usernames == [] && !@reviewed? do %>
