@@ -16,6 +16,12 @@ Remit also shows you comments and lets you mark these as resolved, so you don't 
 
 When new commits and comments arrive, or when a co-worker starts a review, you see it all in real time thanks to the magic of WebSockets.
 
+### Setting it up
+
+See instructions below.
+
+Once it's set up, visit e.g. <https://your-remit.herokuapp.com?auth_key=YOUR_KEY>.
+
 ### Setting up Fluid.app
 
 We recommend putting Remit inside [Fluid.app](https://fluidapp.com/) or equivalent so you can see Remit and the GitHub commit pages side-by-side. (We can't put GitHub inside an iframe, because they disallow it.)
@@ -28,6 +34,11 @@ Links to commits will open in the same browser window/tab every time. So after c
 
 It won't be as convenient as with Fluid.app, but good in a pinch!
 
+### Stats API
+
+Visit `/api/stats?auth_key=YOUR_KEY` for some statistics.
+
+You can use it on a dashboard or in a chat integration.
 
 ## Dev
 
@@ -122,13 +133,6 @@ To avoid growing out of your DB plan, set e.g.
 
 The app will schedule a recurring process (`Remit.Periodically`) to remove older data.
 
-## Example queries
-
-Because we don't work with Ecto often and may forget.
-
-    Repo.aggregate(Commit, :count)
-
-    Repo.one(from c in Commit, limit: 1)
 
 ## What came before
 

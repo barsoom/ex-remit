@@ -34,6 +34,7 @@ defmodule RemitWeb.Router do
   scope "/api", RemitWeb do
     pipe_through :api
 
+    get "/stats", StatsController, :show
     post "/session", SessionController, :set
   end
 
