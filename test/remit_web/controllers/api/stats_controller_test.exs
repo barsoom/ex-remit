@@ -21,10 +21,10 @@ defmodule RemitWeb.StatsControllerTest do
       "unreviewed_count" => 2,
       "oldest_unreviewed_in_seconds" => 100,
       "recent_commits_count" => 5,
-      "recent_reviews" => [
-        ["bar", 1],
-        ["foo", 2],  # Normalised to lowercase.
-      ],
+      "recent_reviews" => %{
+        "bar" => 1,
+        "foo" => 2,  # Normalised to lowercase.
+      },
     }
   end
 
@@ -35,7 +35,7 @@ defmodule RemitWeb.StatsControllerTest do
       "unreviewed_count" => 0,
       "oldest_unreviewed_in_seconds" => nil,
       "recent_commits_count" => 0,
-      "recent_reviews" => [],
+      "recent_reviews" => %{},
     }
   end
 

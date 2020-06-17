@@ -25,8 +25,7 @@ defmodule RemitWeb.StatsController do
     recent_reviews =
       per_reviewer_counts
       |> Enum.filter(&elem(&1, 0))
-      |> Enum.map(&Tuple.to_list/1)
-      |> Enum.sort()
+      |> Enum.into(%{})
 
     data = Map.merge(data, %{
       "recent_commits_count" => recent_commits_count,
