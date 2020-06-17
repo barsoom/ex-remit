@@ -10,6 +10,7 @@ defmodule Remit.Commit do
     field :committed_at, :utc_datetime_usec
     field :url, :string
     field :payload, :map
+    field :unlisted, :boolean
 
     field :review_started_at, :utc_datetime_usec
     field :reviewed_at, :utc_datetime_usec
@@ -21,7 +22,9 @@ defmodule Remit.Commit do
     timestamps()
   end
 
-  def latest(count), do: from Commit, limit: ^count, order_by: [desc: :id]
+  def latest_listed(q \\ __MODULE__, count), do: q |> latest(count) |> listed()
+  def latest(q \\ __MODULE__, count), do: from q, limit: ^count, order_by: [desc: :id]
+  def listed(q \\ __MODULE__), do: from q, where: [unlisted: false]
 
   def authored_by?(_commit, nil), do: false
   def authored_by?(commit, username), do: commit.usernames |> Enum.map(&String.downcase/1) |> Enum.member?(String.downcase(username))

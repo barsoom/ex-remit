@@ -3,11 +3,14 @@ defmodule Remit.Commits do
   import Ecto.Query
 
   def list_latest(count) do
-    Commit.latest(count) |> Repo.all()
+    Commit.latest_listed(count)
+    |> Repo.all()
   end
 
   def list_latest_shas(count) do
-    Repo.all(from c in Commit.latest(count), select: c.sha)
+    Commit.latest_listed(count)
+    |> select([c], c.sha)
+    |> Repo.all()
   end
 
   def delete_older_than_days(days) when is_integer(days) do

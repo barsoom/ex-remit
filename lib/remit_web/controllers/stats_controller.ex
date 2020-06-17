@@ -5,7 +5,7 @@ defmodule RemitWeb.StatsController do
 
   def show(conn, _params) do
     data =
-      Commit
+      Commit.listed()
       |> where([c], is_nil(c.reviewed_at))
       |> select([c], %{
         "unreviewed_count" => count(c.id),
@@ -14,7 +14,7 @@ defmodule RemitWeb.StatsController do
       |> Repo.one()
 
     per_reviewer_counts =
-      Commit
+      Commit.listed()
       |> where([c], c.updated_at > ago(10, "day"))
       |> group_by([c], fragment("LOWER(reviewed_by_username)"))
       |> select([c], {fragment("LOWER(reviewed_by_username)"), count(c.id)})

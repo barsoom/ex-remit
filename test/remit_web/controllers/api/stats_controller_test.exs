@@ -9,11 +9,17 @@ defmodule RemitWeb.StatsControllerTest do
     secs_for_11_days = 60 * 60 * 24 * 11
     Factory.insert!(:commit, reviewed_at: now, updated_at: DateTime.add(now, -secs_for_11_days), reviewed_by_username: "baz")
 
+    # Ignored because it's unlisted.
+    Factory.insert!(:commit, reviewed_at: nil, inserted_at: DateTime.add(now, -200), unlisted: true)
+
     Factory.insert!(:commit, reviewed_at: nil, inserted_at: DateTime.add(now, -100))
     Factory.insert!(:commit, reviewed_at: nil, inserted_at: DateTime.add(now, -50))
     Factory.insert!(:commit, reviewed_at: now, reviewed_by_username: "foo")
     Factory.insert!(:commit, reviewed_at: now, reviewed_by_username: "FOO")
     Factory.insert!(:commit, reviewed_at: now, reviewed_by_username: "bar")
+
+    # Ignored because it's unlisted.
+    Factory.insert!(:commit, reviewed_at: now, reviewed_by_username: "baz", unlisted: true)
 
     conn = get_stats()
 
