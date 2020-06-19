@@ -109,8 +109,8 @@ Configure ENV variables for `AUTH_KEY` and `WEBHOOK_KEY`.
 
 Set e.g.
 
-    # 16 is suitable on a free plan. The max is 20, we'll use 2 for one-off dynos, and 2 as a buffer.
-    heroku config:set POOL_SIZE=16
+    # 10 is suitable on a free plan. The max is 20, we'll use 2 for one-off dynos, and the rest as a buffer.
+    heroku config:set POOL_SIZE=10
 
 Add a webhook on each reviewed repo in GitHub (at Auctionet, we've got scripts to do this in batch).
 
