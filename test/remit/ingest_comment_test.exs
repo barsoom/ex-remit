@@ -58,7 +58,7 @@ defmodule Remit.IngestCommentTest do
     refute Repo.exists?(from CommentNotification, where: [username: "RiffRaff"])
   end
 
-  test "if not yet in DB, the commit-with-comments is fetched from GitHub and created it as unlisted" do
+  test "if not yet in DB, the commit-with-comments is fetched from GitHub and created as unlisted" do
     Mox.expect(GitHubAPIClient.Mock, :fetch_commit, fn ("acme", "footguns", "abc123") ->
       Factory.build(:commit, sha: "abc123", usernames: ["frank"])
     end)
