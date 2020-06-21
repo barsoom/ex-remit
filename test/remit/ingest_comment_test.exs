@@ -91,7 +91,7 @@ defmodule Remit.IngestCommentTest do
     username = Keyword.fetch!(opts, :username)
     path = Keyword.get(opts, :path, nil)
     position = Keyword.get(opts, :position, nil)
-    github_id = Keyword.get_lazy(opts, :github_id, fn -> Faker.number() end)
+    github_id = Keyword.get_lazy(opts, :github_id, &Faker.number/0)
 
     # This is a subset of the actual payload.
     # Reference: https://developer.github.com/webhooks/event-payloads/#commit_comment
