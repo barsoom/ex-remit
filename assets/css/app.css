@@ -16,7 +16,6 @@
 /* Applied to a phx-click element while running that event. */
 .phx-click-loading {
   opacity: 0.3;
-  cursor: wait;
 }
 
 /*
