@@ -12,7 +12,8 @@ config :remit,
   favicon: "favicon.png",
   # If too low, we may miss stuff. If too high, performance may suffer.
   max_commits: 300,
-  max_comments: 300
+  max_comments: 300,
+  github_api_client: Remit.GitHubAPIClient
 
 # Configures the endpoint
 config :remit, RemitWeb.Endpoint,
@@ -23,8 +24,7 @@ config :remit, RemitWeb.Endpoint,
   live_view: [signing_salt: "s9WcFK/G"]
 
 config :remit, App.Repo,
-  migration_timestamps: [type: :utc_datetime_usec],
-  github_api_client: Remit.GitHubAPIClient
+  migration_timestamps: [type: :utc_datetime_usec]
 
 # Configures Elixir's Logger
 config :logger, :console,
