@@ -58,7 +58,7 @@ defmodule Remit.IngestCommentTest do
     refute Repo.exists?(from CommentNotification, where: [username: "RiffRaff"])
   end
 
-  test "fetches the commit with comments from GitHub and creates it as unlisted, if not yet in DB" do
+  test "if not yet in DB, the commit-with-comments is fetched from GitHub and created it as unlisted" do
     Mox.expect(GitHubAPIClient.Mock, :fetch_commit, fn ("acme", "footguns", "abc123") ->
       Factory.build(:commit, sha: "abc123", usernames: ["frank"])
     end)
@@ -66,10 +66,11 @@ defmodule Remit.IngestCommentTest do
     Mox.expect(GitHubAPIClient.Mock, :fetch_comments_on_commit, fn (%Commit{sha: "abc123"}) ->
       [
         Factory.build(:comment, commit: nil, commit_sha: "abc123", github_id: 666, commenter_username: "rocky"),
+        Factory.build(:comment, commit: nil, commit_sha: "abc123", github_id: 667, commenter_username: "brad"),
       ]
     end)
 
-    build_params(sha: "abc123", username: "brad") |> IngestComment.from_params()
+    build_params(sha: "abc123", github_id: 667, username: "brad") |> IngestComment.from_params()
 
     commit = Repo.one(from Commit, where: [sha: "abc123"])
     assert commit.unlisted
@@ -90,12 +91,14 @@ defmodule Remit.IngestCommentTest do
     username = Keyword.fetch!(opts, :username)
     path = Keyword.get(opts, :path, nil)
     position = Keyword.get(opts, :position, nil)
+    github_id = Keyword.get_lazy(opts, :github_id, fn -> Faker.number() end)
+
     # This is a subset of the actual payload.
     # Reference: https://developer.github.com/webhooks/event-payloads/#commit_comment
     %{
       "action" => "created",
       "comment" => %{
-        "id" => Faker.number(),
+        "id" => github_id,
         "user" => %{
           "login" => username,
         },

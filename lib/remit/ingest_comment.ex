@@ -24,7 +24,10 @@ defmodule Remit.IngestComment do
 
   def fetch_commit_with_comments_if_missing(%{
     "action" => "created",
-    "comment" => %{"commit_id" => sha},
+    "comment" => %{
+      "id" => github_id,
+      "commit_id" => sha,
+    },
     "repository" => %{
       "name" => repo,
       "owner" => %{"login" => owner},
@@ -38,7 +41,10 @@ defmodule Remit.IngestComment do
 
       Repo.transaction(fn ->
         commit |> Repo.insert!()
-        comments |> Enum.each(& Repo.insert!(&1, on_conflict: :nothing, conflict_target: [:github_id]))
+
+        comments
+        |> Enum.filter(& &1.github_id != github_id)  # Don't create the ingested comment yet, or we'll mess up notifications.
+        |> Enum.each(& Repo.insert!(&1, on_conflict: :nothing, conflict_target: [:github_id]))
       end)
     end
   end
