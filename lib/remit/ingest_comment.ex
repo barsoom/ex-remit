@@ -4,7 +4,9 @@ defmodule Remit.IngestComment do
   @github_client Application.get_env(:remit, :github_api_client)
 
   def from_params(params) do
-    fetch_commit_if_missing(params)
+    # If we receive a comment on a commit that we don't have in DB, we fetch it and its comments.
+    # This lets Remit display which commit this comment goes with, and lets it notify those committers and previous commenters.
+    fetch_commit_with_comments_if_missing(params)
 
     comment =
       build_comment(params)
@@ -20,7 +22,7 @@ defmodule Remit.IngestComment do
 
   # Private
 
-  def fetch_commit_if_missing(%{
+  def fetch_commit_with_comments_if_missing(%{
     "action" => "created",
     "comment" => %{"commit_id" => sha},
     "repository" => %{
@@ -29,9 +31,15 @@ defmodule Remit.IngestComment do
     },
   }) do
     unless Commits.sha_exists?(sha) do
-      @github_client.fetch_commit(owner, repo, sha)
-      |> struct(unlisted: true)
-      |> Repo.insert!()
+      # Make the commit unlisted so it doesn't suddenly appear in the "to review" list.
+      # The comments won't appear anyway, since we don't create any `CommentNotification` for them (but possibly for the ingested comment).
+      commit = @github_client.fetch_commit(owner, repo, sha) |> struct(unlisted: true)
+      comments = @github_client.fetch_comments_on_commit(commit)
+
+      Repo.transaction(fn ->
+        commit |> Repo.insert!()
+        comments |> Enum.each(& Repo.insert!(&1, on_conflict: :nothing, conflict_target: [:github_id]))
+      end)
     end
   end
 

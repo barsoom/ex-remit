@@ -1,7 +1,7 @@
 defmodule Remit.IngestCommentTest do
   use Remit.DataCase
   import Ecto.Query
-  alias Remit.{IngestComment, Repo, CommentNotification, Factory}
+  alias Remit.{IngestComment, Repo, Commit, Comment, CommentNotification, Factory}
 
   # Also see GithubWebhookControllerTest.
 
@@ -49,8 +49,8 @@ defmodule Remit.IngestCommentTest do
 
 
   test "does not create notifications for the comment author (case-insensitive)" do
-    commit = Factory.insert!(:commit, sha: "abc123", usernames: ["riffraff"])
-    Factory.insert!(:comment, commit: commit, commenter_username: "riffraff")
+    Factory.insert!(:commit, sha: "abc123", usernames: ["riffraff"])
+    Factory.insert!(:comment, commit: nil, commit_sha: "abc123", commenter_username: "riffraff")
 
     build_params(sha: "abc123", username: "RiffRaff") |> IngestComment.from_params()
 
@@ -58,18 +58,29 @@ defmodule Remit.IngestCommentTest do
     refute Repo.exists?(from CommentNotification, where: [username: "RiffRaff"])
   end
 
-  test "fetches the commit from GitHub and creates it as unlisted, if not yet in DB" do
-    Mox.expect(GitHubAPIClient.Mock, :fetch_commit, fn "acme", "footguns", "abc123" ->
+  test "fetches the commit with comments from GitHub and creates it as unlisted, if not yet in DB" do
+    Mox.expect(GitHubAPIClient.Mock, :fetch_commit, fn ("acme", "footguns", "abc123") ->
       Factory.build(:commit, sha: "abc123", usernames: ["frank"])
     end)
 
-    build_params(sha: "abc123", username: "RiffRaff") |> IngestComment.from_params()
+    Mox.expect(GitHubAPIClient.Mock, :fetch_comments_on_commit, fn (%Commit{sha: "abc123"}) ->
+      [
+        Factory.build(:comment, commit: nil, commit_sha: "abc123", github_id: 666, commenter_username: "rocky"),
+      ]
+    end)
 
-    commit = Repo.one(from Remit.Commit, where: [sha: "abc123"])
+    build_params(sha: "abc123", username: "brad") |> IngestComment.from_params()
+
+    commit = Repo.one(from Commit, where: [sha: "abc123"])
     assert commit.unlisted
 
-    # Notifies the commit author.
-    assert Repo.exists?(from Remit.CommentNotification, where: [username: "frank"])
+    assert Repo.exists?(from Comment, where: [github_id: 666])
+
+    # Notifies the imported commit's author.
+    assert Repo.exists?(from CommentNotification, where: [username: "frank"])
+
+    # Notifies the imported comment's author.
+    assert Repo.exists?(from CommentNotification, where: [username: "rocky"])
   end
 
   # Private

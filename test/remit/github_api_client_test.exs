@@ -1,6 +1,6 @@
 defmodule Remit.GitHubAPIClientTest do
   use ExUnit.Case
-  alias Remit.{GitHubAPIClient, Commit}
+  alias Remit.{GitHubAPIClient, Commit, Comment}
 
   describe "fetch_commit" do
     test "builds a commit" do
@@ -54,19 +54,52 @@ defmodule Remit.GitHubAPIClientTest do
 
       assert %Commit{usernames: ["user"]} = actual
     end
+  end
 
-    defp mock_response(path, response) do
-      import Tesla.Mock
-
-      url = "https://api.github.com#{path}"
-
-      mock(fn
+  describe "fetch_comments_on_commit" do
+    test "builds an array of comments" do
+      mock_response("/repos/acme/footguns/commits/abc123/comments", [
         %{
-          method: :get,
-          url: ^url,
-          headers: [{"authorization", "token test_github_api_token"}],
-        } -> json(response)
-      end)
+          "id" => 123,
+          "commit_id" => "abc123",
+          "body" => "Hello world!",
+          "created_at" => "2016-01-25T08:41:25+01:00",
+          "user" => %{
+            "login" => "user1",
+          },
+          "path" => "foo.rb",
+          "position" => 456,
+        },
+      ])
+
+      commit = %Commit{owner: "acme", repo: "footguns", sha: "abc123"}
+      actual = GitHubAPIClient.fetch_comments_on_commit(commit)
+
+      assert [
+        %Comment{
+          github_id: 123,
+          commit_sha: "abc123",
+          body: "Hello world!",
+          commented_at: ~U[2016-01-25 07:41:25.000000Z],
+          commenter_username: "user1",
+          path: "foo.rb",
+          position: 456,
+        },
+      ] = actual
     end
+  end
+
+  defp mock_response(path, response) do
+    import Tesla.Mock
+
+    url = "https://api.github.com#{path}"
+
+    mock(fn
+      %{
+        method: :get,
+        url: ^url,
+        headers: [{"authorization", "token test_github_api_token"}],
+      } -> json(response)
+    end)
   end
 end
