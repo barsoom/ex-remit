@@ -49,14 +49,11 @@
       class="flex-none ml-2 text-gray-dark flex items-center"
       <%= render_tooltip("In review by #{@commit.review_started_by_username} since #{Utils.format_datetime(@commit.review_started_at)}", pos: "up-right") %>
     >
-      <span class="mr-3">In review</span>
+      <span class="mr-3">
+        In review<span class="bouncy-ellipsis"><span>.</span><span>.</span><span>.</span></span>
+      </span>
 
-      <div class="relative">
-        <div class="absolute z-10 top-0 left-0 right-0 top-0 bottom-0 flex justify-center items-center pointer-events-none">
-          <i class="fas fa-eye commit__reviewing-icon text-almost-black"></i>
-        </div>
-        <%= github_avatar(@commit.review_started_by_username, :small_commit, class: "commit__pending-reviewer-avatar opacity-75", tooltip: nil) %>
-      </div>
+      <%= github_avatar(@commit.review_started_by_username, :small_commit, class: "opacity-75") %>
     </div>
   <% else %>
     <div class="flex-none ml-2 self-center">
