@@ -32,7 +32,7 @@ defmodule Remit.GitHubAPIClientTest do
       } = actual
     end
 
-    test "ignores an empty actor or committer" do
+    test "ignores an empty author or committer" do
       mock_response("/repos/acme/footguns/commits/abc123", %{
         "sha" => "abc123",
         "html_url" => "https://example.com/abc123",
