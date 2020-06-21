@@ -58,6 +58,20 @@ defmodule Remit.IngestCommentTest do
     refute Repo.exists?(from CommentNotification, where: [username: "RiffRaff"])
   end
 
+  test "fetches the commit from GitHub and creates it as unlisted, if not yet in DB" do
+    Mox.expect(GitHubAPIClient.Mock, :fetch_commit, fn "acme", "footguns", "abc123" ->
+      Factory.build(:commit, sha: "abc123", usernames: ["frank"])
+    end)
+
+    build_params(sha: "abc123", username: "RiffRaff") |> IngestComment.from_params()
+
+    commit = Repo.one(from Remit.Commit, where: [sha: "abc123"])
+    assert commit.unlisted
+
+    # Notifies the commit author.
+    assert Repo.exists?(from Remit.CommentNotification, where: [username: "frank"])
+  end
+
   # Private
 
   defp build_params(opts) do
@@ -79,6 +93,10 @@ defmodule Remit.IngestCommentTest do
         "path" => path,
         "created_at" => "2016-01-25T08:41:25+01:00",
         "body" => "Hello world!",
+      },
+      "repository" => %{
+        "name" => "footguns",
+        "owner" => %{"login" => "acme"},
       },
     }
   end

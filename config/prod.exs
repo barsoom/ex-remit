@@ -17,7 +17,8 @@ config :remit, RemitWeb.Endpoint,
 
 config :remit,
   auth_key: System.fetch_env!("AUTH_KEY"),
-  webhook_key: System.fetch_env!("WEBHOOK_KEY")
+  webhook_key: System.fetch_env!("WEBHOOK_KEY"),
+  github_api_token: System.fetch_env!("GITHUB_API_TOKEN")
 
 # Do not print debug messages in production
 config :logger, level: :info

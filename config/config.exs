@@ -23,7 +23,8 @@ config :remit, RemitWeb.Endpoint,
   live_view: [signing_salt: "s9WcFK/G"]
 
 config :remit, App.Repo,
-  migration_timestamps: [type: :utc_datetime_usec]
+  migration_timestamps: [type: :utc_datetime_usec],
+  github_api_client: Remit.GitHubAPIClient
 
 # Configures Elixir's Logger
 config :logger, :console,
@@ -34,6 +35,7 @@ config :logger, :console,
 config :phoenix, :json_library, Jason
 
 config :elixir, :time_zone_database, Tzdata.TimeZoneDatabase
+config :tesla, adapter: Tesla.Adapter.Hackney
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

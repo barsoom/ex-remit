@@ -121,15 +121,16 @@ defmodule RemitWeb.GithubWebhookControllerTest do
         end
       end)
 
-      Factory.insert!(:comment, github_id: 123, body: "Pre-existing comment")
+      commit = Factory.insert!(:commit)
+      Factory.insert!(:comment, commit: commit, github_id: 123, body: "Pre-existing comment")
 
       conn =
-        build_comment_payload(github_id: 123, body: "New comment")
+        build_comment_payload(sha: commit.sha, github_id: 123, body: "New comment")
         |> post_payload("commit_comment")
 
       assert response(conn, 200) == "Thanks!"
 
-      assert [%Comment{body: "Pre-existing comment"}]= Repo.all(Comment)
+      assert [%Comment{body: "Pre-existing comment"}] = Repo.all(Comment)
 
       assert Repo.aggregate(Comment, :count) == 1
       assert Repo.aggregate(CommentNotification, :count) == 0
@@ -224,6 +225,10 @@ defmodule RemitWeb.GithubWebhookControllerTest do
         path: nil,
         created_at: "2016-01-25T08:41:25+01:00",
         body: body,
+      },
+      repository: %{
+        name: "footguns",
+        owner: %{ login: "acme" },
       },
     }
   end

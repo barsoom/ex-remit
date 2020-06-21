@@ -49,6 +49,9 @@ defmodule Remit.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:timex, "~> 3.5"},
       {:honeybadger, ">= 0.0.0"},
+      {:tesla, "> 0.0.0"},
+      {:hackney, "> 0.0.0"},
+      {:mox, "> 0.0.0", only: :test},
     ]
   end
 

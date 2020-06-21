@@ -13,6 +13,8 @@ defmodule Remit.Commits do
     |> Repo.all()
   end
 
+  def sha_exists?(sha), do: Repo.exists?(from Commit, where: [sha: ^sha])
+
   def delete_older_than_days(days) when is_integer(days) do
     Repo.delete_all(from c in Commit, where: c.inserted_at < ago(^days, "day"))
   end

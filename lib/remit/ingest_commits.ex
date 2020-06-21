@@ -56,11 +56,5 @@ defmodule Remit.IngestCommits do
   end
 
   defp usernames_from(%{"username" => username}), do: [ username ]
-  defp usernames_from(%{"email" => email}) do
-    email                 # foo+bar+baz@example.com
-    |> String.split("@")  # foo+bar+baz, example.com
-    |> hd                 # foo+bar+baz
-    |> String.split("+")  # foo, bar, baz
-    |> Enum.drop(1)       # bar, baz
-  end
+  defp usernames_from(%{"email" => email}), do: Utils.usernames_from_email(email)
 end

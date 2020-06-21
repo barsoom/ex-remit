@@ -20,7 +20,11 @@ config :remit, RemitWeb.Endpoint,
 
 config :remit,
   auth_key: "test_auth_key",
-  webhook_key: "test_webhook_key"
+  webhook_key: "test_webhook_key",
+  github_api_token: "test_github_api_token",
+  github_api_client: GitHubAPIClient.Mock
+
+config :tesla, adapter: Tesla.Mock
 
 # Print only warnings and errors during test
 config :logger, level: :warn

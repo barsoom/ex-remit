@@ -1,7 +1,11 @@
 defmodule Remit.IngestComment do
-  alias Remit.{Repo, Comments, Comment, Commit, CommentNotification, Utils}
+  alias Remit.{Repo, Comments, Comment, Commits, Commit, CommentNotification, Utils}
+
+  @github_client Application.get_env(:remit, :github_api_client)
 
   def from_params(params) do
+    fetch_commit_if_missing(params)
+
     comment =
       build_comment(params)
       |> Repo.insert!(on_conflict: :nothing, conflict_target: [:github_id])
@@ -15,6 +19,21 @@ defmodule Remit.IngestComment do
   end
 
   # Private
+
+  def fetch_commit_if_missing(%{
+    "action" => "created",
+    "comment" => %{"commit_id" => sha},
+    "repository" => %{
+      "name" => repo,
+      "owner" => %{"login" => owner},
+    },
+  }) do
+    unless Commits.sha_exists?(sha) do
+      @github_client.fetch_commit(owner, repo, sha)
+      |> struct(unlisted: true)
+      |> Repo.insert!()
+    end
+  end
 
   defp build_comment(%{
     "action" => "created",
