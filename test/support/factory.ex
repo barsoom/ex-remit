@@ -12,6 +12,7 @@ defmodule Remit.Factory do
       message: Faker.message(),
       url: "https://example.com/",
       committed_at: DateTime.utc_now(),
+      unlisted: false,
     }
   end
 
