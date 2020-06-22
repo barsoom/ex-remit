@@ -19,6 +19,11 @@
           <span class="font-mono">devs+ada+<%= if @username, do: Phoenix.HTML.Tag.content_tag(:span, @username, class: "bg-yellow-200 border-yellow-400 border-b"), else: "charles" %>@example.com</span>
           that uses "plus addressing" to include everyone's username.
         </p>
+        <p>
+          If you see
+          <%= live_component @socket, RemitWeb.NoUsernameComponent, tooltip?: false %>
+          on a commit, Remit can't notify the author about comments on it – fix it for future commits by following the instructions above.
+        </p>
       </div>
     </div>
   </form>
