@@ -46,10 +46,12 @@ Assumed to be run *outside* of devbox, at the time of writing.
 
 First time:
 
+    # Edit the `config/test.exs` and `config/dev.exs` to set a Postgres username
     # Creates DB and migrates
     mix ecto.setup
+    mix phx.server
 
-    # Get some fake data via the webhook
+    # In a a new shell: Get some fake data via the webhook
     mix wh.commits
     mix wh.comments
 
