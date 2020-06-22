@@ -8,12 +8,13 @@ defmodule Remit.Utils do
     if string == "", do: nil, else: string
   end
 
-  def date_time_from_iso8601!(raw_time) do
-    {:ok, time, _offset} = DateTime.from_iso8601(raw_time)
-
-    # Add precision so we can store it in an utc_datetime_usec column.
-    %{time | microsecond: {0, 6}}
+  def date_time_from_iso8601!(raw_datetime) do
+    {:ok, datetime, _offset} = DateTime.from_iso8601(raw_datetime)
+    ensure_usec(datetime)
   end
+
+  def ensure_usec(%DateTime{microsecond: {0, 0}} = datetime), do: %{datetime | microsecond: {0, 6}}
+  def ensure_usec(%DateTime{} = datetime), do: datetime
 
   def to_date(datetime) do
     datetime |> to_tz() |> DateTime.to_date()

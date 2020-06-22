@@ -133,6 +133,10 @@ To avoid growing out of your DB plan, set e.g.
 
 The app will schedule a recurring process (`Remit.Periodically`) to remove older data.
 
+### Migrating from the "Review" app
+
+Did you use our old [Review app](https://github.com/barsoom/review)? See `priv/repo/migrate_from_review.exs`.
+
 
 ## What came before
 
