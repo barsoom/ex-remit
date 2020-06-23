@@ -4,7 +4,7 @@
 
 A self-hosted web app for [commit-by-commit code review](https://thepugautomatic.com/2014/02/code-review/), written using [Phoenix](https://www.phoenixframework.org/) [LiveView](https://github.com/phoenixframework/phoenix_live_view).
 
-A lab project by [Henrik](https://henrik.nyh.se) started ca 2020-05-15. [See status.](https://github.com/barsoom/ex-remit/issues/1)
+Started as a lab project by [Henrik](https://henrik.nyh.se).
 
 ## What's the big idea?
 
