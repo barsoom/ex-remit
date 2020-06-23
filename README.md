@@ -46,12 +46,18 @@ Assumed to be run *outside* of devbox, at the time of writing.
 
 First time:
 
-    # Edit the `config/test.exs` and `config/dev.exs` to set a Postgres username
-    # Creates DB and migrates
+    # Ensure that `config/test.exs` and `config/dev.exs` have the right DB config for you.
+
+    # Create DB and migrate:
     mix ecto.setup
+
+    # Verify that tests run:
+    mix test
+
+    # Start the server:
     mix phx.server
 
-    # In a a new shell: Get some fake data via the webhook
+    # In a a separate shell, get some fake data via the webhook:
     mix wh.commits
     mix wh.comments
 

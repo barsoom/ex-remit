@@ -2,7 +2,7 @@ use Mix.Config
 
 # Configure your database
 config :remit, Remit.Repo,
-  username: "henrik",
+  username: System.get_env("USER"),
   password: "",
   database: "remit_dev",
   hostname: "localhost",
