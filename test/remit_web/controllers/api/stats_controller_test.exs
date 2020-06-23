@@ -34,6 +34,21 @@ defmodule RemitWeb.StatsControllerTest do
     }
   end
 
+  test "'unreviewed_count' and 'oldest_unreviewed_in_seconds' only looks at the latest (by ID) so-and-so many commits" do
+    now = DateTime.utc_now()
+
+    Factory.insert!(:commit, reviewed_at: nil, inserted_at: DateTime.add(now, -100))
+    Factory.insert!(:commit, reviewed_at: nil, inserted_at: DateTime.add(now, -75))
+    Factory.insert!(:commit, reviewed_at: nil, inserted_at: DateTime.add(now, -50))
+
+    conn = get_stats(max_commits: 2)
+
+    assert %{
+      "unreviewed_count" => 2,
+      "oldest_unreviewed_in_seconds" => 75,
+    } = json_response(conn, 200)
+  end
+
   test "it gives sensible stats when there's no data" do
     conn = get_stats()
 
@@ -45,8 +60,10 @@ defmodule RemitWeb.StatsControllerTest do
     }
   end
 
-  defp get_stats do
+  defp get_stats(opts \\ []) do
+    max_commits = Keyword.get(opts, :max_commits)
+
     build_conn()
-    |> get("/api/stats?auth_key=test_auth_key")
+    |> get("/api/stats?auth_key=test_auth_key#{if max_commits, do: "&max_commits_for_tests=#{max_commits}"}")
   end
 end

@@ -1,17 +1,20 @@
 defmodule RemitWeb.StatsController do
   use RemitWeb, :controller
-  alias Remit.{Repo, Commit}
+  alias Remit.{Repo, Commits, Commit}
   import Ecto.Query
 
-  def show(conn, _params) do
-    data =
-      Commit.listed()
-      |> where([c], is_nil(c.reviewed_at))
-      |> select([c], %{
-        "unreviewed_count" => count(c.id),
-        "oldest_unreviewed_in_seconds" => fragment("ROUND(EXTRACT(EPOCH FROM (TIMEZONE('utc', NOW()) - MIN(inserted_at)))::numeric)::integer"),
-      })
-      |> Repo.one()
+  @max_commits Application.get_env(:remit, :max_commits)
+
+  def show(conn, params) do
+    max_commits = params["max_commits_for_tests"] || @max_commits
+
+    commits = Commits.list_latest(max_commits)
+    unreviewed_commits = commits |> Enum.filter(& !&1.reviewed_at)
+
+    unreviewed_count = unreviewed_commits |> length()
+
+    oldest_unreviewed_inserted_at = unreviewed_commits |> Enum.map(& &1.inserted_at) |> Enum.min(DateTime, fn -> nil end)
+    oldest_unreviewed_in_seconds = oldest_unreviewed_inserted_at && DateTime.diff(DateTime.utc_now(), oldest_unreviewed_inserted_at)
 
     per_reviewer_counts =
       Commit.listed()
@@ -27,11 +30,12 @@ defmodule RemitWeb.StatsController do
       |> Enum.filter(&elem(&1, 0))
       |> Enum.into(%{})
 
-    data = Map.merge(data, %{
+    conn
+    |> json(%{
+      "unreviewed_count" => unreviewed_count,
+      "oldest_unreviewed_in_seconds" => oldest_unreviewed_in_seconds,
       "recent_commits_count" => recent_commits_count,
       "recent_reviews" => recent_reviews,
     })
-
-    json(conn, data)
   end
 end
