@@ -8,21 +8,35 @@
 
   <div class="info-box">
     <%= if @username do %>
-      <p>
-        There's <b><%= @unreviewed_count %></b> commit<%= if @unreviewed_count != 1, do: "s" %> to review
-        (<b><%= @others_unreviewed_count %></b> by others; <b><%= @my_unreviewed_count %></b> by you).
-        <%= if @oldest_unreviewed_for_me do %>
-          <p>Maybe do one from <a href="#commit-<%= @oldest_unreviewed_for_me.id %>" phx-click="selected" phx-value-id="<%= @oldest_unreviewed_for_me.id %>" phx-hook="ScrollToTarget"><%= Utils.format_datetime(@oldest_unreviewed_for_me.committed_at) %></a> next.</p>
-        <% else %>
-          <p>
-            <i class="fas fa-trophy text-yellow-mid"></i>
-            Nothing left for you to review!
-          </p>
-        <% end %>
-      </p>
+      <%= if @unreviewed_count == 0 do %>
+        <p class="flex items-center justify-center text-base text-almost-black">
+          <i class="fas fa-trophy fa-lg text-yellow-mid mr-2"></i>
+          Nothing left to review!
+        </p>
+      <% else %>
+        <p>
+          There's <b><%= @unreviewed_count %></b> commit<%= if @unreviewed_count != 1, do: "s" %> to review
+          (<b><%= @others_unreviewed_count %></b> by others; <b><%= @my_unreviewed_count %></b> by you).
+          <%= if @oldest_unreviewed_for_me do %>
+            <p>Maybe do one from <a href="#commit-<%= @oldest_unreviewed_for_me.id %>" phx-click="selected" phx-value-id="<%= @oldest_unreviewed_for_me.id %>" phx-hook="ScrollToTarget"><%= Utils.format_datetime(@oldest_unreviewed_for_me.committed_at) %></a> next.</p>
+          <% else %>
+            <p>
+              <i class="fas fa-trophy text-yellow-mid"></i>
+              Nothing left for you to review!
+            </p>
+          <% end %>
+        </p>
+      <% end %>
     <% else %>
       <p>Hello, stranger! Please <%= live_patch("set a username", to: Routes.tabs_path(@socket, :settings)) %>.</p>
-      <p>There's <b><%= @unreviewed_count %></b> commit<%= if @unreviewed_count != 1, do: "s" %> to review.</p>
+      <%= if @unreviewed_count == 0 do %>
+        <p>
+          <i class="fas fa-trophy text-yellow-mid"></i>
+          Nothing left to review!
+        </p>
+      <% else %>
+        <p>There's <b><%= @unreviewed_count %></b> commit<%= if @unreviewed_count != 1, do: "s" %> to review.</p>
+      <% end %>
     <% end %>
   </div>
 
