@@ -12,7 +12,9 @@
     <script defer type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
     <link rel="icon" href="<%= Routes.static_path(@conn, "/images/#{Application.get_env(:remit, :favicon)}") %>"/>
   </head>
-  <body>
-    <%= @inner_content %>
+  <body class="bg-gray-dark">
+    <div class="mx-auto max-w-3xl bg-white shadow-2xl">
+      <%= @inner_content %>
+    </div>
   </body>
 </html>
