@@ -13,7 +13,7 @@
     <link rel="icon" href="<%= Routes.static_path(@conn, "/images/#{Application.get_env(:remit, :favicon)}") %>"/>
   </head>
   <body class="bg-gray-dark">
-    <div class="mx-auto max-w-3xl bg-white shadow-2xl">
+    <div class="mx-auto max-w-3xl h-screen bg-white shadow-2xl">
       <%= @inner_content %>
     </div>
   </body>
