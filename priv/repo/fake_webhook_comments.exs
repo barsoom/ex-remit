@@ -29,6 +29,10 @@ IO.puts("")
       created_at: "2016-01-25T08:41:25+01:00",
       body: Faker.comment(),
     },
+    repository: %{
+      name: Faker.repo(),
+      owner: %{login: "acme"}
+    },
   }, escape: :unicode_safe)  # Make Erlang happy.
   |> String.to_charlist()
 
