@@ -58,12 +58,12 @@ defmodule RemitWeb.StatsControllerTest do
 
     conn = get_stats(max_commits: 10)
     assert %{
-      "commits_until_oldest_unreviewed_falls_outside_window" => 0,
+      "commits_until_oldest_unreviewed_falls_outside_window" => 1,
     } = json_response(conn, 200)
 
     conn = get_stats(max_commits: 2)
     assert %{
-      "commits_until_oldest_unreviewed_falls_outside_window" => 1,
+      "commits_until_oldest_unreviewed_falls_outside_window" => 2,
     } = json_response(conn, 200)
   end
 

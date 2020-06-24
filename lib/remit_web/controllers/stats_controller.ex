@@ -20,7 +20,7 @@ defmodule RemitWeb.StatsController do
     commits_until_oldest_unreviewed_falls_outside_window =
       if oldest_unreviewed do
         index_of_oldest_unreviewed = Enum.find_index(commits, &(&1 == oldest_unreviewed))
-        length(commits) - index_of_oldest_unreviewed - 1
+        length(commits) - index_of_oldest_unreviewed
       else
         nil
       end
