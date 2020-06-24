@@ -23,7 +23,7 @@ defmodule RemitWeb.StatsControllerTest do
 
     conn = get_stats()
 
-    assert json_response(conn, 200) == %{
+    assert %{
       "unreviewed_count" => 2,
       "oldest_unreviewed_in_seconds" => 100,
       "recent_commits_count" => 5,
@@ -31,7 +31,7 @@ defmodule RemitWeb.StatsControllerTest do
         "bar" => 1,
         "foo" => 2,  # Normalised to lowercase.
       },
-    }
+    } = json_response(conn, 200)
   end
 
   test "'unreviewed_count' and 'oldest_unreviewed_in_seconds' only looks at the latest (by ID) so-and-so many commits" do
@@ -49,12 +49,31 @@ defmodule RemitWeb.StatsControllerTest do
     } = json_response(conn, 200)
   end
 
+  test "'commits_until_oldest_unreviewed_falls_outside_window' works" do
+    now = DateTime.utc_now()
+
+    Factory.insert!(:commit, reviewed_at: nil)
+    Factory.insert!(:commit, reviewed_at: now)
+    Factory.insert!(:commit, reviewed_at: nil)
+
+    conn = get_stats(max_commits: 10)
+    assert %{
+      "commits_until_oldest_unreviewed_falls_outside_window" => 0,
+    } = json_response(conn, 200)
+
+    conn = get_stats(max_commits: 2)
+    assert %{
+      "commits_until_oldest_unreviewed_falls_outside_window" => 1,
+    } = json_response(conn, 200)
+  end
+
   test "it gives sensible stats when there's no data" do
     conn = get_stats()
 
     assert json_response(conn, 200) == %{
       "unreviewed_count" => 0,
       "oldest_unreviewed_in_seconds" => nil,
+      "commits_until_oldest_unreviewed_falls_outside_window" => nil,
       "recent_commits_count" => 0,
       "recent_reviews" => %{},
     }

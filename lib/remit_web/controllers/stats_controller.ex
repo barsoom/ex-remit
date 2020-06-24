@@ -16,6 +16,15 @@ defmodule RemitWeb.StatsController do
     oldest_unreviewed_inserted_at = unreviewed_commits |> Enum.map(& &1.inserted_at) |> Enum.min(DateTime, fn -> nil end)
     oldest_unreviewed_in_seconds = oldest_unreviewed_inserted_at && DateTime.diff(DateTime.utc_now(), oldest_unreviewed_inserted_at)
 
+    oldest_unreviewed = unreviewed_commits |> List.last()
+    commits_until_oldest_unreviewed_falls_outside_window =
+      if oldest_unreviewed do
+        index_of_oldest_unreviewed = Enum.find_index(commits, &(&1 == oldest_unreviewed))
+        length(commits) - index_of_oldest_unreviewed - 1
+      else
+        nil
+      end
+
     per_reviewer_counts =
       Commit.listed()
       |> where([c], c.updated_at > ago(10, "day"))
@@ -34,6 +43,7 @@ defmodule RemitWeb.StatsController do
     |> json(%{
       "unreviewed_count" => unreviewed_count,
       "oldest_unreviewed_in_seconds" => oldest_unreviewed_in_seconds,
+      "commits_until_oldest_unreviewed_falls_outside_window" => commits_until_oldest_unreviewed_falls_outside_window,
       "recent_commits_count" => recent_commits_count,
       "recent_reviews" => recent_reviews,
     })
