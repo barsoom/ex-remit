@@ -12,7 +12,7 @@ config :remit,
   favicon: "favicon.png",
   # If too low, we may miss stuff. If too high, performance may suffer.
   max_commits: 300,
-  max_comments: 300,
+  max_comments: 150,
   github_api_client: Remit.GitHubAPIClient
 
 # Configures the endpoint
