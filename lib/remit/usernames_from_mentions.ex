@@ -44,8 +44,8 @@ defmodule Remit.UsernamesFromMentions do
   end
 
   defp get_known_usernames do
-    # UNION query to minimise DB roundtrips.
-    # UNION ALL because we can't easily get unique values anyway, and this is faster.
+    # UNION ALL to minimise DB roundtrips.
+    # UNION ALL rather than UNION because it's faster, we can't easily get unique values anyway.
     # COALESCE because empty lists would otherwise ARRAY_AGG to `[nil]`.
 
     commenter_usernames_q = from c in Comment, select: fragment("COALESCE(ARRAY_AGG(DISTINCT ?), '{}')", c.commenter_username)
