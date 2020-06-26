@@ -38,7 +38,7 @@ defmodule Remit.UsernamesFromMentions do
   # This is simplistic and doesn't e.g. account for HTML-in-Markdown or backslash-escaped backticks. But probably good enough.
   defp strip_code_blocks(text) do
     text
-    |> String.replace(~r/^    [^\n]*/m, "")    # Four-space indent.
+    |> String.replace(~r/^    .*/m, "")        # Four-space indent.
     |> String.replace(~r/^```(.*?)```/ms, "")  # Triple backticks.
     |> String.replace(~r/`(.*?)`/, "")         # Single backticks.
   end
