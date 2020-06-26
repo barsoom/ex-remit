@@ -1,5 +1,14 @@
 defmodule Remit.IngestComment do
-  alias Remit.{Repo, Comments, Comment, Commits, Commit, CommentNotification, Utils}
+  alias Remit.{
+    Comment,
+    Comments,
+    Commit,
+    Commits,
+    CommentNotification,
+    Repo,
+    UsernamesFromMentions,
+    Utils,
+  }
 
   @github_client Application.get_env(:remit, :github_api_client)
 
@@ -89,7 +98,9 @@ defmodule Remit.IngestComment do
       Comments.list_other_comments_in_the_same_thread(comment)
       |> Enum.map(& &1.commenter_username)
 
-    (commit_usernames ++ previous_commenter_usernames)
+    mentioned_usernames = UsernamesFromMentions.call(comment.body)
+
+    (commit_usernames ++ previous_commenter_usernames ++ mentioned_usernames)
     |> Enum.reject(& String.downcase(&1) == lower_commenter_username)
     |> Enum.reject(&Commit.bot?/1)
     |> Enum.uniq()

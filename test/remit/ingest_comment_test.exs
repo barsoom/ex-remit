@@ -1,7 +1,14 @@
 defmodule Remit.IngestCommentTest do
   use Remit.DataCase
   import Ecto.Query
-  alias Remit.{IngestComment, Repo, Commit, Comment, CommentNotification, Factory}
+  alias Remit.{
+    IngestComment,
+    Repo,
+    Commit,
+    Comment,
+    CommentNotification,
+    Factory,
+  }
 
   # Also see GithubWebhookControllerTest.
 
@@ -36,6 +43,19 @@ defmodule Remit.IngestCommentTest do
     refute Repo.exists?(from CommentNotification, where: [comment_id: ^new_slab_10_comment.id, username: "rocky"])
     refute Repo.exists?(from CommentNotification, where: [comment_id: ^new_slab_15_comment.id, username: "brad"])
     assert Repo.exists?(from CommentNotification, where: [comment_id: ^new_slab_15_comment.id, username: "janet"])
+  end
+
+  test "creates a notification for each known username @mentioned in the comment" do
+    Factory.insert!(:commit, usernames: ["hello"])
+    Factory.insert!(:comment, commenter_username: "world")
+    commit = Factory.insert!(:commit)
+    comment = build_params(sha: commit.sha, body: "Well @Hello @there @world!") |> IngestComment.from_params()
+
+    assert Repo.exists?(from CommentNotification, where: [comment_id: ^comment.id, username: "hello"])
+    assert Repo.exists?(from CommentNotification, where: [comment_id: ^comment.id, username: "world"])
+
+    # Not a known username.
+    refute Repo.exists?(from CommentNotification, where: [comment_id: ^comment.id, username: "there"])
   end
 
   test "does not create notifications for bot authors" do
@@ -88,10 +108,11 @@ defmodule Remit.IngestCommentTest do
 
   defp build_params(opts) do
     sha = Keyword.fetch!(opts, :sha)
-    username = Keyword.fetch!(opts, :username)
+    username = Keyword.get_lazy(opts, :username, &Faker.username/0)
     path = Keyword.get(opts, :path, nil)
     position = Keyword.get(opts, :position, nil)
     github_id = Keyword.get_lazy(opts, :github_id, &Faker.number/0)
+    body = Keyword.get(opts, :body, "Hello world!")
 
     # This is a subset of the actual payload.
     # Reference: https://developer.github.com/webhooks/event-payloads/#commit_comment
@@ -106,7 +127,7 @@ defmodule Remit.IngestCommentTest do
         "position" => position,
         "path" => path,
         "created_at" => "2016-01-25T08:41:25+01:00",
-        "body" => "Hello world!",
+        "body" => body,
       },
       "repository" => %{
         "name" => "footguns",
