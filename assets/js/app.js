@@ -59,7 +59,9 @@ Hooks.ScrollToTarget = {
     this.el.addEventListener("click", (e) => {
       let id = this.el.href.split("#")[1]
       e.preventDefault()
-      document.getElementById(id).scrollIntoView()
+
+      // `block: "center"` because the default `"start"` means it's likely to end up right under a sticky date header.
+      document.getElementById(id).scrollIntoView({block: "center"})
     })
   }
 }
