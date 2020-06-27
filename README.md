@@ -105,12 +105,6 @@ Get a production IEX console:
 
     script/prodc
 
-Need to reset the DB on Heroku because you've rethought everything about the DB? Carefully:
-
-    heroku pg:info  # Get DB name, e.g. dancing-nimbly-12345
-    heroku pg:reset dancing-nimbly-12345
-    heroku run "POOL_SIZE=2 mix ecto.migrate"
-
 ### Setup
 
 Configure ENV variables for `AUTH_KEY` and `WEBHOOK_KEY`.
