@@ -31,5 +31,6 @@ input[type=text],
 input[type=email] {
   @apply border border-gray-mid py-1 px-2;
   width: 200px;
+  max-width: 100%;
 }
 
