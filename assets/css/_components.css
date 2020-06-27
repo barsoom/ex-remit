@@ -82,14 +82,8 @@
   }
 }
 
-.field {
-  @apply my-6;
-
-  &__explanation {
-    @apply text-gray-dark mt-3;
-
-    p { @apply my-2; }
-  }
+.paragraphs {
+  p { @apply my-3; }
 }
 
 .bouncy-ellipsis {
