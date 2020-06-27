@@ -1,3 +1,6 @@
+# See output: https://github.com/barsoom/ex-remit/actions
+# Set up from these instructions: https://github.com/actions/setup-elixir
+
 name: Elixir CI
 
 on:
@@ -28,8 +31,9 @@ jobs:
     - name: Set Up Elixir
       uses: actions/setup-elixir@v1
       with:
-        elixir-version: "1.10.3" # Define the elixir version [required]
-        otp-version: "22.3" # Define the OTP version [required]
+        # NOTE: Keep in sync with elixir_buildpack.config
+        elixir-version: "1.10.3"
+        otp-version: "22.3"
     - name: Install Dependencies
       run: mix deps.get
     - name: Run Tests
