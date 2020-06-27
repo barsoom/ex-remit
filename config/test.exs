@@ -8,19 +8,9 @@ use Mix.Config
 config :remit, Remit.Repo,
   database: "remit_test#{System.get_env("MIX_TEST_PARTITION")}",
   hostname: "localhost",
+  username: System.get_env("POSTGRES_USER") || System.get_env("USER"),
+  password: System.get_env("POSTGRES_PASSWORD") || "",
   pool: Ecto.Adapters.SQL.Sandbox
-
-if System.get_env("GITHUB_ACTIONS") do
-  # CI: https://github.com/actions/setup-elixir
-  config :app, Remit.Repo,
-    username: "postgres",
-    password: "postgres"
-else
-  # Local tests.
-  config :remit, Remit.Repo,
-    username: System.get_env("POSTGRES_USER") || System.get_env("USER"),
-    password: ""
-end
 
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
