@@ -1,7 +1,7 @@
 # See output: https://github.com/barsoom/ex-remit/actions
 # Set up from these instructions: https://github.com/actions/setup-elixir
 
-name: Elixir CI
+name: CI
 
 on:
   push:
