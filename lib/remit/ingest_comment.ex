@@ -98,12 +98,15 @@ defmodule Remit.IngestComment do
       Comments.list_other_comments_in_the_same_thread(comment)
       |> Enum.map(& &1.commenter_username)
 
+    commit_and_commenter_usernames =
+      (commit_usernames ++ previous_commenter_usernames)
+      |> Enum.reject(& String.downcase(&1) == lower_commenter_username)
+
     mentioned_usernames = UsernamesFromMentions.call(comment.body)
 
-    (commit_usernames ++ previous_commenter_usernames ++ mentioned_usernames)
-    |> Enum.reject(& String.downcase(&1) == lower_commenter_username)
+    (commit_and_commenter_usernames ++ mentioned_usernames)
     |> Enum.reject(&Commit.bot?/1)
     |> Enum.uniq()
-    |> Enum.each(& Repo.insert!(%CommentNotification{comment: comment, username: &1}))
+    |> Enum.each(&Repo.insert!(%CommentNotification{comment: comment, username: &1}))
   end
 end

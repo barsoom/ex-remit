@@ -49,7 +49,10 @@ defmodule Remit.IngestCommentTest do
     Factory.insert!(:commit, usernames: ["hello"])
     Factory.insert!(:comment, commenter_username: "world")
     commit = Factory.insert!(:commit)
-    comment = build_params(sha: commit.sha, body: "Well @Hello @there @world!") |> IngestComment.from_params()
+    comment = build_params(sha: commit.sha, username: "myself", body: "Note to @myself: @Hello @there @world!") |> IngestComment.from_params()
+
+    # You can @mention yourself, e.g. with reminders to fix stuff.
+    assert Repo.exists?(from CommentNotification, where: [comment_id: ^comment.id, username: "myself"])
 
     assert Repo.exists?(from CommentNotification, where: [comment_id: ^comment.id, username: "hello"])
     assert Repo.exists?(from CommentNotification, where: [comment_id: ^comment.id, username: "world"])
@@ -68,7 +71,7 @@ defmodule Remit.IngestCommentTest do
   end
 
 
-  test "does not create notifications for the comment author (case-insensitive)" do
+  test "does not notify a committer or previous commenter if they're also the comment author (case-insensitive)" do
     Factory.insert!(:commit, sha: "abc123", usernames: ["riffraff"])
     Factory.insert!(:comment, commit: nil, commit_sha: "abc123", commenter_username: "riffraff")
 
