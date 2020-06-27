@@ -59,7 +59,7 @@ jobs:
     # Based on: https://mikecoutermarsh.com/github-actions-deploy-to-heroku/
     - name: Deploy
       # Only if we're on master and tests passed.
-      if: github.ref == "refs/heads/master" && job.status == "success"
+      if: github.ref == 'refs/heads/master' && job.status == 'success'
       env:
         HEROKU_API_TOKEN: ${{ secrets.HEROKU_API_TOKEN }}
         HEROKU_APP_NAME: "ex-remit"
