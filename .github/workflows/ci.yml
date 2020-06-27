@@ -11,7 +11,22 @@ on:
 
 jobs:
 
+  # Wait for previous run to complete to avoid concurrent deployment.
+  # https://github.community/t/how-to-limit-concurrent-workflow-runs/16844/17
+  # https://github.com/softprops/turnstyle
+  wait-for-completion:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - name: Wait for any previous runs to finish
+        uses: softprops/turnstyle@v1
+        with:
+          poll-interval-seconds: 10
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   build:
+    needs: wait-for-completion
     runs-on: ubuntu-latest
 
     env:
