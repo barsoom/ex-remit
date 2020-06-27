@@ -11,7 +11,7 @@ on:
 
 jobs:
 
-  # Wait for previous run to complete to avoid concurrent deployment.
+  # Wait for previous run to complete, to avoid concurrent deployment.
   # https://github.community/t/how-to-limit-concurrent-workflow-runs/16844/17
   # https://github.com/softprops/turnstyle
   wait-for-completion:
