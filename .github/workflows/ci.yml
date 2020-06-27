@@ -10,8 +10,8 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
 
+  build:
     runs-on: ubuntu-latest
 
     env:
@@ -34,6 +34,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0  # https://mikecoutermarsh.com/github-actions-deploy-to-heroku/
     - name: Set up Elixir
       uses: actions/setup-elixir@v1
       with:
@@ -53,3 +55,13 @@ jobs:
       run: mix deps.get
     - name: Run tests
       run: mix test
+
+    # Based on: https://mikecoutermarsh.com/github-actions-deploy-to-heroku/
+    - name: Deploy
+      # Only if we're on master and tests passed.
+      if: github.ref == "refs/heads/master" && job.status == "success"
+      env:
+        HEROKU_API_TOKEN: ${{ secrets.HEROKU_API_TOKEN }}
+        HEROKU_APP_NAME: "ex-remit"
+      # Migrations are run by Heroku release phase: see Procfile.
+      run: git push https://heroku:$HEROKU_API_TOKEN@git.heroku.com/$HEROKU_APP_NAME.git origin/master:master

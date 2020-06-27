@@ -97,11 +97,11 @@ To trigger a disconnection detection in dev, you can load Remit, turn off the Ph
 
 ## Production
 
-Deploy:
+Auctionet developers deploy by pushing to GitHub. [CI](https://github.com/barsoom/ex-remit/actions?query=workflow%3ACI) will automatically migrate and deploy.
 
-    script/deploy
+Please note that we use [Heroku release phase](https://devcenter.heroku.com/articles/release-phase) – migrations run *before* the new app code is released.
 
-Console:
+Get a production IEX console:
 
     script/prodc
 
