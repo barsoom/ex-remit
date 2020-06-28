@@ -11,7 +11,7 @@ A self-hosted web app for [commit-by-commit code review](https://thepugautomatic
   * [Why commit-by-commit code review?](#why-commit-by-commit-code-review)
   * [Setting up Fluid.app](#setting-up-fluidapp)
   * [Without Fluid.app](#without-fluidapp)
-  * [Stats API](#optional-stats-api)
+  * [Stats API](#stats-api)
 * [Setup](#setup)
   * [Heroku setup](#heroku-setup)
   * [Adding webhooks](#adding-webhooks)
@@ -22,7 +22,6 @@ A self-hosted web app for [commit-by-commit code review](https://thepugautomatic
   * [Faking new data coming in via webhook](#faking-new-data-coming-in-via-webhook)
   * [Working on the connection detection](#working-on-the-connection-detection)
   * [Updating dependencies](#updating-dependencies)
-  * [Deploying](#deploying)
   * [Common production tasks](#common-production-tasks)
     * [Deploying](#deploying)
     * [IEX console](#iex-console)
@@ -156,7 +155,7 @@ When added manually, the hook should be something like:
 
 You should see a happy green checkmark on GitHub, and if you click the hook, "Recent Deliveries" should show a successful ping-pong interaction.
 
-### Automatically remove old data
+### Automatically removing old data
 
 To avoid growing out of your DB plan, set e.g.
 
