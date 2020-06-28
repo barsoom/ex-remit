@@ -1,4 +1,4 @@
-Copyright (c) 2020+ Auction Network Sweden AB (https://dev.auctionet.com)
+Copyright © 2020+ Auction Network Sweden AB (https://dev.auctionet.com)
 
 MIT License
 
