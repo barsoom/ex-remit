@@ -11,7 +11,7 @@ defmodule RemitWeb.LiveViewHelpersTest do
 
     test "uses the 'dependabot' avatar for 'dependabot-preview'" do
       html = LiveViewHelpers.github_avatar("dependabot-preview", 123) |> to_s()
-      assert html =~ ~s{src="https://github.com/dependabot.png?size=123"}
+      assert html =~ "dependabot.png"
     end
 
     defp to_s(safe), do: Phoenix.HTML.safe_to_string(safe)
