@@ -48,8 +48,8 @@ First time:
 
     # Ensure that `config/test.exs` and `config/dev.exs` have the right DB config for you.
 
-    # Create DB and migrate:
-    mix ecto.setup
+    # Install deps and assets, create DB and migrate:
+    mix setup
 
     # Verify that tests run:
     mix test
@@ -145,26 +145,11 @@ Did you use our old [Review app](https://github.com/barsoom/review)? See `priv/r
 
 We've reimplemented this app a few times to try out new tech:
 
-* 2020: Remit II in Phoenix LiveView (and also to try out [Tailwind](https://tailwindcss.com/))
+* 2020: This one! Remit II in Phoenix LiveView (and also to try out [Tailwind](https://tailwindcss.com/))
 * 2016: [Review](https://github.com/barsoom/review) in Phoenix/Elm
 * 2014: [Remit I](https://github.com/henrik/remit) in Ruby on Rails with AngularJS and MessageBus
 * 2014: [Hubreview](https://github.com/barsoom/hubreview) in Ruby on Rails with WebSockets
 
-## Original instructions
+## License
 
-To start your Phoenix server:
-
-  * Setup the project with `mix setup`
-  * Start Phoenix endpoint with `mix phx.server`
-
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
-
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
-
-## Learn more
-
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+[MIT](LICENSE.txt)
