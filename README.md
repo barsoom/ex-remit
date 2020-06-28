@@ -224,9 +224,9 @@ To trigger a disconnection detection in dev, you can load Remit, turn off the Ph
 
 ### Updating dependencies
 
-    mix deps.update --all    # Update Hex deps.
-    cd assets && npm update  # Update JS deps.
-    mix test                 # Verify things didn't break.
+Run:
+
+    script/updatedeps
 
 ### Common production tasks
 

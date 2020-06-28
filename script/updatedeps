@@ -1,0 +1,15 @@
+set -e
+
+# Update Hex deps.
+mix deps.update --all
+
+# Update JS deps.
+npm update --prefix assets
+
+# Verify things didn't break.
+mix test
+
+# --edit: Open editor
+# --verbose: Show diff
+# --all: Automatically stage edits
+git commit --edit --verbose --all --message "Update deps"
