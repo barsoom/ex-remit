@@ -14,6 +14,9 @@ defmodule RemitWeb.LiveViewHelpers do
   def github_avatar(username, :comment, opts), do: github_avatar(username, 20, opts)
   def github_avatar(username, :small_commit, opts), do: github_avatar(username, @small_commit_px, opts)
 
+  # Sometimes Dependabot is named "dependabot-preview", but has no avatar by that name.
+  def github_avatar("dependabot-preview", size, opts), do: github_avatar("dependabot", size, opts)
+
   def github_avatar(username, size, opts) do
     username = Commit.botless_username(username)
 
