@@ -47,6 +47,14 @@ defmodule Remit.IngestCommitsTest do
     assert commit.usernames == ["foo", "bar", "baz"]
   end
 
+  test "skips the 'web-flow' committer" do
+    [commit] = build_params(commits: [[
+      author_username: "foobar",
+      committer_username: "web-flow",
+    ]]) |> IngestCommits.from_params()
+    assert commit.usernames == ["foobar"]
+  end
+
   test "silently skips any commits already present" do
     Factory.insert!(:commit, sha: "abc123")
 
