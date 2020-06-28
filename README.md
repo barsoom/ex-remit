@@ -67,7 +67,7 @@ Fluid.app is macOS only. Please do contribute instructions for other platforms.
   * Whitelist:
     * Allow browsing to any URL
   * Left:
-    * Enter the Remit URL as home page, including the `auth_key` parameter. E.g. `https://remit-SOMETHING-UNIQUE.herokuapp.com/?auth_key=MY_AUTH_KEY`
+    * Enter the Remit URL as home page, including the `auth_key` parameter. E.g. `https://MY-REMIT.herokuapp.com/?auth_key=MY_AUTH_KEY`
     * Navigation bar: is always hidden
     * Clicked links open in: current tab in current window
 * In the main app (e.g. "Remit") menu, choose "User Agent > Google Chrome" – otherwise GitHub may disable certain features, like commenting on a specific line.
@@ -82,7 +82,7 @@ It won't be as convenient as with Fluid.app, but good in a pinch!
 
 If you want some statistics for e.g. a dashboard or a chat integration, there's an API endpoint you may be interested in.
 
-Just visit `/api/stats?auth_key=YOUR_KEY` for some statistics.
+Just visit `/api/stats?auth_key=MY_AUTH_KEY` for some statistics.
 
 The key is whatever `AUTH_KEY` you defined when you set up the app.
 
@@ -146,12 +146,14 @@ You can do it manually, or you can write a script to do it – you can use the `
 
 When added manually, the hook should be something like:
 
-    Payload URL: https://my-remit.herokuapp.com/webhooks/github?auth_key=your_WEBHOOK_KEY_value
+    Payload URL: https://my-remit.herokuapp.com/webhooks/github?auth_key=MY_WEBHOOK_KEY
     Content type: application/json
     Secret: (left empty – it's part of the URL instead)
     Select events:
     - Commit comments
     - Pushes
+
+Note that this is the `WEBHOOK_KEY` and not the `AUTH_KEY`!
 
 You should see a happy green checkmark on GitHub, and if you click the hook, "Recent Deliveries" should show a successful ping-pong interaction.
 
