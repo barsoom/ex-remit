@@ -42,7 +42,7 @@ You can use it on a dashboard or in a chat integration.
 
 ## Dev
 
-Assumed to be run *outside* of devbox, at the time of writing.
+Auctionet devs: This project is developed *outside* of the [Devbox](https://github.com/barsoom/devbox) VM, at the time of writing. But feel free to add Devbox support.
 
 First time:
 
