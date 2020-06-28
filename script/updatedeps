@@ -9,6 +9,8 @@ npm update --prefix assets
 # Verify things didn't break.
 mix test
 
+# TODO: Prepopulate commit message with https://diff.hex.pm/ links and something corresponding for NPM.
+
 # --edit: Open editor
 # --verbose: Show diff
 # --all: Automatically stage edits
