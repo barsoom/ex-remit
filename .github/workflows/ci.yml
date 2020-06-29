@@ -74,13 +74,14 @@ jobs:
     needs: tests
     runs-on: ubuntu-latest
 
+    # Only if we're on master – not with PRs.
+    if: github.ref == 'refs/heads/master'
+
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
       - name: Deploy
-        # Only if we're on master.
-        if: github.ref == 'refs/heads/master'
         env:
           HEROKU_API_TOKEN: ${{ secrets.HEROKU_API_TOKEN }}
           HEROKU_APP_NAME: "ex-remit"
