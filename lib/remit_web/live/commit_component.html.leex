@@ -53,7 +53,7 @@
         In review<span class="bouncy-ellipsis"><span>.</span><span>.</span><span>.</span></span>
       </span>
 
-      <%= github_avatar(@commit.review_started_by_username, :small_commit, class: "opacity-75") %>
+      <%= github_avatar(@commit.review_started_by_username, :small_commit, class: "opacity-75", tooltip: nil) %>
     </div>
   <% else %>
     <div class="flex-none ml-2 self-center">
