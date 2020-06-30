@@ -3,11 +3,15 @@ defmodule RemitWeb.CommitsLive do
   alias Remit.{Commits, Commit, Utils}
 
   @max_commits Application.get_env(:remit, :max_commits)
+  @overlong_check_frequency_secs 60
 
   @impl true
   def mount(_params, session, socket) do
     check_auth_key(session)
-    if connected?(socket), do: Commits.subscribe()
+    if connected?(socket) do
+      Commits.subscribe()
+      :timer.send_interval(@overlong_check_frequency_secs * 1000, self(), :check_for_overlong_reviewing)
+    end
 
     commits = Commits.list_latest(@max_commits)
 
@@ -70,6 +74,13 @@ defmodule RemitWeb.CommitsLive do
     {:noreply, assign_commits_and_stats(socket, commits)}
   end
 
+  # Periodically check.
+  def handle_info(:check_for_overlong_reviewing, socket) do
+    {:noreply, assign(socket,
+      oldest_overlong_in_review_by_me: Commit.oldest_overlong_in_review_by(socket.assigns.commits, socket.assigns.username)
+    )}
+  end
+
   # Private
 
   defp assign_and_broadcast_changed_commit(socket, commit) do
@@ -97,7 +108,7 @@ defmodule RemitWeb.CommitsLive do
       my_unreviewed_count: my_unreviewed_count,
       others_unreviewed_count: unreviewed_count - my_unreviewed_count,
       oldest_unreviewed_for_me: Commit.oldest_unreviewed_for(commits, socket.assigns.username),
-      overlong_in_review_by_me: Commit.overlong_in_review_by(commits, socket.assigns.username) |> List.last(),
+      oldest_overlong_in_review_by_me: Commit.oldest_overlong_in_review_by(commits, socket.assigns.username),
     })
   end
 

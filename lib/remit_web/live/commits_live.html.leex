@@ -18,12 +18,12 @@
           There's <b><%= @unreviewed_count %></b> commit<%= if @unreviewed_count != 1, do: "s" %> to review
           (<b><%= @others_unreviewed_count %></b> by others; <b><%= @my_unreviewed_count %></b> by you).
           <%= cond do %>
-            <% @overlong_in_review_by_me -> %>
+            <% @oldest_overlong_in_review_by_me -> %>
               <p>
                 <i class="far fa-snooze text-blue-600 zzz-animation"></i>
                 <b class="font-bold text-blue-900 ml-1">Still awake?</b>
                 Don't forget to complete
-                <a href="#commit-<%= @overlong_in_review_by_me.id %>" phx-click="selected" phx-value-id="<%= @overlong_in_review_by_me.id %>" phx-hook="ScrollToTarget">your review</a>
+                <a href="#commit-<%= @oldest_overlong_in_review_by_me.id %>" phx-click="selected" phx-value-id="<%= @oldest_overlong_in_review_by_me.id %>" phx-hook="ScrollToTarget">your review</a>
                 :)
               </p>
             <% @oldest_unreviewed_for_me -> %>

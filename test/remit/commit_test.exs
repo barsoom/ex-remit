@@ -95,21 +95,45 @@ defmodule Remit.CommitTest do
     test "returns nil when there's nothing" do
       assert Commit.oldest_unreviewed_for([], "myname") == nil
     end
+
+    test "returns nil for a nil user" do
+      commits = [
+        %Commit{id: 1},
+      ]
+
+      assert Commit.oldest_unreviewed_for(commits, nil) == nil
+    end
   end
 
-  describe "overlong_in_review_by" do
-    test "returns commits that have been in review by the given user for over 15 minutes" do
+  describe "oldest_overlong_in_review_by" do
+    test "returns the oldest (by list order) commit that has been in review by the given user for over 15 minutes" do
       now = ~U[2020-06-30 12:00:00.000000Z]
 
       commits = [
         _just_under = %Commit{review_started_by_username: "myname", review_started_at: ~U[2020-06-30 11:45:00.000000Z]},
-        overlong1 = %Commit{review_started_by_username: "myname", review_started_at: ~U[2020-06-30 11:44:59.999999Z]},
-        overlong2 = %Commit{review_started_by_username: "myname", review_started_at: ~U[2020-06-30 11:44:58.000000Z]},
+        _overlong_but_newer = %Commit{review_started_by_username: "myname", review_started_at: ~U[2020-06-30 11:44:59.999999Z]},
+        overlong = %Commit{review_started_by_username: "myname", review_started_at: ~U[2020-06-30 11:44:59.999998Z]},
         _by_another = %Commit{review_started_by_username: "theirname", review_started_at: ~U[2020-06-30 11:44:57.000000Z]},
         _reviewed = %Commit{review_started_by_username: "myname", review_started_at: ~U[2020-06-30 11:44:57.000000Z], reviewed_at: now},
       ]
 
-      assert Commit.overlong_in_review_by(commits, "myname", now) == [ overlong1, overlong2 ]
+      assert Commit.oldest_overlong_in_review_by(commits, "myname", now) == overlong
+    end
+
+    test "returns nil when there's nothing" do
+      now = ~U[2020-06-30 12:00:00.000000Z]
+
+      assert Commit.oldest_overlong_in_review_by([], "myname", now) == nil
+    end
+
+    test "returns nil for a nil user" do
+      now = ~U[2020-06-30 12:00:00.000000Z]
+
+      commits = [
+        %Commit{id: 1},
+      ]
+
+      assert Commit.oldest_overlong_in_review_by(commits, nil, now) == nil
     end
   end
 end
