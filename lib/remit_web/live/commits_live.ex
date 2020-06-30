@@ -89,11 +89,6 @@ defmodule RemitWeb.CommitsLive do
     unreviewed_count = commits |> Enum.count(& !&1.reviewed_at)
     my_unreviewed_count = commits |> Enum.count(& !&1.reviewed_at && authored?(socket, &1))
 
-    oldest_unreviewed_for_me =
-      commits
-      |> Enum.reverse()
-      |> Enum.find(& !&1.reviewed_at && !authored?(socket, &1) && (being_reviewed_by?(socket, &1) || !&1.review_started_at))
-
     commits = Commit.add_date_separators(commits)
 
     assign(socket, %{
@@ -101,7 +96,8 @@ defmodule RemitWeb.CommitsLive do
       unreviewed_count: unreviewed_count,
       my_unreviewed_count: my_unreviewed_count,
       others_unreviewed_count: unreviewed_count - my_unreviewed_count,
-      oldest_unreviewed_for_me: oldest_unreviewed_for_me,
+      oldest_unreviewed_for_me: Commit.oldest_unreviewed_for(commits, socket.assigns.username),
+      overlong_in_review_by_me: Commit.overlong_in_review_by(commits, socket.assigns.username) |> List.last(),
     })
   end
 
@@ -110,5 +106,4 @@ defmodule RemitWeb.CommitsLive do
   end
 
   defp authored?(socket, commit), do: Commit.authored_by?(commit, socket.assigns.username)
-  defp being_reviewed_by?(socket, commit), do: Commit.being_reviewed_by?(commit, socket.assigns.username)
 end

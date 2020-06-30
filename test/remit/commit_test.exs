@@ -64,4 +64,52 @@ defmodule Remit.CommitTest do
       )
     end
   end
+
+  describe "oldest_unreviewed_for" do
+    test "it returns the oldest (by list order) commit for the given user to review" do
+      time = DateTime.utc_now()
+
+      commits = [
+        _newer = %Commit{id: 5},
+        oldest_unreviewed_for_me = %Commit{id: 4},
+        _older_but_authored_by_me = %Commit{id: 3, usernames: ["myname"]},
+        _older_but_review_started = %Commit{id: 2, review_started_at: time},
+        _older_but_reviewed = %Commit{id: 1, reviewed_at: time},
+      ]
+
+      assert Commit.oldest_unreviewed_for(commits, "myname") == oldest_unreviewed_for_me
+    end
+
+    test "it can find a review-started commit if the given user started it" do
+      time = DateTime.utc_now()
+
+      commits = [
+        _review_not_started = %Commit{id: 3},
+        oldest_unreviewed_for_me = %Commit{id: 2, review_started_at: time, review_started_by_username: "myname"},
+        _older_but_started_by_someone_else = %Commit{id: 1, review_started_at: time},
+      ]
+
+      assert Commit.oldest_unreviewed_for(commits, "myname") == oldest_unreviewed_for_me
+    end
+
+    test "returns nil when there's nothing" do
+      assert Commit.oldest_unreviewed_for([], "myname") == nil
+    end
+  end
+
+  describe "overlong_in_review_by" do
+    test "returns commits that have been in review by the given user for over 15 minutes" do
+      now = ~U[2020-06-30 12:00:00.000000Z]
+
+      commits = [
+        _just_under = %Commit{review_started_by_username: "myname", review_started_at: ~U[2020-06-30 11:45:00.000000Z]},
+        overlong1 = %Commit{review_started_by_username: "myname", review_started_at: ~U[2020-06-30 11:44:59.999999Z]},
+        overlong2 = %Commit{review_started_by_username: "myname", review_started_at: ~U[2020-06-30 11:44:58.000000Z]},
+        _by_another = %Commit{review_started_by_username: "theirname", review_started_at: ~U[2020-06-30 11:44:57.000000Z]},
+        _reviewed = %Commit{review_started_by_username: "myname", review_started_at: ~U[2020-06-30 11:44:57.000000Z], reviewed_at: now},
+      ]
+
+      assert Commit.overlong_in_review_by(commits, "myname", now) == [ overlong1, overlong2 ]
+    end
+  end
 end

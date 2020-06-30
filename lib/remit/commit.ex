@@ -3,7 +3,7 @@ defmodule Remit.Commit do
 
   schema "commits" do
     field :sha, :string
-    field :usernames, {:array, :string}
+    field :usernames, {:array, :string}, default: []
     field :owner, :string
     field :repo, :string
     field :message, :string
@@ -29,10 +29,25 @@ defmodule Remit.Commit do
   def authored_by?(_commit, nil), do: false
   def authored_by?(commit, username), do: commit.usernames |> Enum.map(&String.downcase/1) |> Enum.member?(String.downcase(username))
 
-  def being_reviewed_by?(%Commit{review_started_by_username: username}, username) when not is_nil(username), do: true
+  def being_reviewed_by?(%Commit{review_started_by_username: username, reviewed_at: nil}, username) when not is_nil(username), do: true
   def being_reviewed_by?(_, _), do: false
 
+  def oldest_unreviewed_for(commits_sorted_newest_first, username) do
+    commits_sorted_newest_first
+    |> Enum.reverse()
+    |> Enum.find(& !&1.reviewed_at && !authored_by?(&1, username) && (being_reviewed_by?(&1, username) || !&1.review_started_at))
+  end
+
+  @overlong_in_review_over_minutes 15
+  @overlong_in_review_over_seconds @overlong_in_review_over_minutes * 60
+  def overlong_in_review_by(commits, username, now \\ DateTime.utc_now()) do
+    commits |> Enum.filter(fn commit ->
+      being_reviewed_by?(commit, username) && DateTime.diff(now, commit.review_started_at) > @overlong_in_review_over_seconds
+    end)
+  end
+
   def bot?(username), do: String.ends_with?(username, "[bot]")
+
   def botless_username(username), do: String.replace_trailing(username, "[bot]", "")
 
   def message_summary(commit), do: commit.message |> String.split(~r/\R/) |> hd
