@@ -105,10 +105,6 @@ We'll assume you have a Heroku account and the `heroku` [command-line tools](htt
     # Pick a region close to you, for lower latency: https://devcenter.heroku.com/articles/regions
     heroku apps:create my-remit --region eu --buildpack hashnuke/elixir
 
-    # We use "standard-1x" ($25/month) but you might get away with "free" ($0) or "hobby" ($7).
-    # See: https://www.heroku.com/pricing
-    heroku dyno:resize -a my-remit standard-1x
-
     heroku buildpacks:add https://github.com/gjaldon/heroku-buildpack-phoenix-static.git
 
     # Free plan with max 10 000 lines.
@@ -132,6 +128,12 @@ We'll assume you have a Heroku account and the `heroku` [command-line tools](htt
 
     # Deploy!
     git push heroku
+
+    # Resize the dyno if you want to.
+    # On an "enterprise plan", your default and cheapest option may be "standard-1x" ($25/month).
+    # On another plan, you might be able to get away with "free" ($0) or "hobby" ($7).
+    # See: https://www.heroku.com/pricing
+    heroku dyno:resize -a my-remit standard-1x
 
 Once it's set up, visit e.g. <https://your-remit.herokuapp.com?auth_key=YOUR_KEY>.
 
