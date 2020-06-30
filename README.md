@@ -151,7 +151,7 @@ You can do it manually, or you can write a script to do it – you can use the `
 
 When added manually, the hook should be something like:
 
-    Payload URL: https://my-remit.herokuapp.com/webhooks/github?auth_key=MY_WEBHOOK_KEY
+    Payload URL: https://MY-REMIT.herokuapp.com/webhooks/github?auth_key=MY_WEBHOOK_KEY
     Content type: application/json
     Secret: (left empty – it's part of the URL instead)
     Select events:
