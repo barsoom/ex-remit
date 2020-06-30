@@ -29,7 +29,7 @@
   <% end %>
   <div class="
     flex-1 leading-snug
-    <%= if @reviewed? || @you_authored?, do: "truncate", else: "min-w-0 break-words" %>
+    <%= if @reviewed? || @you_authored?, do: " truncate", else: " min-w-0 break-words" %>
     <%= if @you_authored?, do: " opacity-50" %>
   ">
     <p class="<%= if @reviewed? || @you_authored?, do: "inline", else: "mb-1" %>"><%= Commit.message_summary(@commit) %></p>
