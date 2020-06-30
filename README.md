@@ -115,6 +115,9 @@ We'll assume you have a Heroku account and the `heroku` [command-line tools](htt
     # We'll use 2 for one-off dynos like migrations and consoles, and 9 for the web dyno, so Heroku can run two side-by-side briefly during deploys.
     heroku config:set POOL_SIZE=9
 
+    # Change this to match your app name.
+    heroku config:set HOST=my-remit.herokuapp.com
+
     heroku config:set SECRET_KEY_BASE=`openssl rand -hex 32` AUTH_KEY=`openssl rand -hex 32` WEBHOOK_KEY=`openssl rand -hex 32`
 
     # Provide a GitHub "personal access token" (https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
