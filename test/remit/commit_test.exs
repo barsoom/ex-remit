@@ -106,9 +106,9 @@ defmodule Remit.CommitTest do
   end
 
   describe "oldest_overlong_in_review_by" do
-    test "returns the oldest (by list order) commit that has been in review by the given user for over 15 minutes" do
-      now = ~U[2020-06-30 12:00:00.000000Z]
+    setup do: %{now: ~U[2020-06-30 12:00:00.000000Z]}
 
+    test "returns the oldest (by list order) commit that has been in review by the given user for over 15 minutes", %{now: now} do
       commits = [
         _just_under = %Commit{review_started_by_username: "myname", review_started_at: ~U[2020-06-30 11:45:00.000000Z]},
         _overlong_but_newer = %Commit{review_started_by_username: "myname", review_started_at: ~U[2020-06-30 11:44:59.999999Z]},
@@ -120,15 +120,11 @@ defmodule Remit.CommitTest do
       assert Commit.oldest_overlong_in_review_by(commits, "myname", now) == overlong
     end
 
-    test "returns nil when there's nothing" do
-      now = ~U[2020-06-30 12:00:00.000000Z]
-
+    test "returns nil when there's nothing", %{now: now} do
       assert Commit.oldest_overlong_in_review_by([], "myname", now) == nil
     end
 
-    test "returns nil for a nil user" do
-      now = ~U[2020-06-30 12:00:00.000000Z]
-
+    test "returns nil for a nil user", %{now: now} do
       commits = [
         %Commit{id: 1},
       ]
