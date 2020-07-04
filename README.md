@@ -138,6 +138,10 @@ We'll assume you have a Heroku account and the `heroku` [command-line tools](htt
     # See: https://www.heroku.com/pricing
     heroku dyno:resize -a my-remit standard-1x
 
+    # Turn on Heroku Preboot if you like.
+    # This means more seamless deploys to the user, with trade-offs: https://devcenter.heroku.com/articles/preboot
+    heroku features:enable preboot -a ex-remit
+
 Once it's set up, visit e.g. <https://your-remit.herokuapp.com?auth_key=YOUR_KEY>.
 
 ### Adding webhooks
