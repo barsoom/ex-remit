@@ -1,25 +1,27 @@
-defmodule RemitWeb.CommentsLive do
-  use RemitWeb, :live_view
+defmodule RemitWeb.CommentsComponent do
+  use RemitWeb, :live_component
   alias Remit.{Comments, Utils}
 
   @max_comments Application.get_env(:remit, :max_comments)
+  @default_params %{"resolved" => "unresolved", "user" => "for_me"}
 
   @impl true
-  def mount(_params, session, socket) do
-    check_auth_key(session)
+  def mount(socket) do
     if connected?(socket), do: Comments.subscribe()
 
-    username = session["username"]
+    socket = assign(socket, your_last_selected_id: nil)
 
-    socket =
-      socket
-      |> assign(
-        username: username,
-        is: session["is"] || "unresolved",
-        role: session["role"] || (if username, do: "for_me", else: "all"),
-        your_last_selected_id: nil
+    {:ok, socket}
+  end
+
+  @impl true
+  def update(parent_assigns, socket) do
+    socket = assign(socket,
+        username: parent_assigns.username,
+        params: Map.merge(@default_params, parent_assigns.params)
       )
-      |> assign_filtered_notifications()
+
+    socket = assign_filtered_notifications(socket)
 
     {:ok, socket}
   end
@@ -77,17 +79,18 @@ defmodule RemitWeb.CommentsLive do
     notifications = Comments.list_notifications(
       limit: @max_comments,
       username: socket.assigns.username,
-      resolved_filter: socket.assigns.is,
-      user_filter: socket.assigns.role
+      resolved_filter: socket.assigns.params["resolved"],
+      user_filter: socket.assigns.params["user"]
     )
 
     assign(socket, notifications: notifications)
   end
 
-  defp filter_link(socket, assigns, text, is: is) do
-    live_patch text, to: Routes.tabs_path(socket, :comments, is: is, role: assigns.role), class: (if is == assigns.is, do: "font-bold no-underline")
-  end
-  defp filter_link(socket, assigns, text, role: role) do
-    live_patch text, to: Routes.tabs_path(socket, :comments, is: assigns.is, role: role), class: (if role == assigns.role, do: "font-bold no-underline")
+  defp filter_link(socket, text, params, changes) do
+    current? = MapSet.subset?(MapSet.new(changes), MapSet.new(params))
+
+    live_patch text,
+      to: Routes.tabs_path(socket, :comments, Map.merge(params, changes)),
+      class: (if current?, do: "font-bold no-underline")
   end
 end

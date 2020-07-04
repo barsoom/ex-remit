@@ -5,7 +5,7 @@
 
 <div class="tabs">
   <%= tab :commits, "Commits", "fa-eye", @socket, @live_action %>
-  <%= tab :comments, "Comments", "fa-comments", @socket, @live_action, is: @is, role: @role %>
+  <%= tab :comments, "Comments", "fa-comments", @socket, @live_action, user: @params["user"], resolved: @params["resolved"] %>
   <%= tab :settings, "Settings", "fa-cog", @socket, @live_action %>
 </div>
 

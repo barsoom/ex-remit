@@ -4,21 +4,19 @@
   <% end %>
 
   <p>
-    <%= filter_link @socket, assigns, "Unresolved", is: "unresolved" %>
+    <%= filter_link @socket, "Unresolved", @params, %{"resolved" => "unresolved"} %>
     ·
-    <%= filter_link @socket, assigns, "Resolved", is: "resolved" %>
+    <%= filter_link @socket, "Resolved", @params, %{"resolved" => "resolved"} %>
     ·
-    <%= filter_link @socket, assigns, "All comments", is: "all" %>
+    <%= filter_link @socket, "All comments", @params, %{"resolved" => "all"} %>
   </p>
-  <%= if @username do %>
-    <p>
-      <%= filter_link @socket, assigns, "For me", role: "for_me" %>
-      ·
-      <%= filter_link @socket, assigns, "By me", role: "by_me" %>
-      ·
-      <%= filter_link @socket, assigns, "For anyone", role: "all" %>
-    </p>
-  <% end %>
+  <p>
+    <%= filter_link @socket, "For me", @params, %{"user" => "for_me"} %>
+    ·
+    <%= filter_link @socket, "By me", @params, %{"user" => "by_me"} %>
+    ·
+    <%= filter_link @socket, "For anyone", @params, %{"user" => "all"} %>
+  </p>
 </div>
 
 <%= if @notifications == [] do %>
