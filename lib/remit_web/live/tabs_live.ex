@@ -6,6 +6,8 @@ defmodule RemitWeb.TabsLive do
   @impl true
   def render(assigns) do
     ~L"""
+    <div id="target-tabs"></div>
+
     <div style="display: <%= if @live_action == :commits, do: "block", else: "none" %>">
       <%#= live_render @socket, RemitWeb.CommitsLive, id: :commits %>
     </div>
@@ -16,7 +18,7 @@ defmodule RemitWeb.TabsLive do
     </div>
 
     <div style="display: <%= if @live_action == :settings, do: "block", else: "none" %>">
-      <%#= live_component @socket, RemitWeb.SettingsComponent, id: :settings %>
+      <%= live_component @socket, RemitWeb.SettingsComponent, id: :settings, username: @username %>
     </div>
     """
   end
@@ -49,6 +51,12 @@ defmodule RemitWeb.TabsLive do
       end
 
     {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("settings_form_change", %{"username" => username}, socket) do
+    IO.inspect {:tabs_form_change, username: username}
+    {:noreply, assign(socket, username: Remit.Utils.normalize_string(username))}
   end
 
   defp comments_params(params), do: Map.take(params, ["resolved", "user"])

@@ -1,7 +1,7 @@
 <a
   href="<%= github_url(@comment) %>"
   id="comment-<%= @notification.id %>"
-  phx-click="selected" phx-target="#comments" phx-value-id="<%= @notification.id %>" phx-hook="FixLink"
+  phx-click="selected" phx-target="#target-comments" phx-value-id="<%= @notification.id %>" phx-hook="FixLink"
   class="
     comment
     <%= if @your_last_selected?, do: " comment--highlight" %>
@@ -30,14 +30,14 @@
         <span class="text-gray-dark"><%= Utils.format_datetime(@notification.resolved_at) %></span>
 
         <%= if @at_me? do %>
-          <button phx-click="unresolve" phx-target="#comments" phx-value-id="<%= @notification.id %>" class="ml-2">
+          <button phx-click="unresolve" phx-target="#target-comments" phx-value-id="<%= @notification.id %>" class="ml-2">
             <i class="far fa-eye-slash"></i>
             Mark as new
           </button>
         <% end %>
       <% else %>
         <%= if @at_me? do %>
-          <button phx-click="resolve" phx-target="#comments" phx-value-id="<%= @notification.id %>" class="bg-green-light">
+          <button phx-click="resolve" phx-target="#target-comments" phx-value-id="<%= @notification.id %>" class="bg-green-light">
             <i class="fas fa-check text-green-dark"></i>
             Resolve
           </button>

@@ -1,41 +1,48 @@
-<div class="phx-hook-subscribe-to-session info-box">
-  <%= unless @username do %>
-    <p>Hello, stranger! Please <%= live_patch("set a username", to: Routes.tabs_path(@socket, :settings)) %>.</p>
-  <% end %>
+<%
+# Without this wrapping <div>, there's weird behaviour:
+# Filtering by e.g. "unresolved" and then resolving comments would not remove them from the list.
+# This is assumped to be a bug.
+%>
+<div>
+  <div class="phx-hook-subscribe-to-session info-box" id="target-comments">
+    <%= unless @username do %>
+      <p>Hello, stranger! Please <%= live_patch("set a username", to: Routes.tabs_path(@socket, :settings)) %>.</p>
+    <% end %>
 
-  <p>
-    <%= filter_link @socket, "Unresolved", @params, %{"resolved" => "unresolved"} %>
-    ·
-    <%= filter_link @socket, "Resolved", @params, %{"resolved" => "resolved"} %>
-    ·
-    <%= filter_link @socket, "All comments", @params, %{"resolved" => "all"} %>
-  </p>
-  <p>
-    <%= filter_link @socket, "For me", @params, %{"user" => "for_me"} %>
-    ·
-    <%= filter_link @socket, "By me", @params, %{"user" => "by_me"} %>
-    ·
-    <%= filter_link @socket, "For anyone", @params, %{"user" => "all"} %>
-  </p>
+    <p>
+      <%= filter_link @socket, "Unresolved", @params, %{"resolved" => "unresolved"} %>
+      ·
+      <%= filter_link @socket, "Resolved", @params, %{"resolved" => "resolved"} %>
+      ·
+      <%= filter_link @socket, "All comments", @params, %{"resolved" => "all"} %>
+    </p>
+    <p>
+      <%= filter_link @socket, "For me", @params, %{"user" => "for_me"} %>
+      ·
+      <%= filter_link @socket, "By me", @params, %{"user" => "by_me"} %>
+      ·
+      <%= filter_link @socket, "For anyone", @params, %{"user" => "all"} %>
+    </p>
+  </div>
+
+  <%= if @notifications == [] do %>
+
+    <%= live_component @socket, RemitWeb.NoContentComponent %>
+
+  <% else %>
+
+    <%= for notification <- @notifications do %>
+      <%= live_component @socket, RemitWeb.CommentComponent,
+        id: notification.id,
+        notification: notification,
+        comment: notification.comment,
+        commit: notification.comment.commit,
+        at_me?: notification.username == @username,
+        resolved?: notification.resolved_at,
+        your_last_selected?: (@your_last_selected_id == notification.id)
+
+      %>
+    <% end %>
+
+  <% end %>
 </div>
-
-<%= if @notifications == [] do %>
-
-  <%= live_component @socket, RemitWeb.NoContentComponent %>
-
-<% else %>
-
-  <%= for notification <- @notifications do %>
-    <%= live_component @socket, RemitWeb.CommentComponent,
-      id: notification.id,
-      notification: notification,
-      comment: notification.comment,
-      commit: notification.comment.commit,
-      at_me?: notification.username == @username,
-      resolved?: notification.resolved_at,
-      your_last_selected?: (@your_last_selected_id == notification.id)
-
-    %>
-  <% end %>
-
-<% end %>

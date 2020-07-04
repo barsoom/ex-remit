@@ -10,6 +10,7 @@ defmodule RemitWeb.CommentsComponent do
     if connected?(socket), do: Comments.subscribe()
 
     socket = assign(socket, your_last_selected_id: nil)
+    socket = assign(socket, message: "initial")
 
     {:ok, socket}
   end
@@ -33,18 +34,24 @@ defmodule RemitWeb.CommentsComponent do
 
   @impl true
   def handle_event("resolve", %{"id" => id}, socket) do
+    IO.inspect resolve: id
     Comments.resolve(id)
     socket = assign_selected_id(socket, id)
     socket = assign_filtered_notifications(socket)
+
+    socket = assign(socket, message: "resolve")
 
     {:noreply, socket}
   end
 
   @impl true
   def handle_event("unresolve", %{"id" => id}, socket) do
+    IO.inspect unresolve: id
     Comments.unresolve(id)
     socket = assign_selected_id(socket, id)
     socket = assign_filtered_notifications(socket)
+
+    socket = assign(socket, message: "unresolve")
 
     {:noreply, socket}
   end
@@ -82,6 +89,8 @@ defmodule RemitWeb.CommentsComponent do
       resolved_filter: socket.assigns.params["resolved"],
       user_filter: socket.assigns.params["user"]
     )
+
+    IO.inspect assign_filtered_notifications: length(notifications)
 
     assign(socket, notifications: notifications)
   end
