@@ -7,25 +7,34 @@ defmodule RemitWeb.CommentsComponent do
 
   @impl true
   def mount(socket) do
-    if connected?(socket), do: Comments.subscribe()
-
     socket = assign(socket, your_last_selected_id: nil)
-    socket = assign(socket, message: "initial")
 
     {:ok, socket}
   end
 
+  # Updates
+
   @impl true
-  def update(parent_assigns, socket) do
+  def update(%{username: username, params: params}, socket) do
     socket = assign(socket,
-        username: parent_assigns.username,
-        params: Map.merge(@default_params, parent_assigns.params)
+        username: username,
+        params: Map.merge(@default_params, params)
       )
 
     socket = assign_filtered_notifications(socket)
 
     {:ok, socket}
   end
+
+  @impl true
+  def update(%{comments_changed: true}, socket) do
+    # We just re-load from DB; filtering in memory could get fiddly if we need to hang on to both a filtered and an unfiltered list.
+    socket = assign_filtered_notifications(socket)
+
+    {:ok, socket}
+  end
+
+  # Events
 
   @impl true
   def handle_event("selected", %{"id" => id}, socket) do
@@ -52,27 +61,6 @@ defmodule RemitWeb.CommentsComponent do
     socket = assign_filtered_notifications(socket)
 
     socket = assign(socket, message: "unresolve")
-
-    {:noreply, socket}
-  end
-
-  # Receive events when other LiveViews update settings.
-  @impl true
-  def handle_event("set_session", ["username", username], socket) do
-    socket =
-      socket
-      |> assign(username: Utils.normalize_string(username))
-      |> assign_filtered_notifications()
-
-    {:noreply, socket}
-  end
-  def handle_event("set_session", _, socket), do: {:noreply, socket}
-
-  # Receive broadcasts when new comments arrive or have their state changed by another user.
-  @impl true
-  def handle_info(:comments_changed, socket) do
-    # We just re-load from DB; filtering in memory could get fiddly if we need to hang on to both a filtered and an unfiltered list.
-    socket = assign_filtered_notifications(socket)
 
     {:noreply, socket}
   end

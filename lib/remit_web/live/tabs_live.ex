@@ -2,6 +2,9 @@
 defmodule RemitWeb.TabsLive do
   use RemitWeb, :live_view
 
+  #@overlong_check_frequency_secs 60
+  @overlong_check_frequency_secs 5
+
   @impl true
   def render(assigns) do
     ~L"""
@@ -26,6 +29,12 @@ defmodule RemitWeb.TabsLive do
   def mount(params, session, socket) do
     check_auth_key(session)
 
+    if connected?(socket) do
+      Remit.Commits.subscribe()
+      Remit.Comments.subscribe()
+      :timer.send_interval(@overlong_check_frequency_secs * 1000, self(), :check_for_overlong_reviewing)
+    end
+
     {:ok, assign(socket, username: session["username"], params: params)}
   end
 
@@ -49,8 +58,51 @@ defmodule RemitWeb.TabsLive do
 
   @impl true
   def handle_event("settings_form_change", %{"username" => username}, socket) do
+    IO.inspect event: "settings_form_change", username: username
     {:noreply, assign(socket, username: Remit.Utils.normalize_string(username))}
   end
 
-  defp comments_params(params), do: Map.take(params, ["resolved", "user"])
+  # Received messages.
+  # Because this is the topmost and only LiveView, and its subcomponents are not their own processes, all messages are received here and forwarded.
+
+  # Runs periodically.
+  def handle_info(:check_for_overlong_reviewing, socket) do
+    update_commits(check_for_overlong_reviewing: true)
+    {:noreply, socket}
+  end
+
+  # PubSub.
+  @impl true
+  def handle_info({:changed_commit, commit}, socket) do
+    update_commits(changed_commit: commit)
+    {:noreply, socket}
+  end
+
+  # PubSub.
+  @impl true
+  def handle_info({:new_commits, new_commits}, socket) do
+    update_commits(new_commits: new_commits)
+    {:noreply, socket}
+  end
+
+  # PubSub.
+  @impl true
+  def handle_info(:comments_changed, socket) do
+    update_comments(comments_changed: true)
+    {:noreply, socket}
+  end
+
+  defp update_commits(values) do
+    RemitWeb.CommitsComponent
+    |> send_update(Keyword.merge(values, id: :commits))
+  end
+
+  defp update_comments(values) do
+    RemitWeb.CommentsComponent
+    |> send_update(Keyword.merge(values, id: :comments))
+  end
+
+  defp comments_params(params) do
+    Map.take(params, ["resolved", "user"])
+  end
 end

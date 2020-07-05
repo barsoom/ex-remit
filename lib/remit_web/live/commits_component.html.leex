@@ -1,12 +1,10 @@
-<div class="phx-hook-subscribe-to-session"></div>
-
 <%= if @commits == [] do %>
 
   <%= live_component @socket, RemitWeb.NoContentComponent %>
 
 <% else %>
 
-  <div class="info-box">
+  <div class="info-box" id="target-commits">
     <%= if @username do %>
       <%= if @unreviewed_count == 0 do %>
         <p class="flex items-center justify-center text-base text-almost-black">

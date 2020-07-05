@@ -3,26 +3,49 @@ defmodule RemitWeb.CommitsComponent do
   alias Remit.{Commits, Commit, Utils}
 
   @max_commits Application.get_env(:remit, :max_commits)
-  @overlong_check_frequency_secs 60
 
   @impl true
-  def mount(_params, session, socket) do
-    check_auth_key(session)
-    if connected?(socket) do
-      Commits.subscribe()
-      :timer.send_interval(@overlong_check_frequency_secs * 1000, self(), :check_for_overlong_reviewing)
-    end
-
-    commits = Commits.list_latest(@max_commits)
-
-    socket =
-      socket
-      |> assign(username: session["username"])
-      |> assign(your_last_selected_commit_id: nil)
-      |> assign_commits_and_stats(commits)
+  def mount(socket) do
+    socket = assign(socket,
+      your_last_selected_commit_id: nil,
+      commits: Commits.list_latest(@max_commits)
+    )
 
     {:ok, socket}
   end
+
+  # Updates
+
+  @impl true
+  def update(%{username: username}, socket) do
+    socket =
+      socket
+      |> assign(username: username)
+      |> assign_commits_and_stats(socket.assigns.commits)
+
+    {:ok, socket}
+  end
+
+  @impl true
+  def update(%{check_for_overlong_reviewing: true}, socket) do
+    {:ok, assign(socket,
+      oldest_overlong_in_review_by_me: Commit.oldest_overlong_in_review_by(socket.assigns.commits, socket.assigns.username)
+    )}
+  end
+
+  @impl true
+  def update(%{changed_commit: commit}, socket) do
+    commits = socket.assigns.commits |> replace_commit(commit)
+    {:ok, assign_commits_and_stats(socket, commits)}
+  end
+
+  @impl true
+  def update(%{new_commits: new_commits}, socket) do
+    commits = Enum.slice(new_commits ++ socket.assigns.commits, 0, @max_commits)
+    {:ok, assign_commits_and_stats(socket, commits)}
+  end
+
+  # Events
 
   @impl true
   def handle_event("selected", %{"id" => id}, socket) do
@@ -45,40 +68,6 @@ defmodule RemitWeb.CommitsComponent do
   def handle_event("mark_unreviewed", %{"id" => id}, socket) do
     commit = Commits.mark_as_unreviewed!(id)
     {:noreply, assign_and_broadcast_changed_commit(socket, commit)}
-  end
-
-  # Receive events when other LiveViews update settings.
-  @impl true
-  def handle_event("set_session", ["username", username], socket) do
-    # We need to update the commit stats because they're based on this setting.
-    socket =
-      socket
-      |> assign(username: Utils.normalize_string(username))
-      |> assign_commits_and_stats(socket.assigns.commits)
-
-    {:noreply, socket}
-  end
-
-  # Receive broadcasts when other clients update their state.
-  @impl true
-  def handle_info({:changed_commit, commit}, socket) do
-    commits = socket.assigns.commits |> replace_commit(commit)
-    {:noreply, assign_commits_and_stats(socket, commits)}
-  end
-
-  # Receive broadcasts when new commits arrive.
-  @impl true
-  def handle_info({:new_commits, new_commits}, socket) do
-    # Another option here would be to just reload the latest commits from DB.
-    commits = Enum.slice(new_commits ++ socket.assigns.commits, 0, @max_commits)
-    {:noreply, assign_commits_and_stats(socket, commits)}
-  end
-
-  # Periodically check.
-  def handle_info(:check_for_overlong_reviewing, socket) do
-    {:noreply, assign(socket,
-      oldest_overlong_in_review_by_me: Commit.oldest_overlong_in_review_by(socket.assigns.commits, socket.assigns.username)
-    )}
   end
 
   # Private
