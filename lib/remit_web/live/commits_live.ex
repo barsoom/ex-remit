@@ -1,5 +1,5 @@
-defmodule RemitWeb.CommitsLive do
-  use RemitWeb, :live_view
+defmodule RemitWeb.CommitsComponent do
+  use RemitWeb, :live_component
   alias Remit.{Commits, Commit, Utils}
 
   @max_commits Application.get_env(:remit, :max_commits)
