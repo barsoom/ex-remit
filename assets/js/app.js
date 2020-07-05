@@ -73,7 +73,6 @@ Hooks.SetSession = {
     this.el.addEventListener("input", (e) => {
       clearTimeout(this.timeout)
       this.timeout = setTimeout(() => {
-        this.pushEventTo(".phx-hook-subscribe-to-session", "set_session", [e.target.name, e.target.value])
         fetch(`/api/session?${e.target.name}=${encodeURIComponent(e.target.value)}`, { method: "post" })
       }, this.DEBOUNCE_MS)
     })

@@ -1,5 +1,4 @@
-# Provides a tabbed interface that avoids re-mounting LiveViews.
-# Read more: https://elixirforum.com/t/tabbed-interface-with-multiple-liveviews/31670
+# Provides a tabbed interface that avoids re-mounting LiveViews: https://elixirforum.com/t/tabbed-interface-with-multiple-liveviews/31670
 defmodule RemitWeb.TabsLive do
   use RemitWeb, :live_view
 
@@ -9,7 +8,7 @@ defmodule RemitWeb.TabsLive do
     <div id="target-tabs"></div>
 
     <div style="display: <%= if @live_action == :commits, do: "block", else: "none" %>">
-      <%#= live_render @socket, RemitWeb.CommitsLive, id: :commits %>
+      <%= live_component @socket, RemitWeb.CommitsComponent, id: :commits, username: @username %>
     </div>
 
     <div style="display: <%= if @live_action == :comments, do: "block", else: "none" %>">
@@ -27,17 +26,12 @@ defmodule RemitWeb.TabsLive do
   def mount(params, session, socket) do
     check_auth_key(session)
 
-    socket = assign(socket,
-      username: session["username"],
-      params: params
-    )
-
-    {:ok, socket}
+    {:ok, assign(socket, username: session["username"], params: params)}
   end
 
   @impl true
   def handle_params(params, _uri, socket) do
-    # Since the child LiveViews run concurrently, they can't be relied on to set the title.
+    # Since the child components run concurrently, they can't be relied on to set the title.
     socket =
       case socket.assigns.live_action do
         :commits ->
@@ -55,7 +49,6 @@ defmodule RemitWeb.TabsLive do
 
   @impl true
   def handle_event("settings_form_change", %{"username" => username}, socket) do
-    IO.inspect {:tabs_form_change, username: username}
     {:noreply, assign(socket, username: Remit.Utils.normalize_string(username))}
   end
 
