@@ -7,18 +7,19 @@ defmodule RemitWeb.CommentsLive do
   @impl true
   def mount(_params, session, socket) do
     check_auth_key(session)
-    if connected?(socket), do: Comments.subscribe()
+
+    if connected?(socket) do
+      send(socket.parent_pid, {:comments_pid, self()})
+      Comments.subscribe()
+    end
 
     username = session["username"]
 
     socket =
       socket
-      |> assign(
-        username: username,
-        is: session["is"] || "unresolved",
-        role: session["role"] || (if username, do: "for_me", else: "all"),
-        your_last_selected_id: nil
-      )
+      |> assign(your_last_selected_id: nil)
+      |> assign(username: username)
+      |> assign_params(session)  # Sic. From parent; can't use `_params` since we're not mounted at root.
       |> assign_filtered_notifications()
 
     {:ok, socket}
@@ -68,7 +69,21 @@ defmodule RemitWeb.CommentsLive do
     {:noreply, socket}
   end
 
+  @impl true
+  def handle_info({:new_params, params}, socket) do
+    socket = assign_params(socket, params)
+    socket = assign_filtered_notifications(socket)
+    {:noreply, socket}
+  end
+
   # Private
+
+  defp assign_params(socket, params) do
+    assign(socket,
+      is: params["is"] || "unresolved",
+      role: params["role"] || (if socket.assigns.username, do: "for_me", else: "all")
+    )
+  end
 
   defp assign_selected_id(socket, id) when is_integer(id), do: assign(socket, your_last_selected_id: id)
   defp assign_selected_id(socket, id) when is_binary(id), do: assign_selected_id(socket, String.to_integer(id))
