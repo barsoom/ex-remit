@@ -31,10 +31,10 @@ Hooks.FixLink = {
     if (!window.fluid) this.el.setAttribute("target", "github_window")
 
     this.el.addEventListener("click", (e) => {
-      const clickedButton = !!e.target.closest("button")
+      const didClickButton = !!e.target.closest("button")
 
       // If this is the last link we clicked, don't re-visit it on a button click. We'd reload the page (in Fluid) or open yet another tab (in a regular browser).
-      if (window.remitLastClickedLink === this.el && clickedButton) {
+      if (window.remitLastClickedLink === this.el && didClickButton) {
         e.preventDefault()
         return
       }
