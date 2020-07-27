@@ -26,7 +26,7 @@ let Hooks = {}
 
 // - Fixes an issue where clicking a link with a phx-click on it did not cause the link default (navigation) to trigger.
 // - Adds a target attribute to links when outside Fluid.app, so Remit stays open.
-// - Makes it so that repeat clicks of the same link (or buttons inside that link) don't re-open it every time.
+// - Makes it so that clicking buttons inside a link doesn't re-open it every time. (But clicking outside buttons opens it every time, so you can always navigate back to the commit/comment.)
 // - Makes it so clicks in dev don't actually open links, unless inside Fluid.app, for convenience.
 Hooks.FixLink = {
   mounted() {
@@ -36,8 +36,10 @@ Hooks.FixLink = {
     if (!window.fluid) this.el.setAttribute("target", "github_window")
 
     this.el.addEventListener("click", (e) => {
-      // If this is the last link we clicked, don't re-visit it. We'd reload the page (in Fluid) or open yet another tab (in a regular browser).
-      if (window.remitLastClickedLink === this.el) {
+      const clickedButton = !!e.target.closest("button")
+
+      // If this is the last link we clicked, don't re-visit it on a button click. We'd reload the page (in Fluid) or open yet another tab (in a regular browser).
+      if (window.remitLastClickedLink === this.el && clickedButton) {
         e.preventDefault()
         return
       }
