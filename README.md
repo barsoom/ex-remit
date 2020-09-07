@@ -213,9 +213,9 @@ Then visit <http://localhost:4000?auth_key=dev>
 
 Run
 
-    mix credo
+    mix credo -a
 
-to see what [Credo](https://github.com/rrrene/credo) has to say.
+to see what [Credo](https://github.com/rrrene/credo) has to say. (`-a` or `--all` means it won't truncate the list.)
 
 TODO: Set it up as part of CI, or a githook, or something?
 
