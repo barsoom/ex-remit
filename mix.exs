@@ -52,6 +52,7 @@ defmodule Remit.MixProject do
       {:tesla, "> 0.0.0"},
       {:hackney, "> 0.0.0"},
       {:mox, "> 0.0.0", only: :test},
+      {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
     ]
   end
 

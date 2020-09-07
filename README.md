@@ -209,6 +209,16 @@ Every time:
 
 Then visit <http://localhost:4000?auth_key=dev>
 
+### Credo
+
+Run
+
+    mix credo
+
+to see what [Credo](https://github.com/rrrene/credo) has to say.
+
+TODO: Set it up as part of CI, or a githook, or something?
+
 ### Faking new data coming in via webhook
 
 Just run either or both of these commands:
