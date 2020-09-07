@@ -1,6 +1,8 @@
-# https://hexdocs.pm/ecto/test-factories.html
-
 defmodule Remit.Factory do
+  @moduledoc """
+  Test factories, based on the pattern in https://hexdocs.pm/ecto/test-factories.html.
+  """
+
   alias Remit.{Repo, Commit, Comment, CommentNotification}
 
   def build(:commit) do

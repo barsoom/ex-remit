@@ -1,4 +1,8 @@
 defmodule Remit.Periodically do
+  @moduledoc """
+  Runs background tasks… periodically.
+  """
+
   use GenServer
 
   @default_frequency_ms 60 * 60 * 1000  # 1 hour
