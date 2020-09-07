@@ -228,7 +228,7 @@ defmodule RemitWeb.GithubWebhookControllerTest do
       },
       repository: %{
         name: "footguns",
-        owner: %{ login: "acme" },
+        owner: %{login: "acme"},
       },
     }
   end

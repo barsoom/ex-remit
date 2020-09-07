@@ -1,5 +1,9 @@
 defmodule Faker do
-  def number, do: Enum.random(1..99999)
+  @moduledoc """
+  Generate fake values for dev and test purposes.
+  """
+
+  def number, do: Enum.random(1..99_999)
 
   def sha(i \\ number()) do
     :crypto.hash(:sha, to_string(i)) |> Base.encode16() |> String.downcase()

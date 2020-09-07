@@ -55,7 +55,7 @@ defmodule Remit.GitHubAPIClient do
     "commit_id" => sha,
     "body" => body,
     "created_at" => raw_commented_at,
-    "user" => %{ "login" => username },
+    "user" => %{"login" => username ,
     "path" => path,
     "position" => position,
   } = payload) do

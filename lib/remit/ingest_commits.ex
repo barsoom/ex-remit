@@ -58,6 +58,6 @@ defmodule Remit.IngestCommits do
   # Ignore "web-flow" committer, representing an edit made via the GitHub web UI.
   defp usernames_from(%{"username" => "web-flow"}), do: []
 
-  defp usernames_from(%{"username" => username}), do: [ username ]
+  defp usernames_from(%{"username" => username}), do: [username]
   defp usernames_from(%{"email" => email}), do: Utils.usernames_from_email(email)
 end
