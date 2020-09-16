@@ -12,8 +12,8 @@ defmodule RemitWeb.StatsControllerTest do
     # Ignored because it's unlisted.
     Factory.insert!(:commit, reviewed_at: nil, inserted_at: DateTime.add(now, -200), unlisted: true)
 
-    Factory.insert!(:commit, reviewed_at: nil, inserted_at: DateTime.add(now, -100))
-    Factory.insert!(:commit, reviewed_at: nil, inserted_at: DateTime.add(now, -50))
+    Factory.insert!(:commit, reviewed_at: nil, review_started_at: now, inserted_at: DateTime.add(now, -100))
+    Factory.insert!(:commit, reviewed_at: nil, review_started_at: nil, inserted_at: DateTime.add(now, -50))
     Factory.insert!(:commit, reviewed_at: now, reviewed_by_username: "foo")
     Factory.insert!(:commit, reviewed_at: now, reviewed_by_username: "FOO")
     Factory.insert!(:commit, reviewed_at: now, reviewed_by_username: "bar")
@@ -25,6 +25,7 @@ defmodule RemitWeb.StatsControllerTest do
 
     assert %{
       "unreviewed_count" => 2,
+      "reviewable_count" => 1,
       "oldest_unreviewed_in_seconds" => 100,
       "recent_commits_count" => 5,
       "recent_reviews" => %{
@@ -34,7 +35,7 @@ defmodule RemitWeb.StatsControllerTest do
     } = json_response(conn, 200)
   end
 
-  test "'unreviewed_count' and 'oldest_unreviewed_in_seconds' only looks at the latest (by ID) so-and-so many commits" do
+  test "'unreviewed_count', 'reviewable_count' and 'oldest_unreviewed_in_seconds' only looks at the latest (by ID) so-and-so many commits" do
     now = DateTime.utc_now()
 
     Factory.insert!(:commit, reviewed_at: nil, inserted_at: DateTime.add(now, -100))
@@ -45,6 +46,7 @@ defmodule RemitWeb.StatsControllerTest do
 
     assert %{
       "unreviewed_count" => 2,
+      "reviewable_count" => 2,
       "oldest_unreviewed_in_seconds" => 75,
     } = json_response(conn, 200)
   end
@@ -72,6 +74,7 @@ defmodule RemitWeb.StatsControllerTest do
 
     assert json_response(conn, 200) == %{
       "unreviewed_count" => 0,
+      "reviewable_count" => 0,
       "oldest_unreviewed_in_seconds" => nil,
       "commits_until_oldest_unreviewed_falls_outside_window" => nil,
       "recent_commits_count" => 0,
