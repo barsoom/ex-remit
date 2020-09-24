@@ -50,5 +50,8 @@
       <% end %>
     </div>
   </div>
-  <p class="py-1 px-3 break-words"><%= @comment.body %></p>
+  <p class="py-1 px-3 break-words">
+    <%= # It's nice to see the full comment, but sometimes we'll paste some code example or data output that overwhelms the UI. %>
+    <%= String.slice(@comment.body, 0, 1000) %>
+  </p>
 </a>
