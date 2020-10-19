@@ -47,7 +47,7 @@ defmodule Remit.MixProject do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
-      {:timex, "~> 3.5"},
+      {:tzdata, "~> 1.0.4"},
       {:honeybadger, ">= 0.0.0"},
       {:tesla, "> 0.0.0"},
       {:hackney, "> 0.0.0"},

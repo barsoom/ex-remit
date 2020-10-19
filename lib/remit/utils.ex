@@ -21,17 +21,18 @@ defmodule Remit.Utils do
   end
 
   def format_datetime(datetime) do
-    # Reference: https://hexdocs.pm/timex/Timex.Format.DateTime.Formatters.Default.html
-    datetime |> to_tz() |> Timex.format!("{WDshort} {D} {Mshort} at {h24}:{m}")
+    # Reference: https://hexdocs.pm/elixir/Calendar.html#strftime/3
+    datetime |> to_tz() |> Calendar.strftime("%a %d %b at %H:%M")
   end
 
   def format_time(datetime) do
-    # Reference: https://hexdocs.pm/timex/Timex.Format.DateTime.Formatters.Default.html
-    datetime |> to_tz() |> Timex.format!("at {h24}:{m}")
+    # Reference: https://hexdocs.pm/elixir/Calendar.html#strftime/3
+    datetime |> to_tz() |> Calendar.strftime("at %H:%M")
   end
 
   def format_date(date) do
-    date |> Timex.format!("{WDshort} {D} {Mshort}")
+    # Reference: https://hexdocs.pm/elixir/Calendar.html#strftime/3
+    date |> Calendar.strftime("%a %d %b")
   end
 
   def usernames_from_email(email) do
