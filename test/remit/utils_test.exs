@@ -29,4 +29,22 @@ defmodule Remit.UtilsTest do
       assert Utils.ensure_usec(with_usec) |> DateTime.to_iso8601() |> String.ends_with?(".000123Z")
     end
   end
+
+  describe "format_time" do
+    test "converts to the app time zone and formats to a string" do
+      assert Utils.format_time(~U[2020-10-31 12:01:59.012345Z]) == "at 13:01"
+    end
+  end
+
+  describe "format_datetime" do
+    test "converts to the app time zone and formats to a string" do
+      assert Utils.format_datetime(~U[2020-10-31 12:01:59.012345Z]) == "Sat 31 Oct at 13:01"
+    end
+  end
+
+  describe "format_date" do
+    test "converts to the app time zone and formats to a string" do
+      assert Utils.format_date(~D[2020-10-31]) == "Sat 31 Oct"
+    end
+  end
 end
