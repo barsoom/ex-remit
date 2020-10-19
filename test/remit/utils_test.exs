@@ -2,7 +2,6 @@ defmodule Remit.UtilsTest do
   use ExUnit.Case, async: true
   alias Remit.Utils
 
-
   describe "usernames_from_email" do
     test "extracts them from plus addressing" do
       assert Utils.usernames_from_email("foo+one+two@example.com") ==
