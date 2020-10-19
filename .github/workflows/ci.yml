@@ -52,9 +52,9 @@ jobs:
     - name: Set up Elixir
       uses: actions/setup-elixir@v1
       with:
-        # NOTE: Keep in sync with elixir_buildpack.config
-        elixir-version: "1.10.3"
-        otp-version: "22.3.4"
+        # NOTE: Keep in sync with elixir_buildpack.config and asdf's .tool-versions.
+        elixir-version: "1.11.1"
+        otp-version: "23.1.1"
     # Based on: https://github.com/actions/cache/blob/master/examples.md#elixir---mix
     # `restore-keys` lets us fall back to partially matching caches.
     - name: Restore cache
