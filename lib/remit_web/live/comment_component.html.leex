@@ -24,7 +24,7 @@
         <i><%= if @commit, do: Commit.message_summary(@commit), else: @comment.commit_sha %></i>
       </div>
     </div>
-    <div class="ml-auto whitespace-no-wrap">
+    <div class="ml-auto whitespace-nowrap">
       <%= if @resolved? do %>
         <i class="fas fa-check text-green-dark"></i>
         <span class="text-gray-dark"><%= Utils.format_datetime(@notification.resolved_at) %></span>
