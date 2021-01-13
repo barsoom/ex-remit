@@ -13,10 +13,13 @@ defmodule RemitWeb.Endpoint do
 
   # See app.js for details.
   socket "/socket", RemitWeb.UserSocket,
-    websocket: [timeout: 45_000]
+    websocket: [timeout: 45_000]  # Timeout for Heroku: https://hexdocs.pm/phoenix/heroku.html#making-our-project-ready-for-heroku
 
   socket "/live", Phoenix.LiveView.Socket,
-    websocket: [connect_info: [session: @session_options]]
+    websocket: [
+      websocket: [timeout: 45_000],  # Timeout for Heroku: https://hexdocs.pm/phoenix/heroku.html#making-our-project-ready-for-heroku
+      connect_info: [session: @session_options],
+    ]
 
   # Serve at "/" the static files from "priv/static" directory.
   #
