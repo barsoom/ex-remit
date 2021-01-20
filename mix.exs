@@ -33,7 +33,7 @@ defmodule Remit.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.5.1"},
+      {:phoenix, "~> 1.5"},
       {:phoenix_ecto, "~> 4.1"},
       {:ecto_sql, "~> 3.4"},
       {:postgrex, "> 0.0.0"},
@@ -42,17 +42,17 @@ defmodule Remit.MixProject do
       {:phoenix_html, "~> 2.11"},
       {:phoenix_live_reload, "> 0.0.0", only: :dev},
       {:phoenix_live_dashboard, "~> 0.2.6"},
-      {:telemetry_metrics, "~> 0.4"},
-      {:telemetry_poller, "~> 0.4"},
-      {:gettext, "~> 0.11"},
-      {:jason, "~> 1.0"},
-      {:plug_cowboy, "~> 2.0"},
+      {:telemetry_metrics, "> 0.0.0"},
+      {:telemetry_poller, "> 0.0.0"},
+      {:gettext, "> 0.0.0"},
+      {:jason, "> 0.0.0"},
+      {:plug_cowboy, "> 0.0.0"},
       {:tzdata, "> 0.0.0"},
       {:honeybadger, "> 0.0.0"},
       {:tesla, "> 0.0.0"},
       {:hackney, "> 0.0.0"},
       {:mox, "> 0.0.0", only: :test},
-      {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
+      {:credo, "> 0.0.0", only: [:dev, :test], runtime: false},
     ]
   end
 
