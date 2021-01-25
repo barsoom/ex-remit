@@ -205,6 +205,9 @@ First time:
 
 Every time:
 
+    # Ensure you have the Node version given in .nvmrc, e.g. by installing "nvm" and doing this (TODO: Improve this by moving into Devbox):
+    nvm use
+
     mix phx.server
 
 Then visit <http://localhost:4000?auth_key=dev>
