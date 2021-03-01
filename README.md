@@ -58,7 +58,7 @@ We recommend putting Remit inside [Fluid.app](https://fluidapp.com/) or equivale
 
 Fluid.app is macOS only. Please do contribute instructions for other platforms.
 
-* Install [Fluid.app](http://fluidapp.com/). You can use Homebrew: `brew cask install fluid`
+* Install [Fluid.app](http://fluidapp.com/). You can use Homebrew: `brew install fluid`
 * Launch Fluid.app, create a new app:
   * The URL should be `https://github.com`.
   * Use any name and icon you like – we recommend "Remit" and [this icon](assets/static/images/favicon.png).
