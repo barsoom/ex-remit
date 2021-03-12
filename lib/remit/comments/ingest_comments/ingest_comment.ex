@@ -1,14 +1,7 @@
-defmodule Remit.IngestComment do
-  alias Remit.{
-    Comment,
-    Comments,
-    Commit,
-    Commits,
-    CommentNotification,
-    Repo,
-    UsernamesFromMentions,
-    Utils,
-  }
+defmodule Remit.Comments.IngestComment do
+  alias Remit.Comments.{Comment, Comments, CommentNotification, }
+  alias Remit.Commits.{Commit, Commits}
+  alias Remit.{Repo, UsernamesFromMentions, Utils}
 
   @github_client Application.get_env(:remit, :github_api_client)
 

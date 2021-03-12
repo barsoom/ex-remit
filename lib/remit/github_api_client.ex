@@ -1,12 +1,14 @@
 defmodule Remit.GitHubAPIClient do
+  alias Remit.Commits.Commit
+  alias Remit.Comments.Comment
+  alias Remit.Utils
+
   defmodule Behaviour do
     @moduledoc false
-    @callback fetch_commit(String.t(), String.t(), String.t()) :: %Remit.Commit{}
-    @callback fetch_comments_on_commit(%Remit.Commit{}) :: [%Remit.Comment{}]
+    @callback fetch_commit(String.t(), String.t(), String.t()) :: %Remit.Commits.Commit{}
+    @callback fetch_comments_on_commit(%Remit.Commits.Commit{}) :: [%Remit.Comments.Comment{}]
   end
   @behaviour Behaviour
-
-  alias Remit.{Commit, Comment, Utils}
 
   @api_token Application.get_env(:remit, :github_api_token)
 

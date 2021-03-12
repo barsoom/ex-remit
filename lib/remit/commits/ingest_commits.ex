@@ -1,5 +1,6 @@
-defmodule Remit.IngestCommits do
-  alias Remit.{Repo, Commits, Commit, Utils}
+defmodule Remit.Commits.IngestCommits do
+  alias Remit.Commits.{Commits, Commit}
+  alias Remit.{Repo, Utils}
 
   def from_params(params) do
     commits =
@@ -38,7 +39,7 @@ defmodule Remit.IngestCommits do
       "timestamp" => raw_committed_at,
     } = payload, owner, repo)
   do
-    %Commit{
+    %Remit.Commits.Commit{
       owner: owner,
       repo: repo,
       sha: sha,

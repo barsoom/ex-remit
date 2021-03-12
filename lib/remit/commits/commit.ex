@@ -1,4 +1,4 @@
-defmodule Remit.Commit do
+defmodule Remit.Commits.Commit do
   use Remit, :schema
 
   schema "commits" do

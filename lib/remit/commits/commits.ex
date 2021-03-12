@@ -1,5 +1,6 @@
-defmodule Remit.Commits do
-  alias Remit.{Repo, Commit}
+defmodule Remit.Commits.Commits do
+  alias Remit.Commit
+  alias Remit.Repo
   import Ecto.Query
 
   def list_latest(count) do

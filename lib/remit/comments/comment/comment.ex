@@ -1,6 +1,7 @@
-defmodule Remit.Comment do
+defmodule Remit.Comments.Comment do
   use Remit, :schema
-  alias Remit.{Commit, CommentNotification}
+  alias Remit.Comments.CommentNotification
+  alias Remit.Commits.Commit
 
   schema "comments" do
     field :github_id, :integer
