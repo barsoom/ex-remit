@@ -123,6 +123,7 @@ let pingChannel = socket.channel("ping", {})
 let hasJoinedBefore = false
 pingChannel.join().receive("ok", () => {
   if (hasJoinedBefore) {
+    console.log("Rejoined channel and might have missed messages, so reloading!")
     location.reload()
   } else {
     hasJoinedBefore = true
@@ -132,7 +133,10 @@ pingChannel.join().receive("ok", () => {
 let isOffline = false
 let setAsOfflineTimer = null
 pingChannel.on("ping", () => {
-  if (isOffline) { location.reload() }
+  if (isOffline) {
+    console.log("Is offline, so reloading!")
+    location.reload()
+  }
 
   clearTimeout(setAsOfflineTimer)
 
