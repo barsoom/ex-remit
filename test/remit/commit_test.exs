@@ -8,6 +8,11 @@ defmodule Remit.CommitTest do
       assert Commit.message_summary(%Commit{message: "My summary\rMore info"}) == "My summary"
       assert Commit.message_summary(%Commit{message: "My summary\r\nMore info"}) == "My summary"
     end
+
+    # Regression.
+    test "doesn't make a mess when encountering the letter 'Å'" do
+      assert Commit.message_summary(%Commit{message: "Åland\nIt's a place."}) == "Åland"
+    end
   end
 
   describe "authored_by?" do

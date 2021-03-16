@@ -53,7 +53,7 @@ defmodule Remit.Commit do
 
   def botless_username(username), do: String.replace_trailing(username, "[bot]", "")
 
-  def message_summary(commit), do: commit.message |> String.split(~r/\R/) |> hd
+  def message_summary(commit), do: commit.message |> String.split(~r/[\r\n]/) |> hd
 
   def add_date_separators(commits) do
     {new_commits, _acc} =
