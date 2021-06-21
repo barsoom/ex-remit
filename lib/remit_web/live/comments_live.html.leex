@@ -23,12 +23,12 @@
 
 <%= if @notifications == [] do %>
 
-  <%= live_component @socket, RemitWeb.NoContentComponent %>
+  <%= live_component RemitWeb.NoContentComponent %>
 
 <% else %>
 
   <%= for notification <- @notifications do %>
-    <%= live_component @socket, RemitWeb.CommentComponent,
+    <%= live_component RemitWeb.CommentComponent,
       id: notification.id,
       notification: notification,
       comment: notification.comment,
