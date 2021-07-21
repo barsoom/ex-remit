@@ -51,24 +51,6 @@ defmodule RemitWeb.StatsControllerTest do
     } = json_response(conn, 200)
   end
 
-  test "'commits_until_oldest_unreviewed_falls_outside_window' works" do
-    now = DateTime.utc_now()
-
-    Factory.insert!(:commit, reviewed_at: nil)
-    Factory.insert!(:commit, reviewed_at: now)
-    Factory.insert!(:commit, reviewed_at: nil)
-
-    conn = get_stats(max_commits: 10)
-    assert %{
-      "commits_until_oldest_unreviewed_falls_outside_window" => 1,
-    } = json_response(conn, 200)
-
-    conn = get_stats(max_commits: 2)
-    assert %{
-      "commits_until_oldest_unreviewed_falls_outside_window" => 2,
-    } = json_response(conn, 200)
-  end
-
   test "it gives sensible stats when there's no data" do
     conn = get_stats()
 
@@ -76,7 +58,6 @@ defmodule RemitWeb.StatsControllerTest do
       "unreviewed_count" => 0,
       "reviewable_count" => 0,
       "oldest_unreviewed_in_seconds" => nil,
-      "commits_until_oldest_unreviewed_falls_outside_window" => nil,
       "recent_commits_count" => 0,
       "recent_reviews" => %{},
     }
