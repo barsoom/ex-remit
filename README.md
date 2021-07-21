@@ -174,6 +174,8 @@ To avoid growing out of your DB plan, set e.g.
 
 The app will schedule a recurring process (`Remit.Periodically`) to remove older data.
 
+It will only remove old-enough reviewed commits, and their associated comments (whether or not the comment notifications are resolved, and independent of the age of the comments). This is a bit crude – pull requests welcome for further improvement.
+
 ### Migrating from the "Review" app
 
 Did you use our old [Review app](https://github.com/barsoom/review)? See `priv/repo/migrate_from_review.exs`.

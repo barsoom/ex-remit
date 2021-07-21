@@ -29,6 +29,6 @@ defmodule Remit.Periodically do
 
   defp remove_old_data(days) when is_integer(days) do
     # Deleting commits will remove all other records, via associations.
-    Remit.Commits.delete_older_than_days(days)
+    Remit.Commits.delete_reviewed_older_than_days(days)
   end
 end

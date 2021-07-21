@@ -15,8 +15,8 @@ defmodule Remit.Commits do
 
   def sha_exists?(sha), do: Repo.exists?(from Commit, where: [sha: ^sha])
 
-  def delete_older_than_days(days) when is_integer(days) do
-    Repo.delete_all(from c in Commit, where: c.inserted_at < ago(^days, "day"))
+  def delete_reviewed_older_than_days(days) when is_integer(days) do
+    Repo.delete_all(from c in Commit, where: c.inserted_at < ago(^days, "day"), where: not(is_nil(c.reviewed_at)))
   end
 
   def mark_as_reviewed!(id, reviewer_username) when is_binary(reviewer_username) do
