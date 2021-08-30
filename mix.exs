@@ -33,11 +33,11 @@ defmodule Remit.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.5.1"},
-      {:phoenix_ecto, "~> 4.1"},
-      {:ecto_sql, "~> 3.4"},
+      {:phoenix, "~> 1.5.9"},
+      {:phoenix_ecto, "~> 4.2.1"},
+      {:ecto_sql, "~> 3.6.2"},
       {:postgrex, "> 0.0.0"},
-      {:phoenix_live_view, "~> 0.15.4"},
+      {:phoenix_live_view, "~> 0.15.7"},
       {:floki, "> 0.0.0", only: :test},
       {:phoenix_html, "> 0.0.0"},
       {:phoenix_live_reload, "> 0.0.0", only: :dev},
