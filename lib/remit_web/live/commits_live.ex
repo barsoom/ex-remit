@@ -8,6 +8,7 @@ defmodule RemitWeb.CommitsLive do
   @impl true
   def mount(_params, session, socket) do
     check_auth_key(session)
+
     if connected?(socket) do
       Commits.subscribe()
       :timer.send_interval(@overlong_check_frequency_secs * 1000, self(), :check_for_overlong_reviewing)
