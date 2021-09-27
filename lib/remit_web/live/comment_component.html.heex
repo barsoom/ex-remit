@@ -1,13 +1,15 @@
 <a
-  href="<%= github_url(@comment) %>"
-  id="comment-<%= @notification.id %>"
-  phx-click="selected" phx-value-id="<%= @notification.id %>" phx-hook="FixLink"
-  class="
+  href={github_url(@comment)}"
+  id={"comment-#{@notification.id}"}
+  phx-click="selected"
+  phx-value-id={@notification.id}
+  phx-hook="FixLink"
+  class={"
     comment
-    <%= if @your_last_selected?, do: " comment--highlight" %>
+    #{if @your_last_selected?, do: " comment--highlight"}
     block no-underline my-1 bg-gray-200
-    <%= if @resolved?, do: " comment--resolved" %>
-  "
+    #{if @resolved?, do: " comment--resolved"}
+  "}
 >
   <div class="comment__metadata bg-gray-400 py-1 px-3 flex items-center">
     <%# min-w-0 for truncate inside flexbox: https://css-tricks.com/flexbox-truncated-text/ %>
@@ -30,19 +32,19 @@
         <span class="text-gray-dark"><%= Utils.format_datetime(@notification.resolved_at) %></span>
 
         <%= if @at_me? do %>
-          <button phx-click="unresolve" phx-value-id="<%= @notification.id %>" class="ml-2">
+          <button phx-click="unresolve" phx-value-id={@notification.id} class="ml-2">
             <i class="far fa-eye-slash"></i>
             Mark as new
           </button>
         <% end %>
       <% else %>
         <%= if @at_me? do %>
-          <button phx-click="resolve" phx-value-id="<%= @notification.id %>" class="bg-green-light">
+          <button phx-click="resolve" phx-value-id={@notification.id}" class="bg-green-light">
             <i class="fas fa-check text-green-dark"></i>
             Resolve
           </button>
         <% else %>
-          <span <%= render_tooltip("Since #{Utils.format_datetime(@notification.inserted_at)}", pos: "up-right") %>">
+          <span {tooltip_attributes("Since #{Utils.format_datetime(@notification.inserted_at)}", pos: "up-right")}>
             <i class="fas fa-gift text-yellow-mid"></i>
             <span class="text-gray-dark">Unresolved</span>
           </span>
