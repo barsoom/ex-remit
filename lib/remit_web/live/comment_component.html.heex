@@ -1,5 +1,5 @@
 <a
-  href={github_url(@comment)}"
+  href={github_url(@comment)}
   id={"comment-#{@notification.id}"}
   phx-click="selected"
   phx-value-id={@notification.id}
@@ -39,7 +39,7 @@
         <% end %>
       <% else %>
         <%= if @at_me? do %>
-          <button phx-click="resolve" phx-value-id={@notification.id}" class="bg-green-light">
+          <button phx-click="resolve" phx-value-id={@notification.id} class="bg-green-light">
             <i class="fas fa-check text-green-dark"></i>
             Resolve
           </button>
