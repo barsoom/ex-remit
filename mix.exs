@@ -35,7 +35,7 @@ defmodule Remit.MixProject do
     [
       {:phoenix, "~> 1.5.9"},
       {:phoenix_ecto, "~> 4.2.1"},
-      {:ecto_sql, "~> 3.6.2"},
+      {:ecto_sql, "> 0.0.0"},
       {:postgrex, "> 0.0.0"},
       {:phoenix_live_view, "~> 0.15.7"},
       {:floki, "> 0.0.0", only: :test},
