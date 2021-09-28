@@ -5,16 +5,16 @@ defmodule RemitWeb.TabsLive do
 
   @impl true
   def render(assigns) do
-    ~L"""
-    <div style="display: <%= if @live_action == :commits, do: "block", else: "none" %>">
+    ~H"""
+    <div style={"display: #{if @live_action == :commits, do: "block", else: "none"}"}>
       <%= live_render @socket, RemitWeb.CommitsLive, id: :commits %>
     </div>
 
-    <div style="display: <%= if @live_action == :comments, do: "block", else: "none" %>">
+    <div style={"display: #{if @live_action == :comments, do: "block", else: "none"}"}>
       <%= live_render @socket, RemitWeb.CommentsLive, id: :comments, session: %{"is" => @comments_is, "role" => @comments_role} %>
     </div>
 
-    <div style="display: <%= if @live_action == :settings, do: "block", else: "none" %>">
+    <div style={"display: #{if @live_action == :settings, do: "block", else: "none"}"}>
       <%= live_render @socket, RemitWeb.SettingsLive, id: :settings %>
     </div>
     """
