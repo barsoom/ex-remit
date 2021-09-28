@@ -23,11 +23,11 @@
                 <i class="far fa-snooze text-blue-600 zzz-animation"></i>
                 <b class="font-bold text-blue-900 ml-1">Still awake?</b>
                 Don't forget to complete
-                <a href="#commit-<%= @oldest_overlong_in_review_by_me.id %>" phx-click="selected" phx-value-id="<%= @oldest_overlong_in_review_by_me.id %>" id="for-phx-hook-complete-your-review" phx-hook="ScrollToTarget">your review</a>
+                <a href={"#commit-#{@oldest_overlong_in_review_by_me.id}"} phx-click="selected" phx-value-id={@oldest_overlong_in_review_by_me.id} id="for-phx-hook-complete-your-review" phx-hook="ScrollToTarget">your review</a>
                 :)
               </p>
             <% @oldest_unreviewed_for_me -> %>
-              <p>Maybe do one from <a href="#commit-<%= @oldest_unreviewed_for_me.id %>" phx-click="selected" phx-value-id="<%= @oldest_unreviewed_for_me.id %>" id="for-phx-hook-oldest-unreviewed" phx-hook="ScrollToTarget"><%= Utils.format_datetime(@oldest_unreviewed_for_me.committed_at) %></a> next.</p>
+              <p>Maybe do one from <a href={"#commit-#{@oldest_unreviewed_for_me.id}"} phx-click="selected" phx-value-id={@oldest_unreviewed_for_me.id} id="for-phx-hook-oldest-unreviewed" phx-hook="ScrollToTarget"><%= Utils.format_datetime(@oldest_unreviewed_for_me.committed_at) %></a> next.</p>
             <% true -> %>
               <p>
                 <i class="fas fa-trophy text-yellow-mid"></i>
