@@ -45,14 +45,4 @@ defmodule RemitWeb.LiveViewHelpers do
       "aria-label": text,
     ]
   end
-
-  def render_tooltip(text, opts \\ []) do
-    tooltip_attributes(text, opts)
-    |> Enum.map(fn {k, v} -> [
-      Atom.to_string(k),
-      {:safe, ~s(=")},
-      Phoenix.HTML.html_escape(v),
-      {:safe, ~s(" )},
-    ] end)
-  end
 end

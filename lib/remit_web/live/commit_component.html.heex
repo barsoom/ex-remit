@@ -1,0 +1,96 @@
+<div>
+  <%= if @commit.date_separator_before do %>
+    <h2 class="header-box">
+      <%= @commit.date_separator_before |> Utils.format_date() %>
+    </h2>
+  <% end %>
+
+  <a
+    href={@commit.url}
+    id={"commit-#{@commit.id}"}
+    phx-click="selected" phx-value-id={@commit.id} phx-hook="FixLink"
+    class={"
+      flex items-center no-underline
+      border-b border-gray-light
+      py-2 px-3
+      #{if @reviewed?, do: " commit--reviewed"}
+      #{if @being_reviewed?, do: " commit--being-reviewed"}
+      #{if @your_last_selected_commit?, do: " commit--highlight"}
+    "}>
+    <%= if @commit.usernames != [] do %>
+      <div class="flex-none mr-3 flex space-x-1">
+        <%= for username <- @commit.usernames do %>
+          <%= github_avatar(username,
+            (if @reviewed? || @you_authored?, do: :small_commit, else: 45),
+            class: "rounded",
+            tooltip_pos: "up-left"
+          ) %>
+        <% end %>
+      </div>
+    <% end %>
+    <div class={"
+      flex-1 leading-snug
+      #{if @reviewed? || @you_authored?, do: " truncate", else: " min-w-0 break-words"}
+      #{if @you_authored?, do: " opacity-50"}
+    "}>
+      <p class={if @reviewed? || @you_authored?, do: "inline", else: "mb-1"}><%= Commit.message_summary(@commit) %></p>
+      <p class={if @reviewed? || @you_authored?, do: "inline", else: ""}>
+        <%= if @commit.usernames == [] && !@reviewed? do %>
+          <%= live_component RemitWeb.NoUsernameComponent %>
+        <% end %>
+        in <%= content_tag((if @reviewed? || @you_authored?, do: :span, else: :b), @commit.repo, tooltip_attributes("#{@commit.owner}/#{@commit.repo}")) %>
+        <%= Utils.format_time(@commit.committed_at) %>
+      </p>
+    </div>
+
+    <%= if @being_reviewed? && !@you_are_reviewing? do %>
+      <div
+        class="flex-none ml-2 text-gray-dark flex items-center"
+        {tooltip_attributes("In review by #{@commit.review_started_by_username} since #{Utils.format_datetime(@commit.review_started_at)}", pos: "up-right")}
+      >
+        <span class="mr-3">
+          In review<span class="bouncy-ellipsis"><span>.</span><span>.</span><span>.</span></span>
+        </span>
+
+        <%= github_avatar(@commit.review_started_by_username, :small_commit, class: "opacity-75", tooltip: nil) %>
+      </div>
+    <% else %>
+      <div class="flex-none ml-2 self-center">
+        <%= cond do %>
+          <% @reviewed? && @you_authored? -> %>
+            <%# Don't show buttons. %>
+          <% @reviewed? && !@you_authored? && @username -> %>
+            <button phx-click="mark_unreviewed" phx-value-id={@commit.id} class="opacity-25 hover:opacity-100">
+              <i class="far fa-eye-slash"></i>
+              Mark as new
+            </button>
+          <% @being_reviewed? && @you_are_reviewing? -> %>
+            <button phx-click="mark_reviewed" phx-value-id={@commit.id} class="bg-green-light">
+              <i class="fas fa-check text-green-dark"></i>
+              Mark as reviewed
+            </button>
+          <% !@you_authored? && @username -> %>
+            <button phx-click="start_review" phx-value-id={@commit.id} class="hover:bg-yellow-100 hover:border-yellow-mid">
+              <i class="fas fa-eye text-yellow-mid"></i>
+              Start review
+            </button>
+          <% true -> %>
+            <%# Don't show buttons. %>
+        <% end %>
+      </div>
+
+      <div class="flex-none ml-3">
+        <%= cond do %>
+          <% @reviewed? -> %>
+            <%= github_avatar(@commit.reviewed_by_username, :small_commit, tooltip_pos: "up-right") %>
+          <% @being_reviewed? && @you_are_reviewing? -> %>
+            <button phx-click="mark_unreviewed" phx-value-id={@commit.id} class="bg-red-100" title="Cancel review">
+              <i class="fas fa-eye-slash text-red-700"></i>
+            </button>
+          <% true -> %>
+            <%= github_avatar_sized_spacer(:small_commit) %>
+        <% end %>
+      </div>
+    <% end %>
+  </a>
+</div>
