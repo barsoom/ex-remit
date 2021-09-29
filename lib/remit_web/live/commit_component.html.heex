@@ -36,7 +36,7 @@
       <p class={if @reviewed? || @you_authored?, do: "inline", else: "mb-1"}><%= Commit.message_summary(@commit) %></p>
       <p class={if @reviewed? || @you_authored?, do: "inline", else: ""}>
         <%= if @commit.usernames == [] && !@reviewed? do %>
-          <%= live_component RemitWeb.NoUsernameComponent %>
+          <RemitWeb.NoUsernameComponent.render />
         <% end %>
         in <%= content_tag((if @reviewed? || @you_authored?, do: :span, else: :b), @commit.repo, tooltip_attributes("#{@commit.owner}/#{@commit.repo}")) %>
         <%= Utils.format_time(@commit.committed_at) %>
