@@ -50,7 +50,7 @@ jobs:
       with:
         # NOTE: Keep in sync with elixir_buildpack.config and asdf's .tool-versions.
         elixir-version: "1.12.3"
-        otp-version: "24.1"
+        otp-version: "24.1.1"
         experimental-otp: true
     # Based on: https://github.com/actions/cache/blob/master/examples.md#elixir---mix
     # `restore-keys` lets us fall back to partially matching caches.
