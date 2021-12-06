@@ -49,7 +49,7 @@ jobs:
       uses: actions/setup-elixir@v1
       with:
         # NOTE: Keep in sync with elixir_buildpack.config and asdf's .tool-versions.
-        elixir-version: "1.12.3"
+        elixir-version: "1.13.0"
         otp-version: "24.1.7"
         experimental-otp: true
     # Based on: https://github.com/actions/cache/blob/master/examples.md#elixir---mix
