@@ -115,33 +115,5 @@ window.liveSocket = liveSocket
 const OFFLINE_IF_UNPUNG_FOR_SECONDS = 5
 
 let authKey = document.querySelector("meta[name='auth_key']").getAttribute("content")
-let socket = new Socket("/socket", {params: {auth_key: authKey}})
+let socket = new Socket("/socket", {params: {auth_key: authKey}, heartbeatIntervalMs: 15000})
 socket.connect()
-
-let pingChannel = socket.channel("ping", {})
-
-let hasJoinedBefore = false
-pingChannel.join().receive("ok", () => {
-  if (hasJoinedBefore) {
-    console.log("Rejoined channel and might have missed messages, so reloading!")
-    location.reload()
-  } else {
-    hasJoinedBefore = true
-  }
-})
-
-let isOffline = false
-let setAsOfflineTimer = null
-pingChannel.on("ping", () => {
-  if (isOffline) {
-    console.log("Is offline, so reloading!")
-    location.reload()
-  }
-
-  clearTimeout(setAsOfflineTimer)
-
-  setAsOfflineTimer = setTimeout(() => {
-    isOffline = true
-    document.body.classList.add("ping-offline")
-  }, OFFLINE_IF_UNPUNG_FOR_SECONDS * 1000)
-})
