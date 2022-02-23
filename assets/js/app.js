@@ -88,6 +88,7 @@ window.addEventListener("phx:page-loading-start", (info) => {
   clearTimeout(progressTimeout)
   progressTimeout = setTimeout(NProgress.start, 100)
   if (info?.detail?.kind === "error") {
+    // wait 500 ms to be sure is a disconnect and not a page reload
     setTimeout(function(){document.body.classList.add("ping-offline")}, 500)
   }
 })
