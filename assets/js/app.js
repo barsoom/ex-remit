@@ -87,14 +87,14 @@ let progressTimeout = null
 window.addEventListener("phx:page-loading-start", (info) => {
   clearTimeout(progressTimeout)
   progressTimeout = setTimeout(NProgress.start, 100)
-  if (info.detail && info.detail.kind && info.detail.kind === "error") {
+  if (info?.detail?.kind && info.detail.kind === "error") {
     setTimeout(function(){document.body.classList.add("ping-offline")}, 1000)
   }
 })
 
 window.addEventListener("phx:page-loading-stop", (info) => {
   clearTimeout(progressTimeout)
-  if (info.detail && info.detail.kind && info.detail.kind === "initial" && document.body.classList.contains("ping-offline")) {
+  if (info.detail?.kind && info.detail.kind === "initial" && document.body.classList.contains("ping-offline")) {
     document.body.classList.remove("ping-offline")
     document.body.classList.add("ping-online")
     setTimeout(function(){document.body.classList.remove("ping-online")}, 1200)
