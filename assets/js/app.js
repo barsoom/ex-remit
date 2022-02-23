@@ -88,7 +88,7 @@ window.addEventListener("phx:page-loading-start", (info) => {
   clearTimeout(progressTimeout)
   progressTimeout = setTimeout(NProgress.start, 100)
   if (info?.detail?.kind === "error") {
-    setTimeout(function(){document.body.classList.add("ping-offline")}, 200)
+    setTimeout(function(){document.body.classList.add("ping-offline")}, 500)
   }
 })
 
@@ -96,9 +96,6 @@ window.addEventListener("phx:page-loading-stop", (info) => {
   clearTimeout(progressTimeout)
   if (info.detail?.kind === "initial" && document.body.classList.contains("ping-offline")) {
     location.reload()
-    document.body.classList.remove("ping-offline")
-    document.body.classList.add("ping-online")
-    setTimeout(function(){document.body.classList.remove("ping-online")}, 1200)
   }
   NProgress.done()
 })
