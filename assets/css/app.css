@@ -36,3 +36,9 @@
 
   .ping-offline & { display: block; }
 }
+
+.ping-online__banner {
+  display: none;
+  
+  .ping-online & { display: block; }
+}

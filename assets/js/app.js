@@ -74,7 +74,7 @@ Hooks.SetSession = {
         fetch(`/api/session?${e.target.name}=${encodeURIComponent(e.target.value)}`, { method: "post" })
       }, this.DEBOUNCE_MS)
     })
-  },
+  }
  }
 
 let liveSocket = new LiveSocket("/live", Socket, {
@@ -84,8 +84,23 @@ let liveSocket = new LiveSocket("/live", Socket, {
 
 // Show progress bar on live navigation and form submits.
 let progressTimeout = null
-window.addEventListener("phx:page-loading-start", () => { clearTimeout(progressTimeout); progressTimeout = setTimeout(NProgress.start, 100) })
-window.addEventListener("phx:page-loading-stop", () => { clearTimeout(progressTimeout); NProgress.done() })
+window.addEventListener("phx:page-loading-start", (info) => {
+  clearTimeout(progressTimeout)
+  progressTimeout = setTimeout(NProgress.start, 100)
+  if (info.detail && info.detail.kind && info.detail.kind === "error") {
+    setTimeout(function(){document.body.classList.add("ping-offline")}, 1000)
+  }
+})
+
+window.addEventListener("phx:page-loading-stop", (info) => {
+  clearTimeout(progressTimeout)
+  if (info.detail && info.detail.kind && info.detail.kind === "initial" && document.body.classList.contains("ping-offline")) {
+    document.body.classList.remove("ping-offline")
+    document.body.classList.add("ping-online")
+    setTimeout(function(){document.body.classList.remove("ping-online")}, 1200)
+  }
+  NProgress.done()
+})
 
 // Don't show a spinner in addition to the progress bar.
 NProgress.configure({ showSpinner: false })
@@ -97,22 +112,6 @@ liveSocket.connect()
 // >> liveSocket.enableDebug()
 // >> liveSocket.enableLatencySim(1000)
 window.liveSocket = liveSocket
-
-
-/* CONNECTION DETECTION AND NEW DEPLOY DETECTION
- *
- * We set up our own socket and channel to handle two scenarios:
- *
- * 1. You've lost your connection for a while (computer sleep, network blip…). We detect it via pings from the server, and reload the page to ensure you didn't miss any updates. See: https://elixirforum.com/t/can-phoenix-channel-detect-client-offline-immediately-like-wifi-disconnected/25104/18
- *
- * 2. A new revision of the app is deployed, so we should reload the page to ensure you use the new revision. Heroku will close the socket briefly during deploy, causing a reconnection. We detect that reconnect, and reload the page.
- *
- * We can't rely on #1 alone, since the restart may be quicker than our ping-detection threshold. We also can't rely solely on #2, because it is only likely to reconnect quickly when the socket is shut down cleanly on the server and tells the client. Otherwise it can take a minute or so for the client to realise the socket is dead.
- *
- * We try to strike a balance between not triggering at every brief connection blip, and detecting longer blips quickly, but there are no guarantees that we can't miss ill-timed broadcasts during a below-the-threshold blip. That's acceptable for this app.
- */
-
-const OFFLINE_IF_UNPUNG_FOR_SECONDS = 5
 
 let authKey = document.querySelector("meta[name='auth_key']").getAttribute("content")
 let socket = new Socket("/socket", {params: {auth_key: authKey}, heartbeatIntervalMs: 15000})
