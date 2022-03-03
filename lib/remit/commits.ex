@@ -2,8 +2,8 @@ defmodule Remit.Commits do
   alias Remit.{Repo, Commit}
   import Ecto.Query
 
-  def list_latest(count) do
-    Commit.latest_listed(count)
+  def list_latest(page, _count \\ nil) do
+    Commit.latest_listed(page)
     |> Repo.all()
   end
 

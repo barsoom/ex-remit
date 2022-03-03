@@ -11,13 +11,16 @@ import "phoenix_html"
 import {Socket} from "phoenix"
 import NProgress from "nprogress"
 import {LiveSocket} from "phoenix_live_view"
+import infiniteScroll from './infinite_scroll'
 
 
 /* LIVE SOCKET */
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 
-let Hooks = {}
+let Hooks = {
+  infiniteScroll: infiniteScroll
+}
 
 // - Fixes an issue where clicking a link with a phx-click on it did not cause the link default (navigation) to trigger.
 // - Adds a target attribute to links when outside Fluid.app, so Remit stays open.

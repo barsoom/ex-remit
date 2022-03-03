@@ -49,19 +49,21 @@
     <% end %>
   </div>
 
-  <%= for commit <- @commits do %>
-    <%# We use live components specifically so that only changed commits (not all of them) are passed via the socket. %>
-    <%# We prefer this to the "temporary assigns" optimisation, as that complicates logic by not holding the full list of commits as state. %>
-    <RemitWeb.CommitComponent.render
-      id={commit.id}
-      commit={commit}
-      username={@username}
-      being_reviewed?={commit.review_started_at && !commit.reviewed_at}
-      reviewed?={commit.reviewed_at}
-      you_authored?={Commit.authored_by?(commit, @username)}
-      you_are_reviewing?={Commit.being_reviewed_by?(commit, @username)}
-      your_last_selected_commit?={@your_last_selected_commit_id == commit.id}
-    />
-  <% end %>
+  <div class="infiniteScroll" phx-hook="infiniteScroll">
+    <%= for commit <- @commits do %>
+      <%# We use live components specifically so that only changed commits (not all of them) are passed via the socket. %>
+      <%# We prefer this to the "temporary assigns" optimisation, as that complicates logic by not holding the full list of commits as state. %>
+      <RemitWeb.CommitComponent.render
+        id={commit.id}
+        commit={commit}
+        username={@username}
+        being_reviewed?={commit.review_started_at && !commit.reviewed_at}
+        reviewed?={commit.reviewed_at}
+        you_authored?={Commit.authored_by?(commit, @username)}
+        you_are_reviewing?={Commit.being_reviewed_by?(commit, @username)}
+        your_last_selected_commit?={@your_last_selected_commit_id == commit.id}
+      />
+    <% end %>
+  </div>
 
 <% end %>

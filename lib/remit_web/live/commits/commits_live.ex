@@ -14,15 +14,24 @@ defmodule RemitWeb.CommitsLive do
       :timer.send_interval(@overlong_check_frequency_secs * 1000, self(), :check_for_overlong_reviewing)
     end
 
-    commits = Commits.list_latest(@max_commits)
+    commits = Commits.list_latest(0)
 
     socket =
       socket
       |> assign(username: session["username"])
+      |> assign(page: 0)
       |> assign(your_last_selected_commit_id: nil)
       |> assign_commits_and_stats(commits)
 
     {:ok, socket}
+  end
+
+  def handle_event("load_more", _, socket) do
+    %{page: page} = socket.assigns
+
+    next_page = page + 1
+
+    {:noreply, assign(socket, page: next_page)}
   end
 
   @impl true

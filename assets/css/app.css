@@ -36,3 +36,8 @@
 
   .ping-offline & { display: block; }
 }
+
+.infiniteScroll {
+  overflow: scroll;
+  max-height: 900px;
+}

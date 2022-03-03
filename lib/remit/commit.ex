@@ -22,8 +22,9 @@ defmodule Remit.Commit do
     timestamps()
   end
 
-  def latest_listed(q \\ __MODULE__, count), do: q |> latest(count) |> listed()
-  def latest(q \\ __MODULE__, count), do: from q, limit: ^count, order_by: [desc: :id]
+  def latest_listed(q \\ __MODULE__, page, _count \\ nil), do: q |> latest(page) |> listed()
+  # def latest(q \\ __MODULE__, count), do: from q, limit: ^count, order_by: [desc: :id]
+  def latest(q \\ __MODULE__, page), do: paginate(q, page)
   def listed(q \\ __MODULE__), do: from q, where: [unlisted: false]
 
   def authored_by?(_commit, nil), do: false
@@ -65,5 +66,13 @@ defmodule Remit.Commit do
       end)
 
     new_commits
+  end
+
+  def paginate(query, page, per_page \\ 20) do
+    offset_by = per_page * page
+
+    query
+    |> limit(^per_page)
+    |> offset(^offset_by)
   end
 end
