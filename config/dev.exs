@@ -17,7 +17,7 @@ config :remit, Remit.Repo,
 # with webpack to recompile .js and .css sources.
 config :remit, RemitWeb.Endpoint,
   http: [
-    port: 4000,
+    port: System.get_env("PORT") || 4000,
     protocol_options: [
       idle_timeout: 15_000
     ]
