@@ -40,7 +40,7 @@ defmodule Faker do
       "Looks great!",
       "Ship it!",
       "Sensational!",
-      "Needs more cowbell.",
+      "Needs more cowbell."
     ])
   end
 end

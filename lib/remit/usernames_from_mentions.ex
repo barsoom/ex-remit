@@ -24,6 +24,7 @@ defmodule Remit.UsernamesFromMentions do
   # Private
 
   defp do_call([]), do: []
+
   defp do_call(mentions) do
     known_usernames = get_known_usernames()
 
@@ -31,16 +32,19 @@ defmodule Remit.UsernamesFromMentions do
     # (Which we probably don't *need*, but why not?)
     Enum.flat_map(mentions, fn mention ->
       downcased_mention = String.downcase(mention)
-      Enum.find_value(known_usernames, [], &(if String.downcase(&1) == downcased_mention, do: [&1]))
+      Enum.find_value(known_usernames, [], &if(String.downcase(&1) == downcased_mention, do: [&1]))
     end)
   end
 
   # This is simplistic and doesn't e.g. account for HTML-in-Markdown or backslash-escaped backticks. But probably good enough.
   defp strip_code_blocks(text) do
     text
-    |> String.replace(~r/^    .*/m, "")        # Four-space indent.
-    |> String.replace(~r/^```(.*?)```/ms, "")  # Triple backticks.
-    |> String.replace(~r/`(.*?)`/, "")         # Single backticks.
+    # Four-space indent.
+    |> String.replace(~r/^    .*/m, "")
+    # Triple backticks.
+    |> String.replace(~r/^```(.*?)```/ms, "")
+    # Single backticks.
+    |> String.replace(~r/`(.*?)`/, "")
   end
 
   defp get_known_usernames do

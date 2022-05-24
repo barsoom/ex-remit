@@ -20,6 +20,7 @@ defmodule Remit.Repo.Migrations.CreateComments do
 
       timestamps(type: :utc_datetime)
     end
+
     create index(:comments, [:commit_sha])
 
     create table(:comment_notifications) do

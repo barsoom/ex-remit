@@ -18,13 +18,13 @@ config :remit,
 # Configures the endpoint
 config :remit, RemitWeb.Endpoint,
   url: [host: "localhost"],
-  secret_key_base: "VwHFDH5VSFj8+cVvqb/2V15wtR9RMmkpIVnID1PrHMWTT7LNxSn/Nl0RGDavQGER",  # Overridden in prod.secret.exs.
+  # Overridden in prod.secret.exs.
+  secret_key_base: "VwHFDH5VSFj8+cVvqb/2V15wtR9RMmkpIVnID1PrHMWTT7LNxSn/Nl0RGDavQGER",
   render_errors: [view: RemitWeb.ErrorView, accepts: ~w(html json), layout: false],
   pubsub_server: Remit.PubSub,
   live_view: [signing_salt: "s9WcFK/G"]
 
-config :remit, App.Repo,
-  migration_timestamps: [type: :utc_datetime_usec]
+config :remit, App.Repo, migration_timestamps: [type: :utc_datetime_usec]
 
 # Configures Elixir's Logger
 config :logger, :console,

@@ -38,10 +38,12 @@ defmodule RemitWeb.GithubWebhookControllerTest do
       assert later_commit.message == "Later commit"
 
       # Broadcasts to subscribers.
-      assert_receive {:subscriber_got, {:new_commits, [
-        %Commit{message: "Later commit"},
-        %Commit{message: "Earlier commit"},
-      ]}}
+      assert_receive {:subscriber_got,
+                      {:new_commits,
+                       [
+                         %Commit{message: "Later commit"},
+                         %Commit{message: "Earlier commit"}
+                       ]}}
     end
 
     test "silently skips any commits already present" do
@@ -56,9 +58,11 @@ defmodule RemitWeb.GithubWebhookControllerTest do
       assert later_commit.message == "Later commit"
 
       # Broadcasts to subscribers.
-      assert_receive {:subscriber_got, {:new_commits, [
-        %Commit{message: "Later commit"},
-      ]}}
+      assert_receive {:subscriber_got,
+                      {:new_commits,
+                       [
+                         %Commit{message: "Later commit"}
+                       ]}}
     end
 
     test "gracefully does nothing on a non-master branch" do
@@ -75,6 +79,7 @@ defmodule RemitWeb.GithubWebhookControllerTest do
   describe "'commit_comment' event" do
     test "creates a comment and notifications, and broadcasts them" do
       parent = self()
+
       spawn_link(fn ->
         Comments.subscribe()
 
@@ -113,6 +118,7 @@ defmodule RemitWeb.GithubWebhookControllerTest do
 
     test "silently skips a comment already present" do
       parent = self()
+
       spawn_link(fn ->
         Comments.subscribe()
 
@@ -170,38 +176,38 @@ defmodule RemitWeb.GithubWebhookControllerTest do
         master_branch: "master",
         name: "myrepo",
         owner: %{
-          name: "acme",
-        },
+          name: "acme"
+        }
       },
       commits: [
         %{
           author: %{
             email: "foo@example.com",
-            username: "foobarson",
+            username: "foobarson"
           },
           committer: %{
             email: "foo@example.com",
-            username: "foobarson",
+            username: "foobarson"
           },
           id: @earlier_commit_sha,
           url: "http://example.com/1",
           message: "Earlier commit",
-          timestamp: "2016-01-25T08:41:25+01:00",
+          timestamp: "2016-01-25T08:41:25+01:00"
         },
         %{
           author: %{
             email: "foo@example.com",
-            username: "foobar",
+            username: "foobar"
           },
           committer: %{
-            email: "foo+one+two@example.com",
+            email: "foo+one+two@example.com"
           },
           id: "d5472c5276f564621afe4b56b14f50e7c298dff9",
           url: "http://example.com/2",
           message: "Later commit",
-          timestamp: "2016-01-25T08:41:26+01:00",
-        },
-      ],
+          timestamp: "2016-01-25T08:41:26+01:00"
+        }
+      ]
     }
   end
 
@@ -218,18 +224,18 @@ defmodule RemitWeb.GithubWebhookControllerTest do
       comment: %{
         id: id,
         user: %{
-          login: username,
+          login: username
         },
         commit_id: sha,
         position: nil,
         path: nil,
         created_at: "2016-01-25T08:41:25+01:00",
-        body: body,
+        body: body
       },
       repository: %{
         name: "footguns",
-        owner: %{login: "acme"},
-      },
+        owner: %{login: "acme"}
+      }
     }
   end
 end

@@ -34,13 +34,14 @@ defmodule Remit.CommitTest do
           %Commit{id: 4, committed_at: ~U[2020-06-12 12:00:00.000000Z]},
           %Commit{id: 3, committed_at: ~U[2020-06-11 13:00:00.000000Z]},
           %Commit{id: 2, committed_at: ~U[2020-06-11 12:00:00.000000Z]},
-          %Commit{id: 1, committed_at: ~U[2020-06-10 12:00:00.000000Z]},
-        ]) |> Enum.map(& {&1.id, &1.date_separator_before}) == [
+          %Commit{id: 1, committed_at: ~U[2020-06-10 12:00:00.000000Z]}
+        ])
+        |> Enum.map(&{&1.id, &1.date_separator_before}) == [
           {5, ~D[2020-06-12]},
           {4, nil},
           {3, ~D[2020-06-11]},
           {2, nil},
-          {1, ~D[2020-06-10]},
+          {1, ~D[2020-06-10]}
         ]
       )
     end
@@ -49,10 +50,11 @@ defmodule Remit.CommitTest do
       assert(
         Commit.add_date_separators([
           %Commit{id: 2, committed_at: ~U[2020-06-12 23:01:00.000000Z]},
-          %Commit{id: 1, committed_at: ~U[2020-06-12 23:00:00.000000Z]},
-        ]) |> Enum.map(& {&1.id, &1.date_separator_before}) == [
+          %Commit{id: 1, committed_at: ~U[2020-06-12 23:00:00.000000Z]}
+        ])
+        |> Enum.map(&{&1.id, &1.date_separator_before}) == [
           {2, ~D[2020-06-13]},
-          {1, nil},
+          {1, nil}
         ]
       )
     end
@@ -61,10 +63,11 @@ defmodule Remit.CommitTest do
       assert(
         Commit.add_date_separators([
           %Commit{id: 2, committed_at: ~U[2020-06-12 23:01:00.000000Z], date_separator_before: nil},
-          %Commit{id: 1, committed_at: ~U[2020-06-12 23:00:00.000000Z], date_separator_before: :foo},
-        ]) |> Enum.map(& {&1.id, &1.date_separator_before}) == [
+          %Commit{id: 1, committed_at: ~U[2020-06-12 23:00:00.000000Z], date_separator_before: :foo}
+        ])
+        |> Enum.map(&{&1.id, &1.date_separator_before}) == [
           {2, ~D[2020-06-13]},
-          {1, nil},
+          {1, nil}
         ]
       )
     end
@@ -79,7 +82,7 @@ defmodule Remit.CommitTest do
         oldest_unreviewed_for_me = %Commit{id: 4},
         _older_but_authored_by_me = %Commit{id: 3, usernames: ["myname"]},
         _older_but_review_started = %Commit{id: 2, review_started_at: time},
-        _older_but_reviewed = %Commit{id: 1, reviewed_at: time},
+        _older_but_reviewed = %Commit{id: 1, reviewed_at: time}
       ]
 
       assert Commit.oldest_unreviewed_for(commits, "myname") == oldest_unreviewed_for_me
@@ -91,7 +94,7 @@ defmodule Remit.CommitTest do
       commits = [
         _review_not_started = %Commit{id: 3},
         oldest_unreviewed_for_me = %Commit{id: 2, review_started_at: time, review_started_by_username: "myname"},
-        _older_but_started_by_someone_else = %Commit{id: 1, review_started_at: time},
+        _older_but_started_by_someone_else = %Commit{id: 1, review_started_at: time}
       ]
 
       assert Commit.oldest_unreviewed_for(commits, "myname") == oldest_unreviewed_for_me
@@ -103,7 +106,7 @@ defmodule Remit.CommitTest do
 
     test "returns nil for a nil user" do
       commits = [
-        %Commit{id: 1},
+        %Commit{id: 1}
       ]
 
       assert Commit.oldest_unreviewed_for(commits, nil) == nil
@@ -119,7 +122,7 @@ defmodule Remit.CommitTest do
         _overlong_but_newer = %Commit{review_started_by_username: "myname", review_started_at: ~U[2020-06-30 11:44:59.999999Z]},
         overlong = %Commit{review_started_by_username: "myname", review_started_at: ~U[2020-06-30 11:44:59.999998Z]},
         _by_another = %Commit{review_started_by_username: "theirname", review_started_at: ~U[2020-06-30 11:44:57.000000Z]},
-        _reviewed = %Commit{review_started_by_username: "myname", review_started_at: ~U[2020-06-30 11:44:57.000000Z], reviewed_at: now},
+        _reviewed = %Commit{review_started_by_username: "myname", review_started_at: ~U[2020-06-30 11:44:57.000000Z], reviewed_at: now}
       ]
 
       assert Commit.oldest_overlong_in_review_by(commits, "myname", now) == overlong
@@ -131,7 +134,7 @@ defmodule Remit.CommitTest do
 
     test "returns nil for a nil user", %{now: now} do
       commits = [
-        %Commit{id: 1},
+        %Commit{id: 1}
       ]
 
       assert Commit.oldest_overlong_in_review_by(commits, nil, now) == nil

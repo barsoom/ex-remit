@@ -7,7 +7,7 @@ defmodule Remit.IngestComment do
     CommentNotification,
     Repo,
     UsernamesFromMentions,
-    Utils,
+    Utils
   }
 
   @github_client Application.get_env(:remit, :github_api_client)
@@ -32,16 +32,16 @@ defmodule Remit.IngestComment do
   # Private
 
   def fetch_commit_with_comments_if_missing(%{
-    "action" => "created",
-    "comment" => %{
-      "id" => github_id,
-      "commit_id" => sha,
-    },
-    "repository" => %{
-      "name" => repo,
-      "owner" => %{"login" => owner},
-    },
-  }) do
+        "action" => "created",
+        "comment" => %{
+          "id" => github_id,
+          "commit_id" => sha
+        },
+        "repository" => %{
+          "name" => repo,
+          "owner" => %{"login" => owner}
+        }
+      }) do
     unless Commits.sha_exists?(sha) do
       # Make the commit unlisted so it doesn't suddenly appear in the "to review" list.
       # The comments won't appear anyway, since we don't create any `CommentNotification` for them (but possibly for the ingested comment).
@@ -52,26 +52,29 @@ defmodule Remit.IngestComment do
         commit |> Repo.insert!()
 
         comments
-        |> Enum.filter(& &1.github_id != github_id)  # Don't create the ingested comment yet, or we'll mess up notifications.
-        |> Enum.each(& Repo.insert!(&1, on_conflict: :nothing, conflict_target: [:github_id]))
+        # Don't create the ingested comment yet, or we'll mess up notifications.
+        |> Enum.filter(&(&1.github_id != github_id))
+        |> Enum.each(&Repo.insert!(&1, on_conflict: :nothing, conflict_target: [:github_id]))
       end)
     end
   end
 
-  defp build_comment(%{
-    "action" => "created",
-    "comment" => %{
-      "id" => id,
-      "user" => %{
-        "login" => username,
-      },
-      "commit_id" => sha,
-      "position" => position,
-      "path" => path,
-      "created_at" => raw_commented_at,
-      "body" => body,
-    },
-  } = payload) do
+  defp build_comment(
+         %{
+           "action" => "created",
+           "comment" => %{
+             "id" => id,
+             "user" => %{
+               "login" => username
+             },
+             "commit_id" => sha,
+             "position" => position,
+             "path" => path,
+             "created_at" => raw_commented_at,
+             "body" => body
+           }
+         } = payload
+       ) do
     %Comment{
       github_id: id,
       commit_sha: sha,
@@ -80,7 +83,7 @@ defmodule Remit.IngestComment do
       commenter_username: username,
       path: path,
       position: position,
-      payload: payload,
+      payload: payload
     }
   end
 
@@ -100,7 +103,7 @@ defmodule Remit.IngestComment do
 
     commit_and_commenter_usernames =
       (commit_usernames ++ previous_commenter_usernames)
-      |> Enum.reject(& String.downcase(&1) == lower_commenter_username)
+      |> Enum.reject(&(String.downcase(&1) == lower_commenter_username))
 
     mentioned_usernames = UsernamesFromMentions.call(comment.body)
 

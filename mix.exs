@@ -52,7 +52,7 @@ defmodule Remit.MixProject do
       {:tesla, "> 0.0.0"},
       {:hackney, "> 0.0.0"},
       {:mox, "> 0.0.0", only: :test},
-      {:credo, "> 0.0.0", only: [:dev, :test], runtime: false},
+      {:credo, "> 0.0.0", only: [:dev, :test], runtime: false}
     ]
   end
 
@@ -68,8 +68,9 @@ defmodule Remit.MixProject do
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate", "test"],
       "wh.commits": ["run priv/repo/fake_webhook_commits.exs"],
-      "wh.comments": ["run priv/repo/fake_webhook_comments.exs"],
+      "wh.comments": ["run priv/repo/fake_webhook_comments.exs"]
     ]
   end
 end
+
 # See the documentation for `Mix` for more info on aliases.

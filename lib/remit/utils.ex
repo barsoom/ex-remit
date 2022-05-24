@@ -36,11 +36,16 @@ defmodule Remit.Utils do
   end
 
   def usernames_from_email(email) do
-    email                 # foo+bar+baz@example.com
-    |> String.split("@")  # foo+bar+baz, example.com
-    |> hd                 # foo+bar+baz
-    |> String.split("+")  # foo, bar, baz
-    |> Enum.drop(1)       # bar, baz
+    # foo+bar+baz@example.com
+    email
+    # foo+bar+baz, example.com
+    |> String.split("@")
+    # foo+bar+baz
+    |> hd
+    # foo, bar, baz
+    |> String.split("+")
+    # bar, baz
+    |> Enum.drop(1)
   end
 
   # Private

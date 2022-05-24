@@ -7,7 +7,7 @@ defmodule RemitWeb.PingChannel do
   end
 
   def handle_info(:send_ping, socket) do
-    push socket, "ping", %{}
+    push(socket, "ping", %{})
     {:noreply, socket}
   end
 end

@@ -24,15 +24,16 @@ defmodule RemitWeb.StatsControllerTest do
     conn = get_stats()
 
     assert %{
-      "unreviewed_count" => 2,
-      "reviewable_count" => 1,
-      "oldest_unreviewed_in_seconds" => 100,
-      "recent_commits_count" => 5,
-      "recent_reviews" => %{
-        "bar" => 1,
-        "foo" => 2,  # Normalised to lowercase.
-      },
-    } = json_response(conn, 200)
+             "unreviewed_count" => 2,
+             "reviewable_count" => 1,
+             "oldest_unreviewed_in_seconds" => 100,
+             "recent_commits_count" => 5,
+             "recent_reviews" => %{
+               "bar" => 1,
+               # Normalised to lowercase.
+               "foo" => 2
+             }
+           } = json_response(conn, 200)
   end
 
   test "'unreviewed_count', 'reviewable_count' and 'oldest_unreviewed_in_seconds' only looks at the latest (by ID) so-and-so many commits" do
@@ -45,10 +46,10 @@ defmodule RemitWeb.StatsControllerTest do
     conn = get_stats(max_commits: 2)
 
     assert %{
-      "unreviewed_count" => 2,
-      "reviewable_count" => 2,
-      "oldest_unreviewed_in_seconds" => 75,
-    } = json_response(conn, 200)
+             "unreviewed_count" => 2,
+             "reviewable_count" => 2,
+             "oldest_unreviewed_in_seconds" => 75
+           } = json_response(conn, 200)
   end
 
   test "'commits_until_oldest_unreviewed_falls_outside_window' works" do
@@ -59,27 +60,29 @@ defmodule RemitWeb.StatsControllerTest do
     Factory.insert!(:commit, reviewed_at: nil)
 
     conn = get_stats(max_commits: 10)
+
     assert %{
-      "commits_until_oldest_unreviewed_falls_outside_window" => 1,
-    } = json_response(conn, 200)
+             "commits_until_oldest_unreviewed_falls_outside_window" => 1
+           } = json_response(conn, 200)
 
     conn = get_stats(max_commits: 2)
+
     assert %{
-      "commits_until_oldest_unreviewed_falls_outside_window" => 2,
-    } = json_response(conn, 200)
+             "commits_until_oldest_unreviewed_falls_outside_window" => 2
+           } = json_response(conn, 200)
   end
 
   test "it gives sensible stats when there's no data" do
     conn = get_stats()
 
     assert json_response(conn, 200) == %{
-      "unreviewed_count" => 0,
-      "reviewable_count" => 0,
-      "oldest_unreviewed_in_seconds" => nil,
-      "commits_until_oldest_unreviewed_falls_outside_window" => nil,
-      "recent_commits_count" => 0,
-      "recent_reviews" => %{},
-    }
+             "unreviewed_count" => 0,
+             "reviewable_count" => 0,
+             "oldest_unreviewed_in_seconds" => nil,
+             "commits_until_oldest_unreviewed_falls_outside_window" => nil,
+             "recent_commits_count" => 0,
+             "recent_reviews" => %{}
+           }
   end
 
   defp get_stats(opts \\ []) do

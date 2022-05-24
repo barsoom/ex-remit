@@ -7,15 +7,15 @@ defmodule Remit.Repo.Migrations.SetOnDelete do
 
     alter table(:comments) do
       modify :commit_sha,
-        references("commits", column: :sha, type: :string, on_delete: :delete_all),
-        null: false
+             references("commits", column: :sha, type: :string, on_delete: :delete_all),
+             null: false
     end
 
     alter table(:comment_notifications) do
       modify :comment_id,
-        references("comments", on_delete: :delete_all),
-        from: references("comments"),
-        null: false
+             references("comments", on_delete: :delete_all),
+             from: references("comments"),
+             null: false
     end
   end
 end

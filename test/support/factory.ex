@@ -14,7 +14,7 @@ defmodule Remit.Factory do
       message: Faker.message(),
       url: "https://example.com/",
       committed_at: DateTime.utc_now(),
-      unlisted: false,
+      unlisted: false
     }
   end
 
@@ -24,14 +24,14 @@ defmodule Remit.Factory do
       body: Faker.message(),
       commenter_username: Faker.username(),
       commented_at: DateTime.utc_now(),
-      commit: build(:commit),
+      commit: build(:commit)
     }
   end
 
   def build(:comment_notification) do
     %CommentNotification{
       username: Faker.username(),
-      comment: build(:comment),
+      comment: build(:comment)
     }
   end
 

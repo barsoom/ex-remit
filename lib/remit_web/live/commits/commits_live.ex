@@ -77,9 +77,10 @@ defmodule RemitWeb.CommitsLive do
 
   # Periodically check.
   def handle_info(:check_for_overlong_reviewing, socket) do
-    {:noreply, assign(socket,
-      oldest_overlong_in_review_by_me: Commit.oldest_overlong_in_review_by(socket.assigns.commits, socket.assigns.username)
-    )}
+    {:noreply,
+     assign(socket,
+       oldest_overlong_in_review_by_me: Commit.oldest_overlong_in_review_by(socket.assigns.commits, socket.assigns.username)
+     )}
   end
 
   # Private
@@ -98,8 +99,8 @@ defmodule RemitWeb.CommitsLive do
   defp assign_selected_id(socket, id) when is_binary(id), do: assign_selected_id(socket, String.to_integer(id))
 
   defp assign_commits_and_stats(socket, commits) do
-    unreviewed_count = commits |> Enum.count(& !&1.reviewed_at)
-    my_unreviewed_count = commits |> Enum.count(& !&1.reviewed_at && authored?(socket, &1))
+    unreviewed_count = commits |> Enum.count(&(!&1.reviewed_at))
+    my_unreviewed_count = commits |> Enum.count(&(!&1.reviewed_at && authored?(socket, &1)))
 
     commits = Commit.add_date_separators(commits)
 
@@ -109,12 +110,12 @@ defmodule RemitWeb.CommitsLive do
       my_unreviewed_count: my_unreviewed_count,
       others_unreviewed_count: unreviewed_count - my_unreviewed_count,
       oldest_unreviewed_for_me: Commit.oldest_unreviewed_for(commits, socket.assigns.username),
-      oldest_overlong_in_review_by_me: Commit.oldest_overlong_in_review_by(commits, socket.assigns.username),
+      oldest_overlong_in_review_by_me: Commit.oldest_overlong_in_review_by(commits, socket.assigns.username)
     })
   end
 
   defp replace_commit(commits, commit) do
-    commits |> Enum.map(& if(&1.id == commit.id, do: commit, else: &1))
+    commits |> Enum.map(&if(&1.id == commit.id, do: commit, else: &1))
   end
 
   defp authored?(socket, commit), do: Commit.authored_by?(commit, socket.assigns.username)

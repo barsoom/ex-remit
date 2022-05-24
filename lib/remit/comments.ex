@@ -12,6 +12,7 @@ defmodule Remit.Comments do
 
   def resolve(id) do
     now = DateTime.utc_now()
+
     comment =
       Repo.get_by(CommentNotification, id: id)
       |> Ecto.Changeset.change(resolved_at: now)
@@ -42,10 +43,11 @@ defmodule Remit.Comments do
   # Private
 
   defp do_list_notifications(%{username: username, resolved_filter: resolved_filter, user_filter: user_filter, limit: limit}) do
-    query = from n in CommentNotification,
-      limit: ^limit,
-      join: c in assoc(n, :comment),
-      preload: [comment: {c, :commit}]
+    query =
+      from n in CommentNotification,
+        limit: ^limit,
+        join: c in assoc(n, :comment),
+        preload: [comment: {c, :commit}]
 
     query =
       case resolved_filter do

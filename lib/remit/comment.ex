@@ -22,6 +22,7 @@ defmodule Remit.Comment do
     from c in other_comments_on_the_same_commit(comment),
       where: is_nil(c.path)
   end
+
   def other_comments_in_the_same_thread(%Comment{path: path, position: position} = comment) do
     from c in other_comments_on_the_same_commit(comment),
       where: c.path == ^path and c.position == ^position

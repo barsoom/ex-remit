@@ -6,19 +6,22 @@ defmodule RemitWeb.Endpoint do
   # Set :encryption_salt if you would also like to encrypt it.
   @session_options [
     store: :cookie,
-    max_age: 9_999_999_999,  # A long time.
+    # A long time.
+    max_age: 9_999_999_999,
     key: "_remit_key",
     signing_salt: "ndGdfBhJ"
   ]
 
   # See app.js for details.
   socket "/socket", RemitWeb.UserSocket,
-    websocket: [timeout: 45_000]  # Timeout for Heroku: https://hexdocs.pm/phoenix/heroku.html#making-our-project-ready-for-heroku
+    # Timeout for Heroku: https://hexdocs.pm/phoenix/heroku.html#making-our-project-ready-for-heroku
+    websocket: [timeout: 45_000]
 
   socket "/live", Phoenix.LiveView.Socket,
     websocket: [
-      websocket: [timeout: 45_000],  # Timeout for Heroku: https://hexdocs.pm/phoenix/heroku.html#making-our-project-ready-for-heroku
-      connect_info: [session: @session_options],
+      # Timeout for Heroku: https://hexdocs.pm/phoenix/heroku.html#making-our-project-ready-for-heroku
+      websocket: [timeout: 45_000],
+      connect_info: [session: @session_options]
     ]
 
   # Serve at "/" the static files from "priv/static" directory.

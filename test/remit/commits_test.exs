@@ -5,7 +5,8 @@ defmodule Remit.CommitsTest do
   describe "list_latest_shas" do
     test "returns up to the given number of recent SHAs" do
       Factory.insert!(:commit, sha: "abc1")
-      Factory.insert!(:commit, sha: "ffff", unlisted: true)  # Not included.
+      # Not included.
+      Factory.insert!(:commit, sha: "ffff", unlisted: true)
       Factory.insert!(:commit, sha: "abc2")
 
       assert Commits.list_latest_shas(1) == ["abc2"]

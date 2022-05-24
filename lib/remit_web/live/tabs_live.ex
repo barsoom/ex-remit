@@ -53,7 +53,7 @@ defmodule RemitWeb.TabsLive do
   end
 
   defp forward_comment_params(%{assigns: %{comments_pid: comments_pid}} = socket, params) do
-    send comments_pid, {:new_params, params}
+    send(comments_pid, {:new_params, params})
     socket
   end
 

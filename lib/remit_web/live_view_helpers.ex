@@ -36,13 +36,16 @@ defmodule RemitWeb.LiveViewHelpers do
   end
 
   def tooltip_attributes(nil), do: []
+
   def tooltip_attributes(text, opts \\ []) do
     # http://kazzkiq.github.io/balloon.css/
     pos = Keyword.get(opts, :pos, "up")
+
     [
       "data-balloon-pos": pos,
-      "data-balloon-blunt": "",  # No animation delay.
-      "aria-label": text,
+      # No animation delay.
+      "data-balloon-blunt": "",
+      "aria-label": text
     ]
   end
 end

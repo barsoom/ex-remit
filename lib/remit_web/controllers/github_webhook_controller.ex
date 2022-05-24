@@ -7,10 +7,12 @@ defmodule RemitWeb.GithubWebhookController do
       |> Enum.into(%{})
       |> Map.fetch!("x-github-event")
 
-    Honeybadger.add_breadcrumb("Webhook received", metadata: %{
-      event_name: event_name,
-      params: params,
-    })
+    Honeybadger.add_breadcrumb("Webhook received",
+      metadata: %{
+        event_name: event_name,
+        params: params
+      }
+    )
 
     handle_event(conn, event_name, params)
   end

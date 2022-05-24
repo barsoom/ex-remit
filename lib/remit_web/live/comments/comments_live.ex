@@ -19,7 +19,8 @@ defmodule RemitWeb.CommentsLive do
       socket
       |> assign(your_last_selected_id: nil)
       |> assign(username: username)
-      |> assign_params(session)  # Sic. From parent; can't use `_params` since we're not mounted at root.
+      # Sic. From parent; can't use `_params` since we're not mounted at root.
+      |> assign_params(session)
       |> assign_filtered_notifications()
 
     {:ok, socket}
@@ -58,6 +59,7 @@ defmodule RemitWeb.CommentsLive do
 
     {:noreply, socket}
   end
+
   def handle_event("set_session", _, socket), do: {:noreply, socket}
 
   # Receive broadcasts when new comments arrive or have their state changed by another user.
@@ -81,7 +83,7 @@ defmodule RemitWeb.CommentsLive do
   defp assign_params(socket, params) do
     assign(socket,
       is: params["is"] || "unresolved",
-      role: params["role"] || (if socket.assigns.username, do: "for_me", else: "all")
+      role: params["role"] || if(socket.assigns.username, do: "for_me", else: "all")
     )
   end
 
@@ -89,20 +91,22 @@ defmodule RemitWeb.CommentsLive do
   defp assign_selected_id(socket, id) when is_binary(id), do: assign_selected_id(socket, String.to_integer(id))
 
   defp assign_filtered_notifications(socket) do
-    notifications = Comments.list_notifications(
-      limit: @max_comments,
-      username: socket.assigns.username,
-      resolved_filter: socket.assigns.is,
-      user_filter: socket.assigns.role
-    )
+    notifications =
+      Comments.list_notifications(
+        limit: @max_comments,
+        username: socket.assigns.username,
+        resolved_filter: socket.assigns.is,
+        user_filter: socket.assigns.role
+      )
 
     assign(socket, notifications: notifications)
   end
 
   defp filter_link(socket, assigns, text, is: is) do
-    live_patch text, to: Routes.tabs_path(socket, :comments, is: is, role: assigns.role), class: (if is == assigns.is, do: "font-bold no-underline")
+    live_patch(text, to: Routes.tabs_path(socket, :comments, is: is, role: assigns.role), class: if(is == assigns.is, do: "font-bold no-underline"))
   end
+
   defp filter_link(socket, assigns, text, role: role) do
-    live_patch text, to: Routes.tabs_path(socket, :comments, is: assigns.is, role: role), class: (if role == assigns.role, do: "font-bold no-underline")
+    live_patch(text, to: Routes.tabs_path(socket, :comments, is: assigns.is, role: role), class: if(role == assigns.role, do: "font-bold no-underline"))
   end
 end

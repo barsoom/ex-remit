@@ -5,7 +5,8 @@ defmodule Remit.Periodically do
 
   use GenServer
 
-  @default_frequency_ms 60 * 60 * 1000  # 1 hour
+  # 1 hour
+  @default_frequency_ms 60 * 60 * 1000
 
   # The options are for testability.
   def start_link(opts \\ []) do

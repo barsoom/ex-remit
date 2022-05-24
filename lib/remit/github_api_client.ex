@@ -4,6 +4,7 @@ defmodule Remit.GitHubAPIClient do
     @callback fetch_commit(String.t(), String.t(), String.t()) :: %Remit.Commit{}
     @callback fetch_comments_on_commit(%Remit.Commit{}) :: [%Remit.Comment{}]
   end
+
   @behaviour Behaviour
 
   alias Remit.{Commit, Comment, Utils}
@@ -22,22 +23,27 @@ defmodule Remit.GitHubAPIClient do
     data |> Enum.map(&build_comment/1)
   end
 
-  defp build_commit(%{
-    "sha" => sha,
-    "html_url" => url,
-    "commit" => %{
-      "message" => message,
-      "author" => %{
-        "email" => author_email,
-      },
-      "committer" => %{
-        "email" => committer_email,
-        "date" => raw_committed_at,
-      },
-    },
-    "author" => author_account,
-    "committer" => committer_account,
-  } = payload, owner, repo, sha) do
+  defp build_commit(
+         %{
+           "sha" => sha,
+           "html_url" => url,
+           "commit" => %{
+             "message" => message,
+             "author" => %{
+               "email" => author_email
+             },
+             "committer" => %{
+               "email" => committer_email,
+               "date" => raw_committed_at
+             }
+           },
+           "author" => author_account,
+           "committer" => committer_account
+         } = payload,
+         owner,
+         repo,
+         sha
+       ) do
     %Commit{
       owner: owner,
       repo: repo,
@@ -46,19 +52,21 @@ defmodule Remit.GitHubAPIClient do
       usernames: usernames([author_email, committer_email], [author_account, committer_account]),
       message: message,
       committed_at: Utils.date_time_from_iso8601!(raw_committed_at),
-      payload: payload,
+      payload: payload
     }
   end
 
-  defp build_comment(%{
-    "id" => github_id,
-    "commit_id" => sha,
-    "body" => body,
-    "created_at" => raw_commented_at,
-    "user" => %{"login" => username},
-    "path" => path,
-    "position" => position,
-  } = payload) do
+  defp build_comment(
+         %{
+           "id" => github_id,
+           "commit_id" => sha,
+           "body" => body,
+           "created_at" => raw_commented_at,
+           "user" => %{"login" => username},
+           "path" => path,
+           "position" => position
+         } = payload
+       ) do
     %Comment{
       github_id: github_id,
       commit_sha: sha,
@@ -67,7 +75,7 @@ defmodule Remit.GitHubAPIClient do
       commenter_username: username,
       path: path,
       position: position,
-      payload: payload,
+      payload: payload
     }
   end
 
@@ -92,7 +100,7 @@ defmodule Remit.GitHubAPIClient do
     Tesla.client([
       {Tesla.Middleware.BaseUrl, "https://api.github.com"},
       {Tesla.Middleware.Headers, [{"authorization", "token " <> @api_token}]},
-      Tesla.Middleware.JSON,
+      Tesla.Middleware.JSON
     ])
   end
 end

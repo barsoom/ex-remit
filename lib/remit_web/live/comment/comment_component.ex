@@ -9,6 +9,7 @@ defmodule RemitWeb.CommentComponent do
   defp github_url(%Comment{path: nil, github_id: id, commit: %Commit{sha: sha, owner: o, repo: r}}) do
     "https://github.com/#{o}/#{r}/commit/#{sha}?remit_anchorbuster=#{id}#commitcomment-#{id}"
   end
+
   defp github_url(%Comment{github_id: id, commit: %Commit{sha: sha, owner: o, repo: r}}) do
     "https://github.com/#{o}/#{r}/commit/#{sha}?remit_anchorbuster=#{id}#r#{id}"
   end

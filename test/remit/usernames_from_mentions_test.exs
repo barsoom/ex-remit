@@ -7,9 +7,9 @@ defmodule Remit.UsernamesFromMentionsTest do
     Factory.insert!(:comment, commenter_username: "world")
 
     assert UsernamesFromMentions.call("Well @hello @there @WORLD") == [
-      "helLo",
-      "world",
-    ]
+             "helLo",
+             "world"
+           ]
   end
 
   test "only identifies mentions at the right boundaries" do

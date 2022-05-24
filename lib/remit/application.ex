@@ -15,7 +15,7 @@ defmodule Remit.Application do
       {Phoenix.PubSub, [name: Remit.PubSub]},
       Remit.Periodically,
       # Start the Endpoint (http/https)
-      RemitWeb.Endpoint,
+      RemitWeb.Endpoint
       # Start a worker by calling: Remit.Worker.start_link(arg)
       # {Remit.Worker, arg}
     ]

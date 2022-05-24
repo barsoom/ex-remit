@@ -1,13 +1,14 @@
 defmodule Remit.IngestCommentTest do
   use Remit.DataCase
   import Ecto.Query
+
   alias Remit.{
     IngestComment,
     Repo,
     Commit,
     Comment,
     CommentNotification,
-    Factory,
+    Factory
   }
 
   # Also see GithubWebhookControllerTest.
@@ -70,7 +71,6 @@ defmodule Remit.IngestCommentTest do
     assert Repo.aggregate(CommentNotification, :count) == 1
   end
 
-
   test "does not notify a committer or previous commenter if they're also the comment author (case-insensitive)" do
     Factory.insert!(:commit, sha: "abc123", usernames: ["riffraff"])
     Factory.insert!(:comment, commit: nil, commit_sha: "abc123", commenter_username: "riffraff")
@@ -82,14 +82,14 @@ defmodule Remit.IngestCommentTest do
   end
 
   test "if not yet in DB, the commit-with-comments is fetched from GitHub and created as unlisted" do
-    Mox.expect(GitHubAPIClient.Mock, :fetch_commit, fn ("acme", "footguns", "abc123") ->
+    Mox.expect(GitHubAPIClient.Mock, :fetch_commit, fn "acme", "footguns", "abc123" ->
       Factory.build(:commit, sha: "abc123", usernames: ["frank"])
     end)
 
-    Mox.expect(GitHubAPIClient.Mock, :fetch_comments_on_commit, fn (%Commit{sha: "abc123"}) ->
+    Mox.expect(GitHubAPIClient.Mock, :fetch_comments_on_commit, fn %Commit{sha: "abc123"} ->
       [
         Factory.build(:comment, commit: nil, commit_sha: "abc123", github_id: 666, commenter_username: "rocky"),
-        Factory.build(:comment, commit: nil, commit_sha: "abc123", github_id: 667, commenter_username: "brad"),
+        Factory.build(:comment, commit: nil, commit_sha: "abc123", github_id: 667, commenter_username: "brad")
       ]
     end)
 
@@ -124,18 +124,18 @@ defmodule Remit.IngestCommentTest do
       "comment" => %{
         "id" => github_id,
         "user" => %{
-          "login" => username,
+          "login" => username
         },
         "commit_id" => sha,
         "position" => position,
         "path" => path,
         "created_at" => "2016-01-25T08:41:25+01:00",
-        "body" => body,
+        "body" => body
       },
       "repository" => %{
         "name" => "footguns",
-        "owner" => %{"login" => "acme"},
-      },
+        "owner" => %{"login" => "acme"}
+      }
     }
   end
 end

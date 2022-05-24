@@ -23,8 +23,8 @@ defmodule Remit.Commit do
   end
 
   def latest_listed(q \\ __MODULE__, count), do: q |> latest(count) |> listed()
-  def latest(q \\ __MODULE__, count), do: from q, limit: ^count, order_by: [desc: :id]
-  def listed(q \\ __MODULE__), do: from q, where: [unlisted: false]
+  def latest(q \\ __MODULE__, count), do: from(q, limit: ^count, order_by: [desc: :id])
+  def listed(q \\ __MODULE__), do: from(q, where: [unlisted: false])
 
   def authored_by?(_commit, nil), do: false
   def authored_by?(commit, username), do: commit.usernames |> Enum.map(&String.downcase/1) |> Enum.member?(String.downcase(username))
@@ -33,20 +33,22 @@ defmodule Remit.Commit do
   def being_reviewed_by?(_, _), do: false
 
   def oldest_unreviewed_for(_commits, nil), do: nil
+
   def oldest_unreviewed_for(commits, username) do
     commits
     |> Enum.reverse()
-    |> Enum.find(& !&1.reviewed_at && !authored_by?(&1, username) && (being_reviewed_by?(&1, username) || !&1.review_started_at))
+    |> Enum.find(&(!&1.reviewed_at && !authored_by?(&1, username) && (being_reviewed_by?(&1, username) || !&1.review_started_at)))
   end
 
   @overlong_in_review_over_minutes 15
   @overlong_in_review_over_seconds @overlong_in_review_over_minutes * 60
   def oldest_overlong_in_review_by(commits, username, now \\ DateTime.utc_now())
   def oldest_overlong_in_review_by(_commits, nil, _now), do: nil
+
   def oldest_overlong_in_review_by(commits, username, now) do
     commits
     |> Enum.reverse()
-    |> Enum.find(& being_reviewed_by?(&1, username) && DateTime.diff(now, &1.review_started_at) > @overlong_in_review_over_seconds)
+    |> Enum.find(&(being_reviewed_by?(&1, username) && DateTime.diff(now, &1.review_started_at) > @overlong_in_review_over_seconds))
   end
 
   def bot?(username), do: String.ends_with?(username, "[bot]")
@@ -57,7 +59,7 @@ defmodule Remit.Commit do
 
   def add_date_separators(commits) do
     {new_commits, _acc} =
-      Enum.map_reduce(commits, nil, fn (commit, prev_date) ->
+      Enum.map_reduce(commits, nil, fn commit, prev_date ->
         date = Remit.Utils.to_date(commit.committed_at)
         separator = if date == prev_date, do: nil, else: date
         commit = %{commit | date_separator_before: separator}
