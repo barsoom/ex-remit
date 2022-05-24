@@ -251,6 +251,8 @@ To trigger a disconnection detection in dev, you can load Remit, turn off the Ph
 Run:
 
     dev update
+    # or if you're not using devbox
+    script/updatedeps
 
 ### Common production tasks
 
