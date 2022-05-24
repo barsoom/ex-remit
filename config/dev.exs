@@ -1,13 +1,25 @@
 import Config
-
 # Configure your database
-config :remit, Remit.Repo,
-  username: System.get_env("USER"),
-  password: "",
-  database: "remit_dev",
-  hostname: "localhost",
-  show_sensitive_data_on_connection_error: true,
-  pool_size: 10
+if System.get_env("DEVBOX") do
+  {postgres_port, 0} = System.cmd("service_port", ["postgres"])
+
+  config :remit, Remit.Repo,
+    username: "postgres",
+    password: "dev",
+    database: "ex_remit_development",
+    hostname: "172.17.0.1",
+    port: String.trim(postgres_port),
+    show_sensitive_data_on_connection_error: true,
+    pool_size: 10
+else
+  config :remit, Remit.Repo,
+    username: System.get_env("USER"),
+    password: "",
+    database: "remit_dev",
+    hostname: "localhost",
+    show_sensitive_data_on_connection_error: true,
+    pool_size: 10
+end
 
 # For development, we disable any cache and enable
 # debugging and code reloading.

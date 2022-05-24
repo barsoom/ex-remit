@@ -1,0 +1,11 @@
+dependencies:
+  node:
+    version: "16.15.0" # Keep in sync with phoenix_static_buildpack.config, .nvmrc
+    checksum: "38e041b7249afb331663613f860b84b51852efa02b4ebff852f9610bef680d7d"
+
+docker_services:
+  postgres:
+    # NOTE:
+    image: "postgres:13.5-alpine"
+    version: "13.5"
+    options: "-e POSTGRES_PASSWORD=dev --publish 5432 -v $DATABASE_ROOT/ex-remit/postgres:/var/lib/postgresql/data --shm-size=1gb"
