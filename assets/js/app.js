@@ -71,14 +71,14 @@ Hooks.SetSession = {
       clearTimeout(this.timeout)
       this.timeout = setTimeout(() => {
         this.pushEventTo(".phx-hook-subscribe-to-session", "set_session", [e.target.name, e.target.value])
-        fetch(`/api/session?${e.target.name}=${encodeURIComponent(e.target.value)}`, { method: "post" })
+        fetch(`/api/session?${e.target.name}=${encodeURIComponent(e.target.value)}`, {method: "post"})
       }, this.DEBOUNCE_MS)
     })
   }
- }
+}
 
 let liveSocket = new LiveSocket("/live", Socket, {
-  params: { _csrf_token: csrfToken },
+  params: {_csrf_token: csrfToken},
   hooks: Hooks,
 })
 
@@ -89,7 +89,7 @@ window.addEventListener("phx:page-loading-start", (info) => {
   progressTimeout = setTimeout(NProgress.start, 100)
   if (info?.detail?.kind === "error") {
     // wait to be sure is a disconnect and not a page reload
-    setTimeout(function(){document.body.classList.add("ping-offline")}, 500)
+    setTimeout(function () {document.body.classList.add("ping-offline")}, 500)
   }
 })
 
@@ -102,7 +102,7 @@ window.addEventListener("phx:page-loading-stop", (info) => {
 })
 
 // Don't show a spinner in addition to the progress bar.
-NProgress.configure({ showSpinner: false })
+NProgress.configure({showSpinner: false})
 
 // connect if there are any LiveViews on the page
 liveSocket.connect()

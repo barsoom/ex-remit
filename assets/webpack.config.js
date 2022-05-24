@@ -11,7 +11,7 @@ module.exports = (env, options) => {
   return {
     optimization: {
       minimizer: [
-        new TerserPlugin({ cache: true, parallel: true, sourceMap: devMode }),
+        new TerserPlugin({cache: true, parallel: true, sourceMap: devMode}),
         new OptimizeCSSAssetsPlugin({})
       ]
     },
@@ -44,8 +44,8 @@ module.exports = (env, options) => {
       ]
     },
     plugins: [
-      new MiniCssExtractPlugin({ filename: '../css/app.css' }),
-      new CopyWebpackPlugin({ patterns: [ { from: 'static/', to: '../' } ]})
+      new MiniCssExtractPlugin({filename: '../css/app.css'}),
+      new CopyWebpackPlugin({patterns: [{from: 'static/', to: '../'}]})
     ]
   }
 };
