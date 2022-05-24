@@ -5,7 +5,6 @@ dependencies:
 
 docker_services:
   postgres:
-    # NOTE:
-    image: "postgres:13.5-alpine"
-    version: "13.5"
+    image: "postgres:13.6-alpine"
+    version: "13.6" # Keep in sync with .github/workflows/ci.yml
     options: "-e POSTGRES_PASSWORD=dev --publish 5432 -v $DATABASE_ROOT/ex-remit/postgres:/var/lib/postgresql/data --shm-size=1gb"
