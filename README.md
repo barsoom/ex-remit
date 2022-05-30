@@ -70,6 +70,7 @@ Fluid.app is macOS only. Please do contribute instructions for other platforms.
     * Enter the Remit URL as home page, including the `auth_key` parameter. E.g. `https://MY-REMIT.herokuapp.com/?auth_key=MY_AUTH_KEY`
     * Navigation bar: is always hidden
     * Clicked links open in: current tab in current window
+* Window > Show Left Browser Panel
 * In the main app (e.g. "Remit") menu, choose "User Agent > Google Chrome" – otherwise GitHub may disable certain features, like commenting on a specific line.
 
 ### Without Fluid.app
