@@ -1,7 +1,5 @@
 dependencies:
-  node:
-    version: "16.15.1" # Keep in sync with phoenix_static_buildpack.config, .nvmrc
-    checksum: "308aee7149c4092a53c87c28ef49e23a8d1606119e79ae68333062e2a1f94208"
+  node: "16.16.0" # Keep in sync with phoenix_static_buildpack.config, .nvmrc
 
 docker_services:
   postgres:
