@@ -1,5 +1,4 @@
-dependencies:
-  node: "16.16.0" # Keep in sync with phoenix_static_buildpack.config, .nvmrc
+# node is configured through .nvmrc and phoenix_static_buildpack.config
 
 docker_services:
   postgres:
