@@ -68,6 +68,7 @@ Fluid.app is macOS only. Please do contribute instructions for other platforms.
     * Allow browsing to any URL
   * Left:
     * Enter the Remit URL as home page, including the `auth_key` parameter. E.g. `https://MY-REMIT.herokuapp.com/?auth_key=MY_AUTH_KEY`
+    * In new windows: make this panel visible
     * Navigation bar: is always hidden
     * Clicked links open in: current tab in current window
 * Window > Show Left Browser Panel
