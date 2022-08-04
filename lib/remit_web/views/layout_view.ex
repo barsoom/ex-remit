@@ -1,10 +1,8 @@
 defmodule RemitWeb.LayoutView do
   use RemitWeb, :view
   alias RemitWeb.Endpoint
-  require Logger
 
   defp tab(assigns) do
-    Logger.info(tab_assigns: assigns)
     ~H"""
     <%= live_patch(to: Routes.tabs_path(Endpoint, @action), class: tab_class(assigns)) do %>
       <i class={["fas", @icon]}></i>
