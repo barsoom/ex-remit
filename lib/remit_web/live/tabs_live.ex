@@ -3,6 +3,12 @@
 defmodule RemitWeb.TabsLive do
   use RemitWeb, :live_view
 
+  @tabs [
+    %{action: :commits, text: "Commits", icon: "fa-eye"},
+    %{action: :comments, text: "Comments", icon: "fa-comments"},
+    %{action: :settings, text: "Settings", icon: "fa-cog"},
+  ]
+
   @impl true
   def render(assigns) do
     ~H"""
@@ -23,6 +29,7 @@ defmodule RemitWeb.TabsLive do
   @impl true
   def mount(_params, session, socket) do
     check_auth_key(session)
+    socket = assign(socket, tabs: @tabs)
     {:ok, socket}
   end
 

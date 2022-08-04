@@ -4,9 +4,9 @@
 </div>
 
 <div class="tabs">
-  <%= tab assigns, :commits, "Commits", "fa-eye", @socket, @live_action %>
-  <%= tab assigns, :comments, "Comments", "fa-comments", @socket, @live_action %>
-  <%= tab assigns, :settings, "Settings", "fa-cog", @socket, @live_action %>
+  <%= for tab <- @tabs do %>
+    <.tab action={tab.action} current_action={@live_action} text={tab.text} icon={tab.icon} />
+  <% end %>
 </div>
 
 <main role="main" class="py-4">
