@@ -11,7 +11,7 @@ defmodule RemitWeb.TabsLive do
     </div>
 
     <div style={"display: #{if @live_action == :comments, do: "block", else: "none"}"}>
-      <%= live_render @socket, RemitWeb.CommentsLive, id: :comments, session: %{"is" => @comments_is, "role" => @comments_role} %>
+      <%= live_render @socket, RemitWeb.CommentsLive, id: :comments %>
     </div>
 
     <div style={"display: #{if @live_action == :settings, do: "block", else: "none"}"}>
@@ -21,47 +21,24 @@ defmodule RemitWeb.TabsLive do
   end
 
   @impl true
-  def mount(params, session, socket) do
+  def mount(_params, session, socket) do
     check_auth_key(session)
-    {:ok, assign_from_comment_params(socket, params)}
+    {:ok, socket}
   end
 
   @impl true
-  def handle_params(params, _uri, socket) do
+  def handle_params(_params, _uri, socket) do
     # Since the child LiveViews run concurrently, they can't be relied on to set the title themselves.
-    socket =
+    title =
       case socket.assigns.live_action do
-        :commits ->
-          assign(socket, page_title: "Commits")
+        :commits -> "Commits"
 
-        :comments ->
-          socket
-          |> assign(page_title: "Comments")
-          |> assign_from_comment_params(params)
-          |> forward_comment_params(params)
+        :comments -> "Comments"
 
-        :settings ->
-          assign(socket, page_title: "Settings")
+        :settings -> "Settings"
       end
+    socket = assign(socket, page_title: title)
 
     {:noreply, socket}
-  end
-
-  @impl true
-  def handle_info({:comments_pid, pid}, socket) do
-    {:noreply, assign(socket, comments_pid: pid)}
-  end
-
-  defp forward_comment_params(%{assigns: %{comments_pid: comments_pid}} = socket, params) do
-    send(comments_pid, {:new_params, params})
-    socket
-  end
-
-  # We don't have the PID yet on mount, but that's OK.
-  # If there are any params on mount, we'll pass them to CommentsLive as part of the `session` parameter.
-  defp forward_comment_params(socket, _params), do: socket
-
-  defp assign_from_comment_params(socket, params) do
-    assign(socket, comments_is: params["is"], comments_role: params["role"])
   end
 end
