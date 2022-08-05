@@ -4,25 +4,19 @@ defmodule RemitWeb.TabsLive do
   use RemitWeb, :live_view
 
   @tabs [
-    %{action: :commits, text: "Commits", icon: "fa-eye"},
-    %{action: :comments, text: "Comments", icon: "fa-comments"},
-    %{action: :settings, text: "Settings", icon: "fa-cog"},
+    %{action: :commits, module: RemitWeb.CommitsLive, text: "Commits", icon: "fa-eye"},
+    %{action: :comments, module: RemitWeb.CommentsLive, text: "Comments", icon: "fa-comments"},
+    %{action: :settings, module: RemitWeb.SettingsLive, text: "Settings", icon: "fa-cog"},
   ]
 
   @impl true
   def render(assigns) do
     ~H"""
-    <div style={"display: #{if @live_action == :commits, do: "block", else: "none"}"}>
-      <%= live_render @socket, RemitWeb.CommitsLive, id: :commits %>
+    <%= for tab <- @tabs do %>
+      <div style={"display: #{if @live_action == tab.action, do: "block", else: "none"}"}>
+        <%= live_render @socket, tab.module, id: tab.action %>
     </div>
-
-    <div style={"display: #{if @live_action == :comments, do: "block", else: "none"}"}>
-      <%= live_render @socket, RemitWeb.CommentsLive, id: :comments %>
-    </div>
-
-    <div style={"display: #{if @live_action == :settings, do: "block", else: "none"}"}>
-      <%= live_render @socket, RemitWeb.SettingsLive, id: :settings %>
-    </div>
+    <% end %>
     """
   end
 
