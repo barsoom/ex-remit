@@ -15,7 +15,7 @@ defmodule RemitWeb.TabsLive do
     <%= for tab <- @tabs do %>
       <div style={"display: #{if @live_action == tab.action, do: "block", else: "none"}"}>
         <%= live_render @socket, tab.module, id: tab.action %>
-    </div>
+      </div>
     <% end %>
     """
   end
@@ -30,16 +30,17 @@ defmodule RemitWeb.TabsLive do
   @impl true
   def handle_params(_params, _uri, socket) do
     # Since the child LiveViews run concurrently, they can't be relied on to set the title themselves.
-    title =
-      case socket.assigns.live_action do
-        :commits -> "Commits"
-
-        :comments -> "Comments"
-
-        :settings -> "Settings"
-      end
-    socket = assign(socket, page_title: title)
+    socket = assign_page_title(socket)
 
     {:noreply, socket}
   end
+
+  defp assign_page_title(%{assigns: %{live_action: action}} = socket) do
+    assign(socket, page_title: page_title(action))
+  end
+
+  # Maybe reuse the @tabs definitions if we want the page title to match the tab text
+  defp page_title(:commits), do: "Commits"
+  defp page_title(:comments), do: "Comments"
+  defp page_title(:settings), do: "Settings"
 end
