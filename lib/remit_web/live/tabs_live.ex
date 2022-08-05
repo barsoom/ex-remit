@@ -39,8 +39,10 @@ defmodule RemitWeb.TabsLive do
     assign(socket, page_title: page_title(action))
   end
 
-  # Maybe reuse the @tabs definitions if we want the page title to match the tab text
-  defp page_title(:commits), do: "Commits"
-  defp page_title(:comments), do: "Comments"
-  defp page_title(:settings), do: "Settings"
+  # Use the same value for the tab text and the page title.
+  defp page_title(action) do
+    @tabs
+    |> Enum.find(&(&1.action == action)) # O(n) but it will never be long enough to matter
+    |> Map.get(:text)
+  end
 end
