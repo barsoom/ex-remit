@@ -77,6 +77,12 @@ Hooks.SetSession = {
   }
 }
 
+Hooks.CancelDefaultNavigation = {
+  mounted() {
+    this.el.addEventListener("click", (e) => e.preventDefault());
+  }
+}
+
 let liveSocket = new LiveSocket("/live", Socket, {
   params: {_csrf_token: csrfToken},
   hooks: Hooks,

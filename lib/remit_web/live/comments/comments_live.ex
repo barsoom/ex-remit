@@ -107,16 +107,12 @@ defmodule RemitWeb.CommentsLive do
     assign(socket, notifications: notifications)
   end
 
-  defp filter_link(assigns, text, is: is) do
-    ~H"""
-    <span phx-click="set_filter" phx-value-is={is} class={link_classes(is, @is)}><%= text %></span>
-    """
-  end
-
-  defp filter_link(assigns, text, role: role) do
-    ~H"""
-    <span phx-click="set_filter" phx-value-role={role} class={link_classes(role, @role)}><%= text %></span>
-    """
+  defp filter_link(socket, assigns, text, [{param, value}]) do
+    link text, to: Routes.tabs_path(socket, :comments),
+               class: link_classes(value, assigns[param]),
+               "phx-click": "set_filter",
+               "phx-value-#{param}": value,
+               "phx-hook": "CancelDefaultNavigation"
   end
 
   defp link_classes(link_attr, current_attr) do
