@@ -17,7 +17,7 @@
       <div class="flex items-center space-x-1">
         <%= github_avatar @comment.commenter_username, :comment, tooltip_pos: "up-left" %>
         <i class="fas fa-chevron-right text-gray-dark"></i>
-        <%= github_avatar @notification.username, :comment, tooltip_pos: "up-left" %>
+        <%= comment_recipient_avatars(@commit, @comment, @notification, tooltip_pos: "up-left") %>
         <span>on <%= Utils.format_datetime(@comment.commented_at) %></span>
       </div>
       <div class="truncate">
