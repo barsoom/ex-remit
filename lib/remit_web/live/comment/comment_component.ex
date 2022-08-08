@@ -24,7 +24,7 @@ defmodule RemitWeb.CommentComponent do
   # For commits authored by a group, display the entire group as a joint recipient of reviewer comments.
   # Comments made by authors are exempt because they would typically be made in response,
   # so the intended recipient is the reviewer and not the author group.
-  defp comment_recipients(nil, _, notification), do: [notification.username] # # a comment might not have its commit in the DB
+  defp comment_recipients(nil, _, notification), do: [notification.username] # a comment might not have its commit in the DB
   defp comment_recipients(commit, comment, notification) do
     sent_to_author = notification.username in commit.usernames
     sent_by_author = comment.commenter_username in commit.usernames
