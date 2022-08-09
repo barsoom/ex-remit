@@ -14,21 +14,41 @@ defmodule Remit.Comments do
   def resolve(id) do
     now = DateTime.utc_now()
 
-    notification = Repo.get_by(CommentNotification, id: id)
-                   |> Repo.preload(comment: :commit)
-    comment = notification.comment
-    commit = comment.commit
+    get_notification = from n in CommentNotification, where: n.id == ^id, preload: [comment: :commit]
 
-    authors = if commit, do: commit.usernames, else: []
+    resolve_notification = fn _, %{notification: notification} ->
+      notification
+      |> Ecto.Changeset.change(resolved_at: now)
+      |> Repo.update()
+    end
 
+    resolve_comment = fn _, %{notification: notification} ->
+      commit = notification.comment.commit
+      authors = if commit, do: commit.usernames, else: []
+
+      notification.comment
+      |> Comment.resolve_changeset(notification.username, now, authors)
+      |> Repo.update()
+    end
+
+    # The rule is that only the first resolver will get to also resolve the
+    # comment. A higher isolation level than READ COMMITTED is required to
+    # consistently enforce this without data races.
+    #
+    # The unlucky transaction will error out; Postgres transaction handling
+    # guidelines recommend having a retry mechanism for such cases. This can be
+    # added later though, since this is unlikely to be a frequent problem in
+    # practice, and its only impact is UX.
     {:ok, result} = Multi.new()
-                    |> Multi.update(:notification, Ecto.Changeset.change(notification, resolved_at: now))
-                    |> Multi.update(:comment, Comment.resolve_changeset(comment, notification.username, now, authors))
+                    |> Multi.run(:isolation_level, fn _, _ -> Repo.query("SET TRANSACTION ISOLATION LEVEL REPEATABLE READ") end)
+                    |> Multi.one(:notification, get_notification)
+                    |> Multi.run(:updated_notification, resolve_notification)
+                    |> Multi.run(:comment, resolve_comment)
                     |> Repo.transaction()
 
     broadcast_change()
 
-    result.notification
+    result.updated_notification
   end
 
   def unresolve(id) do
