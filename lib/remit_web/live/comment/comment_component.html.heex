@@ -8,7 +8,7 @@
     comment
     #{if @your_last_selected?, do: " comment--highlight"}
     block no-underline my-1 bg-gray-200
-    #{if @resolved?, do: " comment--resolved"}
+    #{if @resolved? || @comment_resolved?, do: " comment--resolved"}
   "}
 >
   <div class="comment__metadata bg-gray-400 py-1 px-3 flex items-center">
@@ -27,29 +27,7 @@
       </div>
     </div>
     <div class="ml-auto whitespace-no-wrap">
-      <%= if @resolved? do %>
-        <i class="fas fa-check text-green-dark"></i>
-        <span class="text-gray-dark"><%= Utils.format_datetime(@notification.resolved_at) %></span>
-
-        <%= if @at_me? do %>
-          <button phx-click="unresolve" phx-value-id={@notification.id} class="ml-2">
-            <i class="far fa-eye-slash"></i>
-            Mark as new
-          </button>
-        <% end %>
-      <% else %>
-        <%= if @at_me? do %>
-          <button phx-click="resolve" phx-value-id={@notification.id} class="bg-green-light">
-            <i class="fas fa-check text-green-dark"></i>
-            Resolve
-          </button>
-        <% else %>
-          <span {tooltip_attributes("Since #{Utils.format_datetime(@notification.inserted_at)}", pos: "up-right")}>
-            <i class="fas fa-gift text-yellow-mid"></i>
-            <span class="text-gray-dark">Unresolved</span>
-          </span>
-        <% end %>
-      <% end %>
+      <%= comment_resolution_block(assigns) %>
     </div>
   </div>
   <p class="py-1 px-3 break-words">

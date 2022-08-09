@@ -1,5 +1,6 @@
 defmodule Remit.Comments do
   alias Remit.{Repo, Comment, CommentNotification}
+  alias Ecto.Multi
   import Ecto.Query
 
   def list_notifications(opts) when is_list(opts) do
@@ -13,25 +14,36 @@ defmodule Remit.Comments do
   def resolve(id) do
     now = DateTime.utc_now()
 
-    comment =
-      Repo.get_by(CommentNotification, id: id)
-      |> Ecto.Changeset.change(resolved_at: now)
-      |> Repo.update!()
+    notification = Repo.get_by(CommentNotification, id: id)
+                   |> Repo.preload(comment: :commit)
+    comment = notification.comment
+    commit = comment.commit
+
+    authors = if commit, do: commit.usernames, else: []
+
+    {:ok, result} = Multi.new()
+                    |> Multi.update(:notification, Ecto.Changeset.change(notification, resolved_at: now))
+                    |> Multi.update(:comment, Comment.resolve_changeset(comment, notification.username, now, authors))
+                    |> Repo.transaction()
 
     broadcast_change()
 
-    comment
+    result.notification
   end
 
   def unresolve(id) do
-    comment =
-      Repo.get_by(CommentNotification, id: id)
-      |> Ecto.Changeset.change(resolved_at: nil)
-      |> Repo.update!()
+    notification = Repo.get_by(CommentNotification, id: id)
+                   |> Repo.preload(:comment)
+    comment = notification.comment
+
+    {:ok, result} = Multi.new()
+                    |> Multi.update(:notification, Ecto.Changeset.change(notification, resolved_at: nil))
+                    |> Multi.update(:comment, Comment.unresolve_changeset(comment, notification.username))
+                    |> Repo.transaction()
 
     broadcast_change()
 
-    comment
+    result.notification
   end
 
   def subscribe, do: Phoenix.PubSub.subscribe(Remit.PubSub, "comments")
@@ -51,8 +63,8 @@ defmodule Remit.Comments do
 
     query =
       case resolved_filter do
-        "unresolved" -> from n in query, where: is_nil(n.resolved_at), order_by: [desc: :id]
-        "resolved" -> from n in query, where: not is_nil(n.resolved_at), order_by: [desc: :resolved_at]
+        "unresolved" -> from [n, c] in query, where: is_nil(n.resolved_at) and is_nil(c.resolved_at), order_by: [desc: :id]
+        "resolved" -> from [n, c] in query, where: not (is_nil(n.resolved_at) and is_nil(c.resolved_at)), order_by: [desc: fragment("coalesce(?, ?)", field(n, :resolved_at), field(c, :resolved_at))]
         "all" -> from query, order_by: [desc: :id]
       end
 

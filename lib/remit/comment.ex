@@ -11,6 +11,8 @@ defmodule Remit.Comment do
     field :path, :string
     field :position, :integer
     field :payload, :map
+    field :resolved_at, :utc_datetime_usec
+    field :resolved_by, :string
 
     has_many :comment_notifications, CommentNotification
     belongs_to :commit, Commit, foreign_key: :commit_sha, references: :sha, define_field: false
@@ -26,6 +28,28 @@ defmodule Remit.Comment do
   def other_comments_in_the_same_thread(%Comment{path: path, position: position} = comment) do
     from c in other_comments_on_the_same_commit(comment),
       where: c.path == ^path and c.position == ^position
+  end
+
+  def resolve_changeset(comment, username, ts, authors) do
+    # only resolve the comment if you're the first one
+    changes = if username in authors && comment.resolved_by == nil do
+      %{resolved_at: ts, resolved_by: username}
+    else
+      %{}
+    end
+
+    Ecto.Changeset.change(comment, changes)
+  end
+
+  def unresolve_changeset(comment, username) do
+    # only the original resolver can unresolve the entire comment, to keep state management simple
+    changes = if comment.resolved_by == username do
+      %{resolved_at: nil, resolved_by: nil}
+    else
+      %{}
+    end
+
+    Ecto.Changeset.change(comment, changes)
   end
 
   # Private
