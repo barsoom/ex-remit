@@ -39,6 +39,11 @@
         <% end %>
       <% else %>
         <%= if @at_me? do %>
+          <%= if @resolved_by_coauthor? do %>
+            <span {tooltip_attributes("resolved by co-author", pos: "up-right")}>
+              <i class="fas fa-user-friends text-blue-600"></i>
+            </span>
+          <% end %>
           <button phx-click="resolve" phx-value-id={@notification.id} class="bg-green-light">
             <i class="fas fa-check text-green-dark"></i>
             Resolve

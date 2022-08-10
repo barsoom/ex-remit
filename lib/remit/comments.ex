@@ -47,7 +47,7 @@ defmodule Remit.Comments do
       from n in CommentNotification,
         limit: ^limit,
         join: c in assoc(n, :comment),
-        preload: [comment: {c, :commit}]
+        preload: [comment: {c, [:commit, :comment_notifications]}]
 
     query =
       case resolved_filter do
