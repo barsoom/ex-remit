@@ -11,11 +11,18 @@ defmodule Remit.CommentNotification do
     timestamps()
   end
 
-  def resolved_by_coauthor?(%CommentNotification{comment: %Comment{commit: %Commit{}, comment_notifications: others}} = notification) when is_list(others) do
-    others |> Enum.any?(&resolved_by_coauthor?(notification, &1))
+  @doc ~S"""
+  Returns the list of coauthor usernames who have resolved their notifications
+  on the same comment.
+  """
+  @spec resolved_coauthors(%CommentNotification{}) :: list(String.t())
+  def resolved_coauthors(%CommentNotification{comment: %Comment{commit: %Commit{}, comment_notifications: others}} = notification) when is_list(others) do
+    others
+    |> Enum.filter(&resolved_by_coauthor?(notification, &1))
+    |> Enum.map(&(&1.username))
   end
 
-  def resolved_by_coauthor?(_), do: nil # missing loaded assocs, cannot answer
+  def resolved_coauthors(_), do: [] # missing loaded assocs, cannot answer
 
   defp resolved_by_coauthor?(n, other_n) do
     other_n.resolved_at != nil

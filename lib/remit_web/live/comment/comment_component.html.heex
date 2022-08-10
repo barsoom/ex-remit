@@ -39,9 +39,9 @@
         <% end %>
       <% else %>
         <%= if @at_me? do %>
-          <%= if @resolved_by_coauthor? do %>
-            <span {tooltip_attributes("resolved by co-author", pos: "up-right")}>
-              <i class="fas fa-user-friends text-blue-600"></i>
+          <%= if @resolved_coauthors != [] do %>
+            <span {tooltip_attributes("resolved by #{Enum.join(@resolved_coauthors, ", ")}", pos: "up-right")}>
+              <i class="fas fa-user-friends text-green-dark"></i>
             </span>
           <% end %>
           <button phx-click="resolve" phx-value-id={@notification.id} class="bg-green-light">
