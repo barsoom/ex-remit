@@ -35,7 +35,6 @@
       commit={notification.comment.commit}
       at_me?={notification.username == @username}
       resolved?={notification.resolved_at}
-      comment_resolved?={notification.comment.resolved_at}
       your_last_selected?={@your_last_selected_id == notification.id}
     />
   <% end %>
