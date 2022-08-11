@@ -9,7 +9,7 @@ defmodule Remit.GitHubAPIClient do
 
   alias Remit.{Commit, Comment, Utils}
 
-  @api_token Application.get_env(:remit, :github_api_token)
+  @api_token Application.compile_env(:remit, :github_api_token)
 
   def fetch_commit(owner, repo, sha) do
     {:ok, %{body: data}} = Tesla.get(tesla_client(), "/repos/#{owner}/#{repo}/commits/#{sha}")

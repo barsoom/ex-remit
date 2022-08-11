@@ -13,7 +13,7 @@ defmodule Remit.IngestComment do
     Utils
   }
 
-  @github_client Application.get_env(:remit, :github_api_client)
+  @github_client Application.compile_env(:remit, :github_api_client)
 
   def from_params(params) do
     # If we receive a comment on a commit that we don't have in DB, we fetch it and its comments.

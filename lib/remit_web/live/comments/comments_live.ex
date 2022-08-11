@@ -2,7 +2,7 @@ defmodule RemitWeb.CommentsLive do
   use RemitWeb, :live_view
   alias Remit.{Comments, Utils}
 
-  @max_comments Application.get_env(:remit, :max_comments)
+  @max_comments Application.compile_env(:remit, :max_comments)
 
   @impl true
   def mount(_params, session, socket) do

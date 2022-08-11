@@ -3,7 +3,7 @@ defmodule RemitWeb.StatsController do
   alias Remit.{Repo, Commits, Commit}
   import Ecto.Query
 
-  @max_commits Application.get_env(:remit, :max_commits)
+  @max_commits Application.compile_env(:remit, :max_commits)
 
   def show(conn, params) do
     max_commits = params["max_commits_for_tests"] || @max_commits

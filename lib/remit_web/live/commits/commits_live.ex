@@ -2,7 +2,7 @@ defmodule RemitWeb.CommitsLive do
   use RemitWeb, :live_view
   alias Remit.{Commits, Commit, Utils}
 
-  @max_commits Application.get_env(:remit, :max_commits)
+  @max_commits Application.compile_env(:remit, :max_commits)
   @overlong_check_frequency_secs 60
 
   @impl true
