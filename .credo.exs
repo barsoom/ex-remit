@@ -159,6 +159,7 @@
           {Credo.Check.Warning.UnsafeExec, []},
 
           {Credo.Check.Readability.ImplTrue, []},
+          {Credo.Check.Readability.SeparateAliasRequire, []},
         ],
         disabled: [
           #
@@ -176,7 +177,6 @@
           {Credo.Check.Readability.BlockPipe, []},
           {Credo.Check.Readability.MultiAlias, []},
           {Credo.Check.Readability.NestedFunctionCalls, []},
-          {Credo.Check.Readability.SeparateAliasRequire, []},
           {Credo.Check.Readability.SingleFunctionToBlockPipe, []},
           {Credo.Check.Readability.SinglePipe, []},
           {Credo.Check.Readability.Specs, []},
