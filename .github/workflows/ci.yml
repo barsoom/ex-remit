@@ -65,6 +65,8 @@ jobs:
       run: mix deps.get
     - name: Run tests
       run: mix test
+    - name: Lint
+      run: mix credo --all
 
   # Based on: https://mikecoutermarsh.com/github-actions-deploy-to-heroku/
   deploy:
