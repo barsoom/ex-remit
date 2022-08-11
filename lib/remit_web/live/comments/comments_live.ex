@@ -77,8 +77,7 @@ defmodule RemitWeb.CommentsLive do
   # Receive broadcasts when new comments arrive or have their state changed by another user.
   @impl Phoenix.LiveView
   def handle_info(:comments_changed, socket) do
-    # We just re-load from DB; filtering in memory could get fiddly if we need
-    # to hang on to both a filtered and an unfiltered list.
+    # We just re-load from DB; filtering in memory could get fiddly if we need to hang on to both a filtered and an unfiltered list.
     socket = assign_filtered_notifications(socket)
 
     {:noreply, socket}

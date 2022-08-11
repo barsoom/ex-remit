@@ -17,8 +17,7 @@ defmodule Remit.IngestComment do
 
   def from_params(params) do
     # If we receive a comment on a commit that we don't have in DB, we fetch it and its comments.
-    # This lets Remit display which commit this comment goes with, and lets it
-    # notify those committers and previous commenters.
+    # This lets Remit display which commit this comment goes with, and lets it notify those committers and previous commenters.
     fetch_commit_with_comments_if_missing(params)
 
     comment =
@@ -47,10 +46,8 @@ defmodule Remit.IngestComment do
         }
       }) do
     unless Commits.sha_exists?(sha) do
-      # Make the commit unlisted so it doesn't suddenly appear in the "to
-      # review" list. The comments won't appear anyway, since we don't create
-      # any `CommentNotification` for them (but possibly for the ingested
-      # comment).
+      # Make the commit unlisted so it doesn't suddenly appear in the "to review" list.
+      # The comments won't appear anyway, since we don't create any `CommentNotification` for them (but possibly for the ingested comment).
       commit = @github_client.fetch_commit(owner, repo, sha) |> struct(unlisted: true)
       comments = @github_client.fetch_comments_on_commit(commit)
 

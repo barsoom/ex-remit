@@ -94,11 +94,7 @@
           #
           {Credo.Check.Readability.FunctionNames, []},
           {Credo.Check.Readability.LargeNumbers, []},
-          {Credo.Check.Readability.MaxLineLength, [
-            priority: :low,
-            max_length: 120,
-            files: [excluded: ["**/*_test.exs"]]
-          ]},
+          {Credo.Check.Readability.MaxLineLength, [priority: :low, max_length: 120]},
           {Credo.Check.Readability.ModuleAttributeNames, []},
           {Credo.Check.Readability.ModuleDoc, [files: [excluded: ["**/*_test.exs"]]]},
           {Credo.Check.Readability.ModuleNames, []},
@@ -205,6 +201,7 @@
           {Credo.Check.Design.AliasUsage,
           [priority: :low, if_nested_deeper_than: 2, if_called_more_often_than: 0]},
           {Credo.Check.Readability.AliasOrder, []},
+          {Credo.Check.Readability.MaxLineLength, [priority: :low, max_length: 120]},
           #
           # Custom checks can be created using `mix credo.gen.check`.
           #

@@ -37,8 +37,7 @@ defmodule Remit.UsernamesFromMentions do
     end)
   end
 
-  # This is simplistic and doesn't e.g. account for HTML-in-Markdown or
-  # backslash-escaped backticks. But probably good enough.
+  # This is simplistic and doesn't e.g. account for HTML-in-Markdown or backslash-escaped backticks. But probably good enough.
   defp strip_code_blocks(text) do
     text
     # Four-space indent.

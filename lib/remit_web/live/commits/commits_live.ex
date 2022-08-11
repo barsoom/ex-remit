@@ -77,10 +77,9 @@ defmodule RemitWeb.CommitsLive do
 
   # Periodically check.
   def handle_info(:check_for_overlong_reviewing, socket) do
-    commit_in_review = Commit.oldest_overlong_in_review_by(socket.assigns.commits, socket.assigns.username)
     {:noreply,
      assign(socket,
-       oldest_overlong_in_review_by_me: commit_in_review
+       oldest_overlong_in_review_by_me: Commit.oldest_overlong_in_review_by(socket.assigns.commits, socket.assigns.username)
      )}
   end
 
