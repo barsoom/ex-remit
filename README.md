@@ -194,6 +194,9 @@ First time:
 
     # Ensure that `config/test.exs` and `config/dev.exs` have the right DB config for you.
 
+    # Set up the recommended Git hooks
+    mix git_hooks.install
+
     # Install deps and assets, create DB and migrate:
     mix setup
 
@@ -224,7 +227,12 @@ Run
 
 to see what [Credo](https://github.com/rrrene/credo) has to say. (`-a` or `--all` means it won't truncate the list.)
 
-TODO: Set it up as part of CI, or a githook, or something?
+It will also run in CI together with the unit tests, and in pre-push if you installed the githooks.
+
+#### Editor integration
+
+Vim: [vim-elixir](https://github.com/elixir-editors/vim-elixir)  
+VSCode: [Credo](https://marketplace.visualstudio.com/items?itemName=pantajoe.vscode-elixir-credo)
 
 ### Faking new data coming in via webhook
 

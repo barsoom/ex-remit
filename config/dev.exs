@@ -101,3 +101,13 @@ config :phoenix, :stacktrace_depth, 20
 
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
+
+config :git_hooks,
+  auto_install: false,
+  hooks: [
+    pre_push: [
+      tasks: [
+        {:cmd, "mix credo -a"}
+      ]
+    ]
+  ]
