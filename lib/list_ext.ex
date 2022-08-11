@@ -1,5 +1,9 @@
 defmodule Remit.ListExt do
 
+  @moduledoc ~S"""
+  Utility extensions for the core `List`.
+  """
+
   @doc ~S"""
   Like `List.delete/2`, but also returns whether the element was a member of the list.
 

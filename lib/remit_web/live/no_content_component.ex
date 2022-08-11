@@ -1,4 +1,5 @@
 defmodule RemitWeb.NoContentComponent do
+  @moduledoc false
   use RemitWeb, :live_component
 
   def render(assigns) do

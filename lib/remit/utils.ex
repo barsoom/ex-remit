@@ -1,4 +1,5 @@
 defmodule Remit.Utils do
+  @moduledoc false
   @timezone "Europe/Stockholm"
 
   def normalize_string(nil), do: nil

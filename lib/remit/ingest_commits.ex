@@ -1,4 +1,7 @@
 defmodule Remit.IngestCommits do
+  @moduledoc ~S"""
+  Handles new incoming commits from a webhook call.
+  """
   alias Remit.{Repo, Commits, Commit, Utils}
 
   def from_params(params) do

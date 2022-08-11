@@ -1,4 +1,5 @@
 defmodule Remit.Commit do
+  @moduledoc false
   use Remit, :schema
 
   schema "commits" do

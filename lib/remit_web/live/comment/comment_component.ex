@@ -1,4 +1,5 @@
 defmodule RemitWeb.CommentComponent do
+  @moduledoc false
   use RemitWeb, :live_component
   alias Remit.{Commit, Comment, Utils}
 

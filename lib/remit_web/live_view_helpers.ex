@@ -1,4 +1,5 @@
 defmodule RemitWeb.LiveViewHelpers do
+  @moduledoc false
   alias Remit.Commit
   import Phoenix.HTML.Tag
 

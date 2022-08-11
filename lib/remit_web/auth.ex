@@ -1,5 +1,7 @@
 defmodule RemitWeb.Auth do
+  @moduledoc false
   defmodule Routing do
+    @moduledoc false
     import Plug.Conn
 
     @expected_auth_key Application.get_env(:remit, :auth_key)
@@ -35,6 +37,7 @@ defmodule RemitWeb.Auth do
 
   # Based on https://hexdocs.pm/phoenix_live_view/Phoenix.LiveView.html#module-security-considerations-of-the-liveview-model.
   defmodule LiveView do
+    @moduledoc false
     @expected_auth_key Application.get_env(:remit, :auth_key)
 
     def check_auth_key(session) do
@@ -44,6 +47,7 @@ defmodule RemitWeb.Auth do
   end
 
   defmodule Socket do
+    @moduledoc false
     @expected_auth_key Application.get_env(:remit, :auth_key)
 
     def authed_via_socket_params?(%{"auth_key" => given_auth_key}) do

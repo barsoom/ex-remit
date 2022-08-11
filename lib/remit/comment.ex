@@ -1,4 +1,5 @@
 defmodule Remit.Comment do
+  @moduledoc false
   use Remit, :schema
   alias Remit.{Commit, CommentNotification}
 

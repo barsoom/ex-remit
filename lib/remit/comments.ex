@@ -1,4 +1,5 @@
 defmodule Remit.Comments do
+  @moduledoc false
   alias Remit.{Repo, Comment, CommentNotification}
   import Ecto.Query
 

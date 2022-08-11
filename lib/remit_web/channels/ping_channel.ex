@@ -1,4 +1,5 @@
 defmodule RemitWeb.PingChannel do
+  @moduledoc false
   use RemitWeb, :channel
 
   def join(_channel, _auth, socket) do

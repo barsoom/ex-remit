@@ -1,4 +1,7 @@
 defmodule Remit.IngestComment do
+  @moduledoc ~S"""
+  Handles new incoming comments from a webhook call.
+  """
   alias Remit.{
     Comment,
     Comments,

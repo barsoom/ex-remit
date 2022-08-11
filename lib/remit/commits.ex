@@ -1,4 +1,5 @@
 defmodule Remit.Commits do
+  @moduledoc false
   alias Remit.{Repo, Commit}
   import Ecto.Query
 

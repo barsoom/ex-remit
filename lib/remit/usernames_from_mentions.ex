@@ -1,4 +1,5 @@
 defmodule Remit.UsernamesFromMentions do
+  @moduledoc false
   import Ecto.Query
   alias Remit.{Comment, Commit, Repo}
 
