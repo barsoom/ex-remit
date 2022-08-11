@@ -94,7 +94,6 @@
           #
           ## Readability Checks
           #
-          {Credo.Check.Readability.AliasOrder, []},
           {Credo.Check.Readability.FunctionNames, []},
           {Credo.Check.Readability.LargeNumbers, []},
           {Credo.Check.Readability.MaxLineLength, [priority: :low, max_length: 120]},
@@ -202,6 +201,7 @@
           # {Credo.Check.Refactor.MapInto, []},
 
           #
+          {Credo.Check.Readability.AliasOrder, []},
           # Custom checks can be created using `mix credo.gen.check`.
           #
         ]
