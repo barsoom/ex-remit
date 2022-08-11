@@ -53,5 +53,5 @@ defmodule Remit.Commits do
     |> Repo.update!()
   end
 
-  defp now(), do: DateTime.utc_now()
+  defp now, do: DateTime.utc_now()
 end
