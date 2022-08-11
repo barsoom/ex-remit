@@ -4,7 +4,7 @@ defmodule RemitWeb.CommentsLive do
 
   @max_comments Application.compile_env(:remit, :max_comments)
 
-  @impl true
+  @impl Phoenix.LiveView
   def mount(_params, session, socket) do
     check_auth_key(session)
 
@@ -24,12 +24,12 @@ defmodule RemitWeb.CommentsLive do
     {:ok, socket}
   end
 
-  @impl true
+  @impl Phoenix.LiveView
   def handle_event("selected", %{"id" => id}, socket) do
     {:noreply, assign_selected_id(socket, id)}
   end
 
-  @impl true
+  @impl Phoenix.LiveView
   def handle_event("resolve", %{"id" => id}, socket) do
     Comments.resolve(id)
     socket = assign_selected_id(socket, id)
@@ -38,7 +38,7 @@ defmodule RemitWeb.CommentsLive do
     {:noreply, socket}
   end
 
-  @impl true
+  @impl Phoenix.LiveView
   def handle_event("unresolve", %{"id" => id}, socket) do
     Comments.unresolve(id)
     socket = assign_selected_id(socket, id)
@@ -48,7 +48,7 @@ defmodule RemitWeb.CommentsLive do
   end
 
   # Receive events when other LiveViews update settings.
-  @impl true
+  @impl Phoenix.LiveView
   def handle_event("set_session", ["username", username], socket) do
     socket =
       socket
@@ -75,7 +75,7 @@ defmodule RemitWeb.CommentsLive do
   def handle_event("set_session", _, socket), do: {:noreply, socket}
 
   # Receive broadcasts when new comments arrive or have their state changed by another user.
-  @impl true
+  @impl Phoenix.LiveView
   def handle_info(:comments_changed, socket) do
     # We just re-load from DB; filtering in memory could get fiddly if we need to hang on to both a filtered and an unfiltered list.
     socket = assign_filtered_notifications(socket)

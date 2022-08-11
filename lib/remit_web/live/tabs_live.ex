@@ -9,7 +9,7 @@ defmodule RemitWeb.TabsLive do
     %{action: :settings, module: RemitWeb.SettingsLive, text: "Settings", icon: "fa-cog"},
   ]
 
-  @impl true
+  @impl Phoenix.LiveView
   def render(assigns) do
     ~H"""
     <%= for tab <- @tabs do %>
@@ -20,14 +20,14 @@ defmodule RemitWeb.TabsLive do
     """
   end
 
-  @impl true
+  @impl Phoenix.LiveView
   def mount(_params, session, socket) do
     check_auth_key(session)
     socket = assign(socket, tabs: @tabs)
     {:ok, socket}
   end
 
-  @impl true
+  @impl Phoenix.LiveView
   def handle_params(_params, _uri, socket) do
     # Since the child LiveViews run concurrently, they can't be relied on to set the title themselves.
     socket = assign_page_title(socket)

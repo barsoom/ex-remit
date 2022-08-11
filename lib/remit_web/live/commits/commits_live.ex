@@ -5,7 +5,7 @@ defmodule RemitWeb.CommitsLive do
   @max_commits Application.compile_env(:remit, :max_commits)
   @overlong_check_frequency_secs 60
 
-  @impl true
+  @impl Phoenix.LiveView
   def mount(_params, session, socket) do
     check_auth_key(session)
 
@@ -25,31 +25,31 @@ defmodule RemitWeb.CommitsLive do
     {:ok, socket}
   end
 
-  @impl true
+  @impl Phoenix.LiveView
   def handle_event("selected", %{"id" => id}, socket) do
     {:noreply, assign_selected_id(socket, id)}
   end
 
-  @impl true
+  @impl Phoenix.LiveView
   def handle_event("start_review", %{"id" => id}, socket) do
     commit = Commits.mark_as_review_started!(id, socket.assigns.username)
     {:noreply, assign_and_broadcast_changed_commit(socket, commit)}
   end
 
-  @impl true
+  @impl Phoenix.LiveView
   def handle_event("mark_reviewed", %{"id" => id}, socket) do
     commit = Commits.mark_as_reviewed!(id, socket.assigns.username)
     {:noreply, assign_and_broadcast_changed_commit(socket, commit)}
   end
 
-  @impl true
+  @impl Phoenix.LiveView
   def handle_event("mark_unreviewed", %{"id" => id}, socket) do
     commit = Commits.mark_as_unreviewed!(id)
     {:noreply, assign_and_broadcast_changed_commit(socket, commit)}
   end
 
   # Receive events when other LiveViews update settings.
-  @impl true
+  @impl Phoenix.LiveView
   def handle_event("set_session", ["username", username], socket) do
     # We need to update the commit stats because they're based on this setting.
     socket =
@@ -61,14 +61,14 @@ defmodule RemitWeb.CommitsLive do
   end
 
   # Receive broadcasts when other clients update their state.
-  @impl true
+  @impl Phoenix.LiveView
   def handle_info({:changed_commit, commit}, socket) do
     commits = socket.assigns.commits |> replace_commit(commit)
     {:noreply, assign_commits_and_stats(socket, commits)}
   end
 
   # Receive broadcasts when new commits arrive.
-  @impl true
+  @impl Phoenix.LiveView
   def handle_info({:new_commits, new_commits}, socket) do
     # Another option here would be to just reload the latest commits from DB.
     commits = Enum.slice(new_commits ++ socket.assigns.commits, 0, @max_commits)
