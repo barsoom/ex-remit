@@ -24,6 +24,17 @@ defmodule Remit.CommitTest do
       refute Commit.authored_by?(commit, "baz")
       refute Commit.authored_by?(commit, nil)
     end
+
+    test "is true if you're among the 'Co-authored-by' commit trailers" do
+      commit = %Commit{
+        message: Faker.message_with_co_authors("Some message", ["foo", "bar"])
+      }
+
+      assert Commit.authored_by?(commit, "foo")
+      assert Commit.authored_by?(commit, "bar")
+      refute Commit.authored_by?(commit, "baz")
+      refute Commit.authored_by?(commit, "qux")
+    end
   end
 
   describe "add_date_separators" do

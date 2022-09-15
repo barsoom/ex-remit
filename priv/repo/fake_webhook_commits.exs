@@ -1,39 +1,54 @@
 count =
   case System.argv() do
-    [] -> 5  # Default
-    [number_string|_] -> String.to_integer(number_string)
+    # Default
+    [] -> 5
+    [number_string | _] -> String.to_integer(number_string)
   end
 
 with_co_author? = Enum.member?(System.argv(), "--co-authored")
-json = Jason.encode!(%{
-  ref: "refs/heads/master",
-  repository: %{
-    master_branch: "master",
-    name: Faker.repo(),
-    owner: %{
-      name: "acme",
-    },
-  },
-  commits: (1..count) |> Enum.map(fn (_i) ->
-    %{
-      author: %{
-        email: Faker.email(),
-        username: Faker.username(),
-      },
-      committer: %{
-        email: Faker.email(),
-        username: Faker.username(),
-      },
-      id: Faker.sha(),
-      url: "https://example.com/",
-      message: Faker.message(with_co_author?),
-      timestamp: (DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_iso8601()),
-    }
-  end),
-}, escape: :unicode_safe)  # Make Erlang happy.
-|> String.to_charlist()
 
-IO.puts "Hi! Sending #{count} commit#{unless count == 1, do: "s"} to the webhook…"
+json =
+  Jason.encode!(
+    %{
+      ref: "refs/heads/master",
+      repository: %{
+        master_branch: "master",
+        name: Faker.repo(),
+        owner: %{
+          name: "acme"
+        }
+      },
+      commits:
+        1..count
+        |> Enum.map(fn _i ->
+          %{
+            author: %{
+              email: Faker.email(),
+              username: Faker.username()
+            },
+            committer: %{
+              email: Faker.email(),
+              username: Faker.username()
+            },
+            id: Faker.sha(),
+            url: "https://example.com/",
+            message:
+              if with_co_author? do
+                authors = Enum.map(1..Enum.random(1..3), fn _i -> Faker.username() end)
+                Faker.message_with_co_authors(Faker.message(), authors)
+              else
+                Faker.message()
+              end,
+            timestamp: DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_iso8601()
+          }
+        end)
+    },
+    # Make Erlang happy.
+    escape: :unicode_safe
+  )
+  |> String.to_charlist()
+
+IO.puts("Hi! Sending #{count} commit#{unless count == 1, do: "s"} to the webhook…")
 IO.puts("")
 
 # Using :httpc to avoid adding a dependency just for this.
@@ -43,11 +58,11 @@ IO.puts("")
     'http://localhost:4000/webhooks/github?auth_key=dev',
     [{'x-github-event', 'push'}],
     'application/json',
-    json,
+    json
   },
   [],
   []
 )
 |> IO.inspect()
 
-IO.puts "Done!"
+IO.puts("Done!")

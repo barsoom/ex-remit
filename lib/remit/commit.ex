@@ -28,7 +28,10 @@ defmodule Remit.Commit do
   def listed(q \\ __MODULE__), do: from(q, where: [unlisted: false])
 
   def authored_by?(_commit, nil), do: false
-  def authored_by?(commit, username), do: commit.usernames |> Enum.map(&String.downcase/1) |> Enum.member?(String.downcase(username))
+
+  def authored_by?(commit, username) do
+    author_in_email?(commit, username) || author_in_commit_trailer?(commit, username)
+  end
 
   def being_reviewed_by?(%Commit{review_started_by_username: username, reviewed_at: nil}, username) when not is_nil(username), do: true
   def being_reviewed_by?(_, _), do: false
@@ -68,5 +71,15 @@ defmodule Remit.Commit do
       end)
 
     new_commits
+  end
+
+  defp author_in_email?(commit, username) do
+    commit.usernames |> Enum.map(&String.downcase/1) |> Enum.member?(String.downcase(username))
+  end
+
+  defp author_in_commit_trailer?(commit, username) do
+    if commit.message,
+      do: String.contains?(commit.message, "Co-authored-by: #{username}"),
+      else: false
   end
 end

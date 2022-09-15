@@ -27,15 +27,16 @@ defmodule Faker do
       Enum.random(["pics", "ballads", "odes", "leaks", "hacks"])
   end
 
-  def message, do: message(co_authored?: false)
-
-  def message(co_authored?: co_authored?) do
+  def message do
     Enum.random(["Fixed", "Broke", "Reverted", "Removed", "Refactored", "Simplified", "Optimised", "Suboptimised", "Redesigned", "Mocked up", "Uploaded", "Threw out", "Decoupled", "Tightly coupled"]) <>
       " " <>
       Enum.random(["the header", "the footer", "the architecture", "our design system", "the UX", "the front-end", "the back-end", "the pipeline", "CI", "production", "the sitemap"]) <>
       " " <>
-      Enum.random(["", "", "", "", "", "", "", "", "", "", "with monads", "in the cloud"]) <>
-      if co_authored?, do: "\n \n" <> "Co-authored-by: #{Faker.username()} <#{Faker.email()}>", else: ""
+      Enum.random(["", "", "", "", "", "", "", "", "", "", "with monads", "in the cloud"])
+  end
+
+  def message_with_co_authors(message, authors) do
+    Enum.reduce(authors, message, fn author, trailer -> trailer <> "\nCo-authored-by: #{author}" end)
   end
 
   def comment do
