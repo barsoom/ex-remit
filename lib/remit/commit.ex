@@ -74,7 +74,9 @@ defmodule Remit.Commit do
   end
 
   defp author_in_email?(commit, username) do
-    commit.usernames |> Enum.map(&String.downcase/1) |> Enum.member?(String.downcase(username))
+    commit.usernames
+    |> Enum.map(&String.downcase/1)
+    |> Enum.member?(String.downcase(username))
   end
 
   defp author_in_commit_trailer?(commit, username) do
