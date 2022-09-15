@@ -4,6 +4,7 @@ count =
     [number_string|_] -> String.to_integer(number_string)
   end
 
+with_co_author? = Enum.member?(System.argv(), "--co-authored")
 json = Jason.encode!(%{
   ref: "refs/heads/master",
   repository: %{
@@ -25,7 +26,7 @@ json = Jason.encode!(%{
       },
       id: Faker.sha(),
       url: "https://example.com/",
-      message: Faker.message(),
+      message: Faker.message(with_co_author?),
       timestamp: (DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_iso8601()),
     }
   end),
