@@ -48,6 +48,15 @@ When new commits and comments arrive, or when a co-worker starts and finishes a 
 
 Please see the "Settings" screen in Remit for details about how Remit figures out which user(s) every commit and comment belongs to.
 
+### Co-Authorship
+Ex-Remit has traditionally used plus addressing to extract the co-authors of a commit: 
+
+So the author-email `author1+author2@example.com` becomes `["author1@users.noreply.github.com", "author@users.noreply.github.com"]`.
+
+This has the drawback that contributions will not be tracked on github, among other things. Now we want to support github co-authors, which uses commit trailers to track contributions. 
+
+To read more about commit trailers, visit [the github documentation](https://docs.github.com/en/pull-requests/committing-changes-to-your-project/creating-and-editing-commits/creating-a-commit-with-multiple-authors).
+
 ### Why commit-by-commit code review?
 
 See this blog post: ["The risks of feature branches and pre-merge code review"](http://thepugautomatic.com/2014/02/code-review/)
@@ -249,6 +258,11 @@ They default to adding just a few, but you can pass a count:
     # Add 100 comments via 100 webhook calls (GitHub sends one per call).
     # May not be listed exactly 100 times in the UI, because we list based on CommentNotifications.
     mix wh.comments 100
+
+It's also possible to generate co-authored commits using the `--co-authored` flag, note that this also requires you to pass count:
+
+    # Adds 10 co-authored commits using commit trailers, e.g. Co-authored-by: foo <foo@example.com>
+    mix wh.commits 10 --co-authored
 
 ### Working on the connection detection
 
