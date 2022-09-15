@@ -27,7 +27,7 @@ defmodule Faker do
       Enum.random(["pics", "ballads", "odes", "leaks", "hacks"])
   end
 
-  def message, do: message(co_authored?: true)
+  def message, do: message(co_authored?: false)
 
   def message(co_authored?: co_authored?) do
     Enum.random(["Fixed", "Broke", "Reverted", "Removed", "Refactored", "Simplified", "Optimised", "Suboptimised", "Redesigned", "Mocked up", "Uploaded", "Threw out", "Decoupled", "Tightly coupled"]) <>

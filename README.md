@@ -49,13 +49,14 @@ When new commits and comments arrive, or when a co-worker starts and finishes a 
 Please see the "Settings" screen in Remit for details about how Remit figures out which user(s) every commit and comment belongs to.
 
 ### Co-Authorship
-Ex-Remit has traditionally used plus addressing to extract the co-authors of a commit: 
+> This feature is still a work in progress.
+Remit has traditionally used plus addressing to extract the co-authors of a commit: 
 
-So the author-email `author1+author2@example.com` becomes `["author1@users.noreply.github.com", "author@users.noreply.github.com"]`.
+Given an email such as `devs+author1+author2@example.com`, we would extract `author1` and `author2` as the authors of the commit.
 
-This has the drawback that contributions will not be tracked on github, among other things. Now we want to support github co-authors, which uses commit trailers to track contributions. 
+This has the drawback that contributions will not be tracked on GitHub, among other things. Now we want to support GitHub co-authors, which uses commit trailers to track contributions. 
 
-To read more about commit trailers, visit [the github documentation](https://docs.github.com/en/pull-requests/committing-changes-to-your-project/creating-and-editing-commits/creating-a-commit-with-multiple-authors).
+To read more about commit trailers, [visit the GitHub documentation](https://docs.github.com/en/pull-requests/committing-changes-to-your-project/creating-and-editing-commits/creating-a-commit-with-multiple-authors).
 
 ### Why commit-by-commit code review?
 
