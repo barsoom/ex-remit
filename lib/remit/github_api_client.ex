@@ -9,8 +9,6 @@ defmodule Remit.GitHubAPIClient do
 
   alias Remit.{Commit, Comment, Utils}
 
-  @api_token Application.compile_env(:remit, :github_api_token)
-
   def fetch_commit(owner, repo, sha) do
     {:ok, %{body: data}} = Tesla.get(tesla_client(), "/repos/#{owner}/#{repo}/commits/#{sha}")
 
@@ -99,7 +97,7 @@ defmodule Remit.GitHubAPIClient do
   defp tesla_client do
     Tesla.client([
       {Tesla.Middleware.BaseUrl, "https://api.github.com"},
-      {Tesla.Middleware.Headers, [{"authorization", "token " <> @api_token}]},
+      {Tesla.Middleware.Headers, [{"authorization", "token " <> Remit.Config.github_api_token()}]},
       Tesla.Middleware.JSON
     ])
   end

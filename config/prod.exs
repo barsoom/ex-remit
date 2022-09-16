@@ -21,9 +21,9 @@ config :remit, RemitWeb.Endpoint,
   cache_static_manifest: "priv/static/cache_manifest.json"
 
 config :remit,
-  auth_key: System.fetch_env!("AUTH_KEY"),
-  webhook_key: System.fetch_env!("WEBHOOK_KEY"),
-  github_api_token: System.fetch_env!("GITHUB_API_TOKEN")
+  auth_key: {:system, "AUTH_KEY"},
+  webhook_key: {:system, "WEBHOOK_KEY"},
+  github_api_token: {:system, "GITHUB_API_TOKEN"}
 
 # Do not print debug messages in production
 config :logger, level: :info
