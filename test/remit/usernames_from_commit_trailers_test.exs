@@ -28,6 +28,18 @@ defmodule Remit.UsernamesFromCommitTrailersTest do
     assert result == ["dwight.shrute"]
   end
 
+  test "it is case-insensitive" do
+    result =
+      """
+      My fancy commit
+
+      co-AUTHORED-By: michael <123+michael.scott@users.NOREPLY.gitHUB.com>
+      """
+      |> UsernamesFromCommitTrailers.call()
+
+    assert result == ["michael.scott"]
+  end
+
   test "it returns an empty list if there are no co-authors" do
     result =
       """
