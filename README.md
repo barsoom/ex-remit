@@ -50,11 +50,13 @@ Please see the "Settings" screen in Remit for details about how Remit figures ou
 
 ### Co-Authorship
 > This feature is still a work in progress.
-Remit has traditionally used plus addressing to extract the co-authors of a commit: 
+Remit has traditionally used "plus addressing" to extract the co-authors of a commit:
 
 Given an email such as `devs+author1+author2@example.com`, we would extract `author1` and `author2` as the authors of the commit.
 
-This has the drawback that contributions will not be tracked on GitHub, among other things. Now we want to support GitHub co-authors, which uses commit trailers to track contributions. 
+This has the drawback that contributions will not be tracked on GitHub, among other things.
+
+We partially support `Co-authored-by` trailers, but only when the email is the GitHub-provided no-reply email.
 
 To read more about commit trailers, [visit the GitHub documentation](https://docs.github.com/en/pull-requests/committing-changes-to-your-project/creating-and-editing-commits/creating-a-commit-with-multiple-authors).
 
