@@ -40,6 +40,19 @@ defmodule Remit.UsernamesFromCommitTrailersTest do
     assert result == ["michael.scott"]
   end
 
+  test "it removes duplicates" do
+    result =
+      """
+      My fancy commit
+
+      Co-authored-by: dwight <dwight.shrute@users.noreply.github.com>
+      Co-authored-by: dwight2 <dwight.shrute@users.noreply.github.com>
+      """
+      |> UsernamesFromCommitTrailers.call()
+
+    assert result == ["dwight.shrute"]
+  end
+
   test "it returns an empty list if there are no co-authors" do
     result =
       """
