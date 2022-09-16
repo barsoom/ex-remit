@@ -18,9 +18,11 @@ defmodule Remit.UsernamesFromCommitTrailers do
   end
 
   defp usernames_from_email(email) do
+    # For GitHub "noreply" email addresses, we can just parse out the username.
+    # Other addresses are currently not supported; we'd need some way to look up their usernames.
     case Regex.run(@github_email_re, email, capture: :all_but_first) do
       [username] -> [username]
-      nil -> [] # TODO figure out a way to get the github username from an email
+      nil -> []
     end
   end
 end
