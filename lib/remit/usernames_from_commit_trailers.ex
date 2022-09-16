@@ -20,9 +20,7 @@ defmodule Remit.UsernamesFromCommitTrailers do
   defp usernames_from_email(email) do
     case Regex.run(@github_email_re, email, capture: :all_but_first) do
       [username] -> [username]
-      nil ->
-         # TODO figure out a way to get the github username from an email
-        []
+      nil -> [] # TODO figure out a way to get the github username from an email
     end
   end
 end
