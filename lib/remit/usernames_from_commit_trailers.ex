@@ -21,7 +21,7 @@ defmodule Remit.UsernamesFromCommitTrailers do
       Regex.scan(@user_from_email_re, email, capture: :all_but_first)
       |> List.flatten()
     else
-      # Here we would try to get the username through GitHub api
+      # TODO figure out a way to get the github username from an email
       []
     end
   end
