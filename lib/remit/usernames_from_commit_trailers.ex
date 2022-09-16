@@ -17,12 +17,12 @@ defmodule Remit.UsernamesFromCommitTrailers do
   def call(_message), do: []
 
   defp usernames_from_email(email) when is_binary(email) do
-    if String.contains?(email, "noreply") do
+    if String.contains?(email, "users.noreply.github.com") do
       Regex.scan(@user_from_email_re, email, capture: :all_but_first)
       |> List.flatten()
     else
       # Here we would try to get the username through GitHub api
-      nil
+      []
     end
   end
 end

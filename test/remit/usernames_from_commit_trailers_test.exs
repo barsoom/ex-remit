@@ -10,6 +10,14 @@ defmodule Remit.UsernamesFromCommitTrailersTest do
     assert result == ["dwight.shrute", "michael.scott"]
   end
 
+  test "it only includes co-authors using github noreply emails" do
+    result =
+      Faker.message_with_co_authors("My fancy commit", ["dwight shrute <dwight.shrute@users.noreply.github.com>", "ryan howard <ryan.howard@wuphf.com>"])
+      |> UsernamesFromCommitTrailers.call()
+
+    assert result == ["dwight.shrute"]
+  end
+
   test "it returns an empty list if there are no co-authors" do
     result = UsernamesFromCommitTrailers.call(Faker.message())
     assert result == []
