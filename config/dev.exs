@@ -86,7 +86,7 @@ config :remit,
   favicon: "favicon-dev.png",
   auth_key: "dev",
   webhook_key: "dev",
-  github_api_token: "dev"
+  github_api_token: System.get_env("GITHUB_API_TOKEN", "dev")
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
