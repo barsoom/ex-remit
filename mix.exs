@@ -56,7 +56,7 @@ defmodule Remit.MixProject do
       {:mox, "> 0.0.0", only: :test},
       {:credo, "> 0.0.0", only: [:dev, :test], runtime: false},
       {:git_hooks, "~> 0.7.0", only: [:dev], runtime: false},
-      {:mix_test_watch, "~> 1.0", only: :dev, runtime: false
+      {:mix_test_watch, "~> 1.0", only: :dev, runtime: false}
     ]
   end
 
