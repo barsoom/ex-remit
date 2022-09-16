@@ -47,6 +47,22 @@ defmodule Remit.IngestCommitsTest do
     assert commit.usernames == ["foo", "bar", "baz", "boink"]
   end
 
+  test "assigns usernames from co-authors in commit trailers" do
+    [commit] =
+      build_params(
+        commits: [
+          [
+            author_username: "baz",
+            committer_username: "baz",
+            message: "This is a commit \n\nCo-authored-by: Foo Bar <123+foo.bar@users.noreply.github.com>"
+          ]
+        ]
+      )
+      |> IngestCommits.from_params()
+
+      assert commit.usernames == ["baz", "foo.bar"]
+  end
+
   test "can mix usernames and 'plus addressing'" do
     [commit] =
       build_params(
@@ -116,6 +132,7 @@ defmodule Remit.IngestCommitsTest do
           committer_username = Keyword.get(opts, :committer_username, "foobarson")
           author_email = Keyword.get(opts, :author_email, "foo@example.com")
           committer_email = Keyword.get(opts, :committer_email, "foo@example.com")
+          message = Keyword.get(opts, :message, "Commit")
 
           author = %{
             "email" => author_email,
@@ -136,7 +153,7 @@ defmodule Remit.IngestCommitsTest do
             "committer" => committer,
             "id" => sha,
             "url" => "http://example.com/1",
-            "message" => "Commit",
+            "message" => message,
             "timestamp" => "2016-01-25T08:41:25+01:00"
           }
         end)

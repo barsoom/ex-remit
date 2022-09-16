@@ -51,7 +51,7 @@ defmodule Remit.IngestCommits do
       owner: owner,
       repo: repo,
       sha: sha,
-      usernames: usernames(author, committer),
+      usernames: usernames(author, committer, %{"message" => message}),
       message: message,
       committed_at: Utils.date_time_from_iso8601!(raw_committed_at),
       url: url,
@@ -59,8 +59,8 @@ defmodule Remit.IngestCommits do
     }
   end
 
-  defp usernames(author, committer) do
-    (usernames_from(author) ++ usernames_from(committer))
+  defp usernames(author, committer, message) do
+    (usernames_from(author) ++ usernames_from(committer) ++ usernames_from(message))
     |> Enum.uniq_by(&String.downcase/1)
   end
 
@@ -69,4 +69,5 @@ defmodule Remit.IngestCommits do
 
   defp usernames_from(%{"username" => username}), do: [username]
   defp usernames_from(%{"email" => email}), do: Utils.usernames_from_email(email)
+  defp usernames_from(%{"message" => message}), do: Remit.UsernamesFromCommitTrailers.call(message)
 end
