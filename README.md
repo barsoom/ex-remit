@@ -213,6 +213,11 @@ First time:
     # Verify that tests run:
     mix test
 
+    # You can automatically run all tests or specific ones
+    mix test.watch
+    mix test.watch test/foo_test.exs
+    mix test.watch test/foo_test.exs:123
+
     # Start the server:
     mix phx.server
 
