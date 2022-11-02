@@ -33,7 +33,7 @@
       notification={notification}
       comment={notification.comment}
       commit={notification.comment.commit}
-      at_me?={String.downcase(notification.username) == String.downcase(@username)}
+      at_me?={@username && String.downcase(notification.username) == String.downcase(@username)}
       resolved?={notification.resolved_at}
       resolved_coauthors={Remit.CommentNotification.resolved_coauthors(notification)}
       your_last_selected?={@your_last_selected_id == notification.id}
