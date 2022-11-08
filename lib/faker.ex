@@ -27,6 +27,10 @@ defmodule Faker do
       Enum.random(["pics", "ballads", "odes", "leaks", "hacks"])
   end
 
+  def team do
+    Enum.random(["team-octopus", "team-cat", "team-lion"])
+  end
+
   def message do
     Enum.random(["Fixed", "Broke", "Reverted", "Removed", "Refactored", "Simplified", "Optimised", "Suboptimised", "Redesigned", "Mocked up", "Uploaded", "Threw out", "Decoupled", "Tightly coupled"]) <>
       " " <>

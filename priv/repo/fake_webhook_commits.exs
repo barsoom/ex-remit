@@ -55,7 +55,7 @@ IO.puts("")
 :httpc.request(
   :post,
   {
-    'http://localhost:4000/webhooks/github?auth_key=dev',
+    'http://localhost:45361/webhooks/github?auth_key=dev',
     [{'x-github-event', 'push'}],
     'application/json',
     json

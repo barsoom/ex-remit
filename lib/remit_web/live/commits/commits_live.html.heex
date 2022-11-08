@@ -1,4 +1,12 @@
-<div class="phx-hook-subscribe-to-session"></div>
+<div class="phx-hook-subscribe-to-session info-box">
+  <p>
+    <%= filter_link @socket, assigns, "All Projects", team: "all" %>
+    <%= for team <- @all_teams do %>
+    ·
+    <%= filter_link @socket, assigns, team.name, team: team.slug %>
+    <% end %>
+  </p>
+</div>
 
 <%= if @commits == [] do %>
 
@@ -49,7 +57,7 @@
     <% end %>
   </div>
 
-  <%= for commit <- @commits do %>
+  <%= for commit <- filter_commits(@commits, @projects) do %>
     <%# We use live components specifically so that only changed commits (not all of them) are passed via the socket. %>
     <%# We prefer this to the "temporary assigns" optimisation, as that complicates logic by not holding the full list of commits as state. %>
     <RemitWeb.CommitComponent.render

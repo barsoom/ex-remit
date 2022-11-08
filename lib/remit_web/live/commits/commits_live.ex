@@ -20,6 +20,9 @@ defmodule RemitWeb.CommitsLive do
       socket
       |> assign(username: session["username"])
       |> assign(your_last_selected_commit_id: nil)
+      |> assign(projects: :all)
+      |> assign(team: "all")
+      |> assign(all_teams: Remit.Team.get_all())
       |> assign_commits_and_stats(commits)
 
     {:ok, socket}
@@ -60,6 +63,17 @@ defmodule RemitWeb.CommitsLive do
     {:noreply, socket}
   end
 
+  @impl Phoenix.LiveView
+  def handle_event("set_filter", %{"team" => team}, socket) do
+    socket =
+      socket
+      |> assign(team: team)
+      |> assign_filtered_projects()
+      |> assign_commits_and_stats(socket.assigns.commits)
+
+    {:noreply, socket}
+  end
+
   # Receive broadcasts when other clients update their state.
   @impl Phoenix.LiveView
   def handle_info({:changed_commit, commit}, socket) do
@@ -83,7 +97,25 @@ defmodule RemitWeb.CommitsLive do
      )}
   end
 
+  def filter_commits(commits, :all), do: commits
+
+  def filter_commits(commits, projects) do
+    Enum.filter(commits, fn commit ->
+      commit.repo in projects
+    end)
+  end
+
   # Private
+
+  defp assign_filtered_projects(socket) do
+    assign(socket, projects: projects_for_team(socket.assigns.team))
+  end
+
+  defp projects_for_team("all"), do: :all
+
+  defp projects_for_team(team) do
+    Remit.Team.projects_for(team)
+  end
 
   defp assign_and_broadcast_changed_commit(socket, commit) do
     commits = socket.assigns.commits |> replace_commit(commit)
@@ -119,4 +151,23 @@ defmodule RemitWeb.CommitsLive do
   end
 
   defp authored?(socket, commit), do: Commit.authored_by?(commit, socket.assigns.username)
+
+  # TODO Duplicated in comments_live, maybe make shared helper?
+  defp filter_link(socket, assigns, text, [{param, value}]) do
+    link(text,
+      to: Routes.tabs_path(socket, :commits),
+      class: link_classes(value, assigns[param]),
+      "phx-click": "set_filter",
+      "phx-value-#{param}": value,
+      "phx-hook": "CancelDefaultNavigation"
+    )
+  end
+
+  defp link_classes(link_attr, current_attr) do
+    if link_attr == current_attr do
+      ~w(cursor-default no-underline font-bold)
+    else
+      ~w(cursor-pointer underline)
+    end
+  end
 end

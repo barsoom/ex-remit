@@ -3,7 +3,7 @@ defmodule Remit.Factory do
   Test factories, based on the pattern in https://hexdocs.pm/ecto/test-factories.html.
   """
 
-  alias Remit.{Repo, Commit, Comment, CommentNotification}
+  alias Remit.{Repo, Commit, Comment, CommentNotification, Team}
 
   def build(:commit) do
     %Commit{
@@ -32,6 +32,16 @@ defmodule Remit.Factory do
     %CommentNotification{
       username: Faker.username(),
       comment: build(:comment)
+    }
+  end
+
+  def build(:team) do
+    team = Faker.team()
+
+    %Team{
+      slug: String.downcase(team),
+      name: team,
+      projects: []
     }
   end
 
