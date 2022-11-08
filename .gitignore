@@ -36,3 +36,4 @@ npm-debug.log
 .env
 /tmp
 /.bundle
+elixir-ls.zip
