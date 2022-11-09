@@ -35,13 +35,13 @@ defmodule RemitWeb.CommitsLive do
 
   @impl Phoenix.LiveView
   def handle_event("start_review", %{"id" => id}, socket) do
-    commit = Commits.mark_as_review_started!(id, socket.assigns.username)
+    commit = Commits.mark_as_review_started!(id, username(socket))
     {:noreply, assign_and_broadcast_changed_commit(socket, commit)}
   end
 
   @impl Phoenix.LiveView
   def handle_event("mark_reviewed", %{"id" => id}, socket) do
-    commit = Commits.mark_as_reviewed!(id, socket.assigns.username)
+    commit = Commits.mark_as_reviewed!(id, username(socket))
     {:noreply, assign_and_broadcast_changed_commit(socket, commit)}
   end
 
@@ -58,7 +58,7 @@ defmodule RemitWeb.CommitsLive do
     socket =
       socket
       |> assign(username: Utils.normalize_string(username))
-      |> assign_commits_and_stats(socket.assigns.commits)
+      |> assign_commits_and_stats(commits(socket))
 
     {:noreply, socket}
   end
@@ -69,7 +69,7 @@ defmodule RemitWeb.CommitsLive do
       socket
       |> assign(team: team)
       |> assign_filtered_projects()
-      |> assign_commits_and_stats(socket.assigns.commits)
+      |> assign_commits_and_stats(commits(socket))
 
     {:noreply, socket}
   end
@@ -77,7 +77,7 @@ defmodule RemitWeb.CommitsLive do
   # Receive broadcasts when other clients update their state.
   @impl Phoenix.LiveView
   def handle_info({:changed_commit, commit}, socket) do
-    commits = socket.assigns.commits |> replace_commit(commit)
+    commits = commits(socket) |> replace_commit(commit)
     {:noreply, assign_commits_and_stats(socket, commits)}
   end
 
@@ -85,7 +85,7 @@ defmodule RemitWeb.CommitsLive do
   @impl Phoenix.LiveView
   def handle_info({:new_commits, new_commits}, socket) do
     # Another option here would be to just reload the latest commits from DB.
-    commits = Enum.slice(new_commits ++ socket.assigns.commits, 0, @max_commits)
+    commits = Enum.slice(new_commits ++ commits(socket), 0, @max_commits)
     {:noreply, assign_commits_and_stats(socket, commits)}
   end
 
@@ -93,7 +93,7 @@ defmodule RemitWeb.CommitsLive do
   def handle_info(:check_for_overlong_reviewing, socket) do
     {:noreply,
      assign(socket,
-       oldest_overlong_in_review_by_me: Commit.oldest_overlong_in_review_by(socket.assigns.commits, socket.assigns.username)
+       oldest_overlong_in_review_by_me: Commit.oldest_overlong_in_review_by(commits(socket), username(socket))
      )}
   end
 
@@ -108,7 +108,7 @@ defmodule RemitWeb.CommitsLive do
   # Private
 
   defp assign_filtered_projects(socket) do
-    assign(socket, projects: projects_for_team(socket.assigns.team))
+    assign(socket, projects: projects_for_team(team(socket)))
   end
 
   defp projects_for_team("all"), do: :all
@@ -118,7 +118,7 @@ defmodule RemitWeb.CommitsLive do
   end
 
   defp assign_and_broadcast_changed_commit(socket, commit) do
-    commits = socket.assigns.commits |> replace_commit(commit)
+    commits = commits(socket) |> replace_commit(commit)
 
     Commits.broadcast_changed_commit(commit)
 
@@ -150,7 +150,8 @@ defmodule RemitWeb.CommitsLive do
     commits |> Enum.map(&if(&1.id == commit.id, do: commit, else: &1))
   end
 
-  defp authored?(socket, commit), do: Commit.authored_by?(commit, socket.assigns.username)
+  defp authored?(socket, commit), do: Commit.authored_by?(commit, username(socket))
+
 
   # TODO Duplicated in comments_live, maybe make shared helper?
   defp filter_link(socket, assigns, text, [{param, value}]) do
@@ -170,4 +171,9 @@ defmodule RemitWeb.CommitsLive do
       ~w(cursor-pointer underline)
     end
   end
+
+  defp username(socket), do: socket.assigns.username
+  defp commits(socket), do: socket.assigns.commits
+  defp projects(socket), do: socket.assigns.projects
+  defp team(socket), do: socket.assigns.team
 end
