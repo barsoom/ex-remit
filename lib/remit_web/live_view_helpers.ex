@@ -1,6 +1,8 @@
 defmodule RemitWeb.LiveViewHelpers do
   @moduledoc false
   alias Remit.Commit
+  alias RemitWeb.Router.Helpers, as: Routes
+  import Phoenix.HTML.Link
   import Phoenix.HTML.Tag
 
   @small_commit_px 25
@@ -49,4 +51,23 @@ defmodule RemitWeb.LiveViewHelpers do
       "aria-label": text
     ]
   end
+
+  def filter_link(socket, assigns, component, text, [{param, value}]) do
+    link(text,
+      to: Routes.tabs_path(socket, component),
+      class: link_classes(value, assigns[param]),
+      "phx-click": "set_filter",
+      "phx-value-#{param}": value,
+      "phx-hook": "CancelDefaultNavigation"
+    )
+  end
+
+  defp link_classes(link_attr, current_attr) do
+    if link_attr == current_attr do
+      ~w(cursor-default no-underline font-bold)
+    else
+      ~w(cursor-pointer underline)
+    end
+  end
+
 end

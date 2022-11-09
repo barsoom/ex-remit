@@ -106,20 +106,4 @@ defmodule RemitWeb.CommentsLive do
 
     assign(socket, notifications: notifications)
   end
-
-  defp filter_link(socket, assigns, text, [{param, value}]) do
-    link text, to: Routes.tabs_path(socket, :comments),
-               class: link_classes(value, assigns[param]),
-               "phx-click": "set_filter",
-               "phx-value-#{param}": value,
-               "phx-hook": "CancelDefaultNavigation"
-  end
-
-  defp link_classes(link_attr, current_attr) do
-    if link_attr == current_attr do
-      ~w(cursor-default no-underline font-bold)
-    else
-      ~w(cursor-pointer underline)
-    end
-  end
 end
