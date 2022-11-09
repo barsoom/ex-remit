@@ -100,9 +100,7 @@ defmodule RemitWeb.CommitsLive do
   def filter_commits(commits, :all), do: commits
 
   def filter_commits(commits, projects) do
-    Enum.filter(commits, fn commit ->
-      commit.repo in projects
-    end)
+    Enum.filter(commits, &Commit.in_any_project?(&1, projects))
   end
 
   # Private
@@ -131,8 +129,8 @@ defmodule RemitWeb.CommitsLive do
   defp assign_selected_id(socket, id) when is_binary(id), do: assign_selected_id(socket, String.to_integer(id))
 
   defp assign_commits_and_stats(socket, commits) do
-    unreviewed_count = commits |> Enum.count(&(!&1.reviewed_at))
-    my_unreviewed_count = commits |> Enum.count(&(!&1.reviewed_at && authored?(socket, &1)))
+    unreviewed_count = commits |> Enum.count(&(!&1.reviewed_at && in_selected_projects?(socket, &1)))
+    my_unreviewed_count = commits |> Enum.count(&(!&1.reviewed_at && in_selected_projects?(socket, &1) && authored?(socket, &1)))
 
     commits = Commit.add_date_separators(commits)
 
@@ -141,8 +139,8 @@ defmodule RemitWeb.CommitsLive do
       unreviewed_count: unreviewed_count,
       my_unreviewed_count: my_unreviewed_count,
       others_unreviewed_count: unreviewed_count - my_unreviewed_count,
-      oldest_unreviewed_for_me: Commit.oldest_unreviewed_for(commits, socket.assigns.username),
-      oldest_overlong_in_review_by_me: Commit.oldest_overlong_in_review_by(commits, socket.assigns.username)
+      oldest_unreviewed_for_me: Commit.oldest_unreviewed_for(commits, username(socket)),
+      oldest_overlong_in_review_by_me: Commit.oldest_overlong_in_review_by(commits, username(socket))
     })
   end
 
@@ -152,6 +150,12 @@ defmodule RemitWeb.CommitsLive do
 
   defp authored?(socket, commit), do: Commit.authored_by?(commit, username(socket))
 
+  defp in_selected_projects?(socket, commit) do
+    case projects(socket) do
+      :all -> true
+      projects -> Commit.in_any_project?(commit, projects)
+    end
+  end
 
   # TODO Duplicated in comments_live, maybe make shared helper?
   defp filter_link(socket, assigns, text, [{param, value}]) do

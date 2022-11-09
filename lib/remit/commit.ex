@@ -33,6 +33,10 @@ defmodule Remit.Commit do
     author_in_email?(commit, username) || author_in_commit_trailer?(commit, username)
   end
 
+  def in_any_project?(commit, projects) when is_list(projects), do: Enum.any?(projects, &in_project?(commit, &1))
+
+  def in_project?(%__MODULE__{repo: repo}, project), do: repo == project
+
   def being_reviewed_by?(%Commit{review_started_by_username: username, reviewed_at: nil}, username) when not is_nil(username), do: true
   def being_reviewed_by?(_, _), do: false
 
