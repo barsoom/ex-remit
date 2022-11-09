@@ -12,12 +12,12 @@ defmodule Remit.TeamTest do
     assert Team.get_by_slug("best-team") != nil
   end
 
-  test "it can list all projects for a team" do
+  test "can list all projects for a team" do
     team = Factory.insert!(:team, projects: ["foo", "bar", "qux"])
     assert Team.projects_for(team.slug) == team.projects
   end
 
-  test "it can add a project to a teams projects" do
+  test "can add a project to a team's projects" do
     team = Factory.insert!(:team)
     Team.add_project(team.slug, "foo-project")
 
