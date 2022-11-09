@@ -36,7 +36,7 @@ defmodule Remit.Team do
     Repo.insert!(%__MODULE__{name: name, slug: slug, projects: projects})
   end
 
-  def add_project(team = %__MODULE__{projects: projects}, project) do
+  def add_project(%__MODULE__{projects: projects} = team, project) do
     team
     |> Ecto.Changeset.change(%{projects: [project | projects]})
     |> Repo.update!()
