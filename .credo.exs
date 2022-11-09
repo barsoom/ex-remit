@@ -86,7 +86,7 @@
           # If you don't want TODO comments to cause `mix credo` to fail, just
           # set this value to 0 (zero).
           #
-          {Credo.Check.Design.TagTODO, [exit_status: 2]},
+          {Credo.Check.Design.TagTODO, [exit_status: 0]},
           {Credo.Check.Design.TagFIXME, []},
 
           #
@@ -153,9 +153,8 @@
           {Credo.Check.Warning.UnusedStringOperation, []},
           {Credo.Check.Warning.UnusedTupleOperation, []},
           {Credo.Check.Warning.UnsafeExec, []},
-
           {Credo.Check.Readability.ImplTrue, []},
-          {Credo.Check.Readability.SeparateAliasRequire, []},
+          {Credo.Check.Readability.SeparateAliasRequire, []}
         ],
         disabled: [
           #
@@ -197,10 +196,9 @@
 
           # {Credo.Check.Refactor.MapInto, []},
 
-          {Credo.Check.Design.AliasUsage,
-          [priority: :low, if_nested_deeper_than: 2, if_called_more_often_than: 0]},
+          {Credo.Check.Design.AliasUsage, [priority: :low, if_nested_deeper_than: 2, if_called_more_often_than: 0]},
           {Credo.Check.Readability.AliasOrder, []},
-          {Credo.Check.Readability.MaxLineLength, [priority: :low, max_length: 120]},
+          {Credo.Check.Readability.MaxLineLength, [priority: :low, max_length: 120]}
           #
           # Custom checks can be created using `mix credo.gen.check`.
           #
