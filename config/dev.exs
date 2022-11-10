@@ -29,7 +29,7 @@ end
 # with webpack to recompile .js and .css sources.
 config :remit, RemitWeb.Endpoint,
   http: [
-    port: System.get_env("PORT") || 4000,
+    port: System.get_env("PORT") || 45361,
     protocol_options: [
       idle_timeout: 15_000
     ]
