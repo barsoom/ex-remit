@@ -23,7 +23,10 @@ config :remit, RemitWeb.Endpoint,
 config :remit,
   auth_key: {:system, "AUTH_KEY"},
   webhook_key: {:system, "WEBHOOK_KEY"},
-  github_api_token: {:system, "GITHUB_API_TOKEN"}
+  github_api_token: {:system, "GITHUB_API_TOKEN"},
+  github_oauth_client_id: {:system, "GITHUB_OAUTH_CLIENT_ID"},
+  github_oauth_client_secret: {:system, "GITHUB_OAUTH_CLIENT_SECRET"}
+
 
 # Do not print debug messages in production
 config :logger, level: :info
