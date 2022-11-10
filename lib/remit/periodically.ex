@@ -6,7 +6,9 @@ defmodule Remit.Periodically do
   use GenServer
 
   # 1 hour
-  @default_frequency_ms 60 * 60 * 1000
+  @default_commit_cleanup_frequency_ms 60 * 60 * 1000
+
+  @default_auth_token_cleanup_frequency_ms 10 * 60 * 1000
 
   # The options are for testability.
   def start_link(opts \\ []) do
@@ -15,18 +17,36 @@ defmodule Remit.Periodically do
     days_string = Keyword.get(opts, :days_string, System.get_env("REMOVE_DATA_OLDER_THAN_DAYS"))
     days = days_string && String.to_integer(days_string)
 
-    GenServer.start_link(__MODULE__, frequency_ms: frequency_ms, days: days)
+    GenServer.start_link(
+      __MODULE__,
+      [
+        remove_commits: [frequency_ms: frequency_ms, days: days],
+        remove_auth_tokens: [frequency_ms: @default_auth_token_cleanup_frequency_ms],
+      ],
+      name: __MODULE__
+    )
   end
 
   def init(opts) do
-    ms = Keyword.fetch!(opts, :frequency_ms)
-    days = Keyword.fetch!(opts, :days)
-    if days, do: :timer.send_interval(ms, self(), {:run, days})
+    commit_opts = Keyword.fetch!(opts, :remove_commits)
+    ms = Keyword.fetch!(commit_opts, :frequency_ms)
+    days = Keyword.fetch!(commit_opts, :days)
+    if days, do: :timer.send_interval(ms, self(), {:remove_commits, days})
+
+    auth_token_opts = Keyword.fetch!(opts, :remove_auth_tokens)
+    ms = Keyword.fetch!(auth_token_opts, :frequency_ms)
+    :timer.send_interval(ms, self(), :remove_tokens)
+
     {:ok, :no_state}
   end
 
-  def handle_info({:run, days}, state) do
+  def handle_info({:remove_commits, days}, state) do
     remove_old_data(days)
+    {:noreply, state}
+  end
+
+  def handle_info(:remove_tokens, state) do
+    Remit.GithubAuth.delete_old_tokens()
     {:noreply, state}
   end
 

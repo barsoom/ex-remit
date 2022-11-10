@@ -11,6 +11,8 @@ defmodule Remit.GithubAuth do
 
   def verify_and_destroy_state_token(token), do: GenServer.call(__MODULE__, {:verify_and_destroy_state_token, token})
 
+  def delete_old_tokens, do: GenServer.cast(__MODULE__, :delete_old_tokens)
+
   def auth_url(token) do
     client_id = Remit.Config.github_oauth_client_id
     "https://github.com/login/oauth/authorize?client_id=#{client_id}&state=#{token}"
@@ -43,6 +45,15 @@ defmodule Remit.GithubAuth do
     else
       {:reply, false, state}
     end
+  end
+
+  # 10 minutes matches the github expiration
+  @stale_threshold 60 * 10
+
+  def handle_cast(:delete_old_tokens, %__MODULE__{tokens: tokens} = state) do
+    now = Time.utc_now()
+    tokens = Map.reject(tokens, fn {_, time} -> Time.diff(now, time) > @stale_threshold end)
+    {:noreply, %__MODULE__{state | tokens: tokens}}
   end
 
   ### Private
