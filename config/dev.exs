@@ -1,4 +1,20 @@
 import Config
+
+if System.get_env("DEVBOX") && File.exists?(".env") do
+  File.stream!(".env")
+  |> Stream.map(&String.trim/1)
+  |> Stream.reject(&String.starts_with?(&1, "#"))
+  |> Stream.each(fn line ->
+    case String.split(line, "=", parts: 2) do
+      [k, v] ->
+        System.put_env(k, v)
+      _ ->
+        nil
+    end
+  end)
+  |> Stream.run()
+end
+
 # Configure your database
 if System.get_env("DEVBOX") do
   {postgres_port, 0} = System.cmd("service_port", ["postgres"])
