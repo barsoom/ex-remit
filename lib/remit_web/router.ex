@@ -38,7 +38,6 @@ defmodule RemitWeb.Router do
     pipe_through :api
 
     get "/stats", StatsController, :show
-    post "/session", SessionController, :set
   end
 
   pipeline :webhook do

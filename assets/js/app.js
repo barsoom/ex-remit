@@ -8,9 +8,9 @@ import "../css/app.css"
 //     import socket from "./socket"
 //
 import "phoenix_html"
-import {Socket} from "phoenix"
+import { Socket } from "phoenix"
 import NProgress from "nprogress"
-import {LiveSocket} from "phoenix_live_view"
+import { LiveSocket } from "phoenix_live_view"
 
 
 /* LIVE SOCKET */
@@ -58,21 +58,7 @@ Hooks.ScrollToTarget = {
       e.preventDefault()
 
       // `block: "center"` because the default `"start"` means it's likely to end up right under a sticky date header.
-      document.getElementById(id).scrollIntoView({block: "center"})
-    })
-  }
-}
-
-Hooks.SetSession = {
-  DEBOUNCE_MS: 200,
-
-  mounted() {
-    this.el.addEventListener("input", (e) => {
-      clearTimeout(this.timeout)
-      this.timeout = setTimeout(() => {
-        this.pushEventTo(".phx-hook-subscribe-to-session", "set_session", [e.target.name, e.target.value])
-        fetch(`/api/session?${e.target.name}=${encodeURIComponent(e.target.value)}`, {method: "post"})
-      }, this.DEBOUNCE_MS)
+      document.getElementById(id).scrollIntoView({ block: "center" })
     })
   }
 }
@@ -84,7 +70,7 @@ Hooks.CancelDefaultNavigation = {
 }
 
 let liveSocket = new LiveSocket("/live", Socket, {
-  params: {_csrf_token: csrfToken},
+  params: { _csrf_token: csrfToken },
   hooks: Hooks,
 })
 
@@ -95,7 +81,7 @@ window.addEventListener("phx:page-loading-start", (info) => {
   progressTimeout = setTimeout(NProgress.start, 100)
   if (info?.detail?.kind === "error") {
     // wait to be sure is a disconnect and not a page reload
-    setTimeout(function () {document.body.classList.add("ping-offline")}, 500)
+    setTimeout(function () { document.body.classList.add("ping-offline") }, 500)
   }
 })
 
@@ -108,7 +94,7 @@ window.addEventListener("phx:page-loading-stop", (info) => {
 })
 
 // Don't show a spinner in addition to the progress bar.
-NProgress.configure({showSpinner: false})
+NProgress.configure({ showSpinner: false })
 
 // connect if there are any LiveViews on the page
 liveSocket.connect()
@@ -119,5 +105,5 @@ liveSocket.connect()
 window.liveSocket = liveSocket
 
 let authKey = document.querySelector("meta[name='auth_key']").getAttribute("content")
-let socket = new Socket("/socket", {params: {auth_key: authKey}, heartbeatIntervalMs: 15000})
+let socket = new Socket("/socket", { params: { auth_key: authKey }, heartbeatIntervalMs: 15000 })
 socket.connect()

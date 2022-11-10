@@ -113,7 +113,7 @@ defmodule RemitWeb.CommitsLive do
 
   def assign_defaults(socket, session) do
     socket
-    |> assign(username: session["username"])
+    |> assign(username: github_login(session))
     |> assign(your_last_selected_commit_id: nil)
     |> assign(projects: :all)
     |> assign(team: "all")

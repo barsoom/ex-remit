@@ -5,11 +5,6 @@ defmodule RemitWeb.SettingsLive do
   def mount(_params, session, socket) do
     check_auth_key(session)
 
-    {:ok, assign(socket, username: session["username"])}
-  end
-
-  @impl Phoenix.LiveView
-  def handle_event("form_change", %{"username" => username}, socket) do
-    {:noreply, assign(socket, username: Remit.Utils.normalize_string(username))}
+    {:ok, assign(socket, username: github_login(session))}
   end
 end

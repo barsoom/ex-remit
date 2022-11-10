@@ -12,12 +12,10 @@ defmodule RemitWeb.CommentsLive do
       Comments.subscribe()
     end
 
-    username = session["username"]
-
     socket =
       socket
       |> assign(your_last_selected_id: nil)
-      |> assign(username: username)
+      |> assign(username: github_login(session))
       |> assign_default_params()
       |> assign_filtered_notifications()
 
@@ -43,17 +41,6 @@ defmodule RemitWeb.CommentsLive do
     Comments.unresolve(id)
     socket = assign_selected_id(socket, id)
     socket = assign_filtered_notifications(socket)
-
-    {:noreply, socket}
-  end
-
-  # Receive events when other LiveViews update settings.
-  @impl Phoenix.LiveView
-  def handle_event("set_session", ["username", username], socket) do
-    socket =
-      socket
-      |> assign(username: Utils.normalize_string(username))
-      |> assign_filtered_notifications()
 
     {:noreply, socket}
   end

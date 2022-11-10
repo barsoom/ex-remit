@@ -7,6 +7,10 @@ defmodule RemitWeb.LiveViewHelpers do
 
   @small_commit_px 25
 
+  def github_login(session)
+  def github_login(%{"github_user" => user}), do: user.login
+  def github_login(_), do: nil
+
   def github_avatar_sized_spacer(:small_commit) do
     content_tag(:div, "", style: "width: #{@small_commit_px}px")
   end
