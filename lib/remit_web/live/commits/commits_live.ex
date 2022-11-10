@@ -18,11 +18,7 @@ defmodule RemitWeb.CommitsLive do
 
     socket =
       socket
-      |> assign(username: session["username"])
-      |> assign(your_last_selected_commit_id: nil)
-      |> assign(projects: :all)
-      |> assign(team: "all")
-      |> assign(all_teams: Remit.Team.get_all())
+      |> assign_defaults(session)
       |> assign_commits_and_stats(commits)
 
     {:ok, socket}
@@ -113,6 +109,15 @@ defmodule RemitWeb.CommitsLive do
 
   defp projects_for_team(team) do
     Remit.Team.projects_for(team)
+  end
+
+  def assign_defaults(socket, session) do
+    socket
+    |> assign(username: session["username"])
+    |> assign(your_last_selected_commit_id: nil)
+    |> assign(projects: :all)
+    |> assign(team: "all")
+    |> assign(all_teams: Remit.Team.get_all())
   end
 
   defp assign_and_broadcast_changed_commit(socket, commit) do
