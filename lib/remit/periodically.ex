@@ -18,7 +18,9 @@ defmodule Remit.Periodically do
     GenServer.start_link(__MODULE__, frequency_ms: frequency_ms, days: days)
   end
 
-  def init(frequency_ms: ms, days: days) do
+  def init(opts) do
+    ms = Keyword.fetch!(opts, :frequency_ms)
+    days = Keyword.fetch!(opts, :days)
     if days, do: :timer.send_interval(ms, self(), {:run, days})
     {:ok, :no_state}
   end
