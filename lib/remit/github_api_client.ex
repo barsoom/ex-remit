@@ -21,6 +21,11 @@ defmodule Remit.GitHubAPIClient do
     data |> Enum.map(&build_comment/1)
   end
 
+  def get_user(bearer_token) do
+    {:ok, %{body: data}} = Tesla.get(tesla_client(bearer_token), "/user")
+    build_user(data)
+  end
+
   defp build_commit(
          %{
            "sha" => sha,
@@ -94,11 +99,20 @@ defmodule Remit.GitHubAPIClient do
     emails |> Enum.flat_map(&Utils.usernames_from_email/1)
   end
 
-  defp tesla_client do
+  defp build_user(data) do
+    %Remit.Github.User{
+      login: data["login"],
+    }
+  end
+
+  defp tesla_client(bearer_token \\ nil) do
     Tesla.client([
       {Tesla.Middleware.BaseUrl, "https://api.github.com"},
-      {Tesla.Middleware.Headers, [{"authorization", "token " <> Remit.Config.github_api_token()}]},
+      {Tesla.Middleware.Headers, [{"authorization", authorization(bearer_token)}]},
       Tesla.Middleware.JSON
     ])
   end
+
+  defp authorization(nil), do: "token " <> Remit.Config.github_api_token()
+  defp authorization(token), do: "bearer " <> token
 end

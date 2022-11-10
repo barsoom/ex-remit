@@ -22,6 +22,9 @@ defmodule RemitWeb.Router do
     live "/comments", TabsLive, :comments
     live "/settings", TabsLive, :settings
 
+    get "/login", GithubAuthController, :login
+    get "/auth", GithubAuthController, :auth
+
     live_dashboard "/dashboard", metrics: RemitWeb.Telemetry
   end
 

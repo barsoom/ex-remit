@@ -9,7 +9,10 @@ defmodule RemitWeb.Endpoint do
     # A long time.
     max_age: 9_999_999_999,
     key: "_remit_key",
-    signing_salt: "ndGdfBhJ"
+    http_only: true,
+    encrypt: true,
+    signing_salt: "ndGdfBhJ",
+    encryption_salt: "dhy_eha8XTY_dgu8xpv",
   ]
 
   # See app.js for details.
