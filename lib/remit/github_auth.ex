@@ -15,8 +15,6 @@ defmodule Remit.GithubAuth do
 
   def delete_old_tokens, do: GenServer.cast(__MODULE__, :delete_old_tokens)
 
-  def subscribe(nil), do: nil
-
   def subscribe(session_id), do: PubSub.subscribe(Remit.PubSub, session_topic(session_id))
 
   def broadcast_login(session_id, user), do: PubSub.broadcast(Remit.PubSub, session_topic(session_id), {:login, user})
