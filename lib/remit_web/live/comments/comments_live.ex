@@ -1,6 +1,7 @@
 defmodule RemitWeb.CommentsLive do
   use RemitWeb, :live_view
-  alias Remit.Comments
+  require Logger
+  alias Remit.{Comments, GithubAuth}
 
   @max_comments Application.compile_env(:remit, :max_comments)
 
@@ -10,11 +11,12 @@ defmodule RemitWeb.CommentsLive do
 
     if connected?(socket) do
       Comments.subscribe()
+      GithubAuth.subscribe(session["session_id"])
     end
 
     socket
     |> assign(your_last_selected_id: nil)
-    |> assign(username: github_login(session))
+    |> assign_username(github_login(session))
     |> assign_default_params()
     |> assign_filtered_notifications()
     |> ok()
@@ -57,18 +59,32 @@ defmodule RemitWeb.CommentsLive do
     |> noreply()
   end
 
-  def handle_event("logout", _, socket) do
-    socket
-    |> assign(:username, nil)
-    |> noreply()
-  end
-
   # Receive broadcasts when new comments arrive or have their state changed by another user.
   @impl Phoenix.LiveView
   def handle_info(:comments_changed, socket) do
     # We just re-load from DB; filtering in memory could get fiddly if we need to hang on to both a filtered and an unfiltered list.
     socket = assign_filtered_notifications(socket)
 
+    {:noreply, socket}
+  end
+
+  @impl Phoenix.LiveView
+  def handle_info({:login, %Remit.Github.User{login: login}}, socket) do
+    socket
+    |> assign_username_and_update_filter(login)
+    |> noreply()
+  end
+
+  @impl Phoenix.LiveView
+  def handle_info(:logout, socket) do
+    socket
+    |> assign_username_and_update_filter(nil)
+    |> noreply()
+  end
+
+  @impl Phoenix.LiveView
+  def handle_info(message, socket) do
+    Logger.error("unexpected message #{inspect message}")
     {:noreply, socket}
   end
 
@@ -86,6 +102,18 @@ defmodule RemitWeb.CommentsLive do
 
   defp assign_selected_id(socket, id) when is_integer(id), do: assign(socket, your_last_selected_id: id)
   defp assign_selected_id(socket, id) when is_binary(id), do: assign_selected_id(socket, String.to_integer(id))
+
+  # most of the time these should get updated together
+  defp assign_username_and_update_filter(socket, username) do
+    socket
+    |> assign_username(username)
+    |> assign_filtered_notifications()
+  end
+
+  defp assign_username(socket, username) do
+    socket
+    |> assign(username: username)
+  end
 
   defp assign_filtered_notifications(socket) do
     notifications =

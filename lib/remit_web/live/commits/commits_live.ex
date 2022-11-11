@@ -1,6 +1,7 @@
 defmodule RemitWeb.CommitsLive do
   use RemitWeb, :live_view
-  alias Remit.{Commits, Commit, Utils}
+  require Logger
+  alias Remit.{Commits, Commit, GithubAuth, Utils}
 
   @max_commits Application.compile_env(:remit, :max_commits)
   @overlong_check_frequency_secs 60
@@ -11,6 +12,7 @@ defmodule RemitWeb.CommitsLive do
 
     if connected?(socket) do
       Commits.subscribe()
+      GithubAuth.subscribe(session["session_id"])
       :timer.send_interval(@overlong_check_frequency_secs * 1000, self(), :check_for_overlong_reviewing)
     end
 
@@ -46,14 +48,6 @@ defmodule RemitWeb.CommitsLive do
   end
 
   @impl Phoenix.LiveView
-  def handle_event("logout", _, socket) do
-    socket
-    |> assign(:username, nil)
-    |> assign_commits_and_stats(commits(socket))
-    |> noreply()
-  end
-
-  @impl Phoenix.LiveView
   def handle_event("set_filter", %{"team" => team}, socket) do
     socket
     |> assign(team: team)
@@ -78,11 +72,32 @@ defmodule RemitWeb.CommitsLive do
   end
 
   # Periodically check.
+  @impl Phoenix.LiveView
   def handle_info(:check_for_overlong_reviewing, socket) do
     {:noreply,
      assign(socket,
        oldest_overlong_in_review_by_me: Commit.oldest_overlong_in_review_by(commits(socket), username(socket))
      )}
+  end
+
+  @impl Phoenix.LiveView
+  def handle_info({:login, %Remit.Github.User{login: login}}, socket) do
+    socket
+    |> assign(:username, login)
+    |> noreply()
+  end
+
+  @impl Phoenix.LiveView
+  def handle_info(:logout, socket) do
+    socket
+    |> assign(:username, nil)
+    |> noreply()
+  end
+
+  @impl Phoenix.LiveView
+  def handle_info(message, socket) do
+    Logger.error("unexpected message #{inspect message}")
+    {:noreply, socket}
   end
 
   def filter_commits(commits, :all), do: commits

@@ -67,7 +67,6 @@ Hooks.Logout = {
   mounted() {
     this.el.addEventListener("click", (e) => {
       e.preventDefault()
-      this.pushEventTo(".phx-hook-subscribe-to-session", "logout", {})
       fetch(`/api/logout`, { method: "post" })
     })
   }

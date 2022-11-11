@@ -6,6 +6,7 @@ defmodule RemitWeb.Router do
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
+    plug :ensure_session_id
     plug :fetch_live_flash
     plug :put_root_layout, {RemitWeb.LayoutView, :root}
     plug :protect_from_forgery
@@ -31,6 +32,7 @@ defmodule RemitWeb.Router do
   pipeline :api do
     plug :accepts, ["json"]
     plug :fetch_session
+    plug :ensure_session_id
     plug :check_auth_key
   end
 

@@ -1,6 +1,7 @@
 defmodule Remit.GithubAuth do
   @moduledoc false
   use GenServer
+  alias Phoenix.PubSub
 
   defstruct [
     tokens: %{},
@@ -13,6 +14,14 @@ defmodule Remit.GithubAuth do
   def verify_and_destroy_state_token(token), do: GenServer.call(__MODULE__, {:verify_and_destroy_state_token, token})
 
   def delete_old_tokens, do: GenServer.cast(__MODULE__, :delete_old_tokens)
+
+  def subscribe(nil), do: nil
+
+  def subscribe(session_id), do: PubSub.subscribe(Remit.PubSub, session_topic(session_id))
+
+  def broadcast_login(session_id, user), do: PubSub.broadcast(Remit.PubSub, session_topic(session_id), {:login, user})
+
+  def broadcast_logout(session_id), do: PubSub.broadcast(Remit.PubSub, session_topic(session_id), :logout)
 
   def auth_url(token) do
     client_id = Remit.Config.github_oauth_client_id
@@ -58,6 +67,8 @@ defmodule Remit.GithubAuth do
   end
 
   ### Private
+
+  defp session_topic(session_id), do: "session:" <> session_id
 
   @token_alphabet '0123456789abcdef'
   @token_length 16

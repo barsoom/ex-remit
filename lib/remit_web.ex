@@ -67,6 +67,7 @@ defmodule RemitWeb do
       import Plug.Conn
       import Phoenix.Controller
       import Phoenix.LiveView.Router
+      import RemitWeb.Plugs
     end
   end
 
