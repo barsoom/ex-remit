@@ -1,6 +1,6 @@
 defmodule RemitWeb.CommentsLive do
   use RemitWeb, :live_view
-  alias Remit.{Comments, Utils}
+  alias Remit.Comments
 
   @max_comments Application.compile_env(:remit, :max_comments)
 
