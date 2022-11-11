@@ -248,7 +248,7 @@ It will also run in CI together with the unit tests, and in pre-push if you inst
 
 #### Editor integration
 
-Vim: [vim-elixir](https://github.com/elixir-editors/vim-elixir)  
+Vim: [vim-elixir](https://github.com/elixir-editors/vim-elixir)
 VSCode: [Credo](https://marketplace.visualstudio.com/items?itemName=pantajoe.vscode-elixir-credo)
 
 ### Faking new data coming in via webhook
@@ -299,6 +299,18 @@ Please note that we use [Heroku release phase](https://devcenter.heroku.com/arti
 Get a production IEX console:
 
     script/prodc
+
+#### Adding a project to a team
+
+Until there is a visual interface, run in the console:
+
+`Remit.Team.add_project("team-slug", "repo-name")`
+
+and reload Remit.
+
+If you're not sure which team slugs are available, run:
+
+`Remit.Team.get_all() |> Enum.map(& &1.slug)`
 
 ## Meta
 
