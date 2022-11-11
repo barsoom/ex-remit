@@ -12,7 +12,7 @@ defmodule Remit.Periodically do
 
   # The options are for testability.
   def start_link(opts \\ []) do
-    frequency_ms = Keyword.get(opts, :frequency_ms, @default_frequency_ms)
+    frequency_ms = Keyword.get(opts, :frequency_ms, @default_commit_cleanup_frequency_ms)
 
     days_string = Keyword.get(opts, :days_string, System.get_env("REMOVE_DATA_OLDER_THAN_DAYS"))
     days = days_string && String.to_integer(days_string)
@@ -22,8 +22,7 @@ defmodule Remit.Periodically do
       [
         remove_commits: [frequency_ms: frequency_ms, days: days],
         remove_auth_tokens: [frequency_ms: @default_auth_token_cleanup_frequency_ms],
-      ],
-      name: __MODULE__
+      ]
     )
   end
 

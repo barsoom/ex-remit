@@ -24,7 +24,7 @@ defmodule RemitWeb.CommitsLiveTest do
     end
 
     test "assigns the correct defaults", %{socket: socket} do
-      session = %{"username" => "dwight"}
+      session = %{"github_user" => %Remit.Github.User{login: "dwight"}}
       Enum.map(0..5, fn _ -> Factory.build(:commit) end)
       socket = CommitsLive.assign_defaults(socket, session)
 
