@@ -45,7 +45,7 @@
         </p>
       <% end %>
     <% else %>
-      <p>Hello, stranger! Please <%= live_patch("set a username", to: Routes.tabs_path(@socket, :settings)) %>.</p>
+      <p>Hello, stranger! Please <%= live_patch("log in", to: Routes.tabs_path(@socket, :settings)) %>.</p>
       <%= if @unreviewed_count == 0 do %>
         <p>
           <i class="fas fa-trophy text-yellow-mid"></i>

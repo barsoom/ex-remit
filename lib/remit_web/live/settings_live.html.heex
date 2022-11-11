@@ -4,7 +4,7 @@
       <%= if @username do %>
         Logged in as: <span class="font-bold"><%= @username %></span>
       <% else  %>
-        <%= link("Login with Github", to: Routes.github_auth_path(@socket, :login)) %>
+        <%= link("Log in with GitHub", to: Routes.github_auth_path(@socket, :login)) %>
       <% end  %>
     </div>
 

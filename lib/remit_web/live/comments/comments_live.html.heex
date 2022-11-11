@@ -1,6 +1,6 @@
 <div class="info-box">
   <%= unless @username do %>
-    <p>Hello, stranger! Please <%= live_patch("log in with Github", to: Routes.tabs_path(@socket, :settings)) %>.</p>
+    <p>Hello, stranger! Please <%= live_patch("log in", to: Routes.tabs_path(@socket, :settings)) %>.</p>
   <% end %>
 
   <p>
