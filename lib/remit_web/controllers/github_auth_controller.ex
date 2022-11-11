@@ -19,6 +19,13 @@ defmodule RemitWeb.GithubAuthController do
     |> redirect(to: Routes.tabs_path(conn, :settings))
   end
 
+  def logout(conn, _) do
+    conn
+    |> delete_session(:github_bearer_token)
+    |> delete_session(:github_user)
+    |> json(true)
+  end
+
   defp verify_state(conn, %{"state" => token}) do
     if get_session(conn, :github_state_token) == token && GithubAuth.verify_and_destroy_state_token(token) do
       conn

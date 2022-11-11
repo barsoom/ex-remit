@@ -38,6 +38,7 @@ defmodule RemitWeb.Router do
     pipe_through :api
 
     get "/stats", StatsController, :show
+    post "/logout", GithubAuthController, :logout
   end
 
   pipeline :webhook do

@@ -1,3 +1,4 @@
+<div class="phx-hook-subscribe-to-session"></div>
 <div class="info-box">
   <%= unless @username do %>
     <p>Hello, stranger! Please <%= live_patch("log in", to: Routes.tabs_path(@socket, :settings)) %>.</p>

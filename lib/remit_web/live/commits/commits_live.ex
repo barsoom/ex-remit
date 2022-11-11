@@ -47,16 +47,12 @@ defmodule RemitWeb.CommitsLive do
     {:noreply, assign_and_broadcast_changed_commit(socket, commit)}
   end
 
-  # Receive events when other LiveViews update settings.
   @impl Phoenix.LiveView
-  def handle_event("set_session", ["username", username], socket) do
-    # We need to update the commit stats because they're based on this setting.
-    socket =
-      socket
-      |> assign(username: Utils.normalize_string(username))
-      |> assign_commits_and_stats(commits(socket))
-
-    {:noreply, socket}
+  def handle_event("logout", _, socket) do
+    socket
+    |> assign(:username, nil)
+    |> assign_commits_and_stats(commits(socket))
+    |> noreply()
   end
 
   @impl Phoenix.LiveView
@@ -100,6 +96,8 @@ defmodule RemitWeb.CommitsLive do
   end
 
   # Private
+
+  defp noreply(socket), do: {:noreply, socket}
 
   defp assign_filtered_projects(socket) do
     assign(socket, projects: projects_for_team(team(socket)))

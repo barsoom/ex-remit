@@ -59,7 +59,11 @@ defmodule RemitWeb.CommentsLive do
     {:noreply, socket}
   end
 
-  def handle_event("set_session", _, socket), do: {:noreply, socket}
+  def handle_event("logout", _, socket) do
+    socket
+    |> assign(:username, nil)
+    |> noreply()
+  end
 
   # Receive broadcasts when new comments arrive or have their state changed by another user.
   @impl Phoenix.LiveView
@@ -71,6 +75,8 @@ defmodule RemitWeb.CommentsLive do
   end
 
   # Private
+
+  defp noreply(socket), do: {:noreply, socket}
 
   defp assign_default_params(socket) do
     assign(socket,

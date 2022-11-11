@@ -1,8 +1,15 @@
+<div class="phx-hook-subscribe-to-session"></div>
 <div class="mx-6">
   <div class="flex items-center">
     <div class="flex-1 min-w-0 my-6">
       <%= if @username do %>
         Logged in as: <span class="font-bold"><%= @username %></span>
+        ·
+        <%= link("Log out",
+          to: Routes.tabs_path(@socket, :settings),
+          class: ~w(cursor-pointer underline),
+          "phx-hook": "Logout"
+        ) %>
       <% else  %>
         <%= link("Log in with GitHub", to: Routes.github_auth_path(@socket, :login)) %>
       <% end  %>

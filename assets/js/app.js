@@ -42,7 +42,7 @@ Hooks.FixLink = {
       window.remitLastClickedLink = this.el
 
       // In dev outside Fluid.app, we typically care more about the Remit UI than opening links, so skip it.
-      let isDev = (location.hostname === "localhost")
+      let isDev = (location.hostname === "localhost") || (location.hostname === "devbox")
       if (isDev && !window.fluid) {
         console.log("Skipping link opening in dev when outside Fluid.app. Link: ", this.el.href)
         e.preventDefault()
@@ -59,6 +59,16 @@ Hooks.ScrollToTarget = {
 
       // `block: "center"` because the default `"start"` means it's likely to end up right under a sticky date header.
       document.getElementById(id).scrollIntoView({ block: "center" })
+    })
+  }
+}
+
+Hooks.Logout = {
+  mounted() {
+    this.el.addEventListener("click", (e) => {
+      e.preventDefault()
+      this.pushEventTo(".phx-hook-subscribe-to-session", "logout", {})
+      fetch(`/api/logout`, { method: "post" })
     })
   }
 }
