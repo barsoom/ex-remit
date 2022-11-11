@@ -16,12 +16,10 @@ defmodule RemitWeb.CommitsLive do
 
     commits = Commits.list_latest(@max_commits)
 
-    socket =
-      socket
-      |> assign_defaults(session)
-      |> assign_commits_and_stats(commits)
-
-    {:ok, socket}
+    socket
+    |> assign_defaults(session)
+    |> assign_commits_and_stats(commits)
+    |> ok()
   end
 
   @impl Phoenix.LiveView
@@ -57,13 +55,11 @@ defmodule RemitWeb.CommitsLive do
 
   @impl Phoenix.LiveView
   def handle_event("set_filter", %{"team" => team}, socket) do
-    socket =
-      socket
-      |> assign(team: team)
-      |> assign_filtered_projects()
-      |> assign_commits_and_stats(commits(socket))
-
-    {:noreply, socket}
+    socket
+    |> assign(team: team)
+    |> assign_filtered_projects()
+    |> assign_commits_and_stats(commits(socket))
+    |> noreply()
   end
 
   # Receive broadcasts when other clients update their state.
@@ -97,6 +93,7 @@ defmodule RemitWeb.CommitsLive do
 
   # Private
 
+  defp ok(socket), do: {:ok, socket}
   defp noreply(socket), do: {:noreply, socket}
 
   defp assign_filtered_projects(socket) do

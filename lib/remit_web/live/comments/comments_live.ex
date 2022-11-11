@@ -12,14 +12,12 @@ defmodule RemitWeb.CommentsLive do
       Comments.subscribe()
     end
 
-    socket =
-      socket
-      |> assign(your_last_selected_id: nil)
-      |> assign(username: github_login(session))
-      |> assign_default_params()
-      |> assign_filtered_notifications()
-
-    {:ok, socket}
+    socket
+    |> assign(your_last_selected_id: nil)
+    |> assign(username: github_login(session))
+    |> assign_default_params()
+    |> assign_filtered_notifications()
+    |> ok()
   end
 
   @impl Phoenix.LiveView
@@ -30,33 +28,33 @@ defmodule RemitWeb.CommentsLive do
   @impl Phoenix.LiveView
   def handle_event("resolve", %{"id" => id}, socket) do
     Comments.resolve(id)
-    socket = assign_selected_id(socket, id)
-    socket = assign_filtered_notifications(socket)
-
-    {:noreply, socket}
+    socket
+    |> assign_selected_id(id)
+    |> assign_filtered_notifications()
+    |> noreply()
   end
 
   @impl Phoenix.LiveView
   def handle_event("unresolve", %{"id" => id}, socket) do
     Comments.unresolve(id)
-    socket = assign_selected_id(socket, id)
-    socket = assign_filtered_notifications(socket)
-
-    {:noreply, socket}
+    socket
+    |> assign_selected_id(id)
+    |> assign_filtered_notifications()
+    |> noreply()
   end
 
   def handle_event("set_filter", %{"is" => is}, socket) do
-    socket = socket
-             |> assign(is: is)
-             |> assign_filtered_notifications()
-    {:noreply, socket}
+    socket
+    |> assign(is: is)
+    |> assign_filtered_notifications()
+    |> noreply()
   end
 
   def handle_event("set_filter", %{"role" => role}, socket) do
-    socket = socket
-             |> assign(role: role)
-             |> assign_filtered_notifications()
-    {:noreply, socket}
+    socket
+    |> assign(role: role)
+    |> assign_filtered_notifications()
+    |> noreply()
   end
 
   def handle_event("logout", _, socket) do
@@ -76,6 +74,7 @@ defmodule RemitWeb.CommentsLive do
 
   # Private
 
+  defp ok(socket), do: {:ok, socket}
   defp noreply(socket), do: {:noreply, socket}
 
   defp assign_default_params(socket) do
