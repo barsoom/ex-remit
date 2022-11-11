@@ -7,6 +7,7 @@
         ·
         <%= link("Log out",
           to: Routes.tabs_path(@socket, :settings),
+          id: "logout",
           class: ~w(cursor-pointer underline),
           "phx-hook": "Logout"
         ) %>
