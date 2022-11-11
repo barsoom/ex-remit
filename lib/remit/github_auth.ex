@@ -1,4 +1,5 @@
 defmodule Remit.GithubAuth do
+  @moduledoc false
   use GenServer
 
   defstruct [
