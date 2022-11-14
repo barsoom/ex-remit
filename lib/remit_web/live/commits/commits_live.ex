@@ -100,12 +100,6 @@ defmodule RemitWeb.CommitsLive do
     {:noreply, socket}
   end
 
-  def filter_commits(commits, :all), do: commits
-
-  def filter_commits(commits, projects) do
-    Enum.filter(commits, &Commit.in_any_project?(&1, projects))
-  end
-
   # Private
 
   defp ok(socket), do: {:ok, socket}
@@ -144,13 +138,17 @@ defmodule RemitWeb.CommitsLive do
   defp assign_selected_id(socket, id) when is_binary(id), do: assign_selected_id(socket, String.to_integer(id))
 
   defp assign_commits_and_stats(socket, commits) do
-    unreviewed_count = commits |> Enum.count(&(!&1.reviewed_at && in_selected_projects?(socket, &1)))
-    my_unreviewed_count = commits |> Enum.count(&(!&1.reviewed_at && in_selected_projects?(socket, &1) && authored?(socket, &1)))
+    claimed_projects = Remit.Team.claimed_projects()
+    displayed_commits = commits |> Enum.filter(& in_selected_projects?(socket, &1) || Commit.unclaimed_project?(&1, claimed_projects))
+
+    unreviewed_count = displayed_commits |> Enum.count(&(!&1.reviewed_at))
+    my_unreviewed_count = displayed_commits |> Enum.count(&(!&1.reviewed_at && authored?(socket, &1)))
 
     commits = Commit.add_date_separators(commits)
 
     assign(socket, %{
       commits: commits,
+      displayed_commits: displayed_commits,
       unreviewed_count: unreviewed_count,
       my_unreviewed_count: my_unreviewed_count,
       others_unreviewed_count: unreviewed_count - my_unreviewed_count,

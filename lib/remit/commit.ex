@@ -35,6 +35,8 @@ defmodule Remit.Commit do
 
   def in_any_project?(commit, projects) when is_list(projects), do: Enum.any?(projects, &in_project?(commit, &1))
 
+  def unclaimed_project?(commit, claimed_projects), do: commit.repo not in claimed_projects
+
   def in_project?(%__MODULE__{repo: repo}, project), do: repo == project
 
   def being_reviewed_by?(%Commit{review_started_by_username: username, reviewed_at: nil}, username) when not is_nil(username), do: true

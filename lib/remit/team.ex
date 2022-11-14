@@ -45,4 +45,13 @@ defmodule Remit.Team do
   def add_project(slug, project) when is_binary(slug) do
     get_by_slug(slug) |> add_project(project)
   end
+
+  def claimed_projects do
+    query =
+      from Remit.Team,
+      distinct: true,
+      select: fragment("unnest(projects)")
+
+    Repo.all(query)
+  end
 end
