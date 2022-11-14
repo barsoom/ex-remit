@@ -144,7 +144,7 @@ defmodule RemitWeb.CommitsLive do
     unreviewed_count = displayed_commits |> Enum.count(&(!&1.reviewed_at))
     my_unreviewed_count = displayed_commits |> Enum.count(&(!&1.reviewed_at && authored?(socket, &1)))
 
-    commits = Commit.add_date_separators(commits)
+    displayed_commits = Commit.add_date_separators(displayed_commits)
 
     assign(socket, %{
       commits: commits,
