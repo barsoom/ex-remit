@@ -30,7 +30,6 @@ defmodule RemitWeb.CommitsLiveTest do
 
       assert socket.assigns.username == "dwight"
       assert socket.assigns.your_last_selected_commit_id == nil
-      assert socket.assigns.projects == :all
       assert socket.assigns.team == "all"
       assert socket.assigns.all_teams == []
     end

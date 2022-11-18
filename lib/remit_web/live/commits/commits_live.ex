@@ -16,11 +16,10 @@ defmodule RemitWeb.CommitsLive do
       :timer.send_interval(@overlong_check_frequency_secs * 1000, self(), :check_for_overlong_reviewing)
     end
 
-    commits = Commits.list_latest(@max_commits)
-
     socket
     |> assign_defaults(session)
-    |> assign_commits_and_stats(commits)
+    |> assign_current_commits()
+    |> assign_stats()
     |> ok()
   end
 
@@ -51,24 +50,40 @@ defmodule RemitWeb.CommitsLive do
   def handle_event("set_filter", %{"team" => team}, socket) do
     socket
     |> assign(team: team)
-    |> assign_filtered_projects()
-    |> assign_commits_and_stats(commits(socket))
+    |> assign_current_commits()
+    |> assign_stats()
     |> noreply()
   end
 
   # Receive broadcasts when other clients update their state.
   @impl Phoenix.LiveView
   def handle_info({:changed_commit, commit}, socket) do
-    commits = commits(socket) |> replace_commit(commit)
-    {:noreply, assign_commits_and_stats(socket, commits)}
+    socket
+    |> update_commit(commit)
+    |> assign_stats()
+    |> noreply()
   end
 
   # Receive broadcasts when new commits arrive.
   @impl Phoenix.LiveView
   def handle_info({:new_commits, new_commits}, socket) do
-    # Another option here would be to just reload the latest commits from DB.
-    commits = Enum.slice(new_commits ++ commits(socket), 0, @max_commits)
-    {:noreply, assign_commits_and_stats(socket, commits)}
+    # Check that the new commit satisfies the current filter.
+    # Consult the local snapshot state instead of going to the DB so that it doesn't get hit by everyone who is currently connected.
+
+    team = team(socket)
+    commit_for_display? = & Remit.TeamProjects.claimed_by_team_or_unclaimed?(&1.repo, team)
+
+    case Enum.filter(new_commits, commit_for_display?) do
+      [] ->
+        # the new commits are not part of the current filter, skip all updates
+        noreply(socket)
+
+      commits ->
+        socket
+        |> assign_commits(Enum.slice(commits ++ commits(socket), 0, @max_commits))
+        |> assign_stats()
+        |> noreply()
+    end
   end
 
   # Periodically check.
@@ -105,50 +120,52 @@ defmodule RemitWeb.CommitsLive do
   defp ok(socket), do: {:ok, socket}
   defp noreply(socket), do: {:noreply, socket}
 
-  defp assign_filtered_projects(socket) do
-    assign(socket, projects: projects_for_team(team(socket)))
-  end
-
-  defp projects_for_team("all"), do: :all
-
-  defp projects_for_team(team) do
-    Remit.Team.projects_for(team)
-  end
-
   def assign_defaults(socket, session) do
     socket
     |> assign(username: github_login(session))
     |> assign(your_last_selected_commit_id: nil)
-    |> assign(projects: :all)
     |> assign(team: "all")
     |> assign(all_teams: Remit.Team.get_all())
   end
 
-  defp assign_and_broadcast_changed_commit(socket, commit) do
-    commits = commits(socket) |> replace_commit(commit)
+  def load_commits_for_display(socket) do
+    Commits.list_latest(team(socket), @max_commits)
+  end
 
+  def assign_current_commits(socket) do
+    socket
+    |> assign_commits(load_commits_for_display(socket))
+  end
+
+  defp assign_and_broadcast_changed_commit(socket, commit) do
     Commits.broadcast_changed_commit(commit)
 
     socket
-    |> assign_commits_and_stats(commits)
+    |> update_commit(commit)
+    |> assign_stats()
     |> assign_selected_id(commit.id)
   end
 
   defp assign_selected_id(socket, id) when is_integer(id), do: assign(socket, your_last_selected_commit_id: id)
   defp assign_selected_id(socket, id) when is_binary(id), do: assign_selected_id(socket, String.to_integer(id))
 
-  defp assign_commits_and_stats(socket, commits) do
-    claimed_projects = Remit.Team.claimed_projects()
-    displayed_commits = commits |> Enum.filter(& in_selected_projects?(socket, &1) || Commit.unclaimed_project?(&1, claimed_projects))
+  defp assign_commits(socket, commits) do
+    socket
+    |> assign(:commits, Commit.add_date_separators(commits))
+  end
 
-    unreviewed_count = displayed_commits |> Enum.count(&(!&1.reviewed_at))
-    my_unreviewed_count = displayed_commits |> Enum.count(&(!&1.reviewed_at && authored?(socket, &1)))
+  defp update_commit(socket, commit) do
+    socket
+    |> assign_commits(replace_commit(commits(socket), commit))
+  end
 
-    displayed_commits = Commit.add_date_separators(displayed_commits)
+  defp assign_stats(socket) do
+    commits = commits(socket)
+
+    unreviewed_count = commits |> Enum.count(&(!&1.reviewed_at))
+    my_unreviewed_count = commits |> Enum.count(&(!&1.reviewed_at && authored?(socket, &1)))
 
     assign(socket, %{
-      commits: commits,
-      displayed_commits: displayed_commits,
       unreviewed_count: unreviewed_count,
       my_unreviewed_count: my_unreviewed_count,
       others_unreviewed_count: unreviewed_count - my_unreviewed_count,
@@ -163,15 +180,7 @@ defmodule RemitWeb.CommitsLive do
 
   defp authored?(socket, commit), do: Commit.authored_by?(commit, username(socket))
 
-  defp in_selected_projects?(socket, commit) do
-    case projects(socket) do
-      :all -> true
-      projects -> Commit.in_any_project?(commit, projects)
-    end
-  end
-
   defp username(socket), do: socket.assigns.username
   defp commits(socket), do: socket.assigns.commits
-  defp projects(socket), do: socket.assigns.projects
   defp team(socket), do: socket.assigns.team
 end

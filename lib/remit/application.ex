@@ -13,6 +13,7 @@ defmodule Remit.Application do
       RemitWeb.Telemetry,
       # Start the PubSub system
       {Phoenix.PubSub, [name: Remit.PubSub]},
+      Remit.TeamProjects,
       Remit.GithubAuth,
       Remit.Periodically,
       # Start the Endpoint (http/https)

@@ -57,7 +57,7 @@
     <% end %>
   </div>
 
-  <%= for commit <- @displayed_commits do %>
+  <%= for commit <- @commits do %>
     <%# We use live components specifically so that only changed commits (not all of them) are passed via the socket. %>
     <%# We prefer this to the "temporary assigns" optimisation, as that complicates logic by not holding the full list of commits as state. %>
     <RemitWeb.CommitComponent.render

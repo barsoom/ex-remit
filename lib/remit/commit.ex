@@ -27,17 +27,19 @@ defmodule Remit.Commit do
   def latest(q \\ __MODULE__, count), do: from(q, limit: ^count, order_by: [desc: :id])
   def listed(q \\ __MODULE__), do: from(q, where: [unlisted: false])
 
+  def for_team_or_unclaimed(q \\ MODULE, team)
+  def for_team_or_unclaimed(q, "all"), do: q
+  def for_team_or_unclaimed(q, team)  do
+    from c in q,
+      where: c.repo in subquery(Remit.Team.team_projects_query(team))
+        or c.repo not in subquery(Remit.Team.all_claimed_projects_query())
+  end
+
   def authored_by?(_commit, nil), do: false
 
   def authored_by?(commit, username) do
     author_in_email?(commit, username) || author_in_commit_trailer?(commit, username)
   end
-
-  def in_any_project?(commit, projects) when is_list(projects), do: Enum.any?(projects, &in_project?(commit, &1))
-
-  def unclaimed_project?(commit, claimed_projects), do: commit.repo not in claimed_projects
-
-  def in_project?(%__MODULE__{repo: repo}, project), do: repo == project
 
   def being_reviewed_by?(%Commit{review_started_by_username: username, reviewed_at: nil}, username) when not is_nil(username), do: true
   def being_reviewed_by?(_, _), do: false

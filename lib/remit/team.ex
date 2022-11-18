@@ -28,18 +28,23 @@ defmodule Remit.Team do
     Repo.all(query)
   end
 
-  def projects_for(team_slug) do
-    get_by_slug(team_slug).projects
-  end
-
   def create(name, slug, projects) do
-    Repo.insert!(%__MODULE__{name: name, slug: slug, projects: projects})
+    team = Repo.insert!(%__MODULE__{name: name, slug: slug, projects: projects})
+
+    Remit.TeamProjects.reload()
+
+    team
   end
 
   def add_project(%__MODULE__{projects: projects} = team, project) do
+    team =
+      team
+      |> Ecto.Changeset.change(%{projects: [project | projects]})
+      |> Repo.update!()
+
+    Remit.TeamProjects.reload()
+
     team
-    |> Ecto.Changeset.change(%{projects: [project | projects]})
-    |> Repo.update!()
   end
 
   def add_project(slug, project) when is_binary(slug) do
@@ -47,11 +52,18 @@ defmodule Remit.Team do
   end
 
   def claimed_projects do
-    query =
-      from Remit.Team,
+    Repo.all(all_claimed_projects_query())
+  end
+
+  def all_claimed_projects_query do
+    from Remit.Team,
       distinct: true,
       select: fragment("unnest(projects)")
+  end
 
-    Repo.all(query)
+  def team_projects_query(slug) do
+    from t in Remit.Team,
+      select: fragment("unnest(projects)"),
+      where: t.slug == ^slug
   end
 end

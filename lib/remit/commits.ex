@@ -8,6 +8,14 @@ defmodule Remit.Commits do
     |> Repo.all()
   end
 
+  def list_latest(team, count)
+  def list_latest("all", count), do: list_latest(count)
+  def list_latest(team, count) do
+    Commit.latest_listed(count)
+    |> Commit.for_team_or_unclaimed(team)
+    |> Repo.all()
+  end
+
   def list_latest_shas(count) do
     Commit.latest_listed(count)
     |> select([c], c.sha)
