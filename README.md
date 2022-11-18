@@ -308,8 +308,6 @@ Until there is a visual interface, run in the console:
 
 `Remit.Team.add_project("team-slug", "repo-name")`
 
-and reload Remit.
-
 If you're not sure which team slugs are available, run:
 
 `Remit.Team.get_all() |> Enum.map(& &1.slug)`
