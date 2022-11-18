@@ -1,7 +1,7 @@
 defmodule RemitWeb.CommitsLive do
   use RemitWeb, :live_view
   require Logger
-  alias Remit.{Commits, Commit, GithubAuth, Utils}
+  alias Remit.{Commits, Commit, GithubAuth, TeamProjects, Utils}
 
   @max_commits Application.compile_env(:remit, :max_commits)
   @overlong_check_frequency_secs 60
@@ -13,11 +13,13 @@ defmodule RemitWeb.CommitsLive do
     if connected?(socket) do
       Commits.subscribe()
       GithubAuth.subscribe(session["session_id"])
+      TeamProjects.subscribe()
       :timer.send_interval(@overlong_check_frequency_secs * 1000, self(), :check_for_overlong_reviewing)
     end
 
     socket
     |> assign_defaults(session)
+    |> assign_all_teams()
     |> assign_current_commits()
     |> assign_stats()
     |> ok()
@@ -71,7 +73,7 @@ defmodule RemitWeb.CommitsLive do
     # Consult the local snapshot state instead of going to the DB so that it doesn't get hit by everyone who is currently connected.
 
     team = team(socket)
-    commit_for_display? = & Remit.TeamProjects.claimed_by_team_or_unclaimed?(&1.repo, team)
+    commit_for_display? = & TeamProjects.claimed_by_team_or_unclaimed?(&1.repo, team)
 
     case Enum.filter(new_commits, commit_for_display?) do
       [] ->
@@ -84,6 +86,14 @@ defmodule RemitWeb.CommitsLive do
         |> assign_stats()
         |> noreply()
     end
+  end
+
+  def handle_info(:ownership_changed, socket) do
+    socket
+    |> assign_all_teams()
+    |> assign_current_commits()
+    |> assign_stats()
+    |> noreply()
   end
 
   # Periodically check.
@@ -125,6 +135,10 @@ defmodule RemitWeb.CommitsLive do
     |> assign(username: github_login(session))
     |> assign(your_last_selected_commit_id: nil)
     |> assign(team: "all")
+  end
+
+  def assign_all_teams(socket) do
+    socket
     |> assign(all_teams: Remit.Team.get_all())
   end
 
