@@ -267,10 +267,12 @@ They default to adding just a few, but you can pass a count:
     # May not be listed exactly 100 times in the UI, because we list based on CommentNotifications.
     mix wh.comments 100
 
-It's also possible to generate co-authored commits using the `--co-authored` flag, note that this also requires you to pass count:
+You can specify a repository name with `--repo <repo>`; otherwise, one will be generated.
+
+It's also possible to generate co-authored commits using the `--co-authored` flag:
 
     # Adds 10 co-authored commits using commit trailers, e.g. Co-authored-by: foo <foo@example.com>
-    mix wh.commits 10 --co-authored
+    mix wh.commits --co-authored
 
 ### Working on the connection detection
 

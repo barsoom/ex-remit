@@ -1,11 +1,30 @@
-count =
-  case System.argv() do
-    # Default
-    [] -> 5
-    [number_string | _] -> String.to_integer(number_string)
+defmodule ParseArgs do
+  @default_count 5
+
+  def count(args) do
+    case args do
+      [] ->
+        @default_count
+
+      [number_string | _] ->
+        case Integer.parse(number_string) do
+          {number, ""} -> number
+          _ -> @default_count
+        end
+    end
   end
 
-with_co_author? = Enum.member?(System.argv(), "--co-authored")
+  def repo(args)
+  def repo(["--repo", repo | _]), do: repo
+  def repo([]), do: nil
+  def repo([_ | tail]), do: repo(tail)
+
+  def with_co_author?(args), do: Enum.member?(args, "--co-authored")
+end
+
+repo = ParseArgs.repo(System.argv()) || Faker.repo()
+count = ParseArgs.count(System.argv())
+with_co_author? = ParseArgs.with_co_author?(System.argv())
 
 json =
   Jason.encode!(
@@ -13,7 +32,7 @@ json =
       ref: "refs/heads/master",
       repository: %{
         master_branch: "master",
-        name: Faker.repo(),
+        name: repo,
         owner: %{
           name: "acme"
         }
