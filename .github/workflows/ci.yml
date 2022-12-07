@@ -5,12 +5,11 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
-
   # Wait for previous run to complete, to avoid concurrent deployment.
   # https://github.community/t/how-to-limit-concurrent-workflow-runs/16844/17
   # https://github.com/softprops/turnstyle
@@ -44,29 +43,28 @@ jobs:
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Elixir
-      uses: actions/setup-elixir@v1
-      with:
-        # NOTE: Keep in sync with elixir_buildpack.config and asdf's .tool-versions.
-        elixir-version: "1.14.1"
-        otp-version: "25.1.1"
-        experimental-otp: true
-    # Based on: https://github.com/actions/cache/blob/master/examples.md#elixir---mix
-    # `restore-keys` lets us fall back to partially matching caches.
-    - name: Restore cache
-      uses: actions/cache@v2
-      with:
-        path: deps
-        key: ${{ runner.os }}-mix-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
-        restore-keys: |
-          ${{ runner.os }}-mix-
-    - name: Install deps
-      run: mix deps.get
-    - name: Run tests
-      run: mix test
-    - name: Lint
-      run: mix credo --all
+      - uses: actions/checkout@v2
+      - name: Set up Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          # NOTE: Keep in sync with elixir_buildpack.config and asdf's .tool-versions.
+          elixir-version: "1.14.1"
+          otp-version: "25.1.1"
+      # Based on: https://github.com/actions/cache/blob/master/examples.md#elixir---mix
+      # `restore-keys` lets us fall back to partially matching caches.
+      - name: Restore cache
+        uses: actions/cache@v2
+        with:
+          path: deps
+          key: ${{ runner.os }}-mix-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+          restore-keys: |
+            ${{ runner.os }}-mix-
+      - name: Install deps
+        run: mix deps.get
+      - name: Run tests
+        run: mix test
+      - name: Lint
+        run: mix credo --all
 
   # Based on: https://mikecoutermarsh.com/github-actions-deploy-to-heroku/
   deploy:
