@@ -7,6 +7,7 @@
     "watch": "webpack --mode development --watch"
   },
   "dependencies": {
+    "autoprefixer": "^10.4.13",
     "balloon-css": "^1.2.0",
     "nprogress": "^0.2.0",
     "phoenix": "file:../deps/phoenix",
