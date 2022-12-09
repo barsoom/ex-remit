@@ -4,10 +4,10 @@ defmodule RemitWeb.LayoutView do
 
   defp tab(assigns) do
     ~H"""
-    <%= link(to: Routes.tabs_path(Endpoint, @action), class: tab_class(assigns)) do %>
+    <.link patch={Routes.tabs_path(Endpoint, @action)} class={tab_class(assigns)}>
       <i class={["fas", @icon]}></i>
       <span class="tabs__tab__text"><%= @text %></span>
-    <% end %>
+    </.link>
     """
   end
 
