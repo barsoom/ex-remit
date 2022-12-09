@@ -30,6 +30,7 @@ defmodule RemitWeb.CommentsLive do
   @impl Phoenix.LiveView
   def handle_event("resolve", %{"id" => id}, socket) do
     Comments.resolve(id)
+
     socket
     |> assign_selected_id(id)
     |> assign_filtered_notifications()
@@ -39,6 +40,7 @@ defmodule RemitWeb.CommentsLive do
   @impl Phoenix.LiveView
   def handle_event("unresolve", %{"id" => id}, socket) do
     Comments.unresolve(id)
+
     socket
     |> assign_selected_id(id)
     |> assign_filtered_notifications()
@@ -84,7 +86,7 @@ defmodule RemitWeb.CommentsLive do
 
   @impl Phoenix.LiveView
   def handle_info(message, socket) do
-    Logger.error("unexpected message #{inspect message}")
+    Logger.error("unexpected message #{inspect(message)}")
     {:noreply, socket}
   end
 

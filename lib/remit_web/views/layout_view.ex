@@ -4,7 +4,7 @@ defmodule RemitWeb.LayoutView do
 
   defp tab(assigns) do
     ~H"""
-    <%= live_patch(to: Routes.tabs_path(Endpoint, @action), class: tab_class(assigns)) do %>
+    <%= link(to: Routes.tabs_path(Endpoint, @action), class: tab_class(assigns)) do %>
       <i class={["fas", @icon]}></i>
       <span class="tabs__tab__text"><%= @text %></span>
     <% end %>
@@ -14,6 +14,7 @@ defmodule RemitWeb.LayoutView do
   defp tab_class(%{action: action, current_action: action}) do
     ["tabs__tab", "tabs__tab--#{action}", "tabs__tab--current"]
   end
+
   defp tab_class(%{action: action}) do
     ["tabs__tab", "tabs__tab--#{action}"]
   end
