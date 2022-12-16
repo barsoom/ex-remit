@@ -78,9 +78,12 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Deploy
+      - name: Setup Heroku credentials
         env:
           HEROKU_API_TOKEN: ${{ secrets.HEROKU_API_TOKEN }}
+        run: echo "machine git.heroku.com password $HEROKU_API_TOKEN" >> ~/.netrc
+      - name: Deploy
+        env:
           HEROKU_APP_NAME: "ex-remit"
         # Migrations are run by Heroku release phase: see Procfile.
-        run: git push https://heroku:$HEROKU_API_TOKEN@git.heroku.com/$HEROKU_APP_NAME.git origin/master:master
+        run: git push https://git.heroku.com/$HEROKU_APP_NAME.git origin/master:master
