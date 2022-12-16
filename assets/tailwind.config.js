@@ -1,7 +1,7 @@
-const {colors} = require("tailwindcss/defaultTheme")
+const colors = require('tailwindcss/colors')
 
 module.exports = {
-  purge: [
+  content: [
     "../**/*.html.eex",
     "../**/*.html.leex",
     "../**/*.html.heex",
@@ -32,6 +32,5 @@ module.exports = {
 
     },
   },
-  variants: {},
   plugins: [],
 }
