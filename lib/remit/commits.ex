@@ -8,11 +8,10 @@ defmodule Remit.Commits do
     |> Repo.all()
   end
 
-  def list_latest(team, count)
-  def list_latest("all", count), do: list_latest(count)
-  def list_latest(team, count) do
-    Commit.latest_listed(count)
-    |> Commit.for_team_or_unclaimed(team)
+  def list_latest(filters, count)
+  def list_latest(filters, count) do
+    filters
+    |> Enum.reduce(Commit.latest_listed(count), &Commit.apply_filter(&2, &1))
     |> Repo.all()
   end
 

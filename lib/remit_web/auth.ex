@@ -32,6 +32,29 @@ defmodule RemitWeb.Auth do
     end
   end
 
+  defmodule Controller do
+    @moduledoc """
+    Common auth helpers. Included in all controllers.
+    """
+    import Plug.Conn
+
+    @github_bearer_token_key "github_bearer_token"
+    def github_bearer_token(conn), do: get_session(conn, @github_bearer_token_key)
+    def put_github_bearer_token(conn, token), do: put_session(conn, @github_bearer_token_key, token)
+    def delete_github_bearer_token(conn), do: delete_session(conn, @github_bearer_token_key)
+
+    def ensure_github_bearer_token(conn, _) do
+      if github_bearer_token(conn) do
+        conn
+      else
+        conn
+        |> put_resp_content_type("text/plain")
+        |> send_resp(403, "not logged in with GitHub")
+        |> halt()
+      end
+    end
+  end
+
   # Based on https://hexdocs.pm/phoenix_live_view/Phoenix.LiveView.html#module-security-considerations-of-the-liveview-model.
   defmodule LiveView do
     @moduledoc false

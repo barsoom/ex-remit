@@ -20,6 +20,25 @@
     <% end %>
   </div>
 
+  <%= if @username && Remit.Config.has_github_org? do %>
+    <div class="bg-gray-200 px-3 py-4 mt-6 paragraphs">
+      <%= link("Import team members from GitHub",
+        to: Routes.tabs_path(@socket, :settings),
+        id: "update-github-teams",
+        "phx-hook": "UpdateGithubTeams"
+      ) %>
+
+      <p>
+        This is only necessary when team membership changes.
+      </p>
+
+      <p>
+        This will only update the teams that are <%= link("visible to you on GitHub", to: "https://github.com/orgs/#{Remit.Config.github_org_slug()}/teams") %>.
+        If you're not seeing the changes you expect, ask a member of the <span class="font-semibold"><%= Remit.Config.github_org_slug() %></span> organization with higher access to do this.
+      </p>
+    </div>
+  <% end %>
+
   <div class="bg-gray-200 px-3 py-4 mt-6 text-almost-black paragraphs">
     <h2 class="font-semibold text-xs mb-2 uppercase">
       <i class="fas fa-info-circle fa-2x text-blue-400 align-middle mr-1"></i>

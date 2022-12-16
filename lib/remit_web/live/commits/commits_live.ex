@@ -1,7 +1,7 @@
 defmodule RemitWeb.CommitsLive do
   use RemitWeb, :live_view
   require Logger
-  alias Remit.{Commits, Commit, GithubAuth, TeamProjects, Utils}
+  alias Remit.{Commits, Commit, GithubAuth, Ownership, Utils}
 
   @max_commits Application.compile_env(:remit, :max_commits)
   @overlong_check_frequency_secs 60
@@ -13,7 +13,7 @@ defmodule RemitWeb.CommitsLive do
     if connected?(socket) do
       Commits.subscribe()
       GithubAuth.subscribe(session["session_id"])
-      TeamProjects.subscribe()
+      Ownership.subscribe()
       :timer.send_interval(@overlong_check_frequency_secs * 1000, self(), :check_for_overlong_reviewing)
     end
 
@@ -49,9 +49,18 @@ defmodule RemitWeb.CommitsLive do
   end
 
   @impl Phoenix.LiveView
-  def handle_event("set_filter", %{"team" => team}, socket) do
+  def handle_event("set_filter", %{"projects-of-team" => team}, socket) do
     socket
-    |> assign(team: team)
+    |> assign(projects_of_team: team)
+    |> assign_current_commits()
+    |> assign_stats()
+    |> noreply()
+  end
+
+  @impl Phoenix.LiveView
+  def handle_event("set_filter", %{"members-of-team" => team}, socket) do
+    socket
+    |> assign(members_of_team: team)
     |> assign_current_commits()
     |> assign_stats()
     |> noreply()
@@ -72,8 +81,12 @@ defmodule RemitWeb.CommitsLive do
     # Check that the new commit satisfies the current filter.
     # Consult the local snapshot state instead of going to the DB so that it doesn't get hit by everyone who is currently connected.
 
-    team = team(socket)
-    commit_for_display? = & TeamProjects.claimed_by_team_or_unclaimed?(&1.repo, team)
+    projects_of_team = projects_of_team(socket)
+    members_of_team = members_of_team(socket)
+    commit_for_display? = fn commit ->
+      Ownership.claimed_by_team_or_unclaimed?(commit.repo, projects_of_team) &&
+      Ownership.authors_in_team?(commit.usernames, members_of_team)
+    end
 
     case Enum.filter(new_commits, commit_for_display?) do
       [] ->
@@ -134,7 +147,8 @@ defmodule RemitWeb.CommitsLive do
     socket
     |> assign(username: github_login(session))
     |> assign(your_last_selected_commit_id: nil)
-    |> assign(team: "all")
+    |> assign(projects_of_team: "all")
+    |> assign(members_of_team: "all")
   end
 
   def assign_all_teams(socket) do
@@ -142,8 +156,18 @@ defmodule RemitWeb.CommitsLive do
     |> assign(all_teams: Remit.Team.get_all())
   end
 
+  defp commit_filter(socket) do
+    commit_filter_by_projects(projects_of_team(socket)) ++ commit_filter_by_members(members_of_team(socket))
+  end
+
+  defp commit_filter_by_projects("all"), do: []
+  defp commit_filter_by_projects(team), do: [projects_of_team: team]
+
+  defp commit_filter_by_members("all"), do: []
+  defp commit_filter_by_members(team), do: [members_of_team: team]
+
   def load_commits_for_display(socket) do
-    Commits.list_latest(team(socket), @max_commits)
+    Commits.list_latest(commit_filter(socket), @max_commits)
   end
 
   def assign_current_commits(socket) do
@@ -196,5 +220,6 @@ defmodule RemitWeb.CommitsLive do
 
   defp username(socket), do: socket.assigns.username
   defp commits(socket), do: socket.assigns.commits
-  defp team(socket), do: socket.assigns.team
+  defp projects_of_team(socket), do: socket.assigns.projects_of_team
+  defp members_of_team(socket), do: socket.assigns.members_of_team
 end

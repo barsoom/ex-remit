@@ -23,7 +23,7 @@ defmodule Remit.GithubAuth do
 
   def auth_url(token) do
     client_id = Remit.Config.github_oauth_client_id
-    "https://github.com/login/oauth/authorize?client_id=#{client_id}&state=#{token}"
+    "https://github.com/login/oauth/authorize?client_id=#{client_id}&state=#{token}&scope=repo"
   end
 
   def get_access_token(code) do

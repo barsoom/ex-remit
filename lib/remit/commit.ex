@@ -27,12 +27,15 @@ defmodule Remit.Commit do
   def latest(q \\ __MODULE__, count), do: from(q, limit: ^count, order_by: [desc: :id])
   def listed(q \\ __MODULE__), do: from(q, where: [unlisted: false])
 
-  def for_team_or_unclaimed(q \\ MODULE, team)
-  def for_team_or_unclaimed(q, "all"), do: q
-  def for_team_or_unclaimed(q, team)  do
+  def apply_filter(q, {:projects_of_team, team}) do
+    # This includes projects that have not been assigned to any team, so that they don't slip through unseen by anybody.
     from c in q,
       where: c.repo in subquery(Remit.Team.team_projects_query(team))
         or c.repo not in subquery(Remit.Team.all_claimed_projects_query())
+  end
+  def apply_filter(q, {:members_of_team, team}) do
+    from c in q,
+      where: fragment("? && ?", c.usernames, subquery(Remit.Team.team_members_query(team)))
   end
 
   def authored_by?(_commit, nil), do: false

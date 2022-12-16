@@ -22,7 +22,7 @@ defmodule RemitWeb.GithubAuthController do
 
   def logout(conn, _) do
     conn
-    |> delete_session("github_bearer_token")
+    |> delete_github_bearer_token()
     |> delete_session("github_user")
     |> broadcast_logout()
     |> json(true)
@@ -43,7 +43,7 @@ defmodule RemitWeb.GithubAuthController do
     token = GithubAuth.get_access_token(code)
 
     conn
-    |> put_session("github_bearer_token", token)
+    |> put_github_bearer_token(token)
     |> put_session("github_user", GitHubAPIClient.get_user(token))
   end
 

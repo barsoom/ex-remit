@@ -13,6 +13,7 @@ config :remit,
   # If too low, we may miss stuff. If too high, performance may suffer.
   max_commits: 300,
   max_comments: 150,
+  github_org_slug: {:system, "GITHUB_ORG_SLUG", ""},
   github_api_client: Remit.GitHubAPIClient
 
 # Configures the endpoint

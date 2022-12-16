@@ -23,6 +23,7 @@ defmodule RemitWeb do
 
       import Plug.Conn
       import RemitWeb.Gettext
+      import RemitWeb.Auth.Controller
       alias RemitWeb.Router.Helpers, as: Routes
     end
   end

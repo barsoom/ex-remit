@@ -72,6 +72,15 @@ Hooks.Logout = {
   }
 }
 
+Hooks.UpdateGithubTeams = {
+  mounted() {
+    this.el.addEventListener("click", (e) => {
+      e.preventDefault()
+      fetch(`/api/update_github_teams`, { method: "post" })
+    })
+  }
+}
+
 Hooks.CancelDefaultNavigation = {
   mounted() {
     this.el.addEventListener("click", (e) => e.preventDefault());

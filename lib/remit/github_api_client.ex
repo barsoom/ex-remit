@@ -26,6 +26,17 @@ defmodule Remit.GitHubAPIClient do
     build_user(data)
   end
 
+  def get_teams(bearer_token, org_slug) do
+    {:ok, %{body: data}} = Tesla.get(tesla_client(bearer_token), "/orgs/#{org_slug}/teams")
+    data
+  end
+
+  # Sometimes it's easiest to just follow a provided URL to read related resources, like team members.
+  def get_resource(bearer_token, url) do
+    {:ok, %{body: data}} = Tesla.get(tesla_client(bearer_token), url)
+    data
+  end
+
   defp build_commit(
          %{
            "sha" => sha,

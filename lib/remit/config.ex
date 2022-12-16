@@ -10,4 +10,8 @@ defmodule Remit.Config do
   def github_oauth_client_id, do: Confex.fetch_env!(:remit, :github_oauth_client_id)
 
   def github_oauth_client_secret, do: Confex.fetch_env!(:remit, :github_oauth_client_secret)
+
+  def github_org_slug, do: Confex.fetch_env!(:remit, :github_org_slug)
+
+  def has_github_org?, do: github_org_slug() != ""
 end

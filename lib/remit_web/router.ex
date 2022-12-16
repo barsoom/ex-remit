@@ -40,6 +40,7 @@ defmodule RemitWeb.Router do
     pipe_through :api
 
     get "/stats", StatsController, :show
+    post "/update_github_teams", TeamsController, :update
     post "/logout", GithubAuthController, :logout
   end
 
