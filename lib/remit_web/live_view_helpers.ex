@@ -56,8 +56,9 @@ defmodule RemitWeb.LiveViewHelpers do
     ]
   end
 
-  def filter_link(socket, assigns, component, text, [{param, value}]) do
+  def filter_link(socket, assigns, component, id, text, [{param, value}]) do
     link(text,
+      id: id,
       to: Routes.tabs_path(socket, component),
       class: link_classes(value, assigns[param]),
       "phx-click": "set_filter",

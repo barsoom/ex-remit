@@ -1,9 +1,9 @@
 <div class="info-box">
   <p>
-    <%= filter_link @socket, assigns, :commits, "All Projects", team: "all" %>
+    <%= filter_link @socket, assigns, :commits, "filter-commit-project-team-all", "All Projects", team: "all" %>
     <%= for team <- @all_teams do %>
     ·
-    <%= filter_link @socket, assigns, :commits, team.name, team: team.slug %>
+    <%= filter_link @socket, assigns, :commits, "filter-commit-project-team-#{team.slug}", team.name, team: team.slug %>
     <% end %>
   </p>
 </div>
