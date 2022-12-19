@@ -114,12 +114,12 @@ defmodule RemitWeb.SettingsLive do
 
   defp teams(%{teams: []} = assigns) do
     ~H"""
-    <span class="text-red-700">unclaimed</span>
+    <span class="text-red-700 ml-3">unclaimed</span>
     """
   end
   defp teams(assigns) do
     ~H"""
-    <ul class="list-disc">
+    <ul>
       <%= for team <- @teams do %>
         <.form for={:project} phx-submit="remove_project_owner">
           <input type="hidden" name="project" value={@project} />
