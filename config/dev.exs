@@ -56,6 +56,7 @@ config :remit, RemitWeb.Endpoint,
   watchers: [
     node: {RelativePathWatcher, :watch, ["node", [
       "node_modules/webpack/bin/webpack.js",
+      "--watch",
       "--mode",
       "development",
       cd: Path.expand("../assets", __DIR__)
