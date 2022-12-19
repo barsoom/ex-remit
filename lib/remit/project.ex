@@ -16,6 +16,7 @@ defmodule Remit.Project do
   defp get_all_query do
     from commit in subquery(project_names_query()),
       left_join: team in Team, on: commit.repo in team.projects,
-      select: {commit, team}
+      select: {commit, team},
+      order_by: {:asc, commit.repo}
   end
 end
