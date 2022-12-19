@@ -42,7 +42,7 @@ defmodule Remit.Team do
   def add_project(%__MODULE__{projects: projects} = team, project) do
     team =
       team
-      |> Ecto.Changeset.change(%{projects: [project | projects]})
+      |> Ecto.Changeset.change(%{projects: Enum.uniq([project | projects])})
       |> Repo.update!()
 
     Remit.Ownership.reload()
@@ -52,6 +52,21 @@ defmodule Remit.Team do
 
   def add_project(slug, project) when is_binary(slug) do
     get_by_slug(slug) |> add_project(project)
+  end
+
+  def remove_project(%__MODULE__{projects: projects} = team, project) do
+    team =
+      team
+      |> Ecto.Changeset.change(%{projects: projects -- [project]})
+      |> Repo.update!()
+
+    Remit.Ownership.reload()
+
+    team
+  end
+
+  def remove_project(slug, project) when is_binary(slug) do
+    get_by_slug(slug) |> remove_project(project)
   end
 
   def update_from_github(token) do
