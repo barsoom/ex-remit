@@ -6,7 +6,7 @@ defmodule RemitWeb.TabsLive do
   @tabs [
     %{action: :commits, module: RemitWeb.CommitsLive, text: "Commits", icon: "fa-eye"},
     %{action: :comments, module: RemitWeb.CommentsLive, text: "Comments", icon: "fa-comments"},
-    %{action: :settings, module: RemitWeb.SettingsLive, text: "Settings", icon: "fa-cog"},
+    %{action: :settings, module: RemitWeb.SettingsLive, text: "Settings", icon: "fa-cog"}
   ]
 
   @impl Phoenix.LiveView
@@ -42,7 +42,8 @@ defmodule RemitWeb.TabsLive do
   # Use the same value for the tab text and the page title.
   defp page_title(action) do
     @tabs
-    |> Enum.find(&(&1.action == action)) # O(n) but it will never be long enough to matter
+    # O(n) but it will never be long enough to matter
+    |> Enum.find(&(&1.action == action))
     |> Map.get(:text)
   end
 end

@@ -22,14 +22,15 @@ defmodule Remit.CommentNotification do
   def resolved_coauthors(%CommentNotification{comment: %Comment{commit: %Commit{}, comment_notifications: others}} = notification) when is_list(others) do
     others
     |> Enum.filter(&resolved_by_coauthor?(notification, &1))
-    |> Enum.map(&(&1.username))
+    |> Enum.map(& &1.username)
   end
 
-  def resolved_coauthors(_), do: [] # missing loaded assocs, cannot answer
+  # missing loaded assocs, cannot answer
+  def resolved_coauthors(_), do: []
 
   defp resolved_by_coauthor?(n, other_n) do
-    other_n.resolved_at != nil
-    && other_n.username in n.comment.commit.usernames
-    && other_n.username != n.username
+    other_n.resolved_at != nil &&
+      other_n.username in n.comment.commit.usernames &&
+      other_n.username != n.username
   end
 end

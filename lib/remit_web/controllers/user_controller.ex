@@ -13,6 +13,7 @@ defmodule RemitWeb.UserController do
   end
 
   defp put_filter(nil, scope, param, value), do: put_filter(%{}, scope, param, value)
+
   defp put_filter(filters, scope, param, value) do
     put_in(filters, Enum.map([scope, param], &Access.key(&1, %{})), value)
   end

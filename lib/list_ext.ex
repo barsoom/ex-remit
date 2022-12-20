@@ -1,5 +1,4 @@
 defmodule Remit.ListExt do
-
   @moduledoc ~S"""
   Utility extensions for the core `List`.
   """
@@ -31,6 +30,7 @@ defmodule Remit.ListExt do
   def delete_check(list, element)
   def delete_check([], _), do: {false, []}
   def delete_check([element | tail], element), do: {true, tail}
+
   def delete_check([x | tail], element) do
     {member, tail} = delete_check(tail, element)
     {member, [x | tail]}

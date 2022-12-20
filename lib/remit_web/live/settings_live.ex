@@ -60,7 +60,7 @@ defmodule RemitWeb.SettingsLive do
 
   @impl Phoenix.LiveView
   def handle_info(message, socket) do
-    Logger.error("unexpected message #{inspect message}")
+    Logger.error("unexpected message #{inspect(message)}")
     {:noreply, socket}
   end
 
@@ -98,6 +98,7 @@ defmodule RemitWeb.SettingsLive do
   end
 
   defp team_dropdown(%{teams: []} = assigns), do: ~H""
+
   defp team_dropdown(assigns) do
     ~H"""
     <.form for={:project} phx-submit="add_project_owner">
@@ -117,6 +118,7 @@ defmodule RemitWeb.SettingsLive do
     <span class="text-red-700 ml-3">unclaimed</span>
     """
   end
+
   defp teams(assigns) do
     ~H"""
     <ul>

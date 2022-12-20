@@ -12,11 +12,9 @@ defmodule Remit.Project do
     |> Enum.sort_by(&elem(&1, 0))
   end
 
-  defp project_names_query, do: from c in Commit, select: [:repo], distinct: true
+  defp project_names_query, do: from(c in Commit, select: [:repo], distinct: true)
 
   defp get_all_query do
-    from commit in subquery(project_names_query()),
-      left_join: team in Team, on: commit.repo in team.projects,
-      select: {commit, team}
+    from commit in subquery(project_names_query()), left_join: team in Team, on: commit.repo in team.projects, select: {commit, team}
   end
 end

@@ -25,10 +25,14 @@ defmodule RemitWeb.CommentComponent do
   # For commits authored by a group, display the entire group as a joint recipient of reviewer comments.
   # Comments made by authors are exempt because they would typically be made in response,
   # so the intended recipient is the reviewer and not the author group.
-  defp comment_recipients(nil, _, notification), do: [notification.username] # a comment might not have its commit in the DB
+
+  # a comment might not have its commit in the DB
+  defp comment_recipients(nil, _, notification), do: [notification.username]
+
   defp comment_recipients(commit, comment, notification) do
     sent_to_author = notification.username in commit.usernames
     sent_by_author = comment.commenter_username in commit.usernames
+
     if sent_to_author and not sent_by_author do
       commit.usernames
     else
@@ -37,12 +41,17 @@ defmodule RemitWeb.CommentComponent do
   end
 
   defp move_element_to_front([], _), do: []
-  defp move_element_to_front([_] = list, _), do: list # special case to avoid wasted work
+  # special case to avoid wasted work
+  defp move_element_to_front([_] = list, _), do: list
+
   defp move_element_to_front(list, element) do
     case Remit.ListExt.delete_check(list, element) do
-      {true, rem} -> [element | rem]
-      _ -> list # the element was not in the list, so don't touch the original
+      {true, rem} ->
+        [element | rem]
+
+      _ ->
+        # the element was not in the list, so don't touch the original
+        list
     end
   end
-
 end

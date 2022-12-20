@@ -84,5 +84,4 @@ defmodule RemitWeb.LiveViewHelpers do
       ~w(cursor-pointer underline)
     end
   end
-
 end

@@ -60,7 +60,7 @@ defmodule Remit.IngestCommitsTest do
       )
       |> IngestCommits.from_params()
 
-      assert commit.usernames == ["baz", "foo.bar"]
+    assert commit.usernames == ["baz", "foo.bar"]
   end
 
   test "can mix usernames and 'plus addressing'" do

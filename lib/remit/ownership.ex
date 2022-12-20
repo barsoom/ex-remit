@@ -5,10 +5,8 @@ defmodule Remit.Ownership do
   alias Remit.Ownership
   use Agent
 
-  defstruct [
-    projects: %{},
-    members: %{}
-  ]
+  defstruct projects: %{},
+            members: %{}
 
   def child_spec(_) do
     %{
@@ -26,6 +24,7 @@ defmodule Remit.Ownership do
 
   def claimed_by_team_or_unclaimed?(project, team)
   def claimed_by_team_or_unclaimed?(_, "all"), do: true
+
   def claimed_by_team_or_unclaimed?(project, team) do
     %Ownership{projects: team_projects} = get_state()
     project in team_projects[team] || !Enum.any?(team_projects, fn {_, projects} -> project in projects end)
@@ -33,10 +32,11 @@ defmodule Remit.Ownership do
 
   def authors_in_team?(authors, team)
   def authors_in_team?(_, "all"), do: true
+
   def authors_in_team?(authors, team) do
     %Ownership{members: team_members} = get_state()
     members = team_members[team] || []
-    Enum.any?(authors, & &1 in members)
+    Enum.any?(authors, &(&1 in members))
   end
 
   def subscribe, do: Phoenix.PubSub.subscribe(Remit.PubSub, "ownership")
@@ -49,8 +49,8 @@ defmodule Remit.Ownership do
     teams = Remit.Team.get_all()
 
     %Ownership{
-      projects: Enum.reduce(teams, %{}, & Map.put(&2, &1.slug, &1.projects)),
-      members: Enum.reduce(teams, %{}, & Map.put(&2, &1.slug, &1.usernames))
+      projects: Enum.reduce(teams, %{}, &Map.put(&2, &1.slug, &1.projects)),
+      members: Enum.reduce(teams, %{}, &Map.put(&2, &1.slug, &1.usernames))
     }
   end
 end

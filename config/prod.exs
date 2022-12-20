@@ -27,7 +27,6 @@ config :remit,
   github_oauth_client_id: {:system, "GITHUB_OAUTH_CLIENT_ID"},
   github_oauth_client_secret: {:system, "GITHUB_OAUTH_CLIENT_SECRET"}
 
-
 # Do not print debug messages in production
 config :logger, level: :info
 

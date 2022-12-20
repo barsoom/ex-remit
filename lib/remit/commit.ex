@@ -30,9 +30,11 @@ defmodule Remit.Commit do
   def apply_filter(q, {:projects_of_team, team}) do
     # This includes projects that have not been assigned to any team, so that they don't slip through unseen by anybody.
     from c in q,
-      where: c.repo in subquery(Remit.Team.team_projects_query(team))
-        or c.repo not in subquery(Remit.Team.all_claimed_projects_query())
+      where:
+        c.repo in subquery(Remit.Team.team_projects_query(team)) or
+          c.repo not in subquery(Remit.Team.all_claimed_projects_query())
   end
+
   def apply_filter(q, {:members_of_team, team}) do
     from c in q,
       where: fragment("? && ?", c.usernames, subquery(Remit.Team.team_members_query(team)))

@@ -112,7 +112,7 @@ defmodule Remit.GitHubAPIClient do
 
   defp build_user(data) do
     %Remit.Github.User{
-      login: data["login"],
+      login: data["login"]
     }
   end
 

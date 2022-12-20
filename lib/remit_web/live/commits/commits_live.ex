@@ -83,9 +83,10 @@ defmodule RemitWeb.CommitsLive do
 
     projects_of_team = projects_of_team(socket)
     members_of_team = members_of_team(socket)
+
     commit_for_display? = fn commit ->
       Ownership.claimed_by_team_or_unclaimed?(commit.repo, projects_of_team) &&
-      Ownership.authors_in_team?(commit.usernames, members_of_team)
+        Ownership.authors_in_team?(commit.usernames, members_of_team)
     end
 
     case Enum.filter(new_commits, commit_for_display?) do
@@ -134,7 +135,7 @@ defmodule RemitWeb.CommitsLive do
 
   @impl Phoenix.LiveView
   def handle_info(message, socket) do
-    Logger.error("unexpected message #{inspect message}")
+    Logger.error("unexpected message #{inspect(message)}")
     {:noreply, socket}
   end
 

@@ -12,7 +12,7 @@ defmodule RemitWeb.Endpoint do
     http_only: true,
     encrypt: true,
     signing_salt: "ndGdfBhJ",
-    encryption_salt: "dhy_eha8XTY_dgu8xpv",
+    encryption_salt: "dhy_eha8XTY_dgu8xpv"
   ]
 
   # See app.js for details.

@@ -10,6 +10,7 @@ defmodule RemitWeb.Plugs do
       nil ->
         conn
         |> put_session("session_id", Ecto.UUID.generate())
+
       _ ->
         conn
     end

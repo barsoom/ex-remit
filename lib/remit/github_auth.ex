@@ -3,9 +3,7 @@ defmodule Remit.GithubAuth do
   use GenServer
   alias Phoenix.PubSub
 
-  defstruct [
-    tokens: %{},
-  ]
+  defstruct tokens: %{}
 
   def start_link(_), do: GenServer.start_link(__MODULE__, nil, name: __MODULE__)
 
@@ -22,7 +20,7 @@ defmodule Remit.GithubAuth do
   def broadcast_logout(session_id), do: PubSub.broadcast(Remit.PubSub, session_topic(session_id), :logout)
 
   def auth_url(token) do
-    client_id = Remit.Config.github_oauth_client_id
+    client_id = Remit.Config.github_oauth_client_id()
     "https://github.com/login/oauth/authorize?client_id=#{client_id}&state=#{token}&scope=repo"
   end
 
@@ -30,8 +28,9 @@ defmodule Remit.GithubAuth do
     request = %{
       "client_id" => Remit.Config.github_oauth_client_id(),
       "client_secret" => Remit.Config.github_oauth_client_secret(),
-      "code" => code,
+      "code" => code
     }
+
     {:ok, %{body: data}} = Tesla.post(tesla_client(), "/login/oauth/access_token", request)
     data["access_token"]
   end
@@ -73,7 +72,7 @@ defmodule Remit.GithubAuth do
 
   defp generate do
     symbol_count = Enum.count(@token_alphabet)
-    for _ <- 1..@token_length, into: "", do: <<Enum.at(@token_alphabet, :rand.uniform(symbol_count)-1)>>
+    for _ <- 1..@token_length, into: "", do: <<Enum.at(@token_alphabet, :rand.uniform(symbol_count) - 1)>>
   end
 
   defp tesla_client do
@@ -86,7 +85,7 @@ defmodule Remit.GithubAuth do
 
   defp tesla_headers do
     [
-      {"accept", "application/json"},
+      {"accept", "application/json"}
     ]
   end
 end

@@ -9,6 +9,7 @@ defmodule Remit.Commits do
   end
 
   def list_latest(filters, count)
+
   def list_latest(filters, count) do
     filters
     |> Enum.reduce(Commit.latest_listed(count), &Commit.apply_filter(&2, &1))

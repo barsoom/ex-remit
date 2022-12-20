@@ -19,10 +19,8 @@ defmodule Remit.Periodically do
 
     GenServer.start_link(
       __MODULE__,
-      [
-        remove_commits: [frequency_ms: frequency_ms, days: days],
-        remove_auth_tokens: [frequency_ms: @default_auth_token_cleanup_frequency_ms],
-      ]
+      remove_commits: [frequency_ms: frequency_ms, days: days],
+      remove_auth_tokens: [frequency_ms: @default_auth_token_cleanup_frequency_ms]
     )
   end
 

@@ -75,6 +75,7 @@ defmodule Remit.Team do
 
   defp update_from_github(token, org_slug)
   defp update_from_github(_, ""), do: false
+
   defp update_from_github(token, org_slug) do
     GitHubAPIClient.get_teams(token, org_slug)
     |> process_github_teams(token)
@@ -84,11 +85,12 @@ defmodule Remit.Team do
     Logger.error(error)
     false
   end
+
   defp process_github_teams(github_teams, token) when is_list(github_teams) do
     teams = get_all()
 
     github_teams
-    |> Enum.filter(fn %{"slug" => slug} -> Enum.any?(teams, & &1.slug == slug) end)
+    |> Enum.filter(fn %{"slug" => slug} -> Enum.any?(teams, &(&1.slug == slug)) end)
     |> Enum.each(&update_team_members(&1, token))
 
     Remit.Ownership.reload()
@@ -97,7 +99,8 @@ defmodule Remit.Team do
   end
 
   defp update_team_members(%{"slug" => slug, "url" => url}, token) do
-    usernames = GitHubAPIClient.get_resource(token, url <> "/members")
+    usernames =
+      GitHubAPIClient.get_resource(token, url <> "/members")
       |> Enum.map(& &1["login"])
 
     q = from t in Remit.Team, where: t.slug == ^slug

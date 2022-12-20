@@ -21,6 +21,7 @@ defmodule RelativePathWatcher do
     case :os.find_executable(String.to_charlist(cmd)) do
       path when is_list(path) ->
         path |> List.to_string() |> Path.absname()
+
       false ->
         raise "could not resolve '#{cmd}' to an executable"
     end

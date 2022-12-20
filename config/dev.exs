@@ -8,6 +8,7 @@ if System.get_env("DEVBOX") && File.exists?(".env") do
     case String.split(line, "=", parts: 2) do
       [k, v] ->
         System.put_env(k, v)
+
       _ ->
         nil
     end
@@ -54,13 +55,18 @@ config :remit, RemitWeb.Endpoint,
   code_reloader: true,
   check_origin: false,
   watchers: [
-    node: {RelativePathWatcher, :watch, ["node", [
-      "node_modules/webpack/bin/webpack.js",
-      "--watch",
-      "--mode",
-      "development",
-      cd: Path.expand("../assets", __DIR__)
-    ]]}
+    node:
+      {RelativePathWatcher, :watch,
+       [
+         "node",
+         [
+           "node_modules/webpack/bin/webpack.js",
+           "--watch",
+           "--mode",
+           "development",
+           cd: Path.expand("../assets", __DIR__)
+         ]
+       ]}
   ]
 
 # ## SSL Support
