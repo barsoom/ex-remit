@@ -17,7 +17,7 @@ defmodule RemitWeb.CommentsLive do
     socket
     |> assign(your_last_selected_id: nil)
     |> assign_username(github_login(session))
-    |> assign_default_params()
+    |> assign_default_params(session)
     |> assign_filtered_notifications()
     |> ok()
   end
@@ -95,10 +95,10 @@ defmodule RemitWeb.CommentsLive do
   defp ok(socket), do: {:ok, socket}
   defp noreply(socket), do: {:noreply, socket}
 
-  defp assign_default_params(socket) do
+  defp assign_default_params(socket, session) do
     assign(socket,
-      is: "unresolved",
-      role: if(socket.assigns.username, do: "for_me", else: "all")
+      is: get_filter(session, "comments", "is", "unresolved"),
+      role: get_filter(session, "comments", "role", if(socket.assigns.username, do: "for_me", else: "all"))
     )
   end
 

@@ -63,8 +63,18 @@ defmodule RemitWeb.LiveViewHelpers do
       class: link_classes(value, assigns[param]),
       "phx-click": "set_filter",
       "phx-value-#{param}": value,
-      "phx-hook": "CancelDefaultNavigation"
+      "phx-hook": "FilterLink",
+      "data-filter-scope": component,
+      "data-filter-param": param,
+      "data-filter-value": value
     )
+  end
+
+  def get_filter(session, scope, param, default) do
+    case Map.get(session, "filter") do
+      %{^scope => %{^param => value}} -> value
+      _ -> default
+    end
   end
 
   defp link_classes(link_attr, current_attr) do

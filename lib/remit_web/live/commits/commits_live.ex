@@ -147,8 +147,8 @@ defmodule RemitWeb.CommitsLive do
     socket
     |> assign(username: github_login(session))
     |> assign(your_last_selected_commit_id: nil)
-    |> assign(projects_of_team: "all")
-    |> assign(members_of_team: "all")
+    |> assign(projects_of_team: get_filter(session, "commits", "projects_of_team", "all"))
+    |> assign(members_of_team: get_filter(session, "commits", "members_of_team", "all"))
   end
 
   def assign_all_teams(socket) do

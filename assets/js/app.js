@@ -87,6 +87,20 @@ Hooks.CancelDefaultNavigation = {
   }
 }
 
+Hooks.FilterLink = {
+  mounted() {
+    this.el.addEventListener("click", (e) => {
+      e.preventDefault();
+      const dataset = e.target.dataset;
+      const body = {
+        param: dataset.filterParam,
+        value: dataset.filterValue,
+      }
+      fetch(`/api/filter_preference/${e.target.dataset.filterScope}`, { method: "post", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
+    })
+  }
+}
+
 let liveSocket = new LiveSocket("/live", Socket, {
   params: { _csrf_token: csrfToken },
   hooks: Hooks,

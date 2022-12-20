@@ -42,6 +42,7 @@ defmodule RemitWeb.Router do
     get "/stats", StatsController, :show
     post "/update_github_teams", TeamsController, :update
     post "/logout", GithubAuthController, :logout
+    post "/filter_preference/:scope", UserController, :set_filter_preference
   end
 
   pipeline :webhook do
