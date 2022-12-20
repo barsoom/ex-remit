@@ -129,6 +129,11 @@ config :phoenix, :plug_init_mode, :runtime
 config :git_hooks,
   auto_install: false,
   hooks: [
+    pre_commit: [
+      tasks: [
+        {:cmd, "mix format --check-formatted"}
+      ]
+    ],
     pre_push: [
       tasks: [
         {:cmd, "mix credo -a"}

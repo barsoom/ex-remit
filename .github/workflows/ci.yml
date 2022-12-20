@@ -59,12 +59,18 @@ jobs:
           key: ${{ runner.os }}-mix-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
           restore-keys: |
             ${{ runner.os }}-mix-
+
+      - name: Check formatting
+        run: mix format --check-formatted
+
       - name: Install deps
         run: mix deps.get
-      - name: Run tests
-        run: mix test
+
       - name: Lint
         run: mix credo --all
+
+      - name: Run tests
+        run: mix test
 
   # Based on: https://mikecoutermarsh.com/github-actions-deploy-to-heroku/
   deploy:
