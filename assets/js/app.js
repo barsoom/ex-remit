@@ -96,7 +96,7 @@ Hooks.FilterLink = {
         param: dataset.filterParam,
         value: dataset.filterValue,
       }
-      fetch(`/api/filter_preference/${e.target.dataset.filterScope}`, { method: "post", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
+      fetch(`/api/filter_preference/${dataset.filterScope}`, { method: "post", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
     })
   }
 }
