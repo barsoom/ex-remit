@@ -77,7 +77,7 @@ defmodule RemitWeb.SettingsLive do
   defp projects(assigns) do
     ~H"""
     <div class="bg-gray-200 px-3 py-4 mt-6">
-      <h2 class="font-semibold text-xs mb-2 uppercase">Project ownerhsip</h2>
+      <h2 class="font-semibold text-xs mb-2 uppercase">Project ownership</h2>
       <%= for {project, project_teams} <- @projects do %>
         <.project project={project} project_teams={project_teams} teams={@teams} />
       <% end %>
