@@ -85,11 +85,11 @@ jobs:
           key: |
             ${{ runner.os }}-${{ steps.beam.outputs.elixir-version }}-${{ steps.beam.outputs.otp-version }}-plt
 
-      - name: Check Formatting
-        run: mix format --check-formatted
-
       - name: Install deps
         run: mix deps.get
+
+      - name: Check Formatting
+        run: mix format --check-formatted
 
       - name: Compile in dev mode
         run: mix compile --warnings-as-errors
