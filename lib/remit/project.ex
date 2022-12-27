@@ -12,9 +12,9 @@ defmodule Remit.Project do
     |> Enum.sort_by(&elem(&1, 0))
   end
 
-  defp project_names_query, do: from(c in Commit, select: [:repo], distinct: true)
+  defp active_project_names_query, do: from(c in Commit, select: [:repo], distinct: true, where: c.committed_at > fragment("current_date - interval '1 year'"))
 
   defp get_all_query do
-    from commit in subquery(project_names_query()), left_join: team in Team, on: commit.repo in team.projects, select: {commit, team}
+    from commit in subquery(active_project_names_query()), left_join: team in Team, on: commit.repo in team.projects, select: {commit, team}
   end
 end
