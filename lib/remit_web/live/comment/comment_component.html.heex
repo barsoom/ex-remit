@@ -12,7 +12,6 @@
   "}
 >
   <div class="comment__metadata bg-gray-400 py-1 px-3 flex items-center">
-    
     <div class="mr-2 min-w-0">
       <div class="flex items-center space-x-1">
         <%= github_avatar(@comment.commenter_username, :comment, tooltip_pos: "up-left") %>
@@ -21,8 +20,7 @@
         <span>on <%= Utils.format_datetime(@comment.commented_at) %></span>
       </div>
       <div class="truncate">
-        Re:
-        <i><%= if @commit, do: Commit.message_summary(@commit), else: @comment.commit_sha %></i>
+        Re: <i><%= if @commit, do: Commit.message_summary(@commit), else: @comment.commit_sha %></i>
       </div>
     </div>
     <div class="ml-auto whitespace-nowrap">
