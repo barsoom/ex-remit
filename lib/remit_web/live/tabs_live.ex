@@ -14,7 +14,7 @@ defmodule RemitWeb.TabsLive do
     ~H"""
     <%= for tab <- @tabs do %>
       <div style={"display: #{if @live_action == tab.action, do: "block", else: "none"}"}>
-        <%= live_render @socket, tab.module, id: tab.action %>
+        <%= live_render(@socket, tab.module, id: tab.action) %>
       </div>
     <% end %>
     """

@@ -14,8 +14,11 @@ defmodule RemitWeb.StatsController do
     unreviewed_count = unreviewed_commits |> length()
     reviewable_count = unreviewed_commits |> Enum.reject(& &1.review_started_at) |> length()
 
-    oldest_unreviewed_inserted_at = unreviewed_commits |> Enum.map(& &1.inserted_at) |> Enum.min(DateTime, fn -> nil end)
-    oldest_unreviewed_in_seconds = oldest_unreviewed_inserted_at && DateTime.diff(DateTime.utc_now(), oldest_unreviewed_inserted_at)
+    oldest_unreviewed_inserted_at =
+      unreviewed_commits |> Enum.map(& &1.inserted_at) |> Enum.min(DateTime, fn -> nil end)
+
+    oldest_unreviewed_in_seconds =
+      oldest_unreviewed_inserted_at && DateTime.diff(DateTime.utc_now(), oldest_unreviewed_inserted_at)
 
     oldest_unreviewed = unreviewed_commits |> List.last()
 

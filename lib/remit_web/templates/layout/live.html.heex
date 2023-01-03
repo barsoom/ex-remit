@@ -1,6 +1,5 @@
 <div class="bg-red-500 text-white text-base text-center py-1 px-4 border-b border-gray-dark ping-offline__banner">
-  <i class="fal fa-sync fa-spin mr-2"></i>
-  Bruh, someone stole the internet!
+  <i class="fal fa-sync fa-spin mr-2"></i> Bruh, someone stole the internet!
 </div>
 
 <div class="tabs">
@@ -10,13 +9,13 @@
 </div>
 
 <main role="main" class="py-4">
-  <p class="alert alert-info" role="alert"
-    phx-click="lv:clear-flash"
-    phx-value-key="info"><%= live_flash(@flash, :info) %></p>
+  <p class="alert alert-info" role="alert" phx-click="lv:clear-flash" phx-value-key="info">
+    <%= live_flash(@flash, :info) %>
+  </p>
 
-  <p class="alert alert-danger" role="alert"
-    phx-click="lv:clear-flash"
-    phx-value-key="error"><%= live_flash(@flash, :error) %></p>
+  <p class="alert alert-danger" role="alert" phx-click="lv:clear-flash" phx-value-key="error">
+    <%= live_flash(@flash, :error) %>
+  </p>
 
   <%= @inner_content %>
 </main>

@@ -32,9 +32,36 @@ defmodule Faker do
   end
 
   def message do
-    Enum.random(["Fixed", "Broke", "Reverted", "Removed", "Refactored", "Simplified", "Optimised", "Suboptimised", "Redesigned", "Mocked up", "Uploaded", "Threw out", "Decoupled", "Tightly coupled"]) <>
+    Enum.random([
+      "Fixed",
+      "Broke",
+      "Reverted",
+      "Removed",
+      "Refactored",
+      "Simplified",
+      "Optimised",
+      "Suboptimised",
+      "Redesigned",
+      "Mocked up",
+      "Uploaded",
+      "Threw out",
+      "Decoupled",
+      "Tightly coupled"
+    ]) <>
       " " <>
-      Enum.random(["the header", "the footer", "the architecture", "our design system", "the UX", "the front-end", "the back-end", "the pipeline", "CI", "production", "the sitemap"]) <>
+      Enum.random([
+        "the header",
+        "the footer",
+        "the architecture",
+        "our design system",
+        "the UX",
+        "the front-end",
+        "the back-end",
+        "the pipeline",
+        "CI",
+        "production",
+        "the sitemap"
+      ]) <>
       " " <>
       Enum.random(["", "", "", "", "", "", "", "", "", "", "with monads", "in the cloud"])
   end

@@ -3,20 +3,24 @@
     <div class="flex-1 min-w-0 my-6">
       <%= if @username do %>
         Logged in as: <span class="font-bold"><%= @username %></span>
-        ·
-        <%= link("Log out",
+        · <%= link("Log out",
           to: Routes.tabs_path(@socket, :settings),
           id: "logout",
           class: ~w(cursor-pointer underline),
           "phx-hook": "Logout"
         ) %>
-      <% else  %>
+      <% else %>
         <%= link("Log in with GitHub", to: Routes.github_auth_path(@socket, :login)) %>
-      <% end  %>
+      <% end %>
     </div>
 
     <%= if @username do %>
-      <%= github_avatar(@username, 80, alt: "", class: "ml-3", tooltip: "Behold! Your GitHub avatar!", tooltip_pos: "left") %>
+      <%= github_avatar(@username, 80,
+        alt: "",
+        class: "ml-3",
+        tooltip: "Behold! Your GitHub avatar!",
+        tooltip_pos: "left"
+      ) %>
     <% end %>
   </div>
 
@@ -33,16 +37,19 @@
       </p>
 
       <p>
-        This will only update the teams that are <%= link("visible to you on GitHub", to: "https://github.com/orgs/#{Remit.Config.github_org_slug()}/teams") %>.
-        If you're not seeing the changes you expect, ask a member of the <span class="font-semibold"><%= Remit.Config.github_org_slug() %></span> organization with higher access to do this.
+        This will only update the teams that are <%= link("visible to you on GitHub",
+          to: "https://github.com/orgs/#{Remit.Config.github_org_slug()}/teams"
+        ) %>.
+        If you're not seeing the changes you expect, ask a member of the
+        <span class="font-semibold"><%= Remit.Config.github_org_slug() %></span>
+        organization with higher access to do this.
       </p>
     </div>
   <% end %>
 
   <div class="bg-gray-200 px-3 py-4 mt-6 text-almost-black paragraphs">
     <h2 class="font-semibold text-xs mb-2 uppercase">
-      <i class="fas fa-info-circle fa-2x text-blue-400 align-middle mr-1"></i>
-      A little guide to commit authors
+      <i class="fas fa-info-circle fa-2x text-blue-400 align-middle mr-1"></i> A little guide to commit authors
     </h2>
 
     <p>
@@ -52,8 +59,7 @@
       When making <a href="https://docs.github.com/en/pull-requests/committing-changes-to-your-project/creating-and-editing-commits/creating-a-commit-with-multiple-authors">pair commits</a>, only GitHub-provided no-reply email addresses are currently supported; yours can be found at <a href="https://github.com/settings/emails">https://github.com/settings/emails</a>.
     </p>
     <p>
-      If you see
-      <RemitWeb.NoUsernameComponent.render tooltip?={false} />
+      If you see <RemitWeb.NoUsernameComponent.render tooltip?={false} />
       on a commit, Remit can't notify the author about comments on it – fix it for future commits by following the instructions above.
     </p>
   </div>

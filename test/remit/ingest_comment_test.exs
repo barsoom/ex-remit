@@ -29,9 +29,14 @@ defmodule Remit.IngestCommentTest do
     Factory.insert!(:comment, commit: commit, commenter_username: "brad", path: "slab.ff", position: 10)
     Factory.insert!(:comment, commit: commit, commenter_username: "janet", path: "slab.ff", position: 15)
 
-    new_unthreaded_comment = build_params(sha: "abc123", username: "frank", path: nil, position: nil) |> IngestComment.from_params()
-    new_slab_10_comment = build_params(sha: "abc123", username: "frank", path: "slab.ff", position: 10) |> IngestComment.from_params()
-    new_slab_15_comment = build_params(sha: "abc123", username: "frank", path: "slab.ff", position: 15) |> IngestComment.from_params()
+    new_unthreaded_comment =
+      build_params(sha: "abc123", username: "frank", path: nil, position: nil) |> IngestComment.from_params()
+
+    new_slab_10_comment =
+      build_params(sha: "abc123", username: "frank", path: "slab.ff", position: 10) |> IngestComment.from_params()
+
+    new_slab_15_comment =
+      build_params(sha: "abc123", username: "frank", path: "slab.ff", position: 15) |> IngestComment.from_params()
 
     assert Repo.exists?(from CommentNotification, where: [comment_id: ^new_unthreaded_comment.id, username: "rocky"])
     refute Repo.exists?(from CommentNotification, where: [comment_id: ^new_unthreaded_comment.id, username: "brad"])
@@ -50,7 +55,10 @@ defmodule Remit.IngestCommentTest do
     Factory.insert!(:commit, usernames: ["hello"])
     Factory.insert!(:comment, commenter_username: "world")
     commit = Factory.insert!(:commit)
-    comment = build_params(sha: commit.sha, username: "myself", body: "Note to @myself: @Hello @there @world!") |> IngestComment.from_params()
+
+    comment =
+      build_params(sha: commit.sha, username: "myself", body: "Note to @myself: @Hello @there @world!")
+      |> IngestComment.from_params()
 
     # You can @mention yourself, e.g. with reminders to fix stuff.
     assert Repo.exists?(from CommentNotification, where: [comment_id: ^comment.id, username: "myself"])

@@ -8,7 +8,9 @@
   <a
     href={@commit.url}
     id={"commit-#{@commit.id}"}
-    phx-click="selected" phx-value-id={@commit.id} phx-hook="FixLink"
+    phx-click="selected"
+    phx-value-id={@commit.id}
+    phx-hook="FixLink"
     class={"
       flex items-center no-underline
       border-b border-gray-light
@@ -16,12 +18,14 @@
       #{if @reviewed?, do: " commit--reviewed"}
       #{if @being_reviewed?, do: " commit--being-reviewed"}
       #{if @your_last_selected_commit?, do: " commit--highlight"}
-    "}>
+    "}
+  >
     <%= if @commit.usernames != [] do %>
       <div class="flex-none mr-3 flex space-x-1">
         <%= for username <- @commit.usernames do %>
-          <%= github_avatar(username,
-            (if @reviewed? || @you_authored?, do: :small_commit, else: 45),
+          <%= github_avatar(
+            username,
+            if(@reviewed? || @you_authored?, do: :small_commit, else: 45),
             class: "rounded",
             tooltip_pos: "up-left"
           ) %>
@@ -38,7 +42,11 @@
         <%= if @commit.usernames == [] && !@reviewed? do %>
           <RemitWeb.NoUsernameComponent.render />
         <% end %>
-        in <%= content_tag((if @reviewed? || @you_authored?, do: :span, else: :b), @commit.repo, tooltip_attributes("#{@commit.owner}/#{@commit.repo}")) %>
+        in <%= content_tag(
+          if(@reviewed? || @you_authored?, do: :span, else: :b),
+          @commit.repo,
+          tooltip_attributes("#{@commit.owner}/#{@commit.repo}")
+        ) %>
         <%= Utils.format_time(@commit.committed_at) %>
       </p>
     </div>
@@ -58,24 +66,23 @@
       <div class="flex-none ml-2 self-center">
         <%= cond do %>
           <% @reviewed? && @you_authored? -> %>
-            <%# Don't show buttons. %>
           <% @reviewed? && !@you_authored? && @username -> %>
             <button phx-click="mark_unreviewed" phx-value-id={@commit.id} class="opacity-25 hover:opacity-100">
-              <i class="far fa-eye-slash"></i>
-              Mark as new
+              <i class="far fa-eye-slash"></i> Mark as new
             </button>
           <% @being_reviewed? && @you_are_reviewing? -> %>
             <button phx-click="mark_reviewed" phx-value-id={@commit.id} class="bg-green-light">
-              <i class="fas fa-check text-green-dark"></i>
-              Mark as reviewed
+              <i class="fas fa-check text-green-dark"></i> Mark as reviewed
             </button>
           <% !@you_authored? && @username -> %>
-            <button phx-click="start_review" phx-value-id={@commit.id} class="hover:bg-yellow-100 hover:border-yellow-mid">
-              <i class="fas fa-eye text-yellow-mid"></i>
-              Start review
+            <button
+              phx-click="start_review"
+              phx-value-id={@commit.id}
+              class="hover:bg-yellow-100 hover:border-yellow-mid"
+            >
+              <i class="fas fa-eye text-yellow-mid"></i> Start review
             </button>
           <% true -> %>
-            <%# Don't show buttons. %>
         <% end %>
       </div>
 

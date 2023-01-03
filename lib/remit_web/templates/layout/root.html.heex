@@ -1,18 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <%= csrf_meta_tag() %>
-    <meta name="auth_key" content={Plug.Conn.get_session(@conn, "auth_key")}/>
+    <meta name="auth_key" content={Plug.Conn.get_session(@conn, "auth_key")} />
     <.live_title suffix=" · Remit">
-      <%= assigns[:page_title] || "Remit"%>
+      <%= assigns[:page_title] || "Remit" %>
     </.live_title>
-    <link rel="stylesheet" href={Routes.static_path(@conn, "/css/app.css")}/>
-    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.13.0/css/all.css" integrity="sha384-IIED/eyOkM6ihtOiQsX2zizxFBphgnv1zbe1bKA+njdFzkr6cDNy16jfIKWu4FNH" crossorigin="anonymous">
-    <script defer type="text/javascript" src={Routes.static_path(@conn, "/js/app.js")}></script>
-    <link rel="icon" href={Routes.static_path(@conn, "/images/#{Application.get_env(:remit, :favicon)}")}/>
+    <link rel="stylesheet" href={Routes.static_path(@conn, "/css/app.css")} />
+    <link
+      rel="stylesheet"
+      href="https://pro.fontawesome.com/releases/v5.13.0/css/all.css"
+      integrity="sha384-IIED/eyOkM6ihtOiQsX2zizxFBphgnv1zbe1bKA+njdFzkr6cDNy16jfIKWu4FNH"
+      crossorigin="anonymous"
+    />
+    <script defer type="text/javascript" src={Routes.static_path(@conn, "/js/app.js")}>
+    </script>
+    <link rel="icon" href={Routes.static_path(@conn, "/images/#{Application.get_env(:remit, :favicon)}")} />
   </head>
   <body class="bg-gray-dark">
     <div class="mx-auto max-w-3xl min-h-screen bg-white shadow-2xl">

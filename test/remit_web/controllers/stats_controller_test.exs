@@ -7,7 +7,12 @@ defmodule RemitWeb.StatsControllerTest do
 
     # Too old to count in reviewer stats.
     secs_for_11_days = 60 * 60 * 24 * 11
-    Factory.insert!(:commit, reviewed_at: now, updated_at: DateTime.add(now, -secs_for_11_days), reviewed_by_username: "baz")
+
+    Factory.insert!(:commit,
+      reviewed_at: now,
+      updated_at: DateTime.add(now, -secs_for_11_days),
+      reviewed_by_username: "baz"
+    )
 
     # Ignored because it's unlisted.
     Factory.insert!(:commit, reviewed_at: nil, inserted_at: DateTime.add(now, -200), unlisted: true)

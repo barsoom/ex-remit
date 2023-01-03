@@ -19,14 +19,21 @@ defmodule Remit.CommitsTest do
     test "deletes commits older than the given number of days, and their associated records" do
       # Since we can't (?) freeze time in this test, we make sure the newer record has a little margin.
       older_unreviewed_commit = Factory.insert!(:commit, inserted_at: days_and_seconds_ago(100, 1), reviewed_at: nil)
-      older_reviewed_commit = Factory.insert!(:commit, inserted_at: days_and_seconds_ago(100, 1), reviewed_at: some_time())
-      newer_reviewed_commit = Factory.insert!(:commit, inserted_at: days_and_seconds_ago(100, -5), reviewed_at: some_time())
+
+      older_reviewed_commit =
+        Factory.insert!(:commit, inserted_at: days_and_seconds_ago(100, 1), reviewed_at: some_time())
+
+      newer_reviewed_commit =
+        Factory.insert!(:commit, inserted_at: days_and_seconds_ago(100, -5), reviewed_at: some_time())
 
       older_reviewed_commit_comment = Factory.insert!(:comment, commit: older_reviewed_commit)
       newer_reviewed_commit_comment = Factory.insert!(:comment, commit: newer_reviewed_commit)
 
-      older_reviewed_commit_notification = Factory.insert!(:comment_notification, comment: older_reviewed_commit_comment)
-      newer_reviewed_commit_notification = Factory.insert!(:comment_notification, comment: newer_reviewed_commit_comment)
+      older_reviewed_commit_notification =
+        Factory.insert!(:comment_notification, comment: older_reviewed_commit_comment)
+
+      newer_reviewed_commit_notification =
+        Factory.insert!(:comment_notification, comment: newer_reviewed_commit_comment)
 
       assert in_db?(older_unreviewed_commit)
       assert in_db?(older_reviewed_commit)

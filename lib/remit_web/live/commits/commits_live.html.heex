@@ -1,56 +1,77 @@
 <div class="info-box">
   <p>
-    In projects of team:
-    <%= filter_link @socket, assigns, :commits, "filter-commit-project-team-all", "All", projects_of_team: "all" %>
+    In projects of team: <%= filter_link(@socket, assigns, :commits, "filter-commit-project-team-all", "All",
+      projects_of_team: "all"
+    ) %>
     <%= for team <- @all_teams do %>
-    ·
-    <%= filter_link @socket, assigns, :commits, "filter-commit-project-team-#{team.slug}", team.name, projects_of_team: team.slug %>
+      · <%= filter_link(@socket, assigns, :commits, "filter-commit-project-team-#{team.slug}", team.name,
+        projects_of_team: team.slug
+      ) %>
     <% end %>
   </p>
   <%= if Remit.Config.has_github_org? do %>
-  <p>
-    By members of team:
-    <%= filter_link @socket, assigns, :commits, "filter-commit-member-team-all", "All", members_of_team: "all" %>
-    <%= for team <- @all_teams do %>
-    ·
-    <%= filter_link @socket, assigns, :commits, "filter-commit-member-team-#{team.slug}", team.name, members_of_team: team.slug %>
-    <% end %>
-  </p>
-  <% end  %>
+    <p>
+      By members of team: <%= filter_link(@socket, assigns, :commits, "filter-commit-member-team-all", "All",
+        members_of_team: "all"
+      ) %>
+      <%= for team <- @all_teams do %>
+        · <%= filter_link(@socket, assigns, :commits, "filter-commit-member-team-#{team.slug}", team.name,
+          members_of_team: team.slug
+        ) %>
+      <% end %>
+    </p>
+  <% end %>
 </div>
 
 <%= if @commits == [] do %>
-
   <RemitWeb.NoContentComponent.render />
-
 <% else %>
-
   <div class="info-box">
     <%= if @username do %>
       <%= if @unreviewed_count == 0 do %>
         <p class="flex items-center justify-center text-base text-almost-black">
-          <i class="fas fa-trophy fa-lg text-yellow-mid mr-2"></i>
-          Nothing left to review!
+          <i class="fas fa-trophy fa-lg text-yellow-mid mr-2"></i> Nothing left to review!
         </p>
       <% else %>
         <p>
-          There's <b><%= @unreviewed_count %></b> commit<%= if @unreviewed_count != 1, do: "s" %> to review
-          (<b><%= @others_unreviewed_count %></b> by others; <b><%= @my_unreviewed_count %></b> by you).
+          There's <b><%= @unreviewed_count %></b>
+          commit<%= if @unreviewed_count != 1, do: "s" %> to review
+          (<b><%= @others_unreviewed_count %></b> by others; <b><%= @my_unreviewed_count %></b>
+          by you).
           <%= cond do %>
             <% @oldest_overlong_in_review_by_me -> %>
               <p>
                 <i class="far fa-snooze text-blue-600 zzz-animation"></i>
                 <b class="font-bold text-blue-900 ml-1">Still awake?</b>
                 Don't forget to complete
-                <a href={"#commit-#{@oldest_overlong_in_review_by_me.id}"} phx-click="selected" phx-value-id={@oldest_overlong_in_review_by_me.id} id="for-phx-hook-complete-your-review" phx-hook="ScrollToTarget">your review</a>
+                <a
+                  href={"#commit-#{@oldest_overlong_in_review_by_me.id}"}
+                  phx-click="selected"
+                  phx-value-id={@oldest_overlong_in_review_by_me.id}
+                  id="for-phx-hook-complete-your-review"
+                  phx-hook="ScrollToTarget"
+                >
+                  your review
+                </a>
                 :)
               </p>
             <% @oldest_unreviewed_for_me -> %>
-              <p>Maybe do one from <a href={"#commit-#{@oldest_unreviewed_for_me.id}"} phx-click="selected" phx-value-id={@oldest_unreviewed_for_me.id} id="for-phx-hook-oldest-unreviewed" phx-hook="ScrollToTarget"><%= Utils.format_datetime(@oldest_unreviewed_for_me.committed_at) %></a> next.</p>
+              <p>
+                Maybe do one from
+                <a
+                  href={"#commit-#{@oldest_unreviewed_for_me.id}"}
+                  phx-click="selected"
+                  phx-value-id={@oldest_unreviewed_for_me.id}
+                  id="for-phx-hook-oldest-unreviewed"
+                  phx-hook="ScrollToTarget"
+                >
+                  <%= Utils.format_datetime(@oldest_unreviewed_for_me.committed_at) %>
+                </a>
+                next.
+              </p>
             <% true -> %>
               <p>
-                <i class="fas fa-trophy text-yellow-mid"></i>
-                Nothing left for you to review!
+                <i class="fas fa-trophy text-yellow-mid"></i> Nothing left for you to review!
               </p>
           <% end %>
         </p>
@@ -59,8 +80,7 @@
       <p>Hello, stranger! Please <%= live_patch("log in", to: Routes.tabs_path(@socket, :settings)) %>.</p>
       <%= if @unreviewed_count == 0 do %>
         <p>
-          <i class="fas fa-trophy text-yellow-mid"></i>
-          Nothing left to review!
+          <i class="fas fa-trophy text-yellow-mid"></i> Nothing left to review!
         </p>
       <% else %>
         <p>There's <b><%= @unreviewed_count %></b> commit<%= if @unreviewed_count != 1, do: "s" %> to review.</p>
@@ -69,8 +89,7 @@
   </div>
 
   <%= for commit <- @commits do %>
-    <%# We use live components specifically so that only changed commits (not all of them) are passed via the socket. %>
-    <%# We prefer this to the "temporary assigns" optimisation, as that complicates logic by not holding the full list of commits as state. %>
+    
     <RemitWeb.CommitComponent.render
       id={commit.id}
       commit={commit}
@@ -82,5 +101,4 @@
       your_last_selected_commit?={@your_last_selected_commit_id == commit.id}
     />
   <% end %>
-
 <% end %>

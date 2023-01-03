@@ -46,7 +46,10 @@ defmodule Remit.Commit do
     author_in_email?(commit, username) || author_in_commit_trailer?(commit, username)
   end
 
-  def being_reviewed_by?(%Commit{review_started_by_username: username, reviewed_at: nil}, username) when not is_nil(username), do: true
+  def being_reviewed_by?(%Commit{review_started_by_username: username, reviewed_at: nil}, username)
+      when not is_nil(username),
+      do: true
+
   def being_reviewed_by?(_, _), do: false
 
   def oldest_unreviewed_for(_commits, nil), do: nil
@@ -54,7 +57,9 @@ defmodule Remit.Commit do
   def oldest_unreviewed_for(commits, username) do
     commits
     |> Enum.reverse()
-    |> Enum.find(&(!&1.reviewed_at && !authored_by?(&1, username) && (being_reviewed_by?(&1, username) || !&1.review_started_at)))
+    |> Enum.find(
+      &(!&1.reviewed_at && !authored_by?(&1, username) && (being_reviewed_by?(&1, username) || !&1.review_started_at))
+    )
   end
 
   @overlong_in_review_over_minutes 15
@@ -65,7 +70,9 @@ defmodule Remit.Commit do
   def oldest_overlong_in_review_by(commits, username, now) do
     commits
     |> Enum.reverse()
-    |> Enum.find(&(being_reviewed_by?(&1, username) && DateTime.diff(now, &1.review_started_at) > @overlong_in_review_over_seconds))
+    |> Enum.find(
+      &(being_reviewed_by?(&1, username) && DateTime.diff(now, &1.review_started_at) > @overlong_in_review_over_seconds)
+    )
   end
 
   def bot?(username), do: String.ends_with?(username, "[bot]")

@@ -19,7 +19,10 @@ defmodule Remit.CommentNotification do
   on the same comment.
   """
   @spec resolved_coauthors(CommentNotification.t()) :: list(String.t())
-  def resolved_coauthors(%CommentNotification{comment: %Comment{commit: %Commit{}, comment_notifications: others}} = notification) when is_list(others) do
+  def resolved_coauthors(
+        %CommentNotification{comment: %Comment{commit: %Commit{}, comment_notifications: others}} = notification
+      )
+      when is_list(others) do
     others
     |> Enum.filter(&resolved_by_coauthor?(notification, &1))
     |> Enum.map(& &1.username)

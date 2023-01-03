@@ -127,13 +127,25 @@ defmodule Remit.CommitTest do
   describe "oldest_overlong_in_review_by" do
     setup do: %{now: ~U[2020-06-30 12:00:00.000000Z]}
 
-    test "returns the oldest (by list order) commit that has been in review by the given user for over 15 minutes", %{now: now} do
+    test "returns the oldest (by list order) commit that has been in review by the given user for over 15 minutes", %{
+      now: now
+    } do
       commits = [
         _just_under = %Commit{review_started_by_username: "myname", review_started_at: ~U[2020-06-30 11:45:00.000000Z]},
-        _overlong_but_newer = %Commit{review_started_by_username: "myname", review_started_at: ~U[2020-06-30 11:44:59.999999Z]},
+        _overlong_but_newer = %Commit{
+          review_started_by_username: "myname",
+          review_started_at: ~U[2020-06-30 11:44:59.999999Z]
+        },
         overlong = %Commit{review_started_by_username: "myname", review_started_at: ~U[2020-06-30 11:44:59.999998Z]},
-        _by_another = %Commit{review_started_by_username: "theirname", review_started_at: ~U[2020-06-30 11:44:57.000000Z]},
-        _reviewed = %Commit{review_started_by_username: "myname", review_started_at: ~U[2020-06-30 11:44:57.000000Z], reviewed_at: now}
+        _by_another = %Commit{
+          review_started_by_username: "theirname",
+          review_started_at: ~U[2020-06-30 11:44:57.000000Z]
+        },
+        _reviewed = %Commit{
+          review_started_by_username: "myname",
+          review_started_at: ~U[2020-06-30 11:44:57.000000Z],
+          reviewed_at: now
+        }
       ]
 
       assert Commit.oldest_overlong_in_review_by(commits, "myname", now) == overlong

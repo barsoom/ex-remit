@@ -17,7 +17,9 @@ defmodule Remit.IngestCommitsTest do
   end
 
   test "assigns usernames from author username and committer username" do
-    [commit] = build_params(commits: [[author_username: "foo", committer_username: "bar"]]) |> IngestCommits.from_params()
+    [commit] =
+      build_params(commits: [[author_username: "foo", committer_username: "bar"]]) |> IngestCommits.from_params()
+
     assert commit.usernames == ["foo", "bar"]
 
     [commit] = build_params(commits: [[author_username: "foo", committer_username: nil]]) |> IngestCommits.from_params()
@@ -26,7 +28,9 @@ defmodule Remit.IngestCommitsTest do
     [commit] = build_params(commits: [[author_username: nil, committer_username: "bar"]]) |> IngestCommits.from_params()
     assert commit.usernames == ["bar"]
 
-    [commit] = build_params(commits: [[author_username: "foo", committer_username: "foo"]]) |> IngestCommits.from_params()
+    [commit] =
+      build_params(commits: [[author_username: "foo", committer_username: "foo"]]) |> IngestCommits.from_params()
+
     assert commit.usernames == ["foo"]
   end
 
@@ -146,7 +150,8 @@ defmodule Remit.IngestCommitsTest do
             "name" => "Foo Barson"
           }
 
-          committer = if committer_username, do: Map.merge(committer, %{"username" => committer_username}), else: committer
+          committer =
+            if committer_username, do: Map.merge(committer, %{"username" => committer_username}), else: committer
 
           %{
             "author" => author,

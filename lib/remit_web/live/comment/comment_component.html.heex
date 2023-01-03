@@ -12,17 +12,16 @@
   "}
 >
   <div class="comment__metadata bg-gray-400 py-1 px-3 flex items-center">
-    <%# min-w-0 for truncate inside flexbox: https://css-tricks.com/flexbox-truncated-text/ %>
+    
     <div class="mr-2 min-w-0">
       <div class="flex items-center space-x-1">
-        <%= github_avatar @comment.commenter_username, :comment, tooltip_pos: "up-left" %>
+        <%= github_avatar(@comment.commenter_username, :comment, tooltip_pos: "up-left") %>
         <i class="fas fa-chevron-right text-gray-dark"></i>
         <%= comment_recipient_avatars(@commit, @comment, @notification, tooltip_pos: "up-left") %>
         <span>on <%= Utils.format_datetime(@comment.commented_at) %></span>
       </div>
       <div class="truncate">
         Re:
-        <%# We may have a comment without its commit in DB. %>
         <i><%= if @commit, do: Commit.message_summary(@commit), else: @comment.commit_sha %></i>
       </div>
     </div>
@@ -33,8 +32,7 @@
 
         <%= if @at_me? do %>
           <button phx-click="unresolve" phx-value-id={@notification.id} class="ml-2">
-            <i class="far fa-eye-slash"></i>
-            Mark as new
+            <i class="far fa-eye-slash"></i> Mark as new
           </button>
         <% end %>
       <% else %>
@@ -45,8 +43,7 @@
             </span>
           <% end %>
           <button phx-click="resolve" phx-value-id={@notification.id} class="bg-green-light">
-            <i class="fas fa-check text-green-dark"></i>
-            Resolve
+            <i class="fas fa-check text-green-dark"></i> Resolve
           </button>
         <% else %>
           <span {tooltip_attributes("Since #{Utils.format_datetime(@notification.inserted_at)}", pos: "up-right")}>

@@ -43,7 +43,12 @@ defmodule Remit.Comments do
 
   # Private
 
-  defp do_list_notifications(%{username: username, resolved_filter: resolved_filter, user_filter: user_filter, limit: limit}) do
+  defp do_list_notifications(%{
+         username: username,
+         resolved_filter: resolved_filter,
+         user_filter: user_filter,
+         limit: limit
+       }) do
     query =
       from n in CommentNotification,
         limit: ^limit,
@@ -59,10 +64,17 @@ defmodule Remit.Comments do
 
     query =
       case {username, user_filter} do
-        {nil, _} -> query
-        {_, "all"} -> query
-        {_, "for_me"} -> from n in query, where: fragment("LOWER(?)", n.username) == ^String.downcase(username)
-        {_, "by_me"} -> from [n, c] in query, where: fragment("LOWER(?)", c.commenter_username) == ^String.downcase(username)
+        {nil, _} ->
+          query
+
+        {_, "all"} ->
+          query
+
+        {_, "for_me"} ->
+          from n in query, where: fragment("LOWER(?)", n.username) == ^String.downcase(username)
+
+        {_, "by_me"} ->
+          from [n, c] in query, where: fragment("LOWER(?)", c.commenter_username) == ^String.downcase(username)
       end
 
     Repo.all(query)

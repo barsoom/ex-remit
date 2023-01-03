@@ -53,7 +53,8 @@ defmodule Remit.UsernamesFromMentions do
     # UNION ALL rather than UNION because it's faster, we can't easily get unique values anyway.
     # COALESCE because empty lists would otherwise ARRAY_AGG to `[nil]`.
 
-    commenter_usernames_q = from c in Comment, select: fragment("COALESCE(ARRAY_AGG(DISTINCT ?), '{}')", c.commenter_username)
+    commenter_usernames_q =
+      from c in Comment, select: fragment("COALESCE(ARRAY_AGG(DISTINCT ?), '{}')", c.commenter_username)
 
     from(c in Commit, select: c.usernames, distinct: true, union_all: ^commenter_usernames_q)
     |> Repo.all()

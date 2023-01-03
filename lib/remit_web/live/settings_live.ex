@@ -108,7 +108,7 @@ defmodule RemitWeb.SettingsLive do
           <option value={team.slug}><%= team.name %></option>
         <% end %>
       </select>
-      <%= submit "add owner" %>
+      <%= submit("add owner") %>
     </.form>
     """
   end
@@ -126,7 +126,7 @@ defmodule RemitWeb.SettingsLive do
         <.form for={:project} phx-submit="remove_project_owner">
           <input type="hidden" name="project" value={@project} />
           <input type="hidden" name="team" value={team.slug} />
-          <li class="ml-3"><%= team.name %><%= submit "remove", class: "ml-2" %></li>
+          <li class="ml-3"><%= team.name %><%= submit("remove", class: "ml-2") %></li>
         </.form>
       <% end %>
     </ul>
