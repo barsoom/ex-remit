@@ -10,7 +10,7 @@ shas =
       |> Enum.filter(fn c -> Enum.member?(c.usernames, for_user) end)
       |> Enum.map(& &1.sha)
 
-    unless Enum.any?(commits) do
+    if Enum.empty?(commits) do
       IO.puts("Cannot find any commits by #{for_user}, you can generate some with 'mix wh.commits --author <username>'")
 
       exit(:shutdown)
