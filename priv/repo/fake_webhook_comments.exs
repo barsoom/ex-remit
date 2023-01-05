@@ -1,11 +1,26 @@
-count =
-  case System.argv() do
-    # Default
-    [] -> 5
-    [number_string | _] -> String.to_integer(number_string)
-  end
+{opts, _, _} = OptionParser.parse(System.argv(), strict: [count: :integer, for_user: :string])
 
-shas = Remit.Commits.list_latest_shas(100)
+count = Keyword.get(opts, :count, 5)
+for_user = Keyword.get(opts, :for_user, nil)
+
+shas =
+  if for_user != nil do
+    commits =
+      Remit.Commits.list_latest(100)
+      |> Enum.filter(fn c -> Enum.member?(c.usernames, for_user) end)
+      |> Enum.map(& &1.sha)
+
+    # Elixir-ism, not sure if clean or not
+    unless Enum.any?(commits) do
+      IO.puts("Cannot find any commits by #{for_user}, you can generate some with 'mix wh.commits --author <username>'")
+
+      exit(:shutdown)
+    end
+
+    commits
+  else
+    Remit.Commits.list_latest_shas(100)
+  end
 
 if shas == [] do
   IO.puts(:stderr, "Must have commits first!")
