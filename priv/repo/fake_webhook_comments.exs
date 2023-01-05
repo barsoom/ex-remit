@@ -10,7 +10,6 @@ shas =
       |> Enum.filter(fn c -> Enum.member?(c.usernames, for_user) end)
       |> Enum.map(& &1.sha)
 
-    # Elixir-ism, not sure if clean or not
     unless Enum.any?(commits) do
       IO.puts("Cannot find any commits by #{for_user}, you can generate some with 'mix wh.commits --author <username>'")
 
