@@ -132,7 +132,4 @@ defmodule RemitWeb.SettingsLive do
     </ul>
     """
   end
-
-  defp ok(socket), do: {:ok, socket}
-  defp noreply(socket), do: {:noreply, socket}
 end

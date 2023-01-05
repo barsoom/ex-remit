@@ -139,11 +139,6 @@ defmodule RemitWeb.CommitsLive do
     {:noreply, socket}
   end
 
-  # Private
-
-  defp ok(socket), do: {:ok, socket}
-  defp noreply(socket), do: {:noreply, socket}
-
   def assign_defaults(socket, session) do
     socket
     |> assign(username: github_login(session))
@@ -157,6 +152,7 @@ defmodule RemitWeb.CommitsLive do
     |> assign(all_teams: Remit.Team.get_all())
   end
 
+  # Private
   defp commit_filter(socket) do
     commit_filter_by_projects(projects_of_team(socket)) ++ commit_filter_by_members(members_of_team(socket))
   end

@@ -92,9 +92,6 @@ defmodule RemitWeb.CommentsLive do
 
   # Private
 
-  defp ok(socket), do: {:ok, socket}
-  defp noreply(socket), do: {:noreply, socket}
-
   defp assign_default_params(socket, session) do
     assign(socket,
       is: get_filter(session, "comments", "is", "unresolved"),

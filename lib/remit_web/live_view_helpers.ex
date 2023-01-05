@@ -70,6 +70,9 @@ defmodule RemitWeb.LiveViewHelpers do
     )
   end
 
+  def ok(socket), do: {:ok, socket}
+  def noreply(socket), do: {:noreply, socket}
+
   def get_filter(session, scope, param, default) do
     case Map.get(session, "filter") do
       %{^scope => %{^param => value}} -> value
