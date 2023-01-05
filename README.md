@@ -261,11 +261,11 @@ Just run either or both of these commands:
 They default to adding just a few, but you can pass a count:
 
     # Add 100 commits via one webhook call.
-    mix wh.commits 100
+    mix wh.commits --count 100
 
     # Add 100 comments via 100 webhook calls (GitHub sends one per call).
     # May not be listed exactly 100 times in the UI, because we list based on CommentNotifications.
-    mix wh.comments 100
+    mix wh.comments --count 100
 
 You can specify a repository name with `--repo <repo>`; otherwise, one will be generated.
 
@@ -273,6 +273,14 @@ It's also possible to generate co-authored commits using the `--co-authored` fla
 
     # Adds 10 co-authored commits using commit trailers, e.g. Co-authored-by: foo <foo@example.com>
     mix wh.commits --co-authored
+
+You can also specify which users commits to generate comments for by passising the `--for-user` flag. 
+
+    mix wh.comments --for-user username
+
+Bear in mind that for this to work, there must exist commits by that username in the database. This can be accomplished by passing the `--author` flag when generating commits.
+
+    mix wh.commits --author username
 
 ### Working on the connection detection
 
