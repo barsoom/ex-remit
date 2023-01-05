@@ -1,30 +1,10 @@
-defmodule ParseArgs do
-  @default_count 5
+{opts, _, _} =
+  OptionParser.parse(System.argv(), strict: [count: :integer, repo: :string, author: :string, co_authored: :boolean])
 
-  def count(args) do
-    case args do
-      [] ->
-        @default_count
-
-      [number_string | _] ->
-        case Integer.parse(number_string) do
-          {number, ""} -> number
-          _ -> @default_count
-        end
-    end
-  end
-
-  def repo(args)
-  def repo(["--repo", repo | _]), do: repo
-  def repo([]), do: nil
-  def repo([_ | tail]), do: repo(tail)
-
-  def with_co_author?(args), do: Enum.member?(args, "--co-authored")
-end
-
-repo = ParseArgs.repo(System.argv()) || Faker.repo()
-count = ParseArgs.count(System.argv())
-with_co_author? = ParseArgs.with_co_author?(System.argv())
+repo = opts |> Keyword.get(:repo, Faker.repo())
+count = opts |> Keyword.get(:count, 5)
+with_co_author? = opts |> Keyword.get(:co_authored, false)
+author = opts |> Keyword.get(:author, Faker.username())
 
 json =
   Jason.encode!(
@@ -43,7 +23,7 @@ json =
           %{
             author: %{
               email: Faker.email(),
-              username: Faker.username()
+              username: author
             },
             committer: %{
               email: Faker.email(),
