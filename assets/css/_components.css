@@ -7,8 +7,9 @@
   @apply flex;
 
   &__tab {
-    @apply text-base py-2 px-3 flex-1 text-center border-r border-b border-gray-mid bg-gray-100;
+    @apply text-sm py-1 px-2 flex-1 text-center border-r border-b border-gray-mid bg-gray-100;
     @apply no-underline;
+    @apply sm:text-base sm:py-2 sm:px-3;
 
     @apply text-gray-dark;
 
@@ -33,11 +34,6 @@
           @apply ml-1;
         }
       }
-    }
-
-    @media (max-width: 400px) {
-      @apply py-1 px-2;
-      font-size: 13px;
     }
 
     &--current {
