@@ -14,11 +14,13 @@ defmodule RemitWeb.LayoutView do
     """
   end
 
-  defp tab_class(%{action: action, current_action: action}) do
-    ["tabs__tab", "tabs__tab--#{action}", "relative", "tabs__tab--current"]
+  defp tab_class(%{action: action, current_action: action} = opts) do
+    base_classes(opts) ++ ["tabs__tab--current"]
   end
 
-  defp tab_class(%{action: action}) do
+  defp tab_class(%{action: _action} = opts), do: base_classes(opts)
+
+  defp base_classes(%{action: action}) do
     ["tabs__tab", "tabs__tab--#{action}", "relative"]
   end
 end
