@@ -53,7 +53,7 @@ defmodule Remit.MixProject do
       {:plug_cowboy, "> 0.0.0"},
       {:tzdata, "> 0.0.0"},
       {:honeybadger, "> 0.0.0"},
-      {:tesla, "> 0.0.0"},
+      {:tesla, ">= 1.5.0"},
       {:hackney, "> 0.0.0"},
       {:confex, "~> 3.5.0"},
       {:mox, "> 0.0.0", only: :test},
