@@ -11,8 +11,23 @@ defmodule Remit.Commits do
   def list_latest(filters, count)
 
   def list_latest(filters, count) do
-    filters
-    |> Enum.reduce(Commit.latest_listed(count), &Commit.apply_filter(&2, &1))
+    filtered =
+      filters
+      |> Enum.reduce(Commit.listed(), &Commit.apply_filter(&2, &1))
+
+    unreviewed =
+      filtered
+      |> where([c], is_nil(c.reviewed_at))
+
+    reviewed =
+      filtered
+      |> where([c], not is_nil(c.reviewed_at))
+      |> Commit.apply_reviewed_cutoff(filters)
+      |> order_by([c], desc: c.id)
+
+    subquery(union_all(unreviewed, ^reviewed))
+    |> order_by([u], desc: u.id)
+    |> limit(^count)
     |> Repo.all()
   end
 

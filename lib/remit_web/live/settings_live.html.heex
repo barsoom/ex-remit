@@ -24,6 +24,20 @@
     <% end %>
   </div>
 
+  <div>
+    <.form
+      :let={f}
+      for={:reviewed_commit_cutoff}
+      id="reviewed_commit_cutoff_form"
+      phx-change="update_reviewed_commit_cutoff"
+      phx-hook="SetReviewedCommitCutoff"
+    >
+      Hide reviewed commits
+      after <%= text_input(f, :days, value: @reviewed_commit_cutoff["days"], size: 2) %> days
+      or <%= text_input(f, :commits, value: @reviewed_commit_cutoff["commits"], size: 2) %> commits (0 to disable).
+    </.form>
+  </div>
+
   <%= if @username && Remit.Config.has_github_org? do %>
     <div class="bg-gray-200 px-3 py-4 mt-6 paragraphs">
       <%= link("Import team members from GitHub",

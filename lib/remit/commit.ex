@@ -40,6 +40,17 @@ defmodule Remit.Commit do
       where: fragment("? && ?", c.usernames, subquery(Remit.Team.team_members_query(team)))
   end
 
+  def apply_filter(q, _), do: q
+
+  def apply_reviewed_cutoff(q, filters) when is_list(filters),
+    do: Enum.reduce(filters, q, &apply_reviewed_cutoff(&2, &1))
+
+  def apply_reviewed_cutoff(q, {:reviewed_commit_cutoff_days, days}),
+    do: q |> where([c], c.committed_at > ago(^days, "day"))
+
+  def apply_reviewed_cutoff(q, {:reviewed_commit_cutoff_commits, commits}), do: q |> limit(^commits)
+  def apply_reviewed_cutoff(q, _), do: q
+
   def authored_by?(_commit, nil), do: false
 
   def authored_by?(commit, username) do

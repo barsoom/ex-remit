@@ -101,6 +101,17 @@ Hooks.FilterLink = {
   }
 }
 
+Hooks.SetReviewedCommitCutoff = {
+  mounted() {
+    this.el.addEventListener("change", (e) => {
+      console.log(e.target.name, e.target.value);
+      const formData = new FormData();
+      formData.append(e.target.name, e.target.value);
+      fetch(`/api/reviewed_commit_cutoff`, { method: "post", body: formData })
+    })
+  }
+}
+
 let liveSocket = new LiveSocket("/live", Socket, {
   params: { _csrf_token: csrfToken },
   hooks: Hooks,

@@ -1,7 +1,7 @@
 defmodule RemitWeb.CommitsLive do
   use RemitWeb, :live_view
   require Logger
-  alias Remit.{Commits, Commit, GithubAuth, Ownership, Utils}
+  alias Remit.{Commits, Commit, GithubAuth, Ownership, Settings, Utils}
 
   @max_commits Application.compile_env(:remit, :max_commits)
   @overlong_check_frequency_secs 60
@@ -13,6 +13,7 @@ defmodule RemitWeb.CommitsLive do
     if connected?(socket) do
       Commits.subscribe()
       GithubAuth.subscribe(session["session_id"])
+      Settings.subscribe(session["session_id"])
       Ownership.subscribe()
       :timer.send_interval(@overlong_check_frequency_secs * 1000, self(), :check_for_overlong_reviewing)
     end
@@ -61,6 +62,15 @@ defmodule RemitWeb.CommitsLive do
   def handle_event("set_filter", %{"members-of-team" => team}, socket) do
     socket
     |> assign(members_of_team: team)
+    |> assign_current_commits()
+    |> assign_stats()
+    |> noreply()
+  end
+
+  @impl Phoenix.LiveView
+  def handle_info({:setting_updated, :reviewed_commit_cutoff, cutoff}, socket) do
+    socket
+    |> assign(reviewed_commit_cutoff: cutoff)
     |> assign_current_commits()
     |> assign_stats()
     |> noreply()
@@ -145,6 +155,7 @@ defmodule RemitWeb.CommitsLive do
     |> assign(your_last_selected_commit_id: nil)
     |> assign(projects_of_team: get_filter(session, "commits", "projects_of_team", "all"))
     |> assign(members_of_team: get_filter(session, "commits", "members_of_team", "all"))
+    |> assign(reviewed_commit_cutoff: get_reviewed_commit_cutoff(session, %{"days" => 7, "commits" => 100}))
   end
 
   def assign_all_teams(socket) do
@@ -154,7 +165,9 @@ defmodule RemitWeb.CommitsLive do
 
   # Private
   defp commit_filter(socket) do
-    commit_filter_by_projects(projects_of_team(socket)) ++ commit_filter_by_members(members_of_team(socket))
+    commit_filter_by_projects(projects_of_team(socket)) ++
+      commit_filter_by_members(members_of_team(socket)) ++
+      reviewed_commit_filter(reviewed_commit_cutoff(socket))
   end
 
   defp commit_filter_by_projects("all"), do: []
@@ -162,6 +175,15 @@ defmodule RemitWeb.CommitsLive do
 
   defp commit_filter_by_members("all"), do: []
   defp commit_filter_by_members(team), do: [members_of_team: team]
+
+  defp reviewed_commit_filter(cutoff) do
+    cutoff |> Enum.reduce([], fn {key, value}, filter -> reviewed_commit_filter(filter, key, value) end)
+  end
+
+  defp reviewed_commit_filter(acc, key, value)
+  defp reviewed_commit_filter(acc, _, 0), do: acc
+  defp reviewed_commit_filter(acc, "days", days), do: [{:reviewed_commit_cutoff_days, days} | acc]
+  defp reviewed_commit_filter(acc, "commits", commits), do: [{:reviewed_commit_cutoff_commits, commits} | acc]
 
   def load_commits_for_display(socket) do
     Commits.list_latest(commit_filter(socket), @max_commits)
@@ -219,4 +241,5 @@ defmodule RemitWeb.CommitsLive do
   defp commits(socket), do: socket.assigns.commits
   defp projects_of_team(socket), do: socket.assigns.projects_of_team
   defp members_of_team(socket), do: socket.assigns.members_of_team
+  defp reviewed_commit_cutoff(socket), do: socket.assigns.reviewed_commit_cutoff
 end

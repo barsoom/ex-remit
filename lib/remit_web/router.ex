@@ -43,6 +43,7 @@ defmodule RemitWeb.Router do
     post "/update_github_teams", TeamsController, :update
     post "/logout", GithubAuthController, :logout
     post "/filter_preference/:scope", UserController, :set_filter_preference
+    post "/reviewed_commit_cutoff", UserController, :set_reviewed_commit_cutoff
   end
 
   pipeline :webhook do

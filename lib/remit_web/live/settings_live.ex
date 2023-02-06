@@ -1,7 +1,7 @@
 defmodule RemitWeb.SettingsLive do
   use RemitWeb, :live_view
   require Logger
-  alias Remit.{GithubAuth, Ownership}
+  alias Remit.{GithubAuth, Ownership, Settings}
 
   @impl Phoenix.LiveView
   def mount(_params, session, socket) do
@@ -13,9 +13,11 @@ defmodule RemitWeb.SettingsLive do
     end
 
     socket
+    |> assign(session_id: session["session_id"])
     |> assign(username: github_login(session))
     |> assign_projects()
     |> assign_teams()
+    |> assign(reviewed_commit_cutoff: get_reviewed_commit_cutoff(session, %{"days" => 7, "commits" => 100}))
     |> ok()
   end
 
@@ -27,6 +29,19 @@ defmodule RemitWeb.SettingsLive do
 
   def handle_event("remove_project_owner", %{"project" => project, "team" => team}, socket) do
     Remit.Team.remove_project(team, project)
+    noreply(socket)
+  end
+
+  def handle_event(
+        "update_reviewed_commit_cutoff",
+        %{"reviewed_commit_cutoff" => %{"days" => days, "commits" => commits}},
+        socket
+      ) do
+    Settings.broadcast(session_id(socket), :reviewed_commit_cutoff, %{
+      "days" => String.to_integer(days),
+      "commits" => String.to_integer(commits)
+    })
+
     noreply(socket)
   end
 
@@ -73,6 +88,8 @@ defmodule RemitWeb.SettingsLive do
     socket
     |> assign(teams: Remit.Team.get_all())
   end
+
+  defp session_id(socket), do: socket.assigns.session_id
 
   defp projects(assigns) do
     ~H"""

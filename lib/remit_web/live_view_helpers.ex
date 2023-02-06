@@ -80,6 +80,10 @@ defmodule RemitWeb.LiveViewHelpers do
     end
   end
 
+  def get_reviewed_commit_cutoff(session, default) do
+    Map.merge(default, Map.get(session, "reviewed_commit_cutoff", %{}))
+  end
+
   defp link_classes(link_attr, current_attr) do
     if link_attr == current_attr do
       ~w(cursor-default no-underline font-bold)
