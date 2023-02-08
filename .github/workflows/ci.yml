@@ -94,10 +94,10 @@ jobs:
       - name: Compile in dev mode
         run: mix compile --warnings-as-errors
 
+      # {:mix_audit, "~> 2.0", only: [:dev, :test], runtime: false}
       - name: Check vulnerable packages
         run: mix deps.audit
 
-      # {:mix_audit, "~> 2.0", only: [:dev, :test], runtime: false}
       - name: Check retired packages
         run: mix hex.audit
 
