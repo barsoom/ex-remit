@@ -27,7 +27,8 @@
   <div>
     <.form
       :let={f}
-      for={:reviewed_commit_cutoff}
+      for={%{}}
+      as={:reviewed_commit_cutoff}
       id="reviewed_commit_cutoff_form"
       phx-change="update_reviewed_commit_cutoff"
       phx-hook="SetReviewedCommitCutoff"

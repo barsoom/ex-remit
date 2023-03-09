@@ -44,6 +44,7 @@ defmodule Remit.MixProject do
       {:phoenix_live_view, ">= 0.16.4"},
       {:floki, "> 0.0.0", only: :test},
       {:phoenix_html, "> 0.0.0"},
+      {:phoenix_view, "~> 2.0.0"},
       {:phoenix_live_reload, "> 0.0.0", only: :dev},
       {:phoenix_live_dashboard, "> 0.0.0"},
       {:telemetry_metrics, "> 0.0.0"},
