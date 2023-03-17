@@ -34,6 +34,9 @@ defmodule RemitWeb do
         root: "lib/remit_web/templates",
         namespace: RemitWeb
 
+      # Import convenience functions
+      alias Phoenix.Flash
+
       # Include shared imports and aliases for views
       unquote(view_helpers())
     end
