@@ -37,16 +37,16 @@ defmodule Remit.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, ">= 1.5.13"},
+      {:phoenix, "~> 1.7.0"},
       {:phoenix_ecto, "> 0.0.0"},
       {:ecto_sql, "> 0.0.0"},
       {:postgrex, "> 0.0.0"},
-      {:phoenix_live_view, ">= 0.16.4"},
+      {:phoenix_live_view, "~> 0.18.3"},
       {:floki, "> 0.0.0", only: :test},
       {:phoenix_html, "> 0.0.0"},
-      {:phoenix_view, "~> 2.0.0"},
+      {:phoenix_view, "~> 2.0"},
       {:phoenix_live_reload, "> 0.0.0", only: :dev},
-      {:phoenix_live_dashboard, "> 0.0.0"},
+      {:phoenix_live_dashboard, "~> 0.7.2"},
       {:telemetry_metrics, "> 0.0.0"},
       {:telemetry_poller, "> 0.0.0"},
       {:gettext, "> 0.0.0"},
