@@ -9,16 +9,16 @@
     <.live_title suffix=" · Remit">
       <%= assigns[:page_title] || "Remit" %>
     </.live_title>
-    <link rel="stylesheet" href={Routes.static_path(@conn, "/css/app.css")} />
+    <link rel="stylesheet" href={~p"/css/app.css"} />
     <link
       rel="stylesheet"
       href="https://pro.fontawesome.com/releases/v5.13.0/css/all.css"
       integrity="sha384-IIED/eyOkM6ihtOiQsX2zizxFBphgnv1zbe1bKA+njdFzkr6cDNy16jfIKWu4FNH"
       crossorigin="anonymous"
     />
-    <script defer type="text/javascript" src={Routes.static_path(@conn, "/js/app.js")}>
+    <script defer type="text/javascript" src={~p"/js/app.js"}>
     </script>
-    <link rel="icon" href={Routes.static_path(@conn, "/images/#{Application.get_env(:remit, :favicon)}")} />
+    <link rel="icon" href={~p"/images/#{Application.get_env(:remit, :favicon)}"} />
   </head>
   <body class="bg-gray-dark">
     <div class="mx-auto max-w-3xl min-h-screen bg-white shadow-2xl">

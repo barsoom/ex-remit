@@ -4,13 +4,13 @@
       <%= if @username do %>
         Logged in as: <span class="font-bold"><%= @username %></span>
         · <%= link("Log out",
-          to: Routes.tabs_path(@socket, :settings),
+          to: ~p"/settings",
           id: "logout",
           class: ~w(cursor-pointer underline),
           "phx-hook": "Logout"
         ) %>
       <% else %>
-        <%= link("Log in with GitHub", to: Routes.github_auth_path(@socket, :login)) %>
+        <%= link("Log in with GitHub", to: ~p"/login") %>
       <% end %>
     </div>
 
@@ -42,7 +42,7 @@
   <%= if @username && Remit.Config.has_github_org? do %>
     <div class="bg-gray-200 px-3 py-4 mt-6 paragraphs">
       <%= link("Import team members from GitHub",
-        to: Routes.tabs_path(@socket, :settings),
+        to: ~p"/settings",
         id: "update-github-teams",
         "phx-hook": "UpdateGithubTeams"
       ) %>

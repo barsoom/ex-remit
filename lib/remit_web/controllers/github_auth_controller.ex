@@ -17,7 +17,7 @@ defmodule RemitWeb.GithubAuthController do
     |> verify_state(params)
     |> get_access_token_and_user(params)
     |> broadcast_login()
-    |> redirect(to: Routes.tabs_path(conn, :settings))
+    |> redirect(to: ~p"/settings")
   end
 
   def logout(conn, _) do

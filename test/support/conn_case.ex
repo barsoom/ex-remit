@@ -24,7 +24,7 @@ defmodule RemitWeb.ConnCase do
       import Phoenix.ConnTest
       import RemitWeb.ConnCase
 
-      alias RemitWeb.Router.Helpers, as: Routes
+      use RemitWeb, :verified_routes
 
       # The default endpoint for testing
       @endpoint RemitWeb.Endpoint

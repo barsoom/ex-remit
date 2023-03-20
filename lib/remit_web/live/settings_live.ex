@@ -118,7 +118,7 @@ defmodule RemitWeb.SettingsLive do
 
   defp team_dropdown(assigns) do
     ~H"""
-    <.form for={:project} phx-submit="add_project_owner">
+    <.form for={%{}} as={:project} phx-submit="add_project_owner">
       <input type="hidden" name="project" value={@project} />
       <select name="team">
         <%= for team <- @teams do %>
@@ -140,7 +140,7 @@ defmodule RemitWeb.SettingsLive do
     ~H"""
     <ul>
       <%= for team <- @teams do %>
-        <.form for={:project} phx-submit="remove_project_owner">
+        <.form for={%{}} as={:project} phx-submit="remove_project_owner">
           <input type="hidden" name="project" value={@project} />
           <input type="hidden" name="team" value={team.slug} />
           <li class="ml-3"><%= team.name %><%= submit("remove", class: "ml-2") %></li>

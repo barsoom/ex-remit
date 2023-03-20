@@ -4,11 +4,34 @@ defmodule RemitWeb.TabsLive do
   use RemitWeb, :live_view
   alias Remit.{Comments, GithubAuth}
 
-  @default_tabs [
-    %{action: :commits, module: RemitWeb.CommitsLive, text: "Commits", icon: "fa-eye", has_notification: false},
-    %{action: :comments, module: RemitWeb.CommentsLive, text: "Comments", icon: "fa-comments", has_notification: false},
-    %{action: :settings, module: RemitWeb.SettingsLive, text: "Settings", icon: "fa-cog", has_notification: false}
-  ]
+  defp default_tabs do
+    [
+      %{
+        action: :commits,
+        url: ~p"/commits",
+        module: RemitWeb.CommitsLive,
+        text: "Commits",
+        icon: "fa-eye",
+        has_notification: false
+      },
+      %{
+        action: :comments,
+        url: ~p"/comments",
+        module: RemitWeb.CommentsLive,
+        text: "Comments",
+        icon: "fa-comments",
+        has_notification: false
+      },
+      %{
+        action: :settings,
+        url: ~p"/settings",
+        module: RemitWeb.SettingsLive,
+        text: "Settings",
+        icon: "fa-cog",
+        has_notification: false
+      }
+    ]
+  end
 
   @impl Phoenix.LiveView
   def render(assigns) do
@@ -24,7 +47,7 @@ defmodule RemitWeb.TabsLive do
   @impl Phoenix.LiveView
   def mount(_params, session, socket) do
     check_auth_key(session)
-    socket = assign(socket, tabs: @default_tabs)
+    socket = assign(socket, tabs: default_tabs())
 
     if connected?(socket) do
       Comments.subscribe()
@@ -56,7 +79,7 @@ defmodule RemitWeb.TabsLive do
 
   # Use the same value for the tab text and the page title.
   defp page_title(action) do
-    @default_tabs
+    default_tabs()
     # O(n) but it will never be long enough to matter
     |> Enum.find(&(&1.action == action))
     |> Map.get(:text)
@@ -76,7 +99,7 @@ defmodule RemitWeb.TabsLive do
 
   defp assign_tab_notification(socket) do
     tabs =
-      @default_tabs
+      default_tabs()
       |> Enum.map(fn tab -> update_tab_state(socket, tab) end)
 
     assign(socket, tabs: tabs)

@@ -24,7 +24,8 @@ defmodule RemitWeb do
       import Plug.Conn
       import RemitWeb.Gettext
       import RemitWeb.Auth.Controller
-      alias RemitWeb.Router.Helpers, as: Routes
+
+      unquote(verified_routes())
     end
   end
 
@@ -93,7 +94,19 @@ defmodule RemitWeb do
       import RemitWeb.ErrorHelpers
       import RemitWeb.Gettext
       import RemitWeb.LiveViewHelpers
-      alias RemitWeb.Router.Helpers, as: Routes
+
+      unquote(verified_routes())
+    end
+  end
+
+  def static_paths, do: ~w(css fonts images js favicon.ico robots.txt)
+
+  def verified_routes do
+    quote do
+      use Phoenix.VerifiedRoutes,
+        endpoint: RemitWeb.Endpoint,
+        router: RemitWeb.Router,
+        statics: RemitWeb.static_paths()
     end
   end
 

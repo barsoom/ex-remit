@@ -6,6 +6,7 @@
   <%= for tab <- @tabs do %>
     <.tab
       action={tab.action}
+      url={tab.url}
       current_action={@live_action}
       text={tab.text}
       icon={tab.icon}

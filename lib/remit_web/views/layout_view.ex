@@ -1,14 +1,9 @@
 defmodule RemitWeb.LayoutView do
   use RemitWeb, :view
-  alias RemitWeb.Endpoint
 
   defp tab(assigns) do
     ~H"""
-    <.link
-      patch={Routes.tabs_path(Endpoint, @action)}
-      class={tab_class(assigns)}
-      title={@show_notification_bell && "You have unresolved comments ;)"}
-    >
+    <.link patch={@url} class={tab_class(assigns)} title={@show_notification_bell && "You have unresolved comments ;)"}>
       <i class={["fas", @icon]}></i>
       <span class="tabs__tab__text"><%= @text %></span>
       <%= if @show_notification_bell do %>
