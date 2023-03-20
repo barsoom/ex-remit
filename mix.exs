@@ -56,6 +56,8 @@ defmodule Remit.MixProject do
       {:tesla, ">= 1.5.0"},
       {:hackney, "> 0.0.0"},
       {:confex, "~> 3.5.0"},
+      {:esbuild, "~> 0.2", runtime: Mix.env() == :dev},
+      {:tailwind, "~> 0.2", runtime: Mix.env() == :dev},
       {:mox, "> 0.0.0", only: :test},
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
       {:git_hooks, "~> 0.7.0", only: [:dev], runtime: false},
@@ -76,6 +78,11 @@ defmodule Remit.MixProject do
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate", "test"],
+      "assets.deploy": [
+        "tailwind default --minify",
+        "esbuild default --minify",
+        "phx.digest"
+      ],
       "wh.commits": ["run priv/repo/fake_webhook_commits.exs"],
       "wh.comments": ["run priv/repo/fake_webhook_comments.exs"]
     ]

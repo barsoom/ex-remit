@@ -55,18 +55,8 @@ config :remit, RemitWeb.Endpoint,
   code_reloader: true,
   check_origin: false,
   watchers: [
-    node:
-      {RelativePathWatcher, :watch,
-       [
-         "node",
-         [
-           "node_modules/webpack/bin/webpack.js",
-           "--watch",
-           "--mode",
-           "development",
-           cd: Path.expand("../assets", __DIR__)
-         ]
-       ]}
+    tailwind: {Tailwind, :install_and_run, [:default, ~w(--watch)]},
+    esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]}
   ]
 
 # ## SSL Support

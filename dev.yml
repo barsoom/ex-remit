@@ -1,5 +1,3 @@
-# node is configured through .nvmrc and phoenix_static_buildpack.config
-
 docker_services:
   postgres:
     image: "postgres:14.4-alpine"

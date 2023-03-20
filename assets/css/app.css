@@ -7,9 +7,6 @@
 @import "tailwindcss/utilities";
 @import "./_utilities.css";
 
-/* Progress indicator used by LiveView. */
-@import "../node_modules/nprogress/nprogress.css";
-
 /* Tooltips */
 @import "../node_modules/balloon-css/balloon.css";
 
@@ -36,3 +33,4 @@
 
   .ping-offline & { display: block; }
 }
+

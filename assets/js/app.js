@@ -1,15 +1,6 @@
-// We need to import the CSS so that webpack will load it. The MiniCssExtractPlugin is used to separate it out into its own CSS file.
-import "../css/app.css"
-
-// webpack automatically bundles all modules in your entry points. Those entry points can be configured in "webpack.config.js".
-// Import deps with the dep name or local files with a relative path, for example:
-//
-//     import {Socket} from "phoenix"
-//     import socket from "./socket"
-//
 import "phoenix_html"
 import { Socket } from "phoenix"
-import NProgress from "nprogress"
+import topbar from "topbar"
 import { LiveSocket } from "phoenix_live_view"
 
 
@@ -118,10 +109,8 @@ let liveSocket = new LiveSocket("/live", Socket, {
 })
 
 // Show progress bar on live navigation and form submits.
-let progressTimeout = null
 window.addEventListener("phx:page-loading-start", (info) => {
-  clearTimeout(progressTimeout)
-  progressTimeout = setTimeout(NProgress.start, 100)
+  topbar.show(100)
   if (info?.detail?.kind === "error") {
     // wait to be sure is a disconnect and not a page reload
     setTimeout(function () { document.body.classList.add("ping-offline") }, 500)
@@ -129,15 +118,13 @@ window.addEventListener("phx:page-loading-start", (info) => {
 })
 
 window.addEventListener("phx:page-loading-stop", (info) => {
-  clearTimeout(progressTimeout)
   if (info.detail?.kind === "initial" && document.body.classList.contains("ping-offline")) {
     location.reload()
   }
-  NProgress.done()
+  topbar.hide()
 })
 
-// Don't show a spinner in addition to the progress bar.
-NProgress.configure({ showSpinner: false })
+topbar.config({ barColors: { 0: "#29d" }, shadowColor: "rgba(0, 0, 0, .3)" })
 
 // connect if there are any LiveViews on the page
 liveSocket.connect()

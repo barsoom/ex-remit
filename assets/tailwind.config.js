@@ -5,8 +5,8 @@ module.exports = {
     "../**/*.html.eex",
     "../**/*.html.leex",
     "../**/*.html.heex",
-    "../**/views/**/*.ex",
-    "../**/live/**/*.ex",
+    "../lib/*_web.ex",
+    "../lib/*_web/**/*.*ex",
     "./js/**/*.js",
   ],
   theme: {
