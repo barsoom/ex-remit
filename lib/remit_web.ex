@@ -19,7 +19,9 @@ defmodule RemitWeb do
 
   def controller do
     quote do
-      use Phoenix.Controller, namespace: RemitWeb
+      use Phoenix.Controller,
+        formats: [:html, :json],
+        layouts: [html: RemitWeb.Layouts]
 
       import Plug.Conn
       import RemitWeb.Gettext
@@ -29,28 +31,27 @@ defmodule RemitWeb do
     end
   end
 
-  def view do
+  def html do
     quote do
-      use Phoenix.View,
-        root: "lib/remit_web/templates",
-        namespace: RemitWeb
+      use Phoenix.Component
 
-      # Import convenience functions
-      alias Phoenix.Flash
+      # Import convenience functions from controllers
+      import Phoenix.Controller,
+        only: [get_csrf_token: 0, view_module: 1, view_template: 1]
 
-      # Include shared imports and aliases for views
-      unquote(view_helpers())
+      # Include general helpers for rendering HTML
+      unquote(html_helpers())
     end
   end
 
   def live_view do
     quote do
       use Phoenix.LiveView,
-        layout: {RemitWeb.LayoutView, :live}
+        layout: {RemitWeb.Layouts, :app}
 
       import RemitWeb.Auth.LiveView
 
-      unquote(view_helpers())
+      unquote(html_helpers())
     end
   end
 
@@ -58,7 +59,7 @@ defmodule RemitWeb do
     quote do
       use Phoenix.LiveComponent
 
-      unquote(view_helpers())
+      unquote(html_helpers())
     end
   end
 
@@ -80,21 +81,20 @@ defmodule RemitWeb do
     end
   end
 
-  defp view_helpers do
+  defp html_helpers do
     quote do
-      # Use all HTML functionality (forms, tags, etc)
-      use Phoenix.HTML
-
-      # Import LiveView helpers (live_render, live_component, live_patch, etc)
-      import Phoenix.Component
-
-      # Import basic rendering functionality (render, render_layout, etc)
-      import Phoenix.View
-
-      import RemitWeb.ErrorHelpers
+      # HTML escaping functionality
+      import Phoenix.HTML
+      # Core UI components and translation
+      import RemitWeb.CoreComponents
       import RemitWeb.Gettext
+
       import RemitWeb.LiveViewHelpers
 
+      # Shortcut for generating JS commands
+      alias Phoenix.LiveView.JS
+
+      # Routes generation with the ~p sigil
       unquote(verified_routes())
     end
   end

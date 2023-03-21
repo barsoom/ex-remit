@@ -21,7 +21,10 @@ config :remit, RemitWeb.Endpoint,
   url: [host: "localhost"],
   # Overridden in prod.secret.exs.
   secret_key_base: "VwHFDH5VSFj8+cVvqb/2V15wtR9RMmkpIVnID1PrHMWTT7LNxSn/Nl0RGDavQGER",
-  render_errors: [view: RemitWeb.ErrorView, accepts: ~w(html json), layout: false],
+  render_errors: [
+    formats: [html: RemitWeb.ErrorHTML, json: RemitWeb.ErrorJSON],
+    layout: false
+  ],
   pubsub_server: Remit.PubSub,
   live_view: [signing_salt: "s9WcFK/G"]
 

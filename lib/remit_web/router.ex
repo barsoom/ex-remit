@@ -8,7 +8,7 @@ defmodule RemitWeb.Router do
     plug :fetch_session
     plug :ensure_session_id
     plug :fetch_live_flash
-    plug :put_root_layout, {RemitWeb.LayoutView, :root}
+    plug :put_root_layout, html: {RemitWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug :check_auth_key

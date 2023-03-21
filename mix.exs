@@ -37,14 +37,14 @@ defmodule Remit.MixProject do
   defp deps do
     [
       {:phoenix, "~> 1.7.0"},
-      {:phoenix_ecto, "> 0.0.0"},
-      {:ecto_sql, "> 0.0.0"},
-      {:postgrex, "> 0.0.0"},
+      {:phoenix_ecto, "~> 4.4"},
+      {:ecto_sql, "~> 3.6"},
+      {:postgrex, ">= 0.0.0"},
       {:phoenix_live_view, "~> 0.18.3"},
+      {:heroicons, "~> 0.5"},
       {:floki, "> 0.0.0", only: :test},
-      {:phoenix_html, "> 0.0.0"},
-      {:phoenix_view, "~> 2.0"},
-      {:phoenix_live_reload, "> 0.0.0", only: :dev},
+      {:phoenix_html, "~> 3.3"},
+      {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_dashboard, "~> 0.7.2"},
       {:telemetry_metrics, "> 0.0.0"},
       {:telemetry_poller, "> 0.0.0"},
@@ -74,15 +74,13 @@ defmodule Remit.MixProject do
   #
   defp aliases do
     [
-      setup: ["deps.get", "ecto.setup", "cmd npm install --prefix assets"],
+      setup: ["deps.get", "ecto.setup", "assets.setup", "assets.build"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate", "test"],
-      "assets.deploy": [
-        "tailwind default --minify",
-        "esbuild default --minify",
-        "phx.digest"
-      ],
+      "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
+      "assets.build": ["tailwind default", "esbuild default"],
+      "assets.deploy": ["tailwind default --minify", "esbuild default --minify", "phx.digest"],
       "wh.commits": ["run priv/repo/fake_webhook_commits.exs"],
       "wh.comments": ["run priv/repo/fake_webhook_comments.exs"]
     ]

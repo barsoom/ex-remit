@@ -2,6 +2,7 @@ defmodule RemitWeb.SettingsLive do
   use RemitWeb, :live_view
   require Logger
   alias Remit.{GithubAuth, Ownership, Settings}
+  import Phoenix.HTML.{Form, Link}
 
   @impl Phoenix.LiveView
   def mount(_params, session, socket) do

@@ -1,5 +1,8 @@
-defmodule RemitWeb.LayoutView do
-  use RemitWeb, :view
+defmodule RemitWeb.Layouts do
+  @moduledoc false
+  use RemitWeb, :html
+
+  embed_templates "layouts/*"
 
   defp tab(assigns) do
     ~H"""
