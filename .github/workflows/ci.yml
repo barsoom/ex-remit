@@ -50,7 +50,7 @@ jobs:
         uses: erlef/setup-beam@v1
         with:
           # NOTE: Keep in sync with elixir_buildpack.config and asdf's .tool-versions.
-          elixir-version: "1.14.3"
+          elixir-version: "1.14.4"
           otp-version: "25.3"
 
       - name: Cache deps
