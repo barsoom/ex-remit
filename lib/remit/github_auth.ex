@@ -67,7 +67,7 @@ defmodule Remit.GithubAuth do
 
   defp session_topic(session_id), do: "session:" <> session_id
 
-  @token_alphabet '0123456789abcdef'
+  @token_alphabet ~c"0123456789abcdef"
   @token_length 16
 
   defp generate do
