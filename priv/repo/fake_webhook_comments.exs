@@ -58,11 +58,17 @@ IO.puts("")
     )
     |> String.to_charlist()
 
+  port = if System.get_env("DEVBOX") do
+    45361
+  else
+    System.get_env("PORT") |> String.to_integer()
+  end
+
   # Using :httpc to avoid adding a dependency just for this.
   :httpc.request(
     :post,
     {
-      'http://localhost:45361/webhooks/github?auth_key=dev',
+      'http://localhost:#{port}/webhooks/github?auth_key=dev',
       [{'x-github-event', 'commit_comment'}],
       'application/json',
       json
