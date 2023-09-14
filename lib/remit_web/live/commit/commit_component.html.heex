@@ -37,7 +37,10 @@
       #{if @reviewed? || @you_authored?, do: " truncate", else: " min-w-0 break-words"}
       #{if @you_authored?, do: " opacity-50"}
     "}>
-      <p class={if @reviewed? || @you_authored?, do: "inline", else: "mb-1"}><%= Commit.message_summary(@commit) %></p>
+      <p class={"
+      test-commit-msg
+      #{if @reviewed? || @you_authored?, do: "inline", else: "mb-1"}
+      "}><%= Commit.message_summary(@commit) %></p>
       <p class={if @reviewed? || @you_authored?, do: "inline", else: ""}>
         <%= if @commit.usernames == [] && !@reviewed? do %>
           <RemitWeb.NoUsernameComponent.render />

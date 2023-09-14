@@ -26,7 +26,7 @@ defmodule RemitWeb.CommitsLive do
     socket
     |> assign_defaults(session)
     |> assign_all_teams()
-    |> assign(page: 1, per_page: 20, commits_dbg: [])
+    |> assign(page: 1, per_page: 20)
     |> stream_commits(1)
     |> assign_stats()
     |> ok()
@@ -150,7 +150,8 @@ defmodule RemitWeb.CommitsLive do
 
     {:noreply,
      assign(socket,
-       oldest_overlong_in_review_by_me: Commit.oldest_overlong_in_review_by(commits, username(socket))
+       oldest_overlong_in_review_by_me:
+         Commit.oldest_overlong_in_review_by(commits, username(socket))
      )}
   end
 
@@ -180,7 +181,10 @@ defmodule RemitWeb.CommitsLive do
     |> assign(your_last_selected_commit_id: nil)
     |> assign(projects_of_team: get_filter(session, "commits", "projects_of_team", "all"))
     |> assign(members_of_team: get_filter(session, "commits", "members_of_team", "all"))
-    |> assign(reviewed_commit_cutoff: get_reviewed_commit_cutoff(session, %{"days" => 7, "commits" => 100}))
+    |> assign(
+      reviewed_commit_cutoff:
+        get_reviewed_commit_cutoff(session, %{"days" => 7, "commits" => 100})
+    )
   end
 
   def assign_all_teams(socket) do
@@ -220,8 +224,8 @@ defmodule RemitWeb.CommitsLive do
   def stream_commits(socket, next_page) when next_page >= 1 do
     %{per_page: per_page, page: curr_page} = socket.assigns
 
-    offset = (next_page - 1) * curr_page
-    commits = Commits.list_latest(%{}, per_page, offset)
+    offset = (next_page - 1) * per_page
+    commits = Commits.list_latest(commit_filter(socket), per_page, offset)
 
     # direction -1 append, 0 prepend
     {commits, direction, limit} =
@@ -281,7 +285,8 @@ defmodule RemitWeb.CommitsLive do
       my_unreviewed_count: my_unreviewed_count,
       others_unreviewed_count: unreviewed_count - my_unreviewed_count,
       oldest_unreviewed_for_me: Commit.oldest_unreviewed_for(commits, username(socket)),
-      oldest_overlong_in_review_by_me: Commit.oldest_overlong_in_review_by(commits, username(socket))
+      oldest_overlong_in_review_by_me:
+        Commit.oldest_overlong_in_review_by(commits, username(socket))
     })
   end
 

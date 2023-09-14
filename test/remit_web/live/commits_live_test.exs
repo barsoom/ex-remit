@@ -19,12 +19,22 @@ defmodule RemitWeb.CommitsLiveTest do
   end
 
   describe "scroll pagination" do
-    test "works", %{conn: conn, socket: socket} do
+    test "works", %{conn: conn} do
       commits =
-        Enum.map(0..5, fn i ->
-          %{Factory.build(:commit) | message: "Commit #{i}"}
-          |> Remit.Repo.insert()
+        Enum.map(0..9, fn i ->
+          {:ok, commit} =
+            %{Factory.build(:commit) | message: "Commit #{i + 1}"}
+            |> Remit.Repo.insert()
+
+          commit
         end)
+
+      conn = get(conn, "/commits?auth_key=test_auth_key")
+      {:ok, view, html} = live(conn, "/commits")
+
+      for %{message: message} <- commits do
+        assert view |> element(".test-commit-msg", message) |> has_element?()
+      end
     end
   end
 
