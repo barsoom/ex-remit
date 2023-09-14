@@ -10,24 +10,34 @@ defmodule Remit.Commits do
 
   def list_latest(filters, count)
 
-  def list_latest(filters, count) do
-    filtered =
-      filters
-      |> Enum.reduce(Commit.listed(), &Commit.apply_filter(&2, &1))
+  def list_latest(_filters, count, offset \\ 0) do
+    # filtered =
+    #   filters
+    #   |> Enum.reduce(Commit.listed(), &Commit.apply_filter(&2, &1))
 
-    unreviewed =
-      filtered
-      |> where([c], is_nil(c.reviewed_at))
+    # unreviewed =
+    #   filtered
+    #   |> where([c], is_nil(c.reviewed_at))
+    #   |> limit(^count)
+    #   |> offset(^offset)
 
-    reviewed =
-      filtered
-      |> where([c], not is_nil(c.reviewed_at))
-      |> Commit.apply_reviewed_cutoff(filters)
-      |> order_by([c], desc: c.id)
+    # reviewed =
+    #   filtered
+    #   |> where([c], not is_nil(c.reviewed_at))
+    #   |> Commit.apply_reviewed_cutoff(filters)
+    #   |> order_by([c], desc: c.id)
+    #   |> limit(^count)
+    #   |> offset(^offset)
 
-    subquery(union_all(unreviewed, ^reviewed))
-    |> order_by([u], desc: u.id)
+    # union_all(unreviewed, ^reviewed)
+    # |> subquery()
+    # |> order_by([u], desc: u.id)
+    # |> Repo.all()
+    #
+    Commit.listed()
+    |> order_by([c], desc: c.id)
     |> limit(^count)
+    |> offset(^offset)
     |> Repo.all()
   end
 
@@ -37,10 +47,10 @@ defmodule Remit.Commits do
     |> Repo.all()
   end
 
-  def sha_exists?(sha), do: Repo.exists?(from Commit, where: [sha: ^sha])
+  def sha_exists?(sha), do: Repo.exists?(from(Commit, where: [sha: ^sha]))
 
   def delete_reviewed_older_than_days(days) when is_integer(days) do
-    Repo.delete_all(from c in Commit, where: c.inserted_at < ago(^days, "day"), where: not is_nil(c.reviewed_at))
+    Repo.delete_all(from(c in Commit, where: c.inserted_at < ago(^days, "day"), where: not is_nil(c.reviewed_at)))
   end
 
   def mark_as_reviewed!(id, reviewer_username) when is_binary(reviewer_username) do
@@ -48,7 +58,12 @@ defmodule Remit.Commits do
   end
 
   def mark_as_unreviewed!(id) do
-    update!(id, reviewed_at: nil, review_started_at: nil, reviewed_by_username: nil, review_started_by_username: nil)
+    update!(id,
+      reviewed_at: nil,
+      review_started_at: nil,
+      reviewed_by_username: nil,
+      review_started_by_username: nil
+    )
   end
 
   def mark_as_review_started!(id, reviewer_username) when is_binary(reviewer_username) do

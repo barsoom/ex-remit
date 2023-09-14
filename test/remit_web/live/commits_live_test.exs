@@ -18,6 +18,16 @@ defmodule RemitWeb.CommitsLiveTest do
     assert render(live_view) =~ "Nothing yet!"
   end
 
+  describe "scroll pagination" do
+    test "works", %{conn: conn, socket: socket} do
+      commits =
+        Enum.map(0..5, fn i ->
+          %{Factory.build(:commit) | message: "Commit #{i}"}
+          |> Remit.Repo.insert()
+        end)
+    end
+  end
+
   describe "unit tests" do
     setup do
       create_socket()
@@ -25,7 +35,6 @@ defmodule RemitWeb.CommitsLiveTest do
 
     test "assigns the correct defaults", %{socket: socket} do
       session = %{"github_user" => %Remit.Github.User{login: "dwight"}}
-      Enum.map(0..5, fn _ -> Factory.build(:commit) end)
       socket = CommitsLive.assign_defaults(socket, session)
 
       assert socket.assigns.username == "dwight"

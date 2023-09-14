@@ -25,7 +25,15 @@ defmodule Remit.Commit do
 
   def latest_listed(q \\ __MODULE__, count), do: q |> latest(count) |> listed()
   def latest(q \\ __MODULE__, count), do: from(q, limit: ^count, order_by: [desc: :id])
-  def listed(q \\ __MODULE__), do: from(q, where: [unlisted: false])
+
+  def listed(q \\ __MODULE__, limit \\ nil, offset \\ nil),
+    do: from(q, where: [unlisted: false]) |> limit_if(limit) |> offset_if(offset)
+
+  defp limit_if(q, limit) when is_integer(limit), do: limit(q, ^limit)
+  defp limit_if(q, nil), do: q
+
+  defp offset_if(q, offset) when is_integer(offset), do: offset(q, ^offset)
+  defp offset_if(q, nil), do: q
 
   def apply_filter(q, {:projects_of_team, team}) do
     # This includes projects that have not been assigned to any team, so that they don't slip through unseen by anybody.
