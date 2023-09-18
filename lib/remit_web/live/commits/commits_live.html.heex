@@ -88,8 +88,8 @@
 <div
   id="commits_list"
   class={[
-    if(@end_of_timeline?, do: "pb-10", else: "pb-[calc(200vh)]"),
-    if(@page == 1, do: "pt-10", else: "pt-[calc(200vh)]")
+    if(@end_of_timeline?, do: "pb-2", else: "pb-[calc(50vh)]"),
+    if(@page == 1, do: "pt-2", else: "pt-[calc(50vh)]")
   ]}
   phx-update="stream"
   phx-viewport-top={@page > 1 && "prev-page"}
@@ -110,6 +110,6 @@
     </div>
   <% end %>
 </div>
-<div :if={@end_of_timeline?}>
+<p :if={@end_of_timeline?} class="flex items-center justify-center text-almost-black ">
   No more commits to view!
-</div>
+</p>

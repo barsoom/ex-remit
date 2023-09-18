@@ -26,7 +26,7 @@ defmodule RemitWeb.CommitsLive do
     socket
     |> assign_defaults(session)
     |> assign_all_teams()
-    |> assign(page: 1, per_page: 20)
+    |> assign(page: 1, per_page: 30)
     |> stream_commits(1)
     |> assign_stats()
     |> ok()
@@ -230,10 +230,12 @@ defmodule RemitWeb.CommitsLive do
     # direction -1 append, 0 prepend
     {commits, direction, limit} =
       if next_page >= curr_page do
-        {commits, -1, per_page * 4 - 1}
+        {commits, -1, per_page * 3 - 1}
       else
-        {Enum.reverse(commits), 0, per_page * 4}
+        {Enum.reverse(commits), 0, per_page * 3}
       end
+
+    IO.puts("Streaming #{per_page} commits")
 
     case commits do
       [] ->
