@@ -1,6 +1,6 @@
 <div class="info-box">
   <%= unless @username do %>
-    <p>Hello, stranger! Please <%= live_patch("log in", to: ~p"/settings") %>.</p>
+    <p>Hello, stranger! Please <.link patch={~p"/settings"}>log in</.link>.</p>
   <% end %>
 
   <p>

@@ -77,7 +77,7 @@
         </p>
       <% end %>
     <% else %>
-      <p>Hello, stranger! Please <%= live_patch("log in", to: ~p"/settings") %>.</p>
+      <p>Hello, stranger! Please <.link patch={~p"/settings"}>log in</.link>.</p>
       <%= if @unreviewed_count == 0 do %>
         <p>
           <i class="fas fa-trophy text-yellow-mid"></i> Nothing left to review!
