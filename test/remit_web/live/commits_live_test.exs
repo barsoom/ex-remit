@@ -44,7 +44,7 @@ defmodule RemitWeb.CommitsLiveTest do
       {:ok, view, _html} = live(conn, "/commits")
 
       children = live_children(view)
-      commits_lv = Enum.find(children, & &1.id == "commits")
+      commits_lv = Enum.find(children, &(&1.id == "commits"))
 
       assert view |> has_element?("p", commit_not_by_me.message)
       assert view |> has_element?("p", commit_by_me.message)
