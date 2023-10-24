@@ -1,14 +1,18 @@
 <div class="info-box">
-  <p>
-    Authored by: <%= filter_link(
-      @socket,
-      assigns,
-      :commits,
-      "filter-commit-by-author",
-      "Me",
-      commits_of_author: @username
-    ) %> · <%= filter_link(@socket, assigns, :commits, "filter-commit-by-author", "All", commits_of_author: "all") %>
-  </p>
+  <%= if @username do %>
+    <p>
+      Authored by: <%= filter_link(@socket, assigns, :commits, "filter-commit-by-author", "All",
+        commits_of_author: "all"
+      ) %> · <%= filter_link(
+        @socket,
+        assigns,
+        :commits,
+        "filter-commit-by-author",
+        "Me",
+        commits_of_author: @username
+      ) %>
+    </p>
+  <% end %>
   <p>
     In projects of team: <%= filter_link(@socket, assigns, :commits, "filter-commit-project-team-all", "All",
       projects_of_team: "all"
