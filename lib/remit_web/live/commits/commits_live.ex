@@ -50,6 +50,15 @@ defmodule RemitWeb.CommitsLive do
   end
 
   @impl Phoenix.LiveView
+  def handle_event("set_filter", %{"commits-of-author" => author}, socket) do
+    socket
+    |> assign(commits_of_author: author)
+    |> assign_current_commits()
+    |> assign_stats()
+    |> noreply()
+  end
+
+  @impl Phoenix.LiveView
   def handle_event("set_filter", %{"projects-of-team" => team}, socket) do
     socket
     |> assign(projects_of_team: team)
@@ -153,6 +162,7 @@ defmodule RemitWeb.CommitsLive do
     socket
     |> assign(username: github_login(session))
     |> assign(your_last_selected_commit_id: nil)
+    |> assign(commits_of_author: "all")
     |> assign(projects_of_team: get_filter(session, "commits", "projects_of_team", "all"))
     |> assign(members_of_team: get_filter(session, "commits", "members_of_team", "all"))
     |> assign(reviewed_commit_cutoff: get_reviewed_commit_cutoff(session, %{"days" => 7, "commits" => 100}))
@@ -167,8 +177,12 @@ defmodule RemitWeb.CommitsLive do
   defp commit_filter(socket) do
     commit_filter_by_projects(projects_of_team(socket)) ++
       commit_filter_by_members(members_of_team(socket)) ++
-      reviewed_commit_filter(reviewed_commit_cutoff(socket))
+      reviewed_commit_filter(reviewed_commit_cutoff(socket)) ++
+      commit_filter_by_author(commits_of_author(socket))
   end
+
+  defp commit_filter_by_author("all"), do: []
+  defp commit_filter_by_author(author), do: [author: author]
 
   defp commit_filter_by_projects("all"), do: []
   defp commit_filter_by_projects(team), do: [projects_of_team: team]
@@ -241,5 +255,6 @@ defmodule RemitWeb.CommitsLive do
   defp commits(socket), do: socket.assigns.commits
   defp projects_of_team(socket), do: socket.assigns.projects_of_team
   defp members_of_team(socket), do: socket.assigns.members_of_team
+  defp commits_of_author(socket), do: socket.assigns.commits_of_author
   defp reviewed_commit_cutoff(socket), do: socket.assigns.reviewed_commit_cutoff
 end

@@ -67,7 +67,9 @@ defmodule Faker do
   end
 
   def message_with_co_authors(message, authors) do
-    Enum.reduce(authors, message, fn author, trailer -> trailer <> "\nCo-authored-by: #{author}" end)
+    Enum.reduce(authors, message, fn author, trailer ->
+      trailer <> ~s(\nCo-authored-by: #{author} <#{author}@users.noreply.github.com>)
+    end)
   end
 
   def comment do

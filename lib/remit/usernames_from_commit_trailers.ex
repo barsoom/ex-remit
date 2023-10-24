@@ -13,8 +13,7 @@ defmodule Remit.UsernamesFromCommitTrailers do
   def call(_message), do: []
 
   defp find_co_author_emails(message) do
-    Regex.scan(@co_author_line_re, message, capture: :all_but_first)
-    |> List.flatten()
+    Regex.scan(@co_author_line_re, message, capture: :all_but_first) |> List.flatten()
   end
 
   defp usernames_from_email(email) do

@@ -40,6 +40,11 @@ defmodule Remit.Commit do
       where: fragment("? && ?", c.usernames, subquery(Remit.Team.team_members_query(team)))
   end
 
+  def apply_filter(q, {:author, author}) do
+    from c in q,
+      where: ^author in c.usernames
+  end
+
   def apply_filter(q, _), do: q
 
   def apply_reviewed_cutoff(q, filters) when is_list(filters),
