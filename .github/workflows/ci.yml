@@ -51,7 +51,7 @@ jobs:
         with:
           # NOTE: Keep in sync with elixir_buildpack.config and asdf's .tool-versions.
           elixir-version: "1.16.0"
-          otp-version: "26.2.1"
+          otp-version: "26.1.2"
 
       - name: Cache deps
         id: cache-deps
