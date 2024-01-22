@@ -74,7 +74,7 @@
             <button phx-click="mark_reviewed" phx-value-id={@commit.id} class="bg-green-light">
               <i class="fas fa-check text-green-dark"></i> Mark as reviewed
             </button>
-          <% !@you_authored? && @username -> %>
+          <% !@you_authored? && @username && @can_review? -> %>
             <button
               phx-click="start_review"
               phx-value-id={@commit.id}

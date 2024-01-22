@@ -112,6 +112,7 @@
       you_authored?={Commit.authored_by?(commit, @username)}
       you_are_reviewing?={Commit.being_reviewed_by?(commit, @username)}
       your_last_selected_commit?={@your_last_selected_commit_id == commit.id}
+      can_review?={can_review?(commit, @username, @teams_by_project)}
     />
   <% end %>
 <% end %>

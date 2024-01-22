@@ -9,8 +9,9 @@ defmodule Remit.Team do
   schema "teams" do
     field :slug, :string
     field :name, :string
-    field :projects, {:array, :string}
-    field :usernames, {:array, :string}
+    field :projects, {:array, :string}, default: []
+    field :usernames, {:array, :string}, default: []
+    field :review_access, Ecto.Enum, values: [:public, :team], default: :public
 
     timestamps()
   end
@@ -128,4 +129,11 @@ defmodule Remit.Team do
       select: t.usernames,
       where: t.slug == ^slug
   end
+
+  def user_can_review_projects?(team, username)
+
+  def user_can_review_projects?(%__MODULE__{review_access: :public}, _), do: true
+
+  def user_can_review_projects?(%__MODULE__{review_access: :team, usernames: usernames}, username),
+    do: username in usernames
 end

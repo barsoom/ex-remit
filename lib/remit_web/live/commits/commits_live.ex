@@ -169,8 +169,11 @@ defmodule RemitWeb.CommitsLive do
   end
 
   def assign_all_teams(socket) do
+    teams = Remit.Team.get_all()
+
     socket
-    |> assign(all_teams: Remit.Team.get_all())
+    |> assign(all_teams: teams)
+    |> assign(teams_by_project: teams_by_project(teams))
   end
 
   # Private
@@ -250,6 +253,31 @@ defmodule RemitWeb.CommitsLive do
   end
 
   defp authored?(socket, commit), do: Commit.authored_by?(commit, username(socket))
+
+  defp teams_by_project(teams) do
+    Enum.reduce(teams, %{}, fn team, acc ->
+      Enum.reduce(team.projects || [], acc, fn project, acc ->
+        update_in(acc, [Access.key(project, [])], &[team | &1])
+      end)
+    end)
+  end
+
+  defp can_review?(commit, username, teams_by_project)
+
+  defp can_review?(_, nil, _), do: false
+
+  defp can_review?(commit, username, teams_by_project) do
+    teams = Map.get(teams_by_project, commit.repo, [])
+
+    case teams do
+      [] ->
+        # no assigned owner for this project, treat as public
+        true
+
+      teams ->
+        Enum.any?(teams, &Remit.Team.user_can_review_projects?(&1, username))
+    end
+  end
 
   defp username(socket), do: socket.assigns.username
   defp commits(socket), do: socket.assigns.commits
