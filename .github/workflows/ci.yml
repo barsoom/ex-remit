@@ -33,7 +33,7 @@ jobs:
       POSTGRES_PASSWORD: postgres
 
     services:
-      db:
+      postgres:
         image: postgres:14.4 # Keep in sync with dev.yml
         ports: ["5432:5432"]
         env:
