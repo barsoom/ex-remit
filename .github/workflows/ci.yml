@@ -74,11 +74,12 @@ jobs:
       if: steps.cache-restore-mix-deps.outputs.cache-hit != 'true'
       run: mix do deps.get, deps.compile
     - uses: actions/cache/save@v4
+      if: steps.cache-restore-mix-deps.outputs.cache-hit != 'true'
       with:
-        path: |
-          deps
-          _build
-        key: ${{ steps.cache-restore-mix-deps.outputs.cache-primary-key }}
+          path: |
+            deps
+            _build
+          key: ${{ steps.cache-restore-mix-deps.outputs.cache-primary-key }}
 
     - name: Prepare assets
       run: mix assets.setup
@@ -106,6 +107,7 @@ jobs:
     - name: Build PLT
       run: mix dialyzer --plt
     - uses: actions/cache/save@v4
+      if: steps.cache-restore-plt.outputs.cache-hit != 'true'
       with:
         path: |
           priv/plts
