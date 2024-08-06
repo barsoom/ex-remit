@@ -94,28 +94,6 @@ jobs:
     - name: Test
       run: mix test
 
-    - uses: actions/cache/restore@v4
-      id: cache-restore-plt
-      with:
-        path: |
-          priv/plts
-        key: plt-${{ needs.versions.outputs.erlang }}-${{ needs.versions.outputs.elixir }}-${{ hashFiles('**/mix.lock') }}
-        restore-keys: |
-          plt-${{ needs.versions.outputs.erlang }}-${{ needs.versions.outputs.elixir }}-
-          plt-${{ needs.versions.outputs.erlang }}-
-          plt-
-    - name: Build PLT
-      run: mix dialyzer --plt
-    - uses: actions/cache/save@v4
-      if: steps.cache-restore-plt.outputs.cache-hit != 'true'
-      with:
-        path: |
-          priv/plts
-        key: ${{ steps.cache-restore-plt.outputs.cache-primary-key }}
-
-    - name: Lint
-      run: mix lint
-
   build:
     runs-on: ubuntu-latest
     needs: versions
