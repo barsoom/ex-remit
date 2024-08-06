@@ -1,144 +1,182 @@
-# See output: https://github.com/barsoom/ex-remit/actions
-# Set up from these instructions: https://github.com/actions/setup-elixir
-
-name: CI
-
+name: CI/CD Pipeline
 on:
   push:
-    branches: [master]
-  pull_request:
-    branches: [master]
+  workflow_dispatch:
+    inputs:
+      ssh_debugging:
+        description: Enable SSH debugging
+        type: boolean
+        required: true
+        default: false
 
 jobs:
-  # Wait for previous run to complete, to avoid concurrent deployment.
-  # https://github.community/t/how-to-limit-concurrent-workflow-runs/16844/17
-  # https://github.com/softprops/turnstyle
-  wait-for-completion:
-    runs-on: ubuntu-latest
-    timeout-minutes: 4
+  versions:
+    runs-on: gha-runner-scale-set
     steps:
-      - name: Wait for any previous runs to finish
-        uses: softprops/turnstyle@v1
-        with:
-          poll-interval-seconds: 10
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@v4
+      - name: Determine versions
+        id: versions
+        run: |
+          echo "erlang=$(grep 'erlang_version' elixir_buildpack.config | cut -d'=' -f2)" >> "$GITHUB_OUTPUT"
+          echo "elixir=$(grep 'elixir_version' elixir_buildpack.config | cut -d'=' -f2)" >> "$GITHUB_OUTPUT"
+          echo "alpine=$(grep 'alpine_version' elixir_buildpack.config | cut -d'=' -f2)" >> "$GITHUB_OUTPUT"
+          echo "postgres=$(yq '.docker_services.postgres.version' < dev.yml)" >> "$GITHUB_OUTPUT"
+    outputs:
+      elixir: ${{ steps.versions.outputs.elixir }}
+      erlang: ${{ steps.versions.outputs.erlang }}
+      alpine: ${{ steps.versions.outputs.alpine }}
+      postgres: ${{ steps.versions.outputs.postgres }}
 
-  tests:
-    needs: wait-for-completion
-    runs-on: ubuntu-latest
-
+  test:
+    runs-on: gha-runner-scale-set
+    needs: versions
     env:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-
+      MIX_ENV: test
+      PGHOST: localhost
+      PGPASS: test
     services:
       postgres:
-        image: postgres:14.4 # Keep in sync with dev.yml
-        ports: ["5432:5432"]
+        image: postgres:${{ needs.versions.outputs.postgres }}-alpine
         env:
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: "remit_test"
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+          POSTGRES_PASSWORD: test
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+    - uses: actions/checkout@v4
+    - uses: erlef/setup-beam@v1
+      with:
+        otp-version: ${{ needs.versions.outputs.erlang }}
+        elixir-version: ${{ needs.versions.outputs.elixir }}
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20
+    - uses: nanasess/setup-chromedriver@v2
 
+    - uses: actions/cache/restore@v4
+      id: cache-restore-mix-deps
+      with:
+        path: |
+          deps
+          _build
+        key: mix-${{ needs.versions.outputs.erlang }}-${{ needs.versions.outputs.elixir }}-${{ hashFiles('**/mix.lock') }}
+        restore-keys: |
+          mix-${{ needs.versions.outputs.erlang }}-${{ needs.versions.outputs.elixir }}-
+    - name: Prepare deps
+      if: steps.cache-restore-mix-deps.outputs.cache-hit != 'true'
+      run: mix do deps.get, deps.compile
+    - uses: actions/cache/save@v4
+      with:
+        path: |
+          deps
+          _build
+        key: ${{ steps.cache-restore-mix-deps.outputs.cache-primary-key }}
+
+    - name: Prepare assets
+      run: mix assets.setup
+
+    - name: Compile
+      run: mix compile
+
+    - name: Setup DB
+      run: mix ecto.setup
+    - name: Site assets
+      run: mix assets.build
+    - name: Test
+      run: mix test
+
+    - uses: actions/cache/restore@v4
+      id: cache-restore-plt
+      with:
+        path: |
+          priv/plts
+        key: plt-${{ needs.versions.outputs.erlang }}-${{ needs.versions.outputs.elixir }}-${{ hashFiles('**/mix.lock') }}
+        restore-keys: |
+          plt-${{ needs.versions.outputs.erlang }}-${{ needs.versions.outputs.elixir }}-
+          plt-${{ needs.versions.outputs.erlang }}-
+          plt-
+    - name: Build PLT
+      run: mix dialyzer --plt
+    - uses: actions/cache/save@v4
+      with:
+        path: |
+          priv/plts
+        key: ${{ steps.cache-restore-plt.outputs.cache-primary-key }}
+
+    - name: Lint
+      run: mix lint
+
+  build:
+    runs-on: gha-runner-scale-set
+    needs: versions
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Elixir
-        id: beam
-        uses: erlef/setup-beam@v1
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          # NOTE: Keep in sync with elixir_buildpack.config and asdf's .tool-versions.
-          elixir-version: "1.16.1"
-          otp-version: "26.2.2"
-
-      - name: Cache deps
-        id: cache-deps
-        uses: actions/cache@v4
-        env:
-          cache-name: cache-elixir-deps
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_ECR_ACCESS_ROLE_ARN }}
+      - name: Log into AWS ECR
+        uses: docker/login-action@v3
         with:
-          path: deps
-          key: ${{ runner.os }}-mix-${{ env.cache-name }}-${{ hashFiles('**/mix.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-mix-${{ env.cache-name }}-
-
-      - name: Cache compiled build
-        id: cache-build
-        uses: actions/cache@v4
-        env:
-          cache-name: cache-compiled-build
+          registry: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+      - name: Build and push Docker image with revision and latest tags
+        uses: docker/build-push-action@v5
         with:
-          path: _build
-          key: ${{ runner.os }}-mix-${{ env.cache-name }}-${{ hashFiles('**/mix.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-mix-${{ env.cache-name }}-
-            ${{ runner.os }}-mix-
+          build-args: |
+            MIX_ENV=prod
+            APP_NAME=remit
+            ERLANG_VERSION=${{ needs.versions.outputs.erlang }}
+            ELIXIR_VERSION=${{ needs.versions.outputs.elixir }}
+            ALPINE_VERSION=${{ needs.versions.outputs.alpine }}
+            REVISION=${{ github.sha }}
+          context: .
+          push: ${{ github.ref_name == github.event.repository.default_branch }}
+          tags: |
+            ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ github.event.repository.name }}:sha-${{ github.sha }}
 
-      # Don't cache PLTs based on mix.lock hash, as Dialyzer can incrementally update even old ones
-      - name: Cache PLT
-        uses: actions/cache@v4
-        id: plt_cache
-        with:
-          path: priv/plts
-          key: |
-            ${{ runner.os }}-${{ steps.beam.outputs.elixir-version }}-${{ steps.beam.outputs.otp-version }}-plt
-
-      - name: Install deps
-        run: mix deps.get
-
-      - name: Check Formatting
-        run: mix format --check-formatted
-
-      - name: Compile in dev mode
-        run: mix compile --warnings-as-errors
-
-      # {:mix_audit, "~> 2.0", only: [:dev, :test], runtime: false}
-      - name: Check vulnerable packages
-        run: mix deps.audit
-
-      - name: Check retired packages
-        run: mix hex.audit
-
-      - name: Create PLTs
-        if: steps.plt_cache.outputs.cache-hit != 'true'
-        run: mix dialyzer --plt
-
-      # {:credo, "~> 1.6", only: [:dev, :test], runtime: false}
-      - name: Credo
-        run: mix credo
-
-      - name: Compile in test mode
-        env:
-          MIX_ENV: test
-        run: mix compile --warnings-as-errors
-
-      - name: Run tests
-        run: mix test
-
-      # {:dialyxir, "~> 1.0", only: [:dev], runtime: false}
-      - name: Run dialyzer
-        run: mix dialyzer --format github
-
-  # Based on: https://mikecoutermarsh.com/github-actions-deploy-to-heroku/
   deploy:
-    needs: tests
-    runs-on: ubuntu-latest
-
-    # Only if we're on master – not with PRs.
-    if: github.ref == 'refs/heads/master'
-
+    runs-on: gha-runner-scale-set
+    if: github.ref_name == github.event.repository.default_branch
+    needs:
+      - test
+      - build
+    concurrency:
+      group: deploy
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.repository.default_branch }}
           fetch-depth: 0
-      - name: Setup Heroku credentials
-        env:
-          HEROKU_API_TOKEN: ${{ secrets.HEROKU_API_TOKEN }}
-        run: echo "machine git.heroku.com password $HEROKU_API_TOKEN" >> ~/.netrc
-      - name: Deploy
-        env:
-          HEROKU_APP_NAME: "ex-remit"
-        # Migrations are run by Heroku release phase: see Procfile.
-        run: git push https://git.heroku.com/$HEROKU_APP_NAME.git origin/master:master
+      - name: Checkout stack repository
+        uses: actions/checkout@v4
+        with:
+          repository: barsoom/stack
+          path: stack
+          token: ${{ secrets.STACK_TOKEN }}
+          sparse-checkout: |
+            applications/remit/values.yaml
+            script/ci/deploy.sh
+            script/ci/ensure_revision_is_newer_than_deployed_revision.sh
+
+      - name: Ensure revision is newer than deployed revision
+        run: stack/script/ci/ensure_revision_is_newer_than_deployed_revision.sh
+
+      - name: Update values.yaml with new image tag
+        run: |
+          NEW_TAG="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ github.event.repository.name }}:sha-${{ github.sha }}"
+          sed -i "s|image:.*|image: $NEW_TAG|g" stack/applications/remit/values.yaml
+
+      - name: Deploy to Stack
+        run: stack/script/ci/deploy.sh # remit.auctionet.dev
+

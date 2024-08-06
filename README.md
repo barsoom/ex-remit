@@ -49,7 +49,6 @@ When new commits and comments arrive, or when a co-worker starts and finishes a 
 Please see the "Settings" screen in Remit for details about how Remit figures out which user(s) every commit and comment belongs to.
 
 ### Co-Authorship
-> This feature is still a work in progress.
 Remit has traditionally used "plus addressing" to extract the co-authors of a commit:
 
 Given an email such as `devs+author1+author2@example.com`, we would extract `author1` and `author2` as the authors of the commit.

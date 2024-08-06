@@ -15,6 +15,10 @@ defmodule RemitWeb.Router do
   end
 
   scope "/", RemitWeb do
+    get "/revision", RootController, :revision
+  end
+
+  scope "/", RemitWeb do
     import Phoenix.LiveDashboard.Router
     pipe_through :browser
 
