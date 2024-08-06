@@ -1,7 +1,7 @@
 import Config
 
 if System.get_env("PHX_SERVER") in ["true", "1"] do
-  config :remit, LoganWeb.Endpoint, server: true
+  config :remit, RemitWeb.Endpoint, server: true
 end
 
 if config_env() == :prod do

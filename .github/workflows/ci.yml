@@ -111,7 +111,7 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
-      - name: Build and push Docker image with revision and latest tags
+      - name: Build and push
         uses: docker/build-push-action@v5
         with:
           build-args: |
