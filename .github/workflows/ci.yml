@@ -11,7 +11,7 @@ on:
 
 jobs:
   versions:
-    runs-on: gha-runner-scale-set
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Determine versions
@@ -28,7 +28,7 @@ jobs:
       postgres: ${{ steps.versions.outputs.postgres }}
 
   test:
-    runs-on: gha-runner-scale-set
+    runs-on: ubuntu-latest
     needs: versions
     env:
       MIX_ENV: test
@@ -113,7 +113,7 @@ jobs:
       run: mix lint
 
   build:
-    runs-on: gha-runner-scale-set
+    runs-on: ubuntu-latest
     needs: versions
     permissions:
       id-token: write
@@ -145,7 +145,7 @@ jobs:
             ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ github.event.repository.name }}:sha-${{ github.sha }}
 
   deploy:
-    runs-on: gha-runner-scale-set
+    runs-on: ubuntu-latest
     if: github.ref_name == github.event.repository.default_branch
     needs:
       - test
