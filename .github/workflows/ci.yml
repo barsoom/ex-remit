@@ -160,5 +160,4 @@ jobs:
           sed -i "s|image:.*|image: $NEW_TAG|g" stack/applications/remit/values.yaml
 
       - name: Deploy to Stack
-        run: stack/script/ci/deploy.sh # remit.auctionet.dev
-
+        run: stack/script/ci/deploy.sh remit.auctionet.dev
