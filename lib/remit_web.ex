@@ -24,8 +24,9 @@ defmodule RemitWeb do
         layouts: [html: RemitWeb.Layouts]
 
       import Plug.Conn
-      import RemitWeb.Gettext
       import RemitWeb.Auth.Controller
+
+      use Gettext, backend: RemitWeb.Gettext
 
       unquote(verified_routes())
     end
@@ -87,7 +88,7 @@ defmodule RemitWeb do
       import Phoenix.HTML
       # Core UI components and translation
       import RemitWeb.CoreComponents
-      import RemitWeb.Gettext
+      use Gettext, backend: RemitWeb.Gettext
 
       import RemitWeb.LiveViewHelpers
 

@@ -17,7 +17,7 @@ defmodule RemitWeb.CoreComponents do
   use Phoenix.Component
 
   alias Phoenix.LiveView.JS
-  import RemitWeb.Gettext
+  use Gettext, backend: RemitWeb.Gettext
 
   @doc """
   Renders a modal.
