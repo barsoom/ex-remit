@@ -303,19 +303,15 @@ Auctionet developers deploy by pushing to GitHub. [CI](https://github.com/barsoo
 
 Please note that we use [Heroku release phase](https://devcenter.heroku.com/articles/release-phase) – migrations run *before* the new app code is released.
 
-### IEX console
+#### IEX console
 
-To get a production IEX console:
+##### Heroku
 
-Define a `ksh` per [Notion](https://www.notion.so/Production-tasks-1533aa235d4e80c194d0c364202b6a91?pvs=4).
+    heroku run "POOL_SIZE=2 iex -S mix"
 
-Then:
+##### Auctionet Stack
 
-    ksh remit-web
-
-Then:
-
-    bin/remit remote
+For Auctionet (on [Reclaim the Stack](https://github.com/reclaim-the-stack)), see [internal docs](https://www.notion.so/Production-tasks-1533aa235d4e80c194d0c364202b6a91?pvs=4).
 
 #### Adding a project to a team
 
