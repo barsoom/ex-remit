@@ -305,9 +305,17 @@ Please note that we use [Heroku release phase](https://devcenter.heroku.com/arti
 
 ### IEX console
 
-Get a production IEX console:
+To get a production IEX console:
 
-    script/prodc
+Define a `ksh` per [Notion](https://www.notion.so/Production-tasks-1533aa235d4e80c194d0c364202b6a91?pvs=4).
+
+Then:
+
+    ksh remit-web
+
+Then:
+
+    bin/remit remote
 
 #### Adding a project to a team
 
