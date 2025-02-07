@@ -16,10 +16,7 @@ let Hooks = {}
 // - Makes it so clicks in dev don't actually open links, unless inside Fluid.app, for convenience.
 Hooks.FixLink = {
   mounted() {
-    // Outside Fluid.app, in a regular browser, new tabs are less disruptive than opening in the same window.
-    // In Fluid.app, we can't add a "target" attribute or they'd open in a new tab instead of in the main window next to the Remit panel.
-    // We use a named target rather than "_blank" so it's reused. This means you put the opened window side-by-side with Remit and have a halfway decent Fluid-like experience.
-    if (!window.fluid) this.el.setAttribute("target", "github_window")
+    this.setTargetAttribute()
 
     this.el.addEventListener("click", (e) => {
       const didClickButton = !!e.target.closest("button")
@@ -39,6 +36,16 @@ Hooks.FixLink = {
         e.preventDefault()
       }
     })
+  },
+  updated() {
+    // After an update, the target attribute is lost. Re-set it.
+    this.setTargetAttribute()
+  },
+  setTargetAttribute() {
+    // Outside Fluid.app, in a regular browser, new tabs are less disruptive than opening in the same window.
+    // In Fluid.app, we can't add a "target" attribute or they'd open in a new tab instead of in the main window next to the Remit panel.
+    // We use a named target rather than "_blank" so it's reused. This means you put the opened window side-by-side with Remit and have a halfway decent Fluid-like experience.
+    if (!window.fluid) this.el.setAttribute("target", "github_window")
   }
 }
 
