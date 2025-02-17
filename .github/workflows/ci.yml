@@ -160,4 +160,7 @@ jobs:
           sed -i "s|image:.*|image: $NEW_TAG|g" stack/applications/remit/values.yaml
 
       - name: Deploy to Stack
+        env:
+          DEPLOYS_DISABLED: ${{ vars.DEPLOYS_DISABLED_IN_PRODUCTION }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: stack/script/ci/deploy.sh remit.auctionet.dev
