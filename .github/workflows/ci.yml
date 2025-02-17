@@ -159,7 +159,7 @@ jobs:
           NEW_TAG="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ github.event.repository.name }}:sha-${{ github.sha }}"
           sed -i "s|image:.*|image: $NEW_TAG|g" stack/applications/remit/values.yaml
 
-      - name: Deploy to Stack
+      - name: Deploy
         env:
           DEPLOYS_DISABLED: ${{ vars.DEPLOYS_DISABLED_IN_PRODUCTION }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
