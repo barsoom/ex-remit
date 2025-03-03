@@ -8,11 +8,6 @@ on:
         required: true
         type: boolean
         default: false
-      ssh_debugging:
-        description: Enable SSH debugging
-        type: boolean
-        required: true
-        default: false
 
 jobs:
   versions:
