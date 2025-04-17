@@ -44,4 +44,8 @@ if config_env() == :prod do
     github_api_token: System.get_env("GITHUB_API_TOKEN"),
     github_oauth_client_id: System.get_env("GITHUB_OAUTH_CLIENT_ID"),
     github_oauth_client_secret: System.get_env("GITHUB_OAUTH_CLIENT_SECRET")
+
+  config :honeybadger,
+    origin: {:system, "HONEYBADGER_ORIGIN"},
+    environment_name: {:system, "HONEYBADGER_ENV"}
 end
