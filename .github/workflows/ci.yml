@@ -137,6 +137,10 @@ jobs:
     concurrency:
       group: deploy
       cancel-in-progress: false
+    env:
+      GITHUB_REPOSITORY: ${{ github.event.repository.name }}
+      GITHUB_SHA: ${{ github.sha }}
+      GITHUB_RUN_ID: ${{ github.run_id }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -150,20 +154,19 @@ jobs:
           token: ${{ secrets.STACK_TOKEN }}
           sparse-checkout: |
             applications/remit/values.yaml
+            script/ci/update-values.sh
             script/ci/deploy.sh
             script/ci/ensure_revision_is_newer_than_deployed_revision.sh
 
       - name: Ensure revision is newer than deployed revision
         run: stack/script/ci/ensure_revision_is_newer_than_deployed_revision.sh
-
-      - name: Update values.yaml with new image tag
-        run: |
-          NEW_TAG="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ github.event.repository.name }}:sha-${{ github.sha }}"
-          sed -i "s|image:.*|image: $NEW_TAG|g" stack/applications/remit/values.yaml
-
       - name: Deploy
         env:
           DEPLOYS_DISABLED: ${{ vars.DEPLOYS_DISABLED_IN_PRODUCTION }}
           IGNORE_AUTODEPLOY_POLICY: ${{ github.event.inputs.ignore_autodeploy_policy }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: stack/script/ci/deploy.sh remit.auctionet.dev
+          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+        run: |
+          stack/script/ci/update-values.sh stack/applications/remit/values.yaml
+          stack/script/ci/deploy.sh remit.auctionet.dev
