@@ -136,7 +136,7 @@ defmodule Remit.CommitTest do
           review_started_by_username: "myname",
           review_started_at: ~U[2020-06-30 11:44:59.999999Z]
         },
-        overlong = %Commit{review_started_by_username: "myname", review_started_at: ~U[2020-06-30 11:44:59.999998Z]},
+        overlong = %Commit{review_started_by_username: "myname", review_started_at: ~U[2020-06-30 11:44:59.000000Z]},
         _by_another = %Commit{
           review_started_by_username: "theirname",
           review_started_at: ~U[2020-06-30 11:44:57.000000Z]
