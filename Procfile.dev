@@ -1,0 +1,1 @@
+web: iex --sname ex-remit -S mix phx.server
