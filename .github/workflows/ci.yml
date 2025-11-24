@@ -13,7 +13,7 @@ jobs:
   versions:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Determine versions
         id: versions
         run: |
@@ -51,7 +51,7 @@ jobs:
           --health-timeout 5s
           --health-retries 5
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - uses: erlef/setup-beam@v1
       with:
         otp-version: ${{ needs.versions.outputs.erlang }}
@@ -101,7 +101,7 @@ jobs:
       id-token: write
       contents: read
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v5
         with:
@@ -142,12 +142,12 @@ jobs:
       GITHUB_SHA: ${{ github.sha }}
       GITHUB_RUN_ID: ${{ github.run_id }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           ref: ${{ github.event.repository.default_branch }}
           fetch-depth: 0
       - name: Checkout stack repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: barsoom/stack
           path: stack
