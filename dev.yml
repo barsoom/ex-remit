@@ -1,5 +1,5 @@
 docker_services:
   postgres:
-    image: "postgres:14.4-alpine"
-    version: "14.4" # Keep in sync with .github/workflows/ci.yml
-    options: "-e POSTGRES_PASSWORD=dev --publish 5432 -v $DATABASE_ROOT/ex-remit/postgres:/var/lib/postgresql/data --shm-size=1gb"
+    image: "postgres:18.1-alpine"
+    version: "18.1" # Keep in sync with .github/workflows/ci.yml
+    options: "-e POSTGRES_PASSWORD=dev --publish 5432 -v $DATABASE_ROOT/ex-remit/postgres:/var/lib/postgresql --shm-size=1gb"
