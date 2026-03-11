@@ -155,7 +155,7 @@ jobs:
         with:
           repository: barsoom/stack
           path: stack
-          token: ${{ secrets.STACK_TOKEN }}
+          ssh-key: ${{ secrets.STACK_DEPLOY_KEY }}
           sparse-checkout: |
             applications/remit/values.yaml
             script/ci/update-values.sh
