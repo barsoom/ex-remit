@@ -116,18 +116,27 @@ let liveSocket = new LiveSocket("/live", Socket, {
 })
 
 // Show progress bar on live navigation and form submits.
+let pingOfflineTimeout = null
+
 window.addEventListener("phx:page-loading-start", (info) => {
   topbar.show(100)
   if (info?.detail?.kind === "error") {
-    // wait to be sure is a disconnect and not a page reload
-    setTimeout(function () { document.body.classList.add("ping-offline") }, 500)
+    // Wait to be sure it's a disconnect and not a page reload.
+    pingOfflineTimeout = setTimeout(function () {
+      pingOfflineTimeout = null
+      document.body.classList.add("ping-offline")
+    }, 100)
   }
 })
 
-window.addEventListener("phx:page-loading-stop", (info) => {
-  if (info.detail?.kind === "initial" && document.body.classList.contains("ping-offline")) {
-    location.reload()
+window.addEventListener("phx:page-loading-stop", (_info) => {
+  // Cancel the pending banner if we reconnect before the delay fires.
+  if (pingOfflineTimeout) {
+    clearTimeout(pingOfflineTimeout)
+    pingOfflineTimeout = null
   }
+  // Remove the banner on reconnect; LiveView remounts fresh state automatically.
+  document.body.classList.remove("ping-offline")
   topbar.hide()
 })
 
