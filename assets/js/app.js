@@ -117,10 +117,12 @@ let liveSocket = new LiveSocket("/live", Socket, {
 
 // Show progress bar on live navigation and form submits.
 let pingOfflineTimeout = null
+let disconnectedAt = null
 
 window.addEventListener("phx:page-loading-start", (info) => {
   topbar.show(100)
   if (info?.detail?.kind === "error") {
+    disconnectedAt = Date.now()
     // Wait to be sure it's a disconnect and not a page reload.
     pingOfflineTimeout = setTimeout(function () {
       pingOfflineTimeout = null
@@ -135,7 +137,17 @@ window.addEventListener("phx:page-loading-stop", (_info) => {
     clearTimeout(pingOfflineTimeout)
     pingOfflineTimeout = null
   }
-  // Remove the banner on reconnect; LiveView remounts fresh state automatically.
+
+  const disconnectDuration = disconnectedAt ? Date.now() - disconnectedAt : 0
+  disconnectedAt = null
+
+  // After a long disconnect (e.g. sleep), reload to get fresh state instead of
+  // trusting LiveView to patch a potentially stale page.
+  if (disconnectDuration > 10000) {
+    location.reload()
+    return
+  }
+
   document.body.classList.remove("ping-offline")
   topbar.hide()
 })
