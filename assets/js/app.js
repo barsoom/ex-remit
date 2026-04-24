@@ -141,8 +141,7 @@ window.addEventListener("phx:page-loading-stop", (_info) => {
   const disconnectDuration = disconnectedAt ? Date.now() - disconnectedAt : 0
   disconnectedAt = null
 
-  // After a long disconnect (e.g. sleep), reload to get fresh state instead of
-  // trusting LiveView to patch a potentially stale page.
+  // After a long disconnect (e.g. sleep), reload to get fresh state instead of trusting LiveView to patch a potentially stale page.
   if (disconnectDuration > 10000) {
     location.reload()
     return
