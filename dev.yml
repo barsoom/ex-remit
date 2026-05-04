@@ -3,3 +3,5 @@ docker_services:
     image: "postgres:18.1-alpine"
     version: "18.1" # Keep in sync with .github/workflows/ci.yml
     options: "-e POSTGRES_PASSWORD=dev --publish 5432 -v $DATABASE_ROOT/ex-remit/postgres:/var/lib/postgresql --shm-size=1gb"
+    # wal_level=logical matches production and is used by cdc
+    command: "postgres -c 'wal_level=logical'"
