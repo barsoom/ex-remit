@@ -12,6 +12,7 @@ A self-hosted web app for [commit-by-commit code review](https://thepugautomatic
   * [Setting up Fluid.app](#setting-up-fluidapp)
   * [Without Fluid.app](#without-fluidapp)
   * [Stats API](#stats-api)
+  * [CLI and MCP server](#cli-and-mcp-server)
 * [Setup](#setup)
   * [Heroku setup](#heroku-setup)
   * [Adding webhooks](#adding-webhooks)
@@ -99,6 +100,14 @@ If you want some statistics for e.g. a dashboard or a chat integration, there's 
 Just visit `/api/stats?auth_key=MY_AUTH_KEY` for some statistics.
 
 The key is whatever `AUTH_KEY` you defined when you set up the app.
+
+### CLI and MCP server
+
+Remit has a CLI and an MCP server for listing, reviewing and resolving commits and comments from a terminal or an AI agent. Both log in through GitHub with OAuth, and only members of the `GITHUB_ORG_SLUG` organization get a token, so that must be set.
+
+Build the CLI with `mix escript.build`, then `./remit --base-url https://MY-REMIT.example.com login` and `./remit help`. If your browser is on another machine, paste the `http://127.0.0.1:.../callback` URL it fails to load at the CLI's prompt.
+
+The MCP server is at `/mcp`, e.g. `claude mcp add --transport http remit https://MY-REMIT.example.com/mcp`.
 
 ## Setup
 

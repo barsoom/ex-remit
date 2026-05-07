@@ -40,7 +40,7 @@ defmodule RemitWeb.TabsLive do
     ~H"""
     <%= for tab <- @tabs do %>
       <div style={"display: #{if @live_action == tab.action, do: "block", else: "none"}"}>
-        {live_render(@socket, tab.module, id: tab.action)}
+        {live_render(@socket, tab.module, id: tab.action, session: %{"public_url" => @public_url})}
       </div>
     <% end %>
     """
@@ -63,8 +63,19 @@ defmodule RemitWeb.TabsLive do
     |> assign_default_params(session)
     |> assign(inbox_count_badge: get_feature_flags(session)["inbox_count_badge"])
     |> assign(compact_design: get_feature_flags(session)["compact_design"])
+    |> assign(public_url: public_url(socket))
     |> assign_tab_notification()
     |> ok()
+  end
+
+  defp public_url(socket) do
+    case Phoenix.LiveView.get_connect_info(socket, :uri) do
+      %URI{scheme: scheme, host: host, port: port} when is_binary(scheme) and is_binary(host) ->
+        RemitWeb.OAuth.BaseURL.build(scheme, host, port)
+
+      _ ->
+        RemitWeb.Endpoint.url()
+    end
   end
 
   @impl Phoenix.LiveView

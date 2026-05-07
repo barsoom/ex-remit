@@ -20,6 +20,7 @@ defmodule Remit.Application do
       {Finch, name: Remit.Finch},
       Remit.Ownership,
       Remit.GithubAuth,
+      RemitWeb.OAuth.UsedCodes,
       Remit.Periodically,
       # Start the Endpoint (http/https)
       RemitWeb.Endpoint

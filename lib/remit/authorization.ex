@@ -1,7 +1,7 @@
 defmodule Remit.Authorization do
   @moduledoc """
   Server-side authorization rules for review/comment actions. Used by
-  `RemitWeb.CommitsLive` and `RemitWeb.CommentsLive`.
+  `Remit.Tools`, `RemitWeb.CommitsLive` and `RemitWeb.CommentsLive`.
 
   Mirrors the rules the LiveViews use to render action buttons.
   """
@@ -15,8 +15,11 @@ defmodule Remit.Authorization do
       is_nil(commit.reviewed_at) and is_nil(commit.review_started_at) and not Commit.authored_by?(commit, username) and
         can_review_repo?(teams_owning(commit.repo), username)
 
+  # Lets the API review in one step; the UI gets there via start_review.
   def can_review_commit?("mark_reviewed", %Commit{} = commit, username),
-    do: not Commit.authored_by?(commit, username) and Commit.being_reviewed_by?(commit, username)
+    do:
+      not Commit.authored_by?(commit, username) and
+        (Commit.being_reviewed_by?(commit, username) or can_review_commit?("start_review", commit, username))
 
   def can_review_commit?("mark_unreviewed", %Commit{} = commit, username),
     do:

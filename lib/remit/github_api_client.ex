@@ -5,6 +5,7 @@ defmodule Remit.GitHubAPIClient do
     @moduledoc false
     @callback fetch_commit(String.t(), String.t(), String.t()) :: %Remit.Commit{}
     @callback fetch_comments_on_commit(%Remit.Commit{}) :: [%Remit.Comment{}]
+    @callback org_membership(String.t(), String.t()) :: :active | :inactive | :bad_token
   end
 
   @behaviour Behaviour
@@ -26,6 +27,14 @@ defmodule Remit.GitHubAPIClient do
   def get_user(bearer_token) do
     {:ok, %{body: data}} = Tesla.get(tesla_client(bearer_token), "/user")
     build_user(data)
+  end
+
+  def org_membership(bearer_token, org_slug) do
+    case Tesla.get(tesla_client(bearer_token), "/user/memberships/orgs/#{org_slug}") do
+      {:ok, %{status: 200, body: %{"state" => "active"}}} -> :active
+      {:ok, %{status: 401}} -> :bad_token
+      _ -> :inactive
+    end
   end
 
   def get_teams(bearer_token, org_slug) do
