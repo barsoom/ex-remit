@@ -17,6 +17,7 @@ defmodule Remit.MixProject do
       aliases: aliases(),
       deps: deps(),
       listeners: [Phoenix.CodeReloader],
+      escript: [main_module: Remit.CLI, name: "remit", app: nil],
       dialyzer: [
         plt_file: {:no_warn, "priv/plts/dialyzer.plt"}
       ]
@@ -68,6 +69,7 @@ defmodule Remit.MixProject do
       {:sentry, "> 0.0.0"},
       {:tesla, ">= 1.5.0"},
       {:finch, "> 0.0.0"},
+      {:joken, "~> 2.6"},
       {:confex, "~> 3.5.0"},
       {:esbuild, "~> 0.2", runtime: Mix.env() == :dev},
       {:tailwind, "~> 0.2", runtime: Mix.env() == :dev},

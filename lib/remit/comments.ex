@@ -16,7 +16,7 @@ defmodule Remit.Comments do
   def count_notifications(opts) when is_list(opts) do
     %{username: username, resolved_filter: resolved_filter, user_filter: user_filter} = opts = Enum.into(opts, %{})
 
-    notifications_query(username, resolved_filter, user_filter)
+    notifications_query(username, resolved_filter, user_filter, Map.get(opts, :repo))
     |> apply_search(Map.get(opts, :search, ""))
     |> Repo.aggregate(:count)
   end
@@ -73,7 +73,7 @@ defmodule Remit.Comments do
        ) do
     order_by = if resolved_filter == "resolved", do: [desc: :resolved_at], else: [desc: :id]
 
-    notifications_query(username, resolved_filter, user_filter)
+    notifications_query(username, resolved_filter, user_filter, Map.get(opts, :repo))
     |> apply_search(Map.get(opts, :search, ""))
     |> then(fn q ->
       from [n, c] in q, limit: ^limit, order_by: ^order_by, preload: [comment: {c, [:commit, :comment_notifications]}]
@@ -90,8 +90,11 @@ defmodule Remit.Comments do
 
   defp apply_search(query, _), do: query
 
-  defp notifications_query(username, resolved_filter, user_filter) do
+  defp notifications_query(username, resolved_filter, user_filter, repo) do
     query = from n in CommentNotification, join: c in assoc(n, :comment)
+
+    query =
+      if repo, do: from([n, c] in query, join: commit in assoc(c, :commit), where: commit.repo == ^repo), else: query
 
     query =
       case resolved_filter do

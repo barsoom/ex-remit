@@ -71,11 +71,11 @@ defmodule Remit.AuthorizationTest do
   end
 
   describe "can_review_commit?/3 review-state rules" do
-    test "a new commit can be started, but not reviewed or reopened" do
+    test "a new commit can be started or reviewed, but not reopened" do
       commit = Factory.build(:commit, repo: "ownerless")
 
       assert Authorization.can_review_commit?("start_review", commit, "alice")
-      refute Authorization.can_review_commit?("mark_reviewed", commit, "alice")
+      assert Authorization.can_review_commit?("mark_reviewed", commit, "alice")
       refute Authorization.can_review_commit?("mark_unreviewed", commit, "alice")
     end
 

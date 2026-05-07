@@ -34,7 +34,10 @@ config :remit,
   auth_key: "test_auth_key",
   webhook_key: "test_webhook_key",
   github_api_token: "test_github_api_token",
-  github_api_client: GitHubAPIClient.Mock
+  github_api_client: GitHubAPIClient.Mock,
+  github_oauth_client_id: "test_oauth_client_id",
+  github_oauth_client_secret: "test_oauth_client_secret",
+  mcp_allowed_origins: ["http://localhost:4002"]
 
 config :tesla, adapter: Tesla.Mock
 
