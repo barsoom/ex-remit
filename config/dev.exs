@@ -99,7 +99,8 @@ config :remit,
   webhook_key: "dev",
   github_api_token: {:system, "GITHUB_API_TOKEN", "dev"},
   github_oauth_client_id: {:system, "GITHUB_OAUTH_CLIENT_ID"},
-  github_oauth_client_secret: {:system, "GITHUB_OAUTH_CLIENT_SECRET"}
+  github_oauth_client_secret: {:system, "GITHUB_OAUTH_CLIENT_SECRET"},
+  mcp_allowed_origins: ["http://localhost:4000", "http://localhost:45361"]
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"

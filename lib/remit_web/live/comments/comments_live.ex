@@ -1,7 +1,7 @@
 defmodule RemitWeb.CommentsLive do
   use RemitWeb, :live_view
   require Logger
-  alias Remit.{Comments, GithubAuth, Settings}
+  alias Remit.{Authorization, CommentNotification, Comments, GithubAuth, Repo, Settings}
 
   @max_comments Application.compile_env(:remit, :max_comments)
 
@@ -31,7 +31,7 @@ defmodule RemitWeb.CommentsLive do
 
   @impl Phoenix.LiveView
   def handle_event("resolve", %{"id" => id}, socket) do
-    Comments.resolve(id)
+    if authorized_to_resolve?(id, socket), do: Comments.resolve(id)
 
     socket
     |> assign_selected_id(id)
@@ -41,7 +41,7 @@ defmodule RemitWeb.CommentsLive do
 
   @impl Phoenix.LiveView
   def handle_event("unresolve", %{"id" => id}, socket) do
-    Comments.unresolve(id)
+    if authorized_to_resolve?(id, socket), do: Comments.unresolve(id)
 
     socket
     |> assign_selected_id(id)
@@ -143,6 +143,16 @@ defmodule RemitWeb.CommentsLive do
   defp assign_username(socket, username) do
     socket
     |> assign(username: username)
+  end
+
+  defp authorized_to_resolve?(id, socket) do
+    case Repo.get(CommentNotification, id) do
+      %CommentNotification{} = n ->
+        Authorization.can_resolve_notification?(n, socket.assigns.username)
+
+      _ ->
+        false
+    end
   end
 
   defp assign_filtered_notifications(socket) do

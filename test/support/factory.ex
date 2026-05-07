@@ -7,7 +7,7 @@ defmodule Remit.Factory do
 
   def build(:commit) do
     %Commit{
-      sha: Faker.sha(),
+      sha: Faker.sha(System.unique_integer([:positive])),
       usernames: [Faker.username()],
       owner: "acme",
       repo: Faker.repo(),
@@ -20,7 +20,7 @@ defmodule Remit.Factory do
 
   def build(:comment) do
     %Comment{
-      github_id: Faker.number(),
+      github_id: System.unique_integer([:positive]),
       body: Faker.message(),
       commenter_username: Faker.username(),
       commented_at: DateTime.utc_now(),
