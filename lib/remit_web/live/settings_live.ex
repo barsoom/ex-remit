@@ -17,6 +17,7 @@ defmodule RemitWeb.SettingsLive do
     socket
     |> assign(session_id: session["session_id"])
     |> assign(username: github_login(session))
+    |> assign(public_url: session["public_url"] || RemitWeb.Endpoint.url())
     |> assign_projects()
     |> assign_teams()
     |> assign(reviewed_commit_cutoff: get_reviewed_commit_cutoff(session, %{"days" => 7, "commits" => 100}))

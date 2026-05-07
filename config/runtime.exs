@@ -43,7 +43,11 @@ if config_env() == :prod do
     webhook_key: System.get_env("WEBHOOK_KEY"),
     github_api_token: System.get_env("GITHUB_API_TOKEN"),
     github_oauth_client_id: System.get_env("GITHUB_OAUTH_CLIENT_ID"),
-    github_oauth_client_secret: System.get_env("GITHUB_OAUTH_CLIENT_SECRET")
+    github_oauth_client_secret: System.get_env("GITHUB_OAUTH_CLIENT_SECRET"),
+    mcp_allowed_origins:
+      (System.get_env("MCP_ALLOWED_ORIGINS") || "")
+      |> String.split(",", trim: true)
+      |> Enum.map(&String.trim/1)
 
   config :honeybadger,
     origin: {:system, "HONEYBADGER_ORIGIN"},

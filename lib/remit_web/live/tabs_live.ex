@@ -39,7 +39,7 @@ defmodule RemitWeb.TabsLive do
     ~H"""
     <%= for tab <- @tabs do %>
       <div style={"display: #{if @live_action == tab.action, do: "block", else: "none"}"}>
-        <%= live_render(@socket, tab.module, id: tab.action) %>
+        <%= live_render(@socket, tab.module, id: tab.action, session: %{"public_url" => @public_url}) %>
       </div>
     <% end %>
     """
@@ -60,9 +60,32 @@ defmodule RemitWeb.TabsLive do
     |> assign_username(github_login(session))
     |> assign_default_params(session)
     |> assign(inbox_count_badge: get_feature_flags(session)["inbox_count_badge"])
+    |> assign(public_url: public_url(socket))
     |> assign_tab_notification()
     |> ok()
   end
+
+  # The base URL the user is currently on (e.g. `http://devbox:45361`),
+  # derived from the request URI so the settings page can show
+  # copy-pasteable commands that target the host the user is using.
+  # Falls back to the configured endpoint URL when not available.
+  defp public_url(socket) do
+    case Phoenix.LiveView.get_connect_info(socket, :uri) do
+      %URI{scheme: scheme, host: host, port: port} when is_binary(scheme) and is_binary(host) ->
+        if default_port?(scheme, port) do
+          "#{scheme}://#{host}"
+        else
+          "#{scheme}://#{host}:#{port}"
+        end
+
+      _ ->
+        RemitWeb.Endpoint.url()
+    end
+  end
+
+  defp default_port?("http", 80), do: true
+  defp default_port?("https", 443), do: true
+  defp default_port?(_, _), do: false
 
   @impl Phoenix.LiveView
   def handle_info(:comments_changed, socket) do

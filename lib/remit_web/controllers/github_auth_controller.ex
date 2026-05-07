@@ -12,12 +12,21 @@ defmodule RemitWeb.GithubAuthController do
   end
 
   # redirect callback
-  def auth(conn, params) do
-    conn
-    |> verify_state(params)
-    |> get_access_token_and_user(params)
-    |> broadcast_login()
-    |> redirect(to: ~p"/settings")
+  def auth(conn, %{"state" => state} = params) do
+    # The OAuth/MCP flow shares this callback URL but uses a JWT-encoded
+    # state. Detect and dispatch to the OAuth surface; otherwise fall
+    # through to the legacy web-login flow.
+    case RemitWeb.OAuth.JWT.verify_oauth_state(state) do
+      {:ok, _claims} ->
+        RemitWeb.OAuth.AuthorizeController.github_callback(conn, params)
+
+      _ ->
+        conn
+        |> verify_state(params)
+        |> get_access_token_and_user(params)
+        |> broadcast_login()
+        |> redirect(to: ~p"/settings")
+    end
   end
 
   def logout(conn, _) do

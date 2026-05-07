@@ -48,18 +48,32 @@ defmodule Remit.Comments do
          resolved_filter: resolved_filter,
          user_filter: user_filter,
          limit: limit
-       }) do
+       } = opts) do
     order_by = if resolved_filter == "resolved", do: [desc: :resolved_at], else: [desc: :id]
+    repo = Map.get(opts, :repo)
 
-    notifications_query(username, resolved_filter, user_filter)
+    notifications_query(username, resolved_filter, user_filter, repo)
     |> then(fn q ->
-      from [n, c] in q, limit: ^limit, order_by: ^order_by, preload: [comment: {c, [:commit, :comment_notifications]}]
+      from [n, c, _commit] in q,
+        limit: ^limit,
+        order_by: ^order_by,
+        preload: [comment: {c, [:commit, :comment_notifications]}]
     end)
     |> Repo.all()
   end
 
-  defp notifications_query(username, resolved_filter, user_filter) do
-    query = from n in CommentNotification, join: c in assoc(n, :comment)
+  defp notifications_query(username, resolved_filter, user_filter, repo) do
+    query =
+      from n in CommentNotification,
+        join: c in assoc(n, :comment),
+        join: commit in assoc(c, :commit)
+
+    query =
+      case repo do
+        nil -> query
+        "" -> query
+        repo -> from [n, c, commit] in query, where: commit.repo == ^repo
+      end
 
     query =
       case resolved_filter do

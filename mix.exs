@@ -11,6 +11,7 @@ defmodule Remit.MixProject do
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
+      escript: [main_module: Remit.CLI, name: "remit", app: nil],
       dialyzer: [
         plt_file: {:no_warn, "priv/plts/dialyzer.plt"}
       ]
@@ -55,6 +56,7 @@ defmodule Remit.MixProject do
       {:honeybadger, "> 0.0.0"},
       {:tesla, ">= 1.5.0"},
       {:hackney, "> 0.0.0"},
+      {:joken, "~> 2.6"},
       {:confex, "~> 3.5.0"},
       {:esbuild, "~> 0.2", runtime: Mix.env() == :dev},
       {:tailwind, "~> 0.2", runtime: Mix.env() == :dev},

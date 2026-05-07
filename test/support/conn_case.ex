@@ -23,6 +23,7 @@ defmodule RemitWeb.ConnCase do
       import Plug.Conn
       import Phoenix.ConnTest
       import RemitWeb.ConnCase
+      import RemitWeb.OAuthTestHelpers
 
       use RemitWeb, :verified_routes
 

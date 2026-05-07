@@ -45,6 +45,11 @@ defmodule Remit.Commit do
       where: ^author in c.usernames
   end
 
+  def apply_filter(q, {:repo, repo}) do
+    from c in q,
+      where: c.repo == ^repo
+  end
+
   def apply_filter(q, _), do: q
 
   def apply_reviewed_cutoff(q, filters) when is_list(filters),

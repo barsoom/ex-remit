@@ -2,6 +2,43 @@ defmodule Remit.CommitsTest do
   use Remit.DataCase, async: true
   alias Remit.{Commits, Factory}
 
+  describe "list_latest/2 with :repo filter" do
+    test "returns only commits with matching repo" do
+      a = Factory.insert!(:commit, repo: "repo-a")
+      _b = Factory.insert!(:commit, repo: "repo-b")
+
+      result = Commits.list_latest([repo: "repo-a"], 10)
+      assert Enum.map(result, & &1.id) == [a.id]
+    end
+  end
+
+  describe "list_latest/2 with :status" do
+    test "unreviewed returns only unreviewed commits" do
+      u = Factory.insert!(:commit, reviewed_at: nil)
+      _r = Factory.insert!(:commit, reviewed_at: DateTime.utc_now(), reviewed_by_username: "x")
+
+      result = Commits.list_latest([status: "unreviewed"], 10)
+      assert Enum.map(result, & &1.id) == [u.id]
+    end
+
+    test "reviewed returns only reviewed commits" do
+      _u = Factory.insert!(:commit, reviewed_at: nil)
+      r = Factory.insert!(:commit, reviewed_at: DateTime.utc_now(), reviewed_by_username: "x")
+
+      result = Commits.list_latest([status: "reviewed"], 10)
+      assert Enum.map(result, & &1.id) == [r.id]
+    end
+
+    test "all (default) returns unreviewed and reviewed" do
+      u = Factory.insert!(:commit, reviewed_at: nil)
+      r = Factory.insert!(:commit, reviewed_at: DateTime.utc_now(), reviewed_by_username: "x")
+
+      result = Commits.list_latest([], 10)
+      ids = Enum.map(result, & &1.id) |> Enum.sort()
+      assert ids == Enum.sort([u.id, r.id])
+    end
+  end
+
   describe "list_latest_shas" do
     test "returns up to the given number of recent SHAs" do
       Factory.insert!(:commit, sha: "abc1")

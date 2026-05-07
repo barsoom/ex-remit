@@ -25,6 +25,24 @@
     <% end %>
   </div>
 
+  <%!-- Programmatic access --%>
+  <%= if @username do %>
+    <div class="bg-gray-200 px-3 py-4 mt-6 paragraphs">
+      <h2 class="font-semibold text-xs mb-2 uppercase">Programmatic access</h2>
+      <p>Drive Remit from Claude Code or your terminal:</p>
+      <ul class="text-sm mt-2 space-y-1">
+        <li>
+          <code>claude mcp add --transport http remit <%= @public_url %>/mcp</code>
+          — Claude Code (auto-OAuth)
+        </li>
+        <li>
+          <code>REMIT_URL=<%= @public_url %> ./remit login</code>
+          — terminal CLI (auto-OAuth)
+        </li>
+      </ul>
+    </div>
+  <% end %>
+
   <%!-- GitHub teams --%>
   <%= if @username && Remit.Config.has_github_org? do %>
     <div class="bg-gray-200 px-3 py-4 mt-6 paragraphs">

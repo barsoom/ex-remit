@@ -24,7 +24,7 @@ defmodule RemitWeb.Endpoint do
     websocket: [
       # Timeout for Heroku: https://hexdocs.pm/phoenix/heroku.html#making-our-project-ready-for-heroku
       websocket: [timeout: 45_000],
-      connect_info: [session: @session_options]
+      connect_info: [:uri, session: @session_options]
     ]
 
   # Serve at "/" the static files from "priv/static" directory.
@@ -50,6 +50,7 @@ defmodule RemitWeb.Endpoint do
     param_key: "request_logger",
     cookie_key: "request_logger"
 
+  plug Plug.RewriteOn, [:x_forwarded_host, :x_forwarded_proto, :x_forwarded_port]
   plug Plug.RequestId
   plug Plug.Telemetry, event_prefix: [:phoenix, :endpoint]
 
