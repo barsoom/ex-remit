@@ -84,9 +84,11 @@
                 next.
               </p>
             <% true -> %>
-              <p>
-                <i class="fas fa-trophy text-yellow-mid"></i> Nothing left for you to review!
-              </p>
+              <%= if @commits_of_author != @username do %>
+                <p>
+                  <i class="fas fa-trophy text-yellow-mid"></i> Nothing left for you to review!
+                </p>
+              <% end %>
           <% end %>
         </p>
       <% end %>

@@ -10,6 +10,11 @@ defmodule RemitWeb.CommitsLiveTest do
     %{socket: %Phoenix.LiveView.Socket{}}
   end
 
+  defp filter_by_me(view) do
+    commits_lv = view |> live_children() |> Enum.find(&(&1.id == "commits"))
+    assert commits_lv |> element("a", "Me") |> render_click()
+  end
+
   test "says hello", %{conn: conn} do
     # We haven't yet set our name.
     conn = get(conn, "/commits?auth_key=test_auth_key")
@@ -43,14 +48,10 @@ defmodule RemitWeb.CommitsLiveTest do
 
       {:ok, view, _html} = live(conn, "/commits")
 
-      children = live_children(view)
-      commits_lv = Enum.find(children, &(&1.id == "commits"))
-
       assert view |> has_element?("p", commit_not_by_me.message)
       assert view |> has_element?("p", commit_by_me.message)
 
-      # Filter by me.
-      assert commits_lv |> element("a", "Me") |> render_click()
+      view |> filter_by_me()
 
       refute view |> has_element?("p", commit_not_by_me.message)
       assert view |> has_element?("p", commit_by_me.message)
@@ -58,10 +59,22 @@ defmodule RemitWeb.CommitsLiveTest do
       # Filter also applies to commits arriving via live update.
       new_commit_by_me = Factory.build(:commit, id: 1, usernames: ["dwight"], message: "new commit by dwight")
       new_commit_by_other = Factory.build(:commit, id: 2, usernames: ["michael"], message: "new commit by michael")
+      commits_lv = view |> live_children() |> Enum.find(&(&1.id == "commits"))
       send(commits_lv.pid, {:new_commits, [new_commit_by_me, new_commit_by_other]})
 
       assert render(commits_lv) =~ new_commit_by_me.message
       refute render(commits_lv) =~ new_commit_by_other.message
+    end
+
+    test "hides 'nothing left for you to review' when filtered to your own commits", %{conn: conn} do
+      Factory.insert!(:commit, usernames: ["dwight"], message: "by me")
+
+      {:ok, view, _html} = live(conn, "/commits")
+
+      assert view |> has_element?("p", "Nothing left for you to review!")
+
+      view |> filter_by_me()
+      refute view |> has_element?("p", "Nothing left for you to review!")
     end
   end
 
