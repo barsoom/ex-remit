@@ -28,7 +28,7 @@ defmodule RemitWeb.CommitsLiveTest do
       %{conn: conn}
     end
 
-    test "shows commits you've made", %{conn: conn} do
+    test "shows commits you've made, including ones arriving via live update", %{conn: conn} do
       commit_not_by_me =
         Factory.insert!(:commit,
           usernames: ["michael"],
@@ -49,11 +49,19 @@ defmodule RemitWeb.CommitsLiveTest do
       assert view |> has_element?("p", commit_not_by_me.message)
       assert view |> has_element?("p", commit_by_me.message)
 
-      # filter by me
+      # Filter by me.
       assert commits_lv |> element("a", "Me") |> render_click()
 
       refute view |> has_element?("p", commit_not_by_me.message)
       assert view |> has_element?("p", commit_by_me.message)
+
+      # Filter also applies to commits arriving via live update.
+      new_commit_by_me = Factory.build(:commit, id: 1, usernames: ["dwight"], message: "new commit by dwight")
+      new_commit_by_other = Factory.build(:commit, id: 2, usernames: ["michael"], message: "new commit by michael")
+      send(commits_lv.pid, {:new_commits, [new_commit_by_me, new_commit_by_other]})
+
+      assert render(commits_lv) =~ new_commit_by_me.message
+      refute render(commits_lv) =~ new_commit_by_other.message
     end
   end
 
