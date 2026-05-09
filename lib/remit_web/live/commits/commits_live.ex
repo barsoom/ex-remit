@@ -102,10 +102,12 @@ defmodule RemitWeb.CommitsLive do
 
     projects_of_team = projects_of_team(socket)
     members_of_team = members_of_team(socket)
+    author_filter = commits_of_author(socket)
 
     commit_for_display? = fn commit ->
       Ownership.claimed_by_team_or_unclaimed?(commit.repo, projects_of_team) &&
-        Ownership.authors_in_team?(commit.usernames, members_of_team)
+        Ownership.authors_in_team?(commit.usernames, members_of_team) &&
+        commit_matches_author_filter?(commit, author_filter)
     end
 
     case Enum.filter(new_commits, commit_for_display?) do
@@ -251,6 +253,9 @@ defmodule RemitWeb.CommitsLive do
   defp replace_commit(commits, commit) do
     commits |> Enum.map(&if(&1.id == commit.id, do: commit, else: &1))
   end
+
+  defp commit_matches_author_filter?(_commit, "all"), do: true
+  defp commit_matches_author_filter?(commit, author), do: Commit.authored_by?(commit, author)
 
   defp authored?(socket, commit), do: Commit.authored_by?(commit, username(socket))
 
