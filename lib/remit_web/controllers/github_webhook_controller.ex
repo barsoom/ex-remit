@@ -14,10 +14,20 @@ defmodule RemitWeb.GithubWebhookController do
       }
     )
 
-    handle_event(conn, event_name, params)
+    if ignored_repo?(params) do
+      conn |> text("Ignored")
+    else
+      handle_event(conn, event_name, params)
+    end
   end
 
   # Private
+
+  defp ignored_repo?(%{"repository" => %{"name" => name}}) do
+    Enum.any?(Remit.Config.ignored_repo_prefixes(), &String.starts_with?(name, &1))
+  end
+
+  defp ignored_repo?(_params), do: false
 
   defp handle_event(conn, "ping", _params) do
     conn |> text("pong")

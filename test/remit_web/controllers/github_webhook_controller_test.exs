@@ -145,6 +145,35 @@ defmodule RemitWeb.GithubWebhookControllerTest do
     end
   end
 
+  describe "ignored repos" do
+    setup do
+      original = Application.get_env(:remit, :ignored_repo_prefixes)
+      Application.put_env(:remit, :ignored_repo_prefixes, "interview-, spike-")
+      on_exit(fn -> Application.put_env(:remit, :ignored_repo_prefixes, original) end)
+    end
+
+    test "silently ignores a push to a repo matching an ignored prefix" do
+      conn = build_push_payload(repo: "interview-foobar") |> post_payload("push")
+
+      assert response(conn, 200) == "Ignored"
+      assert Repo.aggregate(Commit, :count) == 0
+    end
+
+    test "silently ignores a commit_comment on a repo matching an ignored prefix" do
+      conn = build_comment_payload(repo: "spike-something") |> post_payload("commit_comment")
+
+      assert response(conn, 200) == "Ignored"
+      assert Repo.aggregate(Comment, :count) == 0
+    end
+
+    test "still processes pushes to repos that don't match any prefix" do
+      conn = build_push_payload(repo: "myrepo") |> post_payload("push")
+
+      assert response(conn, 200) == "Thanks!"
+      assert Repo.aggregate(Commit, :count) == 2
+    end
+  end
+
   describe "with a bad auth_key" do
     test "returns an error" do
       conn = build_ping_payload() |> post_payload("ping", auth_key: "bad_key")
@@ -167,6 +196,7 @@ defmodule RemitWeb.GithubWebhookControllerTest do
 
   defp build_push_payload(opts) do
     branch = Keyword.get(opts, :branch, "master")
+    repo = Keyword.get(opts, :repo, "myrepo")
 
     # This is a subset of the actual payload.
     # Reference: https://developer.github.com/webhooks/event-payloads/#push
@@ -174,7 +204,7 @@ defmodule RemitWeb.GithubWebhookControllerTest do
       ref: "refs/heads/#{branch}",
       repository: %{
         master_branch: "master",
-        name: "myrepo",
+        name: repo,
         owner: %{
           name: "acme"
         }
@@ -216,6 +246,7 @@ defmodule RemitWeb.GithubWebhookControllerTest do
     sha = Keyword.get_lazy(opts, :sha, &Faker.sha/0)
     body = Keyword.get(opts, :body, "Hello world!")
     username = Keyword.get(opts, :username, "ada")
+    repo = Keyword.get(opts, :repo, "footguns")
 
     # This is a subset of the actual payload.
     # Reference: https://developer.github.com/webhooks/event-payloads/#commit_comment
@@ -233,7 +264,7 @@ defmodule RemitWeb.GithubWebhookControllerTest do
         body: body
       },
       repository: %{
-        name: "footguns",
+        name: repo,
         owner: %{login: "acme"}
       }
     }

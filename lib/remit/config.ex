@@ -14,4 +14,10 @@ defmodule Remit.Config do
   def github_org_slug, do: Confex.fetch_env!(:remit, :github_org_slug)
 
   def has_github_org?, do: github_org_slug() != ""
+
+  def ignored_repo_prefixes do
+    :remit
+    |> Confex.fetch_env!(:ignored_repo_prefixes)
+    |> String.split(~r/[\s,]+/, trim: true)
+  end
 end

@@ -15,6 +15,7 @@ A self-hosted web app for [commit-by-commit code review](https://thepugautomatic
 * [Setup](#setup)
   * [Heroku setup](#heroku-setup)
   * [Adding webhooks](#adding-webhooks)
+  * [Ignoring repos](#ignoring-repos)
   * [Automatically removing old data](#automatically-removing-old-data)
   * [Migrating from the "Review" app](#migrating-from-the-review-app)
 * [Development](#development)
@@ -178,6 +179,16 @@ When added manually, the hook should be something like:
 Note that this is the `WEBHOOK_KEY` and not the `AUTH_KEY`!
 
 You should see a happy green checkmark on GitHub, and if you click the hook, "Recent Deliveries" should show a successful ping-pong interaction.
+
+### Ignoring repos
+
+If you use an organisation-level webhook (or otherwise can't easily limit which repos send webhooks to Remit), you can tell Remit to silently drop incoming webhooks from certain repos by setting `IGNORED_REPO_PREFIXES`. The value is a space- or comma-separated list of repo name prefixes. Any push or commit-comment event for a repo whose name starts with one of the prefixes is dropped before being processed.
+
+For example, to ignore all repos starting with `interview-` or `spike-`:
+
+    heroku config:set IGNORED_REPO_PREFIXES="interview- spike-"
+
+Defaults to empty (no repos ignored).
 
 ### Automatically removing old data
 

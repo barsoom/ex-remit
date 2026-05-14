@@ -14,7 +14,8 @@ config :remit,
   max_commits: 300,
   max_comments: 150,
   github_org_slug: {:system, "GITHUB_ORG_SLUG", ""},
-  github_api_client: Remit.GitHubAPIClient
+  github_api_client: Remit.GitHubAPIClient,
+  ignored_repo_prefixes: {:system, "IGNORED_REPO_PREFIXES", ""}
 
 # Configures the endpoint
 config :remit, RemitWeb.Endpoint,
