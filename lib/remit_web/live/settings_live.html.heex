@@ -1,4 +1,5 @@
 <div class="mx-6">
+  <%!-- Profile --%>
   <div class="flex items-center">
     <div class="flex-1 min-w-0 my-6">
       <%= if @username do %>
@@ -24,6 +25,7 @@
     <% end %>
   </div>
 
+  <%!-- Display settings --%>
   <div>
     <.form
       :let={f}
@@ -39,6 +41,7 @@
     </.form>
   </div>
 
+  <%!-- GitHub teams --%>
   <%= if @username && Remit.Config.has_github_org? do %>
     <div class="bg-gray-200 px-3 py-4 mt-6 paragraphs">
       <%= link("Import team members from GitHub",
@@ -62,6 +65,7 @@
     </div>
   <% end %>
 
+  <%!-- Commit authors --%>
   <div class="bg-gray-200 px-3 py-4 mt-6 text-almost-black paragraphs">
     <h2 class="font-semibold text-xs mb-2 uppercase">
       <i class="fas fa-info-circle fa-2x text-blue-400 align-middle mr-1"></i> A little guide to commit authors
@@ -79,7 +83,8 @@
     </p>
   </div>
 
-  <.projects projects={@projects} teams={@teams} />
+  <%!-- Project ownership --%>
+  <.projects projects={@projects} teams={@teams} new_design?={false} />
 
   <%!-- Experimental features --%>
   <div class="bg-gray-200 px-3 py-4 mt-6">
@@ -93,6 +98,7 @@
         label="Compact design"
         description="Lighter background and refreshed UI. Takes effect after reload."
         todo={true}
+        opt_in={true}
       />
       <.feature_toggle
         feature="advanced_filters"
@@ -100,6 +106,7 @@
         label="Advanced filters"
         description="Accordion filter bar with author, project, member and search filters."
         todo={true}
+        opt_in={false}
       />
       <.feature_toggle
         feature="build_commit_status"
@@ -107,6 +114,7 @@
         label="Use build commits as commit status"
         description="Show build commit results as the commit status indicator."
         todo={true}
+        opt_in={false}
       />
     </div>
   </div>

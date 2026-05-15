@@ -101,12 +101,12 @@ defmodule RemitWeb.SettingsLive do
         phx-click="toggle_feature"
         phx-value-feature={@feature}
         class="mt-0.5 cursor-pointer"
-        disabled
+        disabled={!assigns[:opt_in]}
       />
       <div class="flex-1 min-w-0">
         <div class="flex items-center gap-2">
           <p class="text-sm text-almost-black font-medium"><%= @label %></p>
-          <%= if @todo do %>
+          <%= if assigns[:todo] do %>
             <span class="text-xs text-yellow-600 bg-yellow-100 px-1.5 py-0.5 rounded" title="Work in progress">🚧 WIP</span>
           <% end %>
         </div>

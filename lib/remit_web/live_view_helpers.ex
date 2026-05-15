@@ -84,7 +84,7 @@ defmodule RemitWeb.LiveViewHelpers do
     Map.merge(default, Map.get(session, "reviewed_commit_cutoff", %{}))
   end
 
-  @feature_defaults %{"new_design" => false, "advanced_filters" => false, "build_status_commits" => false}
+  @feature_defaults %{"compact_design" => false, "advanced_filters" => false, "build_status_commits" => false}
 
   def get_feature_flags(session) do
     Map.merge(@feature_defaults, Map.get(session, "feature_flags", %{}))
