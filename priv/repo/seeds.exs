@@ -1,11 +1,8 @@
-# Script for populating the database. You can run it as:
+# Script for populating the database. Run as part of `mix ecto.setup`.
 #
-#     mix run priv/repo/seeds.exs
+# For dev fake data, use the fake_* scripts instead:
 #
-# Inside the script, you can read and write to any of your
-# repositories directly:
-#
-#     Remit.Repo.insert!(%Remit.SomeSchema{})
-#
-# We recommend using the bang functions (`insert!`, `update!`
-# and so on) as they will fail if something goes wrong.
+#     mix fake.teams
+#     mix wh.commits
+#     mix wh.comments
+#     mix fake.notifications YOUR_GITHUB_USERNAME

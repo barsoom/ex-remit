@@ -85,8 +85,10 @@ defmodule Remit.MixProject do
       ],
       "assets.build": ["tailwind default", "esbuild default"],
       "assets.deploy": ["tailwind default --minify", "esbuild default --minify", "phx.digest"],
+      "fake.teams": ["run priv/repo/fake_teams.exs"],
       "wh.commits": ["run priv/repo/fake_webhook_commits.exs"],
-      "wh.comments": ["run priv/repo/fake_webhook_comments.exs"]
+      "wh.comments": ["run priv/repo/fake_webhook_comments.exs"],
+      "fake.notifications": ["run priv/repo/fake_notifications.exs"]
     ]
   end
 end

@@ -233,9 +233,13 @@ First time:
     # Start the server:
     mix phx.server
 
-    # In a a separate shell, get some fake data via the webhook:
+    # In a separate shell, populate fake dev data:
+    mix fake.teams
     mix wh.commits
     mix wh.comments
+
+    # Optionally, seed comment notifications addressed to your own GitHub username:
+    mix fake.notifications YOUR_GITHUB_USERNAME
 
 Every time:
 

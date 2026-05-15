@@ -1,5 +1,8 @@
 {opts, _, _} = OptionParser.parse(System.argv(), strict: [count: :integer, for_user: :string])
 
+teams = Remit.Repo.all(Remit.Team)
+all_usernames = if teams != [], do: Enum.flat_map(teams, & &1.usernames), else: nil
+
 count = Keyword.get(opts, :count, 5)
 for_user = Keyword.get(opts, :for_user, nil)
 
@@ -29,6 +32,8 @@ end
 IO.puts("Hi! Making #{count} comment webhook request#{unless count == 1, do: "s"}…")
 IO.puts("")
 
+started_at = DateTime.utc_now() |> DateTime.truncate(:microsecond)
+
 1..count
 |> Enum.each(fn _i ->
   sha = Enum.random(shas)
@@ -40,7 +45,7 @@ IO.puts("")
         comment: %{
           id: Faker.number(),
           user: %{
-            login: Faker.username()
+            login: if(all_usernames, do: Enum.random(all_usernames), else: Faker.username())
           },
           commit_id: sha,
           position: nil,
@@ -79,4 +84,27 @@ IO.puts("")
   |> IO.inspect()
 end)
 
+import Ecto.Query
+
+recent_notifications =
+  Remit.Repo.all(
+    from n in Remit.CommentNotification,
+      where: n.inserted_at >= ^started_at
+  )
+
+resolved_count =
+  Enum.reduce(recent_notifications, 0, fn notification, acc ->
+    if Enum.random(0..1) == 1 do
+      resolved_at = DateTime.utc_now() |> DateTime.truncate(:microsecond)
+      Remit.Repo.update_all(
+        from(n in Remit.CommentNotification, where: n.id == ^notification.id),
+        set: [resolved_at: resolved_at]
+      )
+      acc + 1
+    else
+      acc
+    end
+  end)
+
+IO.puts("Resolved #{resolved_count}/#{length(recent_notifications)} notifications.")
 IO.puts("Done!")
