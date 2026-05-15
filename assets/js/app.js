@@ -110,6 +110,258 @@ Hooks.SetReviewedCommitCutoff = {
   }
 }
 
+Hooks.CommitSearch = {
+  storageKey: 'remit:commit_filters',
+
+  mounted() {
+    this.loadPreferences()
+
+    const searchInput = this.el.querySelector('[data-commit-search]')
+    if (searchInput) {
+      if (this.searchQuery) searchInput.value = this.searchQuery
+      searchInput.addEventListener('input', (e) => {
+        this.searchQuery = e.target.value.toLowerCase()
+        this.savePreferences()
+        this.filterCommits()
+      })
+    }
+
+    // Dropdown toggle via event delegation (survives LiveView updates)
+    this.el.addEventListener('click', (e) => {
+      if (e.target.closest('[data-repo-dropdown-toggle]')) {
+        e.stopPropagation()
+        this.toggleDropdown('[data-repo-dropdown-panel]', '[data-repo-dropdown-chevron]')
+        return
+      }
+      const filterToggle = e.target.closest('[data-filter-dropdown-toggle]')
+      if (filterToggle) {
+        e.stopPropagation()
+        const dropdown = filterToggle.closest('[data-filter-dropdown]')
+        const panel = dropdown?.querySelector('[data-filter-dropdown-panel]')
+        const chevron = filterToggle.querySelector('[data-filter-chevron]')
+        const isOpen = !panel?.classList.contains('hidden')
+        this.closeAllDropdowns()
+        if (!isOpen) { panel?.classList.remove('hidden'); chevron?.classList.add('rotate-180') }
+        return
+      }
+    })
+
+    // Checkbox changes via event delegation
+    this.el.addEventListener('change', (e) => {
+      const cb = e.target
+      if (!cb.matches('input[type="checkbox"]')) return
+
+      if ('projectsAll' in cb.dataset) { this.clearSet(this.selectedProjectTeams, '[data-projects-team]'); this.onFilterChange(); return }
+      if ('projectsTeam' in cb.dataset) { this.toggleInSet(this.selectedProjectTeams, cb.dataset.projectsTeam, cb.checked); this.onFilterChange(); return }
+      if ('membersAll' in cb.dataset) { this.clearSet(this.selectedMemberTeams, '[data-members-team]'); this.onFilterChange(); return }
+      if ('membersTeam' in cb.dataset) { this.toggleInSet(this.selectedMemberTeams, cb.dataset.membersTeam, cb.checked); this.onFilterChange(); return }
+    })
+
+    this._closeDropdown = (e) => {
+      if (!e.target.closest('[data-repo-dropdown]') && !e.target.closest('[data-filter-dropdown]'))
+        this.closeAllDropdowns()
+    }
+    document.addEventListener('click', this._closeDropdown)
+
+    this.buildDynamicDropdowns()
+    this.syncStaticCheckboxes()
+    this.syncButtonStates()
+    this.filterCommits()
+  },
+
+  destroyed() {
+    document.removeEventListener('click', this._closeDropdown)
+  },
+
+  updated() {
+    this.buildDynamicDropdowns()
+    this.syncStaticCheckboxes()
+    this.syncButtonStates()
+    this.filterCommits()
+  },
+
+  // ── Helpers ────────────────────────────────────────────────────────────────
+
+  toggleDropdown(panelSel, chevronSel) {
+    const panel = this.el.querySelector(panelSel)
+    const chevron = this.el.querySelector(chevronSel)
+    const isOpen = !panel?.classList.contains('hidden')
+    this.closeAllDropdowns()
+    if (!isOpen) { panel?.classList.remove('hidden'); chevron?.classList.add('rotate-180') }
+  },
+
+  closeAllDropdowns() {
+    this.el.querySelectorAll('[data-repo-dropdown-panel], [data-filter-dropdown-panel]').forEach(p => p.classList.add('hidden'))
+    this.el.querySelectorAll('[data-repo-dropdown-chevron], [data-filter-dropdown-toggle] [data-filter-chevron]').forEach(c => c.classList.remove('rotate-180'))
+  },
+
+  clearSet(set, itemSelector) {
+    set.clear()
+    this.el.querySelectorAll(itemSelector).forEach(cb => { cb.checked = false })
+    // re-check the matching "All" checkbox
+    const allSel = itemSelector.replace('-team]', '-all]')
+    this.el.querySelectorAll(allSel).forEach(cb => { cb.checked = true })
+  },
+
+  toggleInSet(set, value, checked) {
+    checked ? set.add(value) : set.delete(value)
+  },
+
+  onFilterChange() {
+    this.savePreferences()
+    this.syncStaticCheckboxes()
+    this.syncButtonStates()
+    this.filterCommits()
+  },
+
+  // ── Persistence ────────────────────────────────────────────────────────────
+
+  loadPreferences() {
+    try {
+      const s = JSON.parse(localStorage.getItem(this.storageKey) || '{}')
+      this.selectedRepos = new Set(s.repos || [])
+      this.selectedAuthors = new Set(s.authors || [])
+      this.selectedProjectTeams = new Set(s.projectTeams || [])
+      this.selectedMemberTeams = new Set(s.memberTeams || [])
+      this.searchQuery = s.search || ''
+    } catch (_) {
+      this.selectedRepos = new Set()
+      this.selectedAuthors = new Set()
+      this.selectedProjectTeams = new Set()
+      this.selectedMemberTeams = new Set()
+      this.searchQuery = ''
+    }
+  },
+
+  savePreferences() {
+    localStorage.setItem(this.storageKey, JSON.stringify({
+      repos: [...this.selectedRepos],
+      authors: [...this.selectedAuthors],
+      projectTeams: [...this.selectedProjectTeams],
+      memberTeams: [...this.selectedMemberTeams],
+      search: this.searchQuery,
+    }))
+  },
+
+  // ── Dynamic dropdowns (built from DOM data) ────────────────────────────────
+
+  buildDynamicDropdowns() {
+    this.buildDynamicDropdown(
+      '[data-author-checkboxes]',
+      () => [...new Set(Array.from(this.el.querySelectorAll('[data-commit-item]')).flatMap(el => (el.dataset.authors || '').split(' ').filter(Boolean)))].sort(),
+      this.selectedAuthors,
+      (author, checked) => { this.toggleInSet(this.selectedAuthors, author, checked); this.onFilterChange() },
+      () => { this.selectedAuthors.clear(); this.onFilterChange() },
+      () => this.updateLabel('[data-author-label]', this.selectedAuthors, 'By')
+    )
+
+    this.buildDynamicDropdown(
+      '[data-repo-checkboxes]',
+      () => [...new Set(Array.from(this.el.querySelectorAll('[data-commit-item]')).map(el => el.dataset.repo).filter(Boolean))].sort(),
+      this.selectedRepos,
+      (repo, checked) => { this.toggleInSet(this.selectedRepos, repo, checked); this.savePreferences(); this.updateLabel('[data-repo-dropdown-label]', this.selectedRepos, 'Repo'); this.syncButtonStates(); this.filterCommits() },
+      () => { this.selectedRepos.clear(); this.savePreferences(); this.updateLabel('[data-repo-dropdown-label]', this.selectedRepos, 'Repo'); this.syncButtonStates(); this.filterCommits() },
+      () => this.updateLabel('[data-repo-dropdown-label]', this.selectedRepos, 'Repo')
+    )
+  },
+
+  buildDynamicDropdown(containerSel, getValues, set, onChange, onClear, updateLabel) {
+    const container = this.el.querySelector(containerSel)
+    if (!container) return
+
+    const values = getValues()
+    set.forEach(v => { if (!values.includes(v)) set.delete(v) })
+
+    container.innerHTML = ''
+    container.appendChild(this.makeCheckboxLabel('All', null, set.size === 0, (_, checked) => { if (checked) onClear() }))
+    values.forEach(v => container.appendChild(this.makeCheckboxLabel(v, v, set.has(v), onChange)))
+    updateLabel()
+  },
+
+  makeCheckboxLabel(text, value, checked, onChange) {
+    const label = document.createElement('label')
+    label.className = 'flex items-center gap-2 px-3 py-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer'
+    const cb = document.createElement('input')
+    cb.type = 'checkbox'
+    cb.checked = checked
+    cb.addEventListener('change', () => {
+      if (value === null) {
+        // "All" checkbox: uncheck all siblings, keep self checked
+        label.closest('div').querySelectorAll('input').forEach(c => { c.checked = false })
+        cb.checked = true
+      }
+      onChange(value, cb.checked)
+      // Sync the All checkbox for this container
+      const allCb = label.closest('div').querySelector('input:first-child')
+      if (value !== null && allCb) allCb.checked = false
+    })
+    const span = document.createElement('span')
+    span.textContent = text
+    span.className = 'text-xs'
+    label.appendChild(cb); label.appendChild(span)
+    return label
+  },
+
+  // ── Static checkboxes (Projects/Members — pre-rendered in HTML) ───────────
+
+  syncStaticCheckboxes() {
+    this.el.querySelectorAll('[data-projects-all]').forEach(cb => { cb.checked = this.selectedProjectTeams.size === 0 })
+    this.el.querySelectorAll('[data-projects-team]').forEach(cb => { cb.checked = this.selectedProjectTeams.has(cb.dataset.projectsTeam) })
+    this.el.querySelectorAll('[data-members-all]').forEach(cb => { cb.checked = this.selectedMemberTeams.size === 0 })
+    this.el.querySelectorAll('[data-members-team]').forEach(cb => { cb.checked = this.selectedMemberTeams.has(cb.dataset.membersTeam) })
+    this.updateLabel('[data-projects-label]', this.selectedProjectTeams, 'Projects')
+    this.updateLabel('[data-members-label]', this.selectedMemberTeams, 'Members')
+  },
+
+  // ── Labels & button state ─────────────────────────────────────────────────
+
+  updateLabel(sel, set, defaultText) {
+    const el = this.el.querySelector(sel)
+    if (!el) return
+    const count = set.size
+    el.textContent = count === 0 ? defaultText : count === 1 ? [...set][0] : `${count} selected`
+  },
+
+  syncButtonStates() {
+    ;[
+      ['[data-author-active]', this.selectedAuthors],
+      ['[data-projects-active]', this.selectedProjectTeams],
+      ['[data-members-active]', this.selectedMemberTeams],
+      ['[data-repo-active]', this.selectedRepos],
+    ].forEach(([sel, set]) => {
+      this.el.querySelectorAll(sel).forEach(dot => dot.classList.toggle('hidden', set.size === 0))
+    })
+  },
+
+  // ── Filtering ─────────────────────────────────────────────────────────────
+
+  filterCommits() {
+    const query = this.searchQuery || ''
+
+    this.el.querySelectorAll('[data-commit-wrapper]').forEach(wrapper => {
+      const item = wrapper.querySelector('[data-commit-item]')
+      if (!item) return
+
+      const authors = (item.dataset.authors || '').split(' ').filter(Boolean)
+      const projectTeams = (item.dataset.projectTeams || '').split(' ').filter(Boolean)
+      const memberTeams = (item.dataset.memberTeams || '').split(' ').filter(Boolean)
+
+      const ok =
+        (!query ||
+          (item.dataset.message || '').toLowerCase().includes(query) ||
+          (item.dataset.sha || '').toLowerCase().includes(query) ||
+          (item.dataset.repo || '').toLowerCase().includes(query) ||
+          (item.dataset.authors || '').toLowerCase().includes(query)) &&
+        (this.selectedRepos.size === 0 || this.selectedRepos.has(item.dataset.repo)) &&
+        (this.selectedAuthors.size === 0 || authors.some(a => this.selectedAuthors.has(a))) &&
+        (this.selectedProjectTeams.size === 0 || projectTeams.some(t => this.selectedProjectTeams.has(t))) &&
+        (this.selectedMemberTeams.size === 0 || memberTeams.some(t => this.selectedMemberTeams.has(t)))
+
+      wrapper.classList.toggle('hidden', !ok)
+    })
+  },
+}
+
 Hooks.FeatureToggle = {
   mounted() {
     this.el.addEventListener('change', (e) => {
