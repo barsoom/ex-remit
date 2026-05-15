@@ -48,6 +48,7 @@ defmodule RemitWeb.Router do
     post "/logout", GithubAuthController, :logout
     post "/filter_preference/:scope", UserController, :set_filter_preference
     post "/reviewed_commit_cutoff", UserController, :set_reviewed_commit_cutoff
+    post "/features", UserController, :set_feature_flag
   end
 
   pipeline :webhook do

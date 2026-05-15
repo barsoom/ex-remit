@@ -7,6 +7,7 @@ defmodule RemitWeb.SettingsLive do
   @impl Phoenix.LiveView
   def mount(_params, session, socket) do
     check_auth_key(session)
+    features = get_feature_flags(session)
 
     if connected?(socket) do
       GithubAuth.subscribe(session["session_id"])
@@ -19,6 +20,7 @@ defmodule RemitWeb.SettingsLive do
     |> assign_projects()
     |> assign_teams()
     |> assign(reviewed_commit_cutoff: get_reviewed_commit_cutoff(session, %{"days" => 7, "commits" => 100}))
+    |> assign(features: features)
     |> ok()
   end
 
@@ -31,6 +33,16 @@ defmodule RemitWeb.SettingsLive do
   def handle_event("remove_project_owner", %{"project" => project, "team" => team}, socket) do
     Remit.Team.remove_project(team, project)
     noreply(socket)
+  end
+
+  def handle_event("toggle_feature", %{"feature" => feature}, socket) do
+    new_flags = Map.update(socket.assigns.features, feature, false, &(!&1))
+    Settings.broadcast(session_id(socket), :feature_flags, new_flags)
+
+    socket
+    |> assign(features: new_flags)
+    |> push_event("feature-flags-updated", new_flags)
+    |> noreply()
   end
 
   def handle_event(
@@ -80,6 +92,30 @@ defmodule RemitWeb.SettingsLive do
     {:noreply, socket}
   end
 
+  defp feature_toggle(assigns) do
+    ~H"""
+    <label class="flex items-start gap-3 cursor-pointer select-none">
+      <input
+        type="checkbox"
+        checked={@enabled}
+        phx-click="toggle_feature"
+        phx-value-feature={@feature}
+        class="mt-0.5 cursor-pointer"
+        disabled
+      />
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2">
+          <p class="text-sm text-almost-black font-medium"><%= @label %></p>
+          <%= if @todo do %>
+            <span class="text-xs text-yellow-600 bg-yellow-100 px-1.5 py-0.5 rounded" title="Work in progress">🚧 WIP</span>
+          <% end %>
+        </div>
+        <p class="text-xs text-gray-mid"><%= @description %></p>
+      </div>
+    </label>
+    """
+  end
+
   defp assign_projects(socket) do
     socket
     |> assign(projects: Remit.Project.get_all())
@@ -97,7 +133,7 @@ defmodule RemitWeb.SettingsLive do
     <div class="bg-gray-200 px-3 py-4 mt-6">
       <h2 class="font-semibold text-xs mb-2 uppercase">Project ownership</h2>
       <%= for {project, project_teams} <- @projects do %>
-        <.project project={project} project_teams={project_teams} teams={@teams} />
+        <.project project={project} project_teams={project_teams} teams={@teams} new_design?={false} />
       <% end %>
     </div>
     """

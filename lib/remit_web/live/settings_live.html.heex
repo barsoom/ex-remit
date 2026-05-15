@@ -80,4 +80,34 @@
   </div>
 
   <.projects projects={@projects} teams={@teams} />
+
+  <%!-- Experimental features --%>
+  <div class="bg-gray-200 px-3 py-4 mt-6">
+    <h2 class="font-semibold text-xs mb-2 uppercase">
+      <i class="fas fa-flask text-purple-400 mr-1"></i> Experimental features
+    </h2>
+    <div id="feature-toggles" phx-hook="FeatureToggle" class="mt-2 space-y-2">
+      <.feature_toggle
+        feature="compact_design"
+        enabled={@features["compact_design"]}
+        label="Compact design"
+        description="Lighter background and refreshed UI. Takes effect after reload."
+        todo={true}
+      />
+      <.feature_toggle
+        feature="advanced_filters"
+        enabled={@features["advanced_filters"]}
+        label="Advanced filters"
+        description="Accordion filter bar with author, project, member and search filters."
+        todo={true}
+      />
+      <.feature_toggle
+        feature="build_commit_status"
+        enabled={@features["build_commit_status"]}
+        label="Use build commits as commit status"
+        description="Show build commit results as the commit status indicator."
+        todo={true}
+      />
+    </div>
+  </div>
 </div>

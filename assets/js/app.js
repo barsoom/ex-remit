@@ -110,6 +110,21 @@ Hooks.SetReviewedCommitCutoff = {
   }
 }
 
+Hooks.FeatureToggle = {
+  mounted() {
+    this.el.addEventListener('change', (e) => {
+      const checkbox = e.target.closest('input[type="checkbox"][phx-value-feature]')
+      if (!checkbox) return
+      const feature = checkbox.getAttribute('phx-value-feature')
+      const enabled = checkbox.checked
+      const formData = new FormData()
+      formData.append('feature', feature)
+      formData.append('enabled', enabled)
+      fetch('/api/features', { method: 'post', body: formData })
+    })
+  }
+}
+
 let liveSocket = new LiveSocket("/live", Socket, {
   params: { _csrf_token: csrfToken },
   hooks: Hooks,

@@ -20,6 +20,15 @@ defmodule RemitWeb.UserController do
     |> json(true)
   end
 
+  def set_feature_flag(conn, %{"feature" => feature, "enabled" => enabled}) do
+    stored = get_session(conn, "feature_flags") || %{}
+    enabled_bool = enabled in [true, "true", "1"]
+
+    conn
+    |> put_session("feature_flags", Map.put(stored, feature, enabled_bool))
+    |> json(true)
+  end
+
   defp put_filter(nil, scope, param, value), do: put_filter(%{}, scope, param, value)
 
   defp put_filter(filters, scope, param, value) do
