@@ -40,8 +40,8 @@
               <i class="fas fa-user-friends text-green-dark"></i>
             </span>
           <% end %>
-          <button phx-click="resolve" phx-value-id={@notification.id} class="bg-green-light">
-            <i class="fas fa-check text-green-dark"></i> Resolve
+          <button phx-click="resolve" phx-value-id={@notification.id} class="bg-green-light dark:bg-green-900">
+            <i class="fas fa-check text-green-dark dark:text-green-400"></i> Resolve
           </button>
         <% else %>
           <span {tooltip_attributes("Since #{Utils.format_datetime(@notification.inserted_at)}", pos: "up-right")}>

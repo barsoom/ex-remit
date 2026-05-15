@@ -71,16 +71,16 @@
               <i class="far fa-eye-slash"></i> Mark as new
             </button>
           <% @being_reviewed? && @you_are_reviewing? -> %>
-            <button phx-click="mark_reviewed" phx-value-id={@commit.id} class="bg-green-light">
-              <i class="fas fa-check text-green-dark"></i> Mark as reviewed
+            <button phx-click="mark_reviewed" phx-value-id={@commit.id} class="bg-green-light dark:bg-green-900">
+              <i class="fas fa-check text-green-dark dark:text-green-400"></i> Mark as reviewed
             </button>
           <% !@you_authored? && @username && @can_review? -> %>
             <button
               phx-click="start_review"
               phx-value-id={@commit.id}
-              class="hover:bg-yellow-100 hover:border-yellow-mid"
+              class="hover:bg-yellow-100 hover:border-yellow-mid dark:hover:bg-blue-900 dark:hover:border-blue-700"
             >
-              <i class="fas fa-eye text-yellow-mid"></i> Start review
+              <i class="fas fa-eye text-yellow-mid dark:text-blue-400"></i> Start review
             </button>
           <% true -> %>
         <% end %>
@@ -91,8 +91,13 @@
           <% @reviewed? -> %>
             <%= github_avatar(@commit.reviewed_by_username, :small_commit, tooltip_pos: "up-right") %>
           <% @being_reviewed? && @you_are_reviewing? -> %>
-            <button phx-click="mark_unreviewed" phx-value-id={@commit.id} class="bg-red-100" title="Cancel review">
-              <i class="fas fa-eye-slash text-red-700"></i>
+            <button
+              phx-click="mark_unreviewed"
+              phx-value-id={@commit.id}
+              class="bg-red-100 dark:bg-red-900"
+              title="Cancel review"
+            >
+              <i class="fas fa-eye-slash text-red-700 dark:text-red-400"></i>
             </button>
           <% true -> %>
             <%= github_avatar_sized_spacer(:small_commit) %>

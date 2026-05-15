@@ -115,19 +115,37 @@ Hooks.FeatureToggle = {
     this.el.addEventListener('change', (e) => {
       const checkbox = e.target.closest('input[type="checkbox"][phx-value-feature]')
       if (!checkbox) return
-      const feature = checkbox.getAttribute('phx-value-feature')
-      const enabled = checkbox.checked
-      const formData = new FormData()
-      formData.append('feature', feature)
-      formData.append('enabled', enabled)
-      fetch('/api/features', { method: 'post', body: formData })
+      this.saveFeature(checkbox.getAttribute('phx-value-feature'), checkbox.checked)
     })
+
+    this.el.addEventListener('click', (e) => {
+      const switchButton = e.target.closest('button[role="switch"][phx-value-feature]')
+      if (switchButton) {
+        // aria-checked reflects pre-click state; invert it for the new state
+        this.saveFeature(switchButton.getAttribute('phx-value-feature'), switchButton.getAttribute('aria-checked') !== 'true')
+        return
+      }
+      const setButton = e.target.closest('button[phx-value-feature][phx-value-enabled]')
+      if (setButton) {
+        this.saveFeature(setButton.getAttribute('phx-value-feature'), setButton.getAttribute('phx-value-enabled') === 'true')
+      }
+    })
+  },
+  saveFeature(feature, enabled) {
+    const formData = new FormData()
+    formData.append('feature', feature)
+    formData.append('enabled', enabled)
+    fetch('/api/features', { method: 'post', body: formData })
   }
 }
 
 let liveSocket = new LiveSocket("/live", Socket, {
   params: { _csrf_token: csrfToken },
   hooks: Hooks,
+})
+
+window.addEventListener('phx:feature-flags-updated', (e) => {
+  document.documentElement.classList.toggle('dark', !!e.detail.dark_theme)
 })
 
 // Show progress bar on live navigation and form submits.

@@ -45,6 +45,16 @@ defmodule RemitWeb.SettingsLive do
     |> noreply()
   end
 
+  def handle_event("set_feature", %{"feature" => feature, "enabled" => enabled}, socket) do
+    new_flags = Map.put(socket.assigns.features, feature, enabled == "true")
+    Settings.broadcast(session_id(socket), :feature_flags, new_flags)
+
+    socket
+    |> assign(features: new_flags)
+    |> push_event("feature-flags-updated", new_flags)
+    |> noreply()
+  end
+
   def handle_event(
         "update_reviewed_commit_cutoff",
         %{"reviewed_commit_cutoff" => %{"days" => days, "commits" => commits}},
@@ -113,6 +123,37 @@ defmodule RemitWeb.SettingsLive do
         <p class="text-xs text-gray-mid"><%= @description %></p>
       </div>
     </label>
+    """
+  end
+
+  defp theme_toggle(assigns) do
+    ~H"""
+    <div class="relative block w-11 h-6 cursor-pointer select-none">
+      <input
+        type="checkbox"
+        checked={@dark?}
+        phx-click="toggle_feature"
+        phx-value-feature="dark_theme"
+        class="sr-only peer"
+      />
+      <%!-- Track --%>
+      <span class="block h-6 w-11 rounded-full bg-gray-300 dark:bg-gray-600 peer-checked:bg-blue-600 transition-colors duration-200">
+      </span>
+      <%!-- Thumb --%>
+      <span class="absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-gray-50 shadow transition-transform duration-200 peer-checked:translate-x-5">
+      </span>
+      <%!-- Moon icon (visible when dark theme on) --%>
+      <span class="absolute left-1.5 top-1.5 hidden peer-checked:block text-white" style="font-size: 10px; line-height: 1;">
+        <i class="fas fa-moon"></i>
+      </span>
+      <%!-- Sun icon (visible when dark theme off) --%>
+      <span
+        class="absolute right-1.5 top-1.5 block peer-checked:hidden text-amber-500"
+        style="font-size: 10px; line-height: 1;"
+      >
+        <i class="fas fa-sun"></i>
+      </span>
+    </div>
     """
   end
 
