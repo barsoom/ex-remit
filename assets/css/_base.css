@@ -44,7 +44,7 @@ a {
 }
 
 label {
-  @apply font-bold mr-3 block mb-2;
+  @apply mr-3 block mb-2;
 }
 
 input[type=text],
