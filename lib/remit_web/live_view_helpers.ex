@@ -36,6 +36,7 @@ defmodule RemitWeb.LiveViewHelpers do
         :hexagon ->
           hex_clip = "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)"
           {[style: "clip-path: #{hex_clip}; overflow: hidden; width: #{size}px; height: #{size}px;"], "bg-gray-mid"}
+
         _ ->
           {[], "rounded-sm bg-gray-mid"}
       end

@@ -8,19 +8,18 @@
     "comment block no-underline",
     if(@compact, do: "border-b border-gray-light px-3 py-2", else: "my-1 bg-gray-200 dark:bg-gray-800"),
     if(@your_last_selected?, do: "comment--highlight"),
-    if(@resolved?, do: "comment--resolved"),
+    if(@resolved?, do: "comment--resolved")
   ]}
 >
   <%= if @compact do %>
     <div class="flex items-start gap-2">
-      <%# Avatar column %>
+      
       <div class="flex-none flex items-center gap-1 pt-0.5">
         <%= github_avatar(@comment.commenter_username, :comment, shape: :hexagon, tooltip_pos: "up-left") %>
         <i class="fas fa-chevron-right text-gray-300 dark:text-gray-600 text-[8px]"></i>
         <%= comment_recipient_avatars(@commit, @comment, @notification, tooltip_pos: "up-left", compact: @compact) %>
       </div>
 
-      <%# Content column %>
       <div class="flex-1 min-w-0">
         <p class="break-words text-sm leading-snug"><%= String.slice(@comment.body, 0, 1000) %></p>
         <p class="text-xs text-gray-mid mt-0.5 truncate">
@@ -29,12 +28,16 @@
         </p>
       </div>
 
-      <%# Action column %>
       <div class="flex-none flex items-center gap-1 self-center">
         <%= if @resolved? do %>
           <i class="fas fa-check text-green-dark text-xs"></i>
           <%= if @at_me? do %>
-            <button phx-click="unresolve" phx-value-id={@notification.id} class="flex flex-col items-center gap-0.5 px-2 py-1 rounded-lg opacity-30 hover:opacity-100" title="Mark as new">
+            <button
+              phx-click="unresolve"
+              phx-value-id={@notification.id}
+              class="flex flex-col items-center gap-0.5 px-2 py-1 rounded-lg opacity-30 hover:opacity-100"
+              title="Mark as new"
+            >
               <i class="fas fa-undo text-sm"></i>
               <span class="text-[9px] leading-none">Reopen</span>
             </button>
@@ -46,7 +49,12 @@
                 <i class="fas fa-user-friends text-green-dark"></i>
               </span>
             <% end %>
-            <button phx-click="resolve" phx-value-id={@notification.id} class="flex flex-col items-center gap-0.5 px-2 py-1 rounded-lg bg-green-light dark:bg-green-900" title="Resolve">
+            <button
+              phx-click="resolve"
+              phx-value-id={@notification.id}
+              class="flex flex-col items-center gap-0.5 px-2 py-1 rounded-lg bg-green-light dark:bg-green-900"
+              title="Resolve"
+            >
               <i class="fas fa-check text-green-dark dark:text-green-400 text-sm"></i>
               <span class="text-[9px] leading-none">Resolve</span>
             </button>

@@ -31,7 +31,11 @@
     "}
   >
     <%= if @commit.usernames != [] do %>
-      <div class={["flex-none mr-3 flex", if(@compact, do: "-space-x-3", else: "space-x-1"), if(@reviewed?, do: "opacity-40")]}>
+      <div class={[
+        "flex-none mr-3 flex",
+        if(@compact, do: "-space-x-3", else: "space-x-1"),
+        if(@reviewed?, do: "opacity-40")
+      ]}>
         <%= for username <- @commit.usernames do %>
           <%= github_avatar(
             username,
@@ -75,7 +79,11 @@
           In review<span class="bouncy-ellipsis"><span>.</span><span>.</span><span>.</span></span>
         </span>
 
-        <%= github_avatar(@commit.review_started_by_username, :small_commit, class: "opacity-75", shape: if(@compact, do: :hexagon, else: :default), tooltip_pos: "up-right") %>
+        <%= github_avatar(@commit.review_started_by_username, :small_commit,
+          class: "opacity-75",
+          shape: if(@compact, do: :hexagon, else: :default),
+          tooltip_pos: "up-right"
+        ) %>
       </div>
     <% else %>
       <%= if @compact do %>

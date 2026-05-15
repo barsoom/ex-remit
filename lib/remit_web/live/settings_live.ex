@@ -238,7 +238,9 @@ defmodule RemitWeb.SettingsLive do
                 phx-value-project={@project}
                 phx-value-team={team.slug}
                 class="cursor-pointer text-gray-400 hover:text-white leading-none"
-              >×</span>
+              >
+                ×
+              </span>
             </span>
           <% end %>
         <% end %>

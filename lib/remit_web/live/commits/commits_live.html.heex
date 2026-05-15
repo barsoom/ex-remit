@@ -46,11 +46,18 @@
         <%= if @unreviewed_count == 0 do %>
           <i class="fas fa-trophy text-yellow-mid"></i> Nothing left to review!
         <% else %>
-          <span><i class="fas fa-eye mr-0.5"></i> <b class="text-almost-black"><%= @unreviewed_count %></b> to review</span>
+          <span>
+            <i class="fas fa-eye mr-0.5"></i> <b class="text-almost-black"><%= @unreviewed_count %></b> to review
+          </span>
           <span>·</span>
-          <span><i class="fas fa-users mr-0.5"></i> <b class="text-almost-black"><%= @others_unreviewed_count %></b> by others</span>
+          <span>
+            <i class="fas fa-users mr-0.5"></i> <b class="text-almost-black"><%= @others_unreviewed_count %></b>
+            by others
+          </span>
           <span>·</span>
-          <span><i class="fas fa-user mr-0.5"></i> <b class="text-almost-black"><%= @my_unreviewed_count %></b> by you</span>
+          <span>
+            <i class="fas fa-user mr-0.5"></i> <b class="text-almost-black"><%= @my_unreviewed_count %></b> by you
+          </span>
           <%= if @oldest_overlong_in_review_by_me do %>
             <span>·</span>
             <a
@@ -60,7 +67,9 @@
               id="for-phx-hook-complete-your-review"
               phx-hook="ScrollToTarget"
               class="text-blue-600 dark:text-blue-400"
-            ><i class="far fa-snooze zzz-animation"></i> Complete your review</a>
+            >
+              <i class="far fa-snooze zzz-animation"></i> Complete your review
+            </a>
           <% end %>
           <%= if @oldest_unreviewed_for_me && !@oldest_overlong_in_review_by_me do %>
             <span>·</span>
@@ -71,7 +80,9 @@
               id="for-phx-hook-oldest-unreviewed"
               phx-hook="ScrollToTarget"
               title="Go to the oldest unreviewed"
-            >↓ <%= Utils.format_datetime(@oldest_unreviewed_for_me.committed_at) %></a>
+            >
+              ↓ <%= Utils.format_datetime(@oldest_unreviewed_for_me.committed_at) %>
+            </a>
           <% end %>
         <% end %>
       <% else %>
