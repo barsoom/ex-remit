@@ -49,34 +49,37 @@ defmodule Remit.Comments do
          user_filter: user_filter,
          limit: limit
        }) do
-    query =
-      from n in CommentNotification,
-        limit: ^limit,
-        join: c in assoc(n, :comment),
-        preload: [comment: {c, [:commit, :comment_notifications]}]
+    order_by = if resolved_filter == "resolved", do: [desc: :resolved_at], else: [desc: :id]
+
+    notifications_query(username, resolved_filter, user_filter)
+    |> then(fn q ->
+      from [n, c] in q, limit: ^limit, order_by: ^order_by, preload: [comment: {c, [:commit, :comment_notifications]}]
+    end)
+    |> Repo.all()
+  end
+
+  defp notifications_query(username, resolved_filter, user_filter) do
+    query = from n in CommentNotification, join: c in assoc(n, :comment)
 
     query =
       case resolved_filter do
-        "unresolved" -> from n in query, where: is_nil(n.resolved_at), order_by: [desc: :id]
-        "resolved" -> from n in query, where: not is_nil(n.resolved_at), order_by: [desc: :resolved_at]
-        "all" -> from query, order_by: [desc: :id]
+        "unresolved" -> from n in query, where: is_nil(n.resolved_at)
+        "resolved" -> from n in query, where: not is_nil(n.resolved_at)
+        "all" -> query
       end
 
-    query =
-      case {username, user_filter} do
-        {nil, _} ->
-          query
+    case {username, user_filter} do
+      {nil, _} ->
+        query
 
-        {_, "all"} ->
-          query
+      {_, "all"} ->
+        query
 
-        {_, "for_me"} ->
-          from n in query, where: fragment("LOWER(?)", n.username) == ^String.downcase(username)
+      {_, "for_me"} ->
+        from n in query, where: fragment("LOWER(?)", n.username) == ^String.downcase(username)
 
-        {_, "by_me"} ->
-          from [n, c] in query, where: fragment("LOWER(?)", c.commenter_username) == ^String.downcase(username)
-      end
-
-    Repo.all(query)
+      {_, "by_me"} ->
+        from [n, c] in query, where: fragment("LOWER(?)", c.commenter_username) == ^String.downcase(username)
+    end
   end
 end

@@ -94,6 +94,13 @@
         <.theme_toggle dark?={@features["dark_theme"]} />
         <span class="leading-none font-bold">Theme</span>
       </label>
+
+      <.toggle_preference
+        feature="inbox_count_badge"
+        enabled={@features["inbox_count_badge"]}
+        label="Unresolved comments count"
+        description="Show the number of unresolved in the comments tab header."
+      />
     </div>
   </div>
 
