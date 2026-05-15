@@ -25,21 +25,6 @@
     <% end %>
   </div>
 
-  <%!-- Display settings --%>
-  <div>
-    <.form
-      :let={f}
-      for={%{}}
-      as={:reviewed_commit_cutoff}
-      id="reviewed_commit_cutoff_form"
-      phx-change="update_reviewed_commit_cutoff"
-      phx-hook="SetReviewedCommitCutoff"
-    >
-      Hide reviewed commits
-      after <%= text_input(f, :days, value: @reviewed_commit_cutoff["days"], size: 2) %> days
-      or <%= text_input(f, :commits, value: @reviewed_commit_cutoff["commits"], size: 3) %> commits (0 to disable).
-    </.form>
-  </div>
 
   <%!-- GitHub teams --%>
   <%= if @username && Remit.Config.has_github_org? do %>
@@ -81,6 +66,30 @@
       If you see <RemitWeb.NoUsernameComponent.render tooltip?={false} />
       on a commit, Remit can't notify the author about comments on it – fix it for future commits by following the instructions above.
     </p>
+  </div>
+
+  <%!-- Preferences --%>
+  <div id="theme-preferences" phx-hook="FeatureToggle" class="bg-gray-200 px-3 py-4 mt-6 text-almost-black">
+    <h2 class="font-semibold text-xs mb-3 uppercase">Preferences</h2>
+
+    <div class="space-y-3">
+      <.form
+        :let={f}
+        for={%{}}
+        as={:reviewed_commit_cutoff}
+        id="reviewed_commit_cutoff_form"
+        phx-change="update_reviewed_commit_cutoff"
+        phx-hook="SetReviewedCommitCutoff"
+        class="flex items-center gap-2 flex-wrap"
+      >
+        <span class="leading-none">Hide reviewed commits after</span>
+        <%= text_input(f, :days, value: @reviewed_commit_cutoff["days"], class: "w-10 text-center rounded-sm") %>
+        <span class="leading-none">days or</span>
+        <%= text_input(f, :commits, value: @reviewed_commit_cutoff["commits"], class: "w-14 text-center rounded-sm") %>
+        <span class="leading-none">commits</span>
+        <span class="leading-none text-gray-mid">(0 to disable)</span>
+      </.form>
+    </div>
   </div>
 
   <%!-- Project ownership --%>
