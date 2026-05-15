@@ -4,6 +4,7 @@ const fs = require("fs")
 const path = require("path")
 
 module.exports = {
+  darkMode: 'class',
   content: [
     "./js/**/*.js",
     "../lib/*_web.ex",
@@ -13,13 +14,16 @@ module.exports = {
     extend: {
 
       // This implements our own, more limited color palette within the broader default one. If we just want "some lightish yellow", we can just pick a default colour by feel, nevermind that we may use `-200` in one place and `-300` in another. If we do something where we care more about sticking to a limited palette, we use these.
+      // The semantic colors below are backed by CSS variables so that dark mode can redefine them without touching markup.
       //
       // Longer term we may end up replacing all the default colours, but until then it's useful to have them to fall back on.
       colors: {
-        "gray-light": colors.gray["300"],
-        "gray-mid": colors.gray["500"],
-        "gray-dark": colors.gray["600"],
-        "almost-black": colors.gray["900"],
+        "white": "var(--color-white)",
+        "gray-200": "var(--color-gray-200)",
+        "gray-light": "var(--color-gray-light)",
+        "gray-mid": "var(--color-gray-mid)",
+        "gray-dark": "var(--color-gray-dark)",
+        "almost-black": "var(--color-almost-black)",
 
         "yellow-mid": colors.yellow["600"],
 

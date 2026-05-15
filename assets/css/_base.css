@@ -2,12 +2,31 @@
  * For base styling of different elements. No class/ID selectors.
  */
 
+:root {
+  --color-white:      #ffffff;
+  --color-gray-200:   #e5e7eb;  /* gray-200 */
+  --color-gray-light: #d1d5db;  /* gray-300 */
+  --color-gray-mid:   #6b7280;  /* gray-500 */
+  --color-gray-dark:  #4b5563;  /* gray-600 */
+  --color-almost-black: #111827; /* gray-900 */
+}
+
+.dark {
+  --color-white:      #111827;  /* gray-900 */
+  --color-gray-200:   #1f2937;  /* gray-800 */
+  --color-gray-light: #4b5563;  /* gray-600 */
+  --color-gray-mid:   #9ca3af;  /* gray-400 */
+  --color-gray-dark:  #d1d5db;  /* gray-300 */
+  --color-almost-black: #f9fafb; /* gray-50 */
+}
+
 body {
-  @apply text-xs;
+  @apply text-xs text-almost-black;
 }
 
 button {
   @apply px-1 border border-solid border-gray-mid rounded bg-gray-200;
+  color: inherit;
 
   &:focus {
     /* Worse for keyboard navigation, but the outlines don't look good in this UI. */
@@ -21,6 +40,7 @@ button {
 
 a {
   @apply underline;
+  color: inherit;
 }
 
 label {
@@ -29,7 +49,13 @@ label {
 
 input[type=text],
 input[type=email] {
-  @apply border border-gray-mid py-1 px-2;
+  @apply border border-gray-mid py-1 px-2 bg-gray-200;
+  color: inherit;
   max-width: 100%;
+}
+
+select {
+  @apply border border-gray-mid bg-gray-200;
+  color: inherit;
 }
 

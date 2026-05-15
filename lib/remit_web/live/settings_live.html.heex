@@ -25,7 +25,6 @@
     <% end %>
   </div>
 
-
   <%!-- GitHub teams --%>
   <%= if @username && Remit.Config.has_github_org? do %>
     <div class="bg-gray-200 px-3 py-4 mt-6 paragraphs">
@@ -89,6 +88,11 @@
         <span class="leading-none">commits</span>
         <span class="leading-none text-gray-mid">(0 to disable)</span>
       </.form>
+
+      <label class="flex items-center gap-3 cursor-pointer select-none">
+        <.theme_toggle dark?={@features["dark_theme"]} />
+        <span class="leading-none font-bold">Theme</span>
+      </label>
     </div>
   </div>
 
