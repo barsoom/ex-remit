@@ -85,6 +85,13 @@ defmodule RemitWeb.CommitsLive do
     |> noreply()
   end
 
+  @impl Phoenix.LiveView
+  def handle_info({:setting_updated, :feature_flags, flags}, socket) do
+    socket
+    |> assign(features: flags)
+    |> noreply()
+  end
+
   # Receive broadcasts when other clients update their state.
   @impl Phoenix.LiveView
   def handle_info({:changed_commit, commit}, socket) do
@@ -168,6 +175,7 @@ defmodule RemitWeb.CommitsLive do
     |> assign(projects_of_team: get_filter(session, "commits", "projects_of_team", "all"))
     |> assign(members_of_team: get_filter(session, "commits", "members_of_team", "all"))
     |> assign(reviewed_commit_cutoff: get_reviewed_commit_cutoff(session, %{"days" => 7, "commits" => 100}))
+    |> assign(features: get_feature_flags(session))
   end
 
   def assign_all_teams(socket) do

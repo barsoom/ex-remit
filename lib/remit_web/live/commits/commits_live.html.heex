@@ -1,4 +1,4 @@
-<div class="info-box">
+<div class={["info-box", @features["compact_design"] && "!mb-1"]}>
   <%= if @username do %>
     <p>
       Authored by: <%= filter_link(@socket, assigns, :commits, "filter-commit-by-author", "All",
@@ -40,69 +40,111 @@
 <%= if @commits == [] do %>
   <RemitWeb.NoContentComponent.render />
 <% else %>
-  <div class="info-box">
-    <%= if @username do %>
-      <%= if @unreviewed_count == 0 do %>
-        <p class="flex items-center justify-center text-base text-almost-black">
-          <i class="fas fa-trophy fa-lg text-yellow-mid mr-2"></i> Nothing left to review!
-        </p>
-      <% else %>
-        <p>
-          There's <b><%= @unreviewed_count %></b>
-          commit<%= if @unreviewed_count != 1, do: "s" %> to review
-          (<b><%= @others_unreviewed_count %></b> by others; <b><%= @my_unreviewed_count %></b>
-          by you).
-          <%= cond do %>
-            <% @oldest_overlong_in_review_by_me -> %>
-              <p>
-                <i class="far fa-snooze text-blue-600 zzz-animation"></i>
-                <b class="font-bold text-blue-900 ml-1">Still awake?</b>
-                Don't forget to complete
-                <a
-                  href={"#commit-#{@oldest_overlong_in_review_by_me.id}"}
-                  phx-click="selected"
-                  phx-value-id={@oldest_overlong_in_review_by_me.id}
-                  id="for-phx-hook-complete-your-review"
-                  phx-hook="ScrollToTarget"
-                >
-                  your review
-                </a>
-                :)
-              </p>
-            <% @oldest_unreviewed_for_me -> %>
-              <p>
-                Maybe do one from
-                <a
-                  href={"#commit-#{@oldest_unreviewed_for_me.id}"}
-                  phx-click="selected"
-                  phx-value-id={@oldest_unreviewed_for_me.id}
-                  id="for-phx-hook-oldest-unreviewed"
-                  phx-hook="ScrollToTarget"
-                >
-                  <%= Utils.format_datetime(@oldest_unreviewed_for_me.committed_at) %>
-                </a>
-                next.
-              </p>
-            <% true -> %>
-              <%= if @commits_of_author != @username do %>
-                <p>
-                  <i class="fas fa-trophy text-yellow-mid"></i> Nothing left for you to review!
-                </p>
-              <% end %>
-          <% end %>
-        </p>
-      <% end %>
-    <% else %>
-      <p>Hello, stranger! Please <.link patch={~p"/settings"}>log in</.link>.</p>
-      <%= if @unreviewed_count == 0 do %>
-        <p>
+  <%= if @features["compact_design"] do %>
+    <div class="flex items-center justify-center gap-3 flex-wrap px-3 py-1 mb-4 pb-3 text-xs text-gray-mid">
+      <%= if @username do %>
+        <%= if @unreviewed_count == 0 do %>
           <i class="fas fa-trophy text-yellow-mid"></i> Nothing left to review!
-        </p>
+        <% else %>
+          <span><i class="fas fa-eye mr-0.5"></i> <b class="text-almost-black"><%= @unreviewed_count %></b> to review</span>
+          <span>·</span>
+          <span><i class="fas fa-users mr-0.5"></i> <b class="text-almost-black"><%= @others_unreviewed_count %></b> by others</span>
+          <span>·</span>
+          <span><i class="fas fa-user mr-0.5"></i> <b class="text-almost-black"><%= @my_unreviewed_count %></b> by you</span>
+          <%= if @oldest_overlong_in_review_by_me do %>
+            <span>·</span>
+            <a
+              href={"#commit-#{@oldest_overlong_in_review_by_me.id}"}
+              phx-click="selected"
+              phx-value-id={@oldest_overlong_in_review_by_me.id}
+              id="for-phx-hook-complete-your-review"
+              phx-hook="ScrollToTarget"
+              class="text-blue-600 dark:text-blue-400"
+            ><i class="far fa-snooze zzz-animation"></i> Complete your review</a>
+          <% end %>
+          <%= if @oldest_unreviewed_for_me && !@oldest_overlong_in_review_by_me do %>
+            <span>·</span>
+            <a
+              href={"#commit-#{@oldest_unreviewed_for_me.id}"}
+              phx-click="selected"
+              phx-value-id={@oldest_unreviewed_for_me.id}
+              id="for-phx-hook-oldest-unreviewed"
+              phx-hook="ScrollToTarget"
+              title="Go to the oldest unreviewed"
+            >↓ <%= Utils.format_datetime(@oldest_unreviewed_for_me.committed_at) %></a>
+          <% end %>
+        <% end %>
       <% else %>
-        <p>There's <b><%= @unreviewed_count %></b> commit<%= if @unreviewed_count != 1, do: "s" %> to review.</p>
+        <span>Please <.link patch={~p"/settings"}>log in</.link></span>
+        <span>·</span>
+        <span><b><%= @unreviewed_count %></b> to review</span>
       <% end %>
-    <% end %>
-  </div>
+    </div>
+  <% else %>
+    <div class="info-box">
+      <%= if @username do %>
+        <%= if @unreviewed_count == 0 do %>
+          <p class="flex items-center justify-center text-base text-almost-black">
+            <i class="fas fa-trophy fa-lg text-yellow-mid mr-2"></i> Nothing left to review!
+          </p>
+        <% else %>
+          <p>
+            There's <b><%= @unreviewed_count %></b>
+            commit<%= if @unreviewed_count != 1, do: "s" %> to review
+            (<b><%= @others_unreviewed_count %></b> by others; <b><%= @my_unreviewed_count %></b>
+            by you).
+            <%= cond do %>
+              <% @oldest_overlong_in_review_by_me -> %>
+                <p>
+                  <i class="far fa-snooze text-blue-600 zzz-animation"></i>
+                  <b class="font-bold text-blue-900 ml-1">Still awake?</b>
+                  Don't forget to complete
+                  <a
+                    href={"#commit-#{@oldest_overlong_in_review_by_me.id}"}
+                    phx-click="selected"
+                    phx-value-id={@oldest_overlong_in_review_by_me.id}
+                    id="for-phx-hook-complete-your-review"
+                    phx-hook="ScrollToTarget"
+                  >
+                    your review
+                  </a>
+                  :)
+                </p>
+              <% @oldest_unreviewed_for_me -> %>
+                <p>
+                  Maybe do one from
+                  <a
+                    href={"#commit-#{@oldest_unreviewed_for_me.id}"}
+                    phx-click="selected"
+                    phx-value-id={@oldest_unreviewed_for_me.id}
+                    id="for-phx-hook-oldest-unreviewed"
+                    phx-hook="ScrollToTarget"
+                  >
+                    <%= Utils.format_datetime(@oldest_unreviewed_for_me.committed_at) %>
+                  </a>
+                  next.
+                </p>
+              <% true -> %>
+                <%= if @commits_of_author != @username do %>
+                  <p>
+                    <i class="fas fa-trophy text-yellow-mid"></i> Nothing left for you to review!
+                  </p>
+                <% end %>
+            <% end %>
+          </p>
+        <% end %>
+      <% else %>
+        <p>Hello, stranger! Please <.link patch={~p"/settings"}>log in</.link>.</p>
+        <%= if @unreviewed_count == 0 do %>
+          <p>
+            <i class="fas fa-trophy text-yellow-mid"></i> Nothing left to review!
+          </p>
+        <% else %>
+          <p>There's <b><%= @unreviewed_count %></b> commit<%= if @unreviewed_count != 1, do: "s" %> to review.</p>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
 
   <%= for commit <- @commits do %>
     <RemitWeb.CommitComponent.render
@@ -115,6 +157,7 @@
       you_are_reviewing?={Commit.being_reviewed_by?(commit, @username)}
       your_last_selected_commit?={@your_last_selected_commit_id == commit.id}
       can_review?={can_review?(commit, @username, @teams_by_project)}
+      compact={@features["compact_design"]}
     />
   <% end %>
 <% end %>

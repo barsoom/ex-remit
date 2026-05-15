@@ -2,7 +2,7 @@
   <i class="fal fa-sync fa-spin mr-2"></i> Bruh, someone stole the internet!
 </div>
 
-<div class="tabs">
+<div class={["tabs", @compact_design && "tabs--compact"]}>
   <%= for tab <- @tabs do %>
     <.tab
       action={tab.action}

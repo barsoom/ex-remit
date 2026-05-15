@@ -1,4 +1,4 @@
-<div class="info-box">
+<div class={["info-box", @features["compact_design"] && "!mb-1"]}>
   <%= unless @username do %>
     <p>Hello, stranger! Please <.link patch={~p"/settings"}>log in</.link>.</p>
   <% end %>
@@ -40,6 +40,7 @@
       resolved?={notification.resolved_at}
       resolved_coauthors={Remit.CommentNotification.resolved_coauthors(notification)}
       your_last_selected?={@your_last_selected_id == notification.id}
+      compact={@features["compact_design"]}
     />
   <% end %>
 <% end %>
