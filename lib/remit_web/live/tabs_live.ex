@@ -2,7 +2,7 @@
 # Read more: https://elixirforum.com/t/tabbed-interface-with-multiple-liveviews/31670
 defmodule RemitWeb.TabsLive do
   use RemitWeb, :live_view
-  alias Remit.{Comments, GithubAuth}
+  alias Remit.{Comments, GithubAuth, Settings}
 
   defp default_tabs do
     [
@@ -20,7 +20,8 @@ defmodule RemitWeb.TabsLive do
         module: RemitWeb.CommentsLive,
         text: "Comments",
         icon: "fa-comments",
-        has_notification: false
+        has_notification: false,
+        notification_count: nil
       },
       %{
         action: :settings,
@@ -52,11 +53,13 @@ defmodule RemitWeb.TabsLive do
     if connected?(socket) do
       Comments.subscribe()
       GithubAuth.subscribe(session["session_id"])
+      Settings.subscribe(session["session_id"])
     end
 
     socket
     |> assign_username(github_login(session))
     |> assign_default_params(session)
+    |> assign(inbox_count_badge: get_feature_flags(session)["inbox_count_badge"])
     |> assign_tab_notification()
     |> ok()
   end
@@ -65,6 +68,15 @@ defmodule RemitWeb.TabsLive do
   def handle_info(:comments_changed, socket) do
     socket |> assign_tab_notification() |> noreply()
   end
+
+  def handle_info({:setting_updated, :feature_flags, flags}, socket) do
+    socket
+    |> assign(inbox_count_badge: flags["inbox_count_badge"])
+    |> assign_tab_notification()
+    |> noreply()
+  end
+
+  def handle_info({:setting_updated, _, _}, socket), do: noreply(socket)
 
   def handle_info({:login, %Remit.Github.User{login: login}}, socket) do
     socket |> assign_username(login) |> assign_tab_notification() |> noreply()
@@ -110,16 +122,29 @@ defmodule RemitWeb.TabsLive do
   end
 
   defp update_tab_state(socket, %{:action => :comments} = tab) do
-    has_notification =
-      Comments.list_notifications(
-        limit: 1,
-        username: socket.assigns.username,
-        resolved_filter: socket.assigns.is,
-        user_filter: socket.assigns.role
-      )
-      |> Enum.any?()
+    if socket.assigns.inbox_count_badge do
+      count =
+        Comments.list_notifications(
+          limit: 99,
+          username: socket.assigns.username,
+          resolved_filter: "unresolved",
+          user_filter: socket.assigns.role
+        )
+        |> length()
 
-    %{tab | has_notification: has_notification}
+      %{tab | has_notification: count > 0, notification_count: count}
+    else
+      has_notification =
+        Comments.list_notifications(
+          limit: 1,
+          username: socket.assigns.username,
+          resolved_filter: socket.assigns.is,
+          user_filter: socket.assigns.role
+        )
+        |> Enum.any?()
+
+      %{tab | has_notification: has_notification, notification_count: nil}
+    end
   end
 
   defp update_tab_state(_socket, tab), do: tab

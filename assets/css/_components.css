@@ -16,7 +16,7 @@
     &:last-child { border-right: 0; }
 
     .tabs__tab__text {
-      @apply ml-1;
+      @apply ml-2;
     }
 
     &.tabs__tab--settings {

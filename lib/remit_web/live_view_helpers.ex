@@ -88,7 +88,8 @@ defmodule RemitWeb.LiveViewHelpers do
     "compact_design" => false,
     "advanced_filters" => false,
     "build_commit_status" => false,
-    "dark_theme" => false
+    "dark_theme" => false,
+    "inbox_count_badge" => false
   }
 
   def get_feature_flags(session) do
