@@ -12,6 +12,7 @@ defmodule Remit.Commit do
     field :url, :string
     field :payload, :map
     field :unlisted, :boolean
+    field :deployed_sha, :string
 
     field :review_started_at, :utc_datetime_usec
     field :reviewed_at, :utc_datetime_usec
@@ -94,6 +95,16 @@ defmodule Remit.Commit do
   def bot?(username), do: String.ends_with?(username, "[bot]")
 
   def botless_username(username), do: String.replace_trailing(username, "[bot]", "")
+
+  @build_commit_sha_pattern ~r/^[0-9a-f]{40}(\s|$)/
+
+  def build_commit?(commit) do
+    not is_nil(commit.message) && Regex.match?(@build_commit_sha_pattern, commit.message)
+  end
+
+  def extract_deployed_sha(commit) do
+    if build_commit?(commit), do: String.slice(commit.message, 0, 40)
+  end
 
   def message_summary(commit), do: commit.message |> String.split(~r/[\r\n]/) |> hd
 

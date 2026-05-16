@@ -22,6 +22,7 @@ defmodule RemitWeb.CommitsLive do
     |> assign_defaults(session)
     |> assign_all_teams()
     |> assign_current_commits()
+    |> assign_deployed_shas()
     |> assign_stats()
     |> ok()
   end
@@ -90,6 +91,7 @@ defmodule RemitWeb.CommitsLive do
     socket
     |> assign(features: flags)
     |> assign_comment_counts()
+    |> assign_deployed_shas()
     |> noreply()
   end
 
@@ -179,6 +181,7 @@ defmodule RemitWeb.CommitsLive do
     |> assign(reviewed_commit_cutoff: get_reviewed_commit_cutoff(session, %{"days" => 7, "commits" => 100}))
     |> assign(features: get_feature_flags(session))
     |> assign(comment_counts: %{})
+    |> assign(deployed_shas: MapSet.new())
   end
 
   def assign_all_teams(socket) do
@@ -223,6 +226,15 @@ defmodule RemitWeb.CommitsLive do
     socket
     |> assign_commits(load_commits_for_display(socket))
     |> assign_comment_counts()
+  end
+
+  defp assign_deployed_shas(socket) do
+    if socket.assigns.features["build_commit_status"] do
+      shas = Commits.list_deployed_shas() |> MapSet.new()
+      assign(socket, deployed_shas: shas)
+    else
+      assign(socket, deployed_shas: MapSet.new())
+    end
   end
 
   defp assign_comment_counts(socket) do

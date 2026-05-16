@@ -29,6 +29,9 @@
         <p class="break-words text-sm leading-snug"><%= String.slice(@comment.body, 0, 1000) %></p>
         <p class="text-xs text-gray-mid mt-0.5 truncate">
           Re: <i><%= if @commit, do: Commit.message_summary(@commit), else: @comment.commit_sha %></i>
+          <%= if assigns[:deployed?] do %>
+            <i class="fas fa-rocket text-[9px] text-red-500 align-middle"></i>
+          <% end %>
           · <%= Utils.format_datetime(@comment.commented_at) %>
         </p>
       </div>
@@ -83,6 +86,9 @@
         </div>
         <div class="truncate">
           Re: <i><%= if @commit, do: Commit.message_summary(@commit), else: @comment.commit_sha %></i>
+          <%= if assigns[:deployed?] do %>
+            <i class="fas fa-rocket text-[9px] text-red-500 align-middle"></i>
+          <% end %>
         </div>
       </div>
       <div class="ml-auto whitespace-nowrap flex items-center gap-1">

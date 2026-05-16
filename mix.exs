@@ -88,6 +88,7 @@ defmodule Remit.MixProject do
       "fake.teams": ["run priv/repo/fake_teams.exs"],
       "wh.commits": ["run priv/repo/fake_webhook_commits.exs"],
       "wh.comments": ["run priv/repo/fake_webhook_comments.exs"],
+      "wh.build_commits": ["run priv/repo/fake_build_commits.exs"],
       "fake.notifications": ["run priv/repo/fake_notifications.exs"]
     ]
   end

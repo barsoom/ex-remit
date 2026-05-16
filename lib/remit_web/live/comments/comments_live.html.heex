@@ -108,6 +108,7 @@
           resolved_coauthors={Remit.CommentNotification.resolved_coauthors(notification)}
           your_last_selected?={@your_last_selected_id == notification.id}
           compact={@features["compact_design"]}
+          deployed?={notification.comment.commit && MapSet.member?(@deployed_shas, notification.comment.commit.sha)}
         />
       </div>
     <% end %>
