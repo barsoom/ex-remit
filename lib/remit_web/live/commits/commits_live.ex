@@ -86,6 +86,14 @@ defmodule RemitWeb.CommitsLive do
     |> noreply()
   end
 
+  @impl Phoenix.LiveView
+  def handle_info({:setting_updated, :feature_flags, flags}, socket) do
+    socket
+    |> assign(features: flags)
+    |> assign_comment_counts()
+    |> noreply()
+  end
+
   def handle_info({:setting_updated, _, _}, socket), do: noreply(socket)
 
   # Receive broadcasts when other clients update their state.
