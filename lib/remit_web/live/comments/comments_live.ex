@@ -124,12 +124,19 @@ defmodule RemitWeb.CommentsLive do
   end
 
   defp assign_filtered_notifications(socket) do
+    {resolved_filter, user_filter} =
+      if socket.assigns.features["advanced_filters"] do
+        {"all", "all"}
+      else
+        {socket.assigns.is, socket.assigns.role}
+      end
+
     notifications =
       Comments.list_notifications(
         limit: @max_comments,
         username: socket.assigns.username,
-        resolved_filter: socket.assigns.is,
-        user_filter: socket.assigns.role
+        resolved_filter: resolved_filter,
+        user_filter: user_filter
       )
 
     assign(socket, notifications: notifications)

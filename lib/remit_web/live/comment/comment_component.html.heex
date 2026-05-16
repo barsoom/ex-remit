@@ -4,6 +4,11 @@
   phx-click="selected"
   phx-value-id={@notification.id}
   phx-hook="FixLink"
+  data-comment-item=""
+  data-resolved={if @resolved?, do: "true", else: "false"}
+  data-for-me={if @at_me?, do: "true", else: "false"}
+  data-by-me={if assigns[:by_me?], do: "true", else: "false"}
+  data-body={String.slice(@comment.body, 0, 500)}
   class={[
     "comment block no-underline",
     if(@compact, do: "border-b border-gray-light px-3 py-2", else: "my-1 bg-gray-200 dark:bg-gray-800"),
@@ -30,7 +35,6 @@
 
       <div class="flex-none flex items-center gap-1 self-center">
         <%= if @resolved? do %>
-          <i class="fas fa-check text-green-dark text-xs"></i>
           <%= if @at_me? do %>
             <button
               phx-click="unresolve"
@@ -41,6 +45,8 @@
               <i class="fas fa-undo text-sm"></i>
               <span class="text-[9px] leading-none">Reopen</span>
             </button>
+          <% else %>
+            <i class="fas fa-check text-green-dark text-xs"></i>
           <% end %>
         <% else %>
           <%= if @at_me? do %>

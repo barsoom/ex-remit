@@ -149,12 +149,13 @@ Hooks.CommitSearch = {
     // Checkbox changes via event delegation
     this.el.addEventListener('change', (e) => {
       const cb = e.target
-      if (!cb.matches('input[type="checkbox"]')) return
+      if (!cb.matches('input[type="checkbox"], input[type="radio"]')) return
 
       if ('projectsAll' in cb.dataset) { this.clearSet(this.selectedProjectTeams, '[data-projects-team]'); this.onFilterChange(); return }
       if ('projectsTeam' in cb.dataset) { this.toggleInSet(this.selectedProjectTeams, cb.dataset.projectsTeam, cb.checked); this.onFilterChange(); return }
       if ('membersAll' in cb.dataset) { this.clearSet(this.selectedMemberTeams, '[data-members-team]'); this.onFilterChange(); return }
       if ('membersTeam' in cb.dataset) { this.toggleInSet(this.selectedMemberTeams, cb.dataset.membersTeam, cb.checked); this.onFilterChange(); return }
+      if ('statusValue' in cb.dataset) { this.reviewedFilter = cb.dataset.statusValue; this.onFilterChange(); return }
     })
 
     this._closeDropdown = (e) => {
@@ -224,12 +225,14 @@ Hooks.CommitSearch = {
       this.selectedProjectTeams = new Set(s.projectTeams || [])
       this.selectedMemberTeams = new Set(s.memberTeams || [])
       this.searchQuery = s.search || ''
+      this.reviewedFilter = s.reviewedFilter || 'all'
     } catch (_) {
       this.selectedRepos = new Set()
       this.selectedAuthors = new Set()
       this.selectedProjectTeams = new Set()
       this.selectedMemberTeams = new Set()
       this.searchQuery = ''
+      this.reviewedFilter = 'all'
     }
   },
 
@@ -240,6 +243,7 @@ Hooks.CommitSearch = {
       projectTeams: [...this.selectedProjectTeams],
       memberTeams: [...this.selectedMemberTeams],
       search: this.searchQuery,
+      reviewedFilter: this.reviewedFilter,
     }))
   },
 
@@ -309,8 +313,12 @@ Hooks.CommitSearch = {
     this.el.querySelectorAll('[data-projects-team]').forEach(cb => { cb.checked = this.selectedProjectTeams.has(cb.dataset.projectsTeam) })
     this.el.querySelectorAll('[data-members-all]').forEach(cb => { cb.checked = this.selectedMemberTeams.size === 0 })
     this.el.querySelectorAll('[data-members-team]').forEach(cb => { cb.checked = this.selectedMemberTeams.has(cb.dataset.membersTeam) })
+    this.el.querySelectorAll('[data-status-value]').forEach(radio => { radio.checked = radio.dataset.statusValue === this.reviewedFilter })
     this.updateLabel('[data-projects-label]', this.selectedProjectTeams, 'Projects')
     this.updateLabel('[data-members-label]', this.selectedMemberTeams, 'Members')
+    const statusLabels = { 'all': 'Status', 'unreviewed': 'Unreviewed', 'reviewed': 'Reviewed' }
+    const statusLabelEl = this.el.querySelector('[data-status-label]')
+    if (statusLabelEl) statusLabelEl.textContent = statusLabels[this.reviewedFilter] || 'Status'
   },
 
   // ── Labels & button state ─────────────────────────────────────────────────
@@ -331,6 +339,7 @@ Hooks.CommitSearch = {
     ].forEach(([sel, set]) => {
       this.el.querySelectorAll(sel).forEach(dot => dot.classList.toggle('hidden', set.size === 0))
     })
+    this.el.querySelectorAll('[data-status-active]').forEach(dot => dot.classList.toggle('hidden', this.reviewedFilter === 'all'))
   },
 
   // ── Filtering ─────────────────────────────────────────────────────────────
@@ -355,7 +364,141 @@ Hooks.CommitSearch = {
         (this.selectedRepos.size === 0 || this.selectedRepos.has(item.dataset.repo)) &&
         (this.selectedAuthors.size === 0 || authors.some(a => this.selectedAuthors.has(a))) &&
         (this.selectedProjectTeams.size === 0 || projectTeams.some(t => this.selectedProjectTeams.has(t))) &&
-        (this.selectedMemberTeams.size === 0 || memberTeams.some(t => this.selectedMemberTeams.has(t)))
+        (this.selectedMemberTeams.size === 0 || memberTeams.some(t => this.selectedMemberTeams.has(t))) &&
+        (this.reviewedFilter === 'all' ||
+          (this.reviewedFilter === 'reviewed' && item.dataset.reviewed === 'true') ||
+          (this.reviewedFilter === 'unreviewed' && item.dataset.reviewed === 'false'))
+
+      wrapper.classList.toggle('hidden', !ok)
+    })
+  },
+}
+
+Hooks.CommentSearch = {
+  storageKey: 'remit:comment_filters',
+
+  mounted() {
+    this.isLoggedIn = !!this.el.dataset.username
+    this.loadPreferences()
+
+    const searchInput = this.el.querySelector('[data-comment-search]')
+    if (searchInput) {
+      if (this.searchQuery) searchInput.value = this.searchQuery
+      searchInput.addEventListener('input', (e) => {
+        this.searchQuery = e.target.value.toLowerCase()
+        this.savePreferences()
+        this.filterComments()
+      })
+    }
+
+    this.el.addEventListener('click', (e) => {
+      const filterToggle = e.target.closest('[data-filter-dropdown-toggle]')
+      if (filterToggle) {
+        e.stopPropagation()
+        const dropdown = filterToggle.closest('[data-filter-dropdown]')
+        const panel = dropdown?.querySelector('[data-filter-dropdown-panel]')
+        const chevron = filterToggle.querySelector('[data-filter-chevron]')
+        const isOpen = !panel?.classList.contains('hidden')
+        this.closeAllDropdowns()
+        if (!isOpen) { panel?.classList.remove('hidden'); chevron?.classList.add('rotate-180') }
+        return
+      }
+    })
+
+    this.el.addEventListener('change', (e) => {
+      const input = e.target
+      if (!input.matches('input[type="radio"]')) return
+      if ('commentStatusValue' in input.dataset) { this.resolvedFilter = input.dataset.commentStatusValue; this.onFilterChange(); return }
+      if ('commentRoleValue' in input.dataset) { this.roleFilter = input.dataset.commentRoleValue; this.onFilterChange(); return }
+    })
+
+    this._closeDropdown = (e) => {
+      if (!e.target.closest('[data-filter-dropdown]')) this.closeAllDropdowns()
+    }
+    document.addEventListener('click', this._closeDropdown)
+
+    this.syncStaticInputs()
+    this.syncButtonStates()
+    this.filterComments()
+  },
+
+  destroyed() {
+    document.removeEventListener('click', this._closeDropdown)
+  },
+
+  updated() {
+    this.syncStaticInputs()
+    this.syncButtonStates()
+    this.filterComments()
+  },
+
+  closeAllDropdowns() {
+    this.el.querySelectorAll('[data-filter-dropdown-panel]').forEach(p => p.classList.add('hidden'))
+    this.el.querySelectorAll('[data-filter-dropdown-toggle] [data-filter-chevron]').forEach(c => c.classList.remove('rotate-180'))
+  },
+
+  onFilterChange() {
+    this.savePreferences()
+    this.syncStaticInputs()
+    this.syncButtonStates()
+    this.filterComments()
+  },
+
+  loadPreferences() {
+    try {
+      const s = JSON.parse(localStorage.getItem(this.storageKey) || '{}')
+      this.resolvedFilter = s.resolvedFilter || 'unresolved'
+      this.roleFilter = s.roleFilter || (this.isLoggedIn ? 'for_me' : 'all')
+      this.searchQuery = s.search || ''
+    } catch (_) {
+      this.resolvedFilter = 'unresolved'
+      this.roleFilter = this.isLoggedIn ? 'for_me' : 'all'
+      this.searchQuery = ''
+    }
+  },
+
+  savePreferences() {
+    localStorage.setItem(this.storageKey, JSON.stringify({
+      resolvedFilter: this.resolvedFilter,
+      roleFilter: this.roleFilter,
+      search: this.searchQuery,
+    }))
+  },
+
+  syncStaticInputs() {
+    this.el.querySelectorAll('[data-comment-status-value]').forEach(r => { r.checked = r.dataset.commentStatusValue === this.resolvedFilter })
+    this.el.querySelectorAll('[data-comment-role-value]').forEach(r => { r.checked = r.dataset.commentRoleValue === this.roleFilter })
+
+    const statusLabels = { 'unresolved': 'Unresolved', 'resolved': 'Resolved', 'all': 'All comments' }
+    const statusLabelEl = this.el.querySelector('[data-comment-status-label]')
+    if (statusLabelEl) statusLabelEl.textContent = statusLabels[this.resolvedFilter] || 'Status'
+
+    const roleLabels = { 'for_me': 'For me', 'by_me': 'By me', 'all': 'For anyone' }
+    const roleLabelEl = this.el.querySelector('[data-comment-role-label]')
+    if (roleLabelEl) roleLabelEl.textContent = roleLabels[this.roleFilter] || 'Role'
+  },
+
+  syncButtonStates() {
+    this.el.querySelectorAll('[data-comment-status-active]').forEach(dot => dot.classList.toggle('hidden', this.resolvedFilter === 'all'))
+    this.el.querySelectorAll('[data-comment-role-active]').forEach(dot => dot.classList.toggle('hidden', this.roleFilter === 'all'))
+  },
+
+  filterComments() {
+    const query = this.searchQuery || ''
+
+    this.el.querySelectorAll('[data-comment-wrapper]').forEach(wrapper => {
+      const item = wrapper.querySelector('[data-comment-item]')
+      if (!item) return
+
+      const ok =
+        (!query ||
+          (item.dataset.body || '').toLowerCase().includes(query)) &&
+        (this.resolvedFilter === 'all' ||
+          (this.resolvedFilter === 'resolved' && item.dataset.resolved === 'true') ||
+          (this.resolvedFilter === 'unresolved' && item.dataset.resolved === 'false')) &&
+        (this.roleFilter === 'all' ||
+          (this.roleFilter === 'for_me' && item.dataset.forMe === 'true') ||
+          (this.roleFilter === 'by_me' && item.dataset.byMe === 'true'))
 
       wrapper.classList.toggle('hidden', !ok)
     })

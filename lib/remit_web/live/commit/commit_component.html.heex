@@ -28,11 +28,12 @@
     data-authors={Enum.join(@commit.usernames, " ")}
     data-project-teams={assigns[:project_teams] || ""}
     data-member-teams={assigns[:member_teams] || ""}
+    data-reviewed={if @reviewed?, do: "true", else: "false"}
     class={"
       flex items-center no-underline
       border-b border-gray-light
       py-2 px-3
-      #{if @reviewed?, do: " commit--reviewed text-gray-300 dark:text-gray-600 dark:bg-green-900/40"}
+      #{if @reviewed?, do: " commit--reviewed text-gray-500 dark:text-gray-600 dark:bg-green-900/40"}
       #{if @being_reviewed?, do: " commit--being-reviewed"}
       #{if @your_last_selected_commit?, do: " commit--highlight"}
     "}
@@ -41,7 +42,7 @@
       <div class={[
         "flex-none mr-3 flex",
         if(@compact, do: "-space-x-3", else: "space-x-1"),
-        if(@reviewed?, do: "opacity-40")
+        if(@reviewed?, do: "opacity-75 dark:opacity-40")
       ]}>
         <%= for username <- @commit.usernames do %>
           <%= github_avatar(

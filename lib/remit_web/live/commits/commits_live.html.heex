@@ -56,6 +56,27 @@
           </div>
         </div>
 
+        <div class="relative" data-filter-dropdown>
+          <button data-filter-dropdown-toggle data-status-toggle class="flex items-center gap-1 px-2 py-0.5 text-xs rounded border border-gray-light bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:border-gray-400">
+            <span data-status-label>Status</span>
+            <span class="hidden w-1.5 h-1.5 rounded-full bg-blue-500 flex-none" data-status-active></span>
+            <i class="fas fa-chevron-down text-[10px] transition-transform duration-200" data-filter-chevron></i>
+          </button>
+          <div data-filter-dropdown-panel class="hidden absolute left-0 top-full mt-1 bg-white dark:bg-gray-800 border border-gray-light rounded shadow-lg z-20">
+            <div class="py-1">
+              <label class="flex items-center gap-2 px-3 py-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
+                <input type="radio" name="commit-status-filter" data-status-value="all" /><span class="text-xs">All</span>
+              </label>
+              <label class="flex items-center gap-2 px-3 py-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
+                <input type="radio" name="commit-status-filter" data-status-value="unreviewed" /><span class="text-xs">Unreviewed</span>
+              </label>
+              <label class="flex items-center gap-2 px-3 py-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
+                <input type="radio" name="commit-status-filter" data-status-value="reviewed" /><span class="text-xs">Reviewed</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
         <%!-- Repo multi-select + search pushed to the right --%>
         <div class="flex items-center gap-2 ml-auto">
           <div class="relative" data-repo-dropdown>
