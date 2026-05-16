@@ -121,6 +121,7 @@ defmodule RemitWeb.CommitsLive do
         socket
         |> assign_commits(Enum.slice(commits ++ commits(socket), 0, @max_commits))
         |> assign_stats()
+        |> assign_comment_counts()
         |> noreply()
     end
   end
@@ -170,6 +171,8 @@ defmodule RemitWeb.CommitsLive do
     |> assign(projects_of_team: get_filter(session, "commits", "projects_of_team", "all"))
     |> assign(members_of_team: get_filter(session, "commits", "members_of_team", "all"))
     |> assign(reviewed_commit_cutoff: get_reviewed_commit_cutoff(session, %{"days" => 7, "commits" => 100}))
+    |> assign(features: get_feature_flags(session))
+    |> assign(comment_counts: %{})
   end
 
   def assign_all_teams(socket) do
@@ -213,6 +216,19 @@ defmodule RemitWeb.CommitsLive do
   def assign_current_commits(socket) do
     socket
     |> assign_commits(load_commits_for_display(socket))
+    |> assign_comment_counts()
+  end
+
+  defp assign_comment_counts(socket) do
+    counts =
+      if socket.assigns.features["comment_count_badge"] do
+        shas = commits(socket) |> Enum.map(& &1.sha) |> Enum.filter(& &1)
+        Remit.Comments.count_by_commit_sha(shas)
+      else
+        %{}
+      end
+
+    assign(socket, comment_counts: counts)
   end
 
   defp assign_and_broadcast_changed_commit(socket, commit) do

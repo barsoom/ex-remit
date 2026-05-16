@@ -97,8 +97,15 @@
       <.toggle_preference
         feature="inbox_count_badge"
         enabled={@features["inbox_count_badge"]}
-        label="Unresolved comments count"
-        description="Display the number of unresolved comments in the tab header."
+        label="Badge: unresolved comments"
+        description="Display the number of unresolved comments, in the comments tab header."
+      />
+
+      <.toggle_preference
+        feature="comment_count_badge"
+        enabled={@features["comment_count_badge"]}
+        label="Badge: Total comments"
+        description="Diplay the number of comments left on each commit, in the list of commits."
       />
     </div>
   </div>

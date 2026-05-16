@@ -37,8 +37,19 @@
       #{if @reviewed? || @you_authored?, do: " truncate", else: " min-w-0 break-words"}
       #{if @you_authored?, do: " opacity-50"}
     "}>
-      <p class={if @reviewed? || @you_authored?, do: "inline", else: "mb-1"}><%= Commit.message_summary(@commit) %></p>
-      <p class={if @reviewed? || @you_authored?, do: "inline", else: ""}>
+      <p class={if @reviewed? || @you_authored?, do: "truncate mb-0.5", else: "mb-1"}>
+        <%= Commit.message_summary(@commit) %>
+        <%= if assigns[:comment_count] && assigns[:comment_count] > 0 do %>
+          <span
+            class="inline-flex items-center gap-0.5 text-[10px] text-gray-400 dark:text-gray-500 align-middle ml-1"
+            title={"#{assigns[:comment_count]} comment#{if assigns[:comment_count] != 1, do: "s"}"}
+          >
+            <i class="far fa-comment"></i>
+            <%= assigns[:comment_count] %>
+          </span>
+        <% end %>
+      </p>
+      <p class={if @reviewed? || @you_authored?, do: "truncate", else: ""}>
         <%= if @commit.usernames == [] && !@reviewed? do %>
           <RemitWeb.NoUsernameComponent.render />
         <% end %>

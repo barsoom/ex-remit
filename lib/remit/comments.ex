@@ -35,6 +35,12 @@ defmodule Remit.Comments do
     comment
   end
 
+  def count_by_commit_sha(shas) when is_list(shas) do
+    from(c in Comment, where: c.commit_sha in ^shas, group_by: c.commit_sha, select: {c.commit_sha, count(c.id)})
+    |> Repo.all()
+    |> Map.new()
+  end
+
   def subscribe, do: Phoenix.PubSub.subscribe(Remit.PubSub, "comments")
 
   def broadcast_change do
