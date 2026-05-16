@@ -266,6 +266,7 @@
         your_last_selected_commit?={@your_last_selected_commit_id == commit.id}
         can_review?={can_review?(commit, @username, @teams_by_project)}
         compact={@features["compact_design"]}
+        comment_count={Map.get(@comment_counts, commit.sha, 0)}
         project_teams={Map.get(@teams_by_project, commit.repo, []) |> Enum.map(& &1.slug) |> Enum.join(" ")}
         member_teams={@all_teams |> Enum.filter(fn t -> Enum.any?(commit.usernames, &(&1 in t.usernames)) end) |> Enum.map(& &1.slug) |> Enum.join(" ")}
       />

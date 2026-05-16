@@ -115,6 +115,13 @@
         label="Unresolved comments count"
         description="Show the number of unresolved in the comments tab header."
       />
+
+      <.toggle_preference
+        feature="comment_count_badge"
+        enabled={@features["comment_count_badge"]}
+        label="Comment count per commit"
+        description="Show a badge with the number of comments on each commit."
+      />
     </div>
   </div>
 
