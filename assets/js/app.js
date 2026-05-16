@@ -284,7 +284,7 @@ Hooks.CommitSearch = {
 
   makeCheckboxLabel(text, value, checked, onChange) {
     const label = document.createElement('label')
-    label.className = 'flex items-center gap-2 px-3 py-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer'
+    label.className = 'flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap'
     const cb = document.createElement('input')
     cb.type = 'checkbox'
     cb.checked = checked

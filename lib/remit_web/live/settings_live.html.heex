@@ -2,7 +2,7 @@
   <%!-- Profile --%>
   <div class={[
     "flex items-center",
-    if(@features["compact_design"], do: "-mx-6 px-6 bg-gray-200 py-2 mb-2", else: "")
+    if(@features["compact_design"], do: "px-3 bg-gray-100 dark:bg-gray-800 py-2 mb-2 min-h-12 rounded-xl shadow-sm", else: "")
   ]}>
     <div class={["flex-1 min-w-0", if(@features["compact_design"], do: "", else: "my-6")]}>
       <%= if @username do %>
@@ -26,12 +26,16 @@
         tooltip: "Behold! Your GitHub avatar!",
         tooltip_pos: "left"
       ) %>
+    <% else %>
+      <%= if @features["compact_design"] do %>
+        <div class="ml-3 w-10 h-10 bg-gray-300 dark:bg-gray-600 flex-none" style="clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)"></div>
+      <% end %>
     <% end %>
   </div>
 
   <%!-- GitHub teams --%>
   <%= if @username && Remit.Config.has_github_org? do %>
-    <div class={["bg-gray-200 px-3 py-4 mt-6 paragraphs", @features["compact_design"] && "rounded-2xl shadow-sm"]}>
+    <div class={["bg-gray-100 dark:bg-gray-800 px-3 py-4 mt-6 paragraphs", @features["compact_design"] && "rounded-xl shadow-sm"]}>
       <%= link("Import team members from GitHub",
         to: ~p"/settings",
         id: "update-github-teams",
@@ -55,11 +59,11 @@
 
   <%!-- Commit authors --%>
   <div class={[
-    "bg-gray-200 px-3 py-4 mt-6 text-almost-black paragraphs",
-    @features["compact_design"] && "rounded-2xl shadow-sm"
+    "bg-gray-100 dark:bg-gray-800 px-3 py-4 mt-6 text-almost-black paragraphs",
+    @features["compact_design"] && "rounded-xl shadow-sm"
   ]}>
     <h2 class="font-semibold text-xs mb-2 uppercase">
-      <i class="fas fa-info-circle fa-2x text-blue-400 align-middle mr-1"></i> A little guide to commit authors
+      <i class="fas fa-info-circle fa-2x text-blue-600 align-middle mr-1"></i> A little guide to commit authors
     </h2>
 
     <p>
@@ -78,7 +82,7 @@
   <div
     id="theme-preferences"
     phx-hook="FeatureToggle"
-    class={["bg-gray-200 px-3 py-4 mt-6 text-almost-black", @features["compact_design"] && "rounded-2xl shadow-sm"]}
+    class={["bg-gray-100 dark:bg-gray-800 px-3 py-4 mt-6 text-almost-black", @features["compact_design"] && "rounded-xl shadow-sm"]}
   >
     <h2 class="font-semibold text-xs mb-3 uppercase">Preferences</h2>
 
@@ -118,7 +122,7 @@
   <.projects projects={@projects} teams={@teams} compact={@features["compact_design"]} />
 
   <%!-- Experimental features --%>
-  <div class={["bg-gray-200 px-3 py-4 mt-6", @features["compact_design"] && "rounded-2xl shadow-sm"]}>
+  <div class={["bg-gray-100 dark:bg-gray-800 px-3 py-4 mt-6", @features["compact_design"] && "rounded-xl shadow-sm"]}>
     <h2 class="font-semibold text-xs mb-2 uppercase">
       <i class="fas fa-flask text-purple-400 mr-1"></i> Experimental features
     </h2>
