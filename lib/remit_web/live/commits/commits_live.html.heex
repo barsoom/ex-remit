@@ -327,7 +327,8 @@
           compact={@features["compact_design"]}
           copy_buttons?={@features["copy_buttons"]}
           deployed?={Map.has_key?(@deployed_shas, commit.sha)}
-          deployed_url={Map.get(@deployed_shas, commit.sha)}
+          deployed_url={@deployed_shas[commit.sha][:url]}
+          deployed_repo={@deployed_shas[commit.sha][:repo]}
           comment_count={Map.get(@comment_counts, commit.sha, 0)}
           project_teams={Map.get(@teams_by_project, commit.repo, []) |> Enum.map(& &1.slug) |> Enum.join(" ")}
           member_teams={

@@ -70,7 +70,7 @@
         <%= if assigns[:deployed?] do %>
           <i
             class="fas fa-rocket text-[9px] text-gray-400 align-middle ml-1 cursor-pointer"
-            title="Deployed to production"
+            title={"Deployed on #{assigns[:deployed_repo]}"}
             data-deployed-url={assigns[:deployed_url]}
           >
           </i>
@@ -103,20 +103,32 @@
         <%= if @commit.sha do %>
           <button
             type="button"
-            class="opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center w-6 h-6 rounded-md text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
+            class={[
+              "opacity-0 group-hover:opacity-100 transition-opacity text-gray-400",
+              if(@compact,
+                do:
+                  "flex items-center justify-center w-6 h-6 rounded-md border-transparent bg-transparent hover:bg-gray-100 dark:hover:bg-gray-700"
+              )
+            ]}
             title="Copy SHA"
             data-clipboard-copy={String.slice(@commit.sha, 0, 8)}
           >
-            <i class="fas fa-copy text-xs"></i>
+            <i class={["fas fa-copy", if(@compact, do: "text-xs")]}></i>
           </button>
         <% end %>
         <button
           type="button"
-          class="opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center w-6 h-6 rounded-md text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
+          class={[
+            "opacity-0 group-hover:opacity-100 transition-opacity text-gray-400",
+            if(@compact,
+              do:
+                "flex items-center justify-center w-6 h-6 rounded-md border-transparent bg-transparent hover:bg-gray-100 dark:hover:bg-gray-700"
+            )
+          ]}
           title="Copy link"
           data-clipboard-copy={@commit.url}
         >
-          <i class="fas fa-link text-xs"></i>
+          <i class={["fas fa-link", if(@compact, do: "text-xs")]}></i>
         </button>
       </div>
     <% end %>
