@@ -93,7 +93,11 @@
         <div class="truncate">
           Re: <i><%= if @commit, do: Commit.message_summary(@commit), else: @comment.commit_sha %></i>
           <%= if assigns[:deployed?] do %>
-            <i class="fas fa-rocket text-[9px] text-red-500 align-middle"></i>
+            <i
+              class="fas fa-rocket text-[9px] text-gray-400 align-middle cursor-pointer"
+              data-deployed-url={assigns[:deployed_url]}
+            >
+            </i>
           <% end %>
         </div>
       </div>
