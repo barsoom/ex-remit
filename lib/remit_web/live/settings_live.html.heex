@@ -2,7 +2,10 @@
   <%!-- Profile --%>
   <div class={[
     "flex items-center",
-    if(@features["compact_design"], do: "px-3 bg-gray-100 dark:bg-gray-800 py-2 mb-2 min-h-12 rounded-xl shadow-sm", else: "")
+    if(@features["compact_design"],
+      do: "px-3 bg-gray-100 dark:bg-gray-800 py-2 mb-2 min-h-12 rounded-xl shadow-sm",
+      else: ""
+    )
   ]}>
     <div class={["flex-1 min-w-0", if(@features["compact_design"], do: "", else: "my-6")]}>
       <%= if @username do %>
@@ -28,14 +31,21 @@
       ) %>
     <% else %>
       <%= if @features["compact_design"] do %>
-        <div class="ml-3 w-10 h-10 bg-gray-300 dark:bg-gray-600 flex-none" style="clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)"></div>
+        <div
+          class="ml-3 w-10 h-10 bg-gray-300 dark:bg-gray-600 flex-none"
+          style="clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)"
+        >
+        </div>
       <% end %>
     <% end %>
   </div>
 
   <%!-- GitHub teams --%>
   <%= if @username && Remit.Config.has_github_org? do %>
-    <div class={["bg-gray-100 dark:bg-gray-800 px-3 py-4 mt-6 paragraphs", @features["compact_design"] && "rounded-xl shadow-sm"]}>
+    <div class={[
+      "bg-gray-100 dark:bg-gray-800 px-3 py-4 mt-6 paragraphs",
+      @features["compact_design"] && "rounded-xl shadow-sm"
+    ]}>
       <%= link("Import team members from GitHub",
         to: ~p"/settings",
         id: "update-github-teams",
@@ -82,7 +92,10 @@
   <div
     id="theme-preferences"
     phx-hook="FeatureToggle"
-    class={["bg-gray-100 dark:bg-gray-800 px-3 py-4 mt-6 text-almost-black", @features["compact_design"] && "rounded-xl shadow-sm"]}
+    class={[
+      "bg-gray-100 dark:bg-gray-800 px-3 py-4 mt-6 text-almost-black",
+      @features["compact_design"] && "rounded-xl shadow-sm"
+    ]}
   >
     <h2 class="font-semibold text-xs mb-3 uppercase">Preferences</h2>
 
@@ -166,7 +179,9 @@
                 phx-click="toggle_build_commit_repo"
                 phx-value-repo={repo}
                 class="cursor-pointer text-gray-400 hover:text-white leading-none"
-              >×</span>
+              >
+                ×
+              </span>
             </span>
           <% end %>
           <%= if available_repos != [] do %>

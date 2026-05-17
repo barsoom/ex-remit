@@ -1,25 +1,40 @@
 <div id="comment-search-area" phx-hook="CommentSearch" data-username={@username || ""}>
   <%= if @features["advanced_filters"] do %>
-    <div class={["bg-gray-100 dark:bg-gray-800 mb-4 text-sm mx-2", @features["compact_design"] && "!mb-1 rounded-xl shadow-sm"]}>
+    <div class={[
+      "bg-gray-100 dark:bg-gray-800 mb-4 text-sm mx-2",
+      @features["compact_design"] && "!mb-1 rounded-xl shadow-sm"
+    ]}>
       <div class="flex flex-wrap justify-center items-center gap-x-5 gap-y-1.5 px-3 py-2">
         <%!-- Status filter --%>
         <div class="relative" data-filter-dropdown>
-          <button data-filter-dropdown-toggle class="flex items-center gap-1 px-2 py-0.5 text-xs rounded border border-gray-light bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:border-gray-400">
+          <button
+            data-filter-dropdown-toggle
+            class="flex items-center gap-1 px-2 py-0.5 text-xs rounded border border-gray-light bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:border-gray-400"
+          >
             <i class="fas fa-comment text-[10px]"></i>
             <span data-comment-status-label>Status</span>
             <span class="hidden w-1.5 h-1.5 rounded-full bg-blue-500 flex-none" data-comment-status-active></span>
             <i class="fas fa-chevron-down text-[10px] transition-transform duration-200" data-filter-chevron></i>
           </button>
-          <div data-filter-dropdown-panel class="hidden absolute left-0 top-full mt-1 bg-white dark:bg-gray-800 border border-gray-light rounded shadow-lg z-20">
+          <div
+            data-filter-dropdown-panel
+            class="hidden absolute left-0 top-full mt-1 bg-white dark:bg-gray-800 border border-gray-light rounded shadow-lg z-20"
+          >
             <div class="py-1">
               <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
-                <input type="radio" name="comment-status-filter" data-comment-status-value="all" /><span class="text-xs">All comments</span>
+                <input type="radio" name="comment-status-filter" data-comment-status-value="all" /><span class="text-xs">
+                  All comments
+                </span>
               </label>
               <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
-                <input type="radio" name="comment-status-filter" data-comment-status-value="unresolved" /><span class="text-xs">Unresolved</span>
+                <input type="radio" name="comment-status-filter" data-comment-status-value="unresolved" /><span class="text-xs">
+                  Unresolved
+                </span>
               </label>
               <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
-                <input type="radio" name="comment-status-filter" data-comment-status-value="resolved" /><span class="text-xs">Resolved</span>
+                <input type="radio" name="comment-status-filter" data-comment-status-value="resolved" /><span class="text-xs">
+                  Resolved
+                </span>
               </label>
             </div>
           </div>
@@ -28,22 +43,34 @@
         <%!-- Role filter (only if logged in) --%>
         <%= if @username do %>
           <div class="relative" data-filter-dropdown>
-            <button data-filter-dropdown-toggle class="flex items-center gap-1 px-2 py-0.5 text-xs rounded border border-gray-light bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:border-gray-400">
+            <button
+              data-filter-dropdown-toggle
+              class="flex items-center gap-1 px-2 py-0.5 text-xs rounded border border-gray-light bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:border-gray-400"
+            >
               <i class="fas fa-at text-[10px]"></i>
               <span data-comment-role-label>Role</span>
               <span class="hidden w-1.5 h-1.5 rounded-full bg-blue-500 flex-none" data-comment-role-active></span>
               <i class="fas fa-chevron-down text-[10px] transition-transform duration-200" data-filter-chevron></i>
             </button>
-            <div data-filter-dropdown-panel class="hidden absolute left-0 top-full mt-1 bg-white dark:bg-gray-800 border border-gray-light rounded shadow-lg z-20">
+            <div
+              data-filter-dropdown-panel
+              class="hidden absolute left-0 top-full mt-1 bg-white dark:bg-gray-800 border border-gray-light rounded shadow-lg z-20"
+            >
               <div class="py-1">
                 <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
-                  <input type="radio" name="comment-role-filter" data-comment-role-value="all" /><span class="text-xs">For anyone</span>
+                  <input type="radio" name="comment-role-filter" data-comment-role-value="all" /><span class="text-xs">
+                    For anyone
+                  </span>
                 </label>
                 <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
-                  <input type="radio" name="comment-role-filter" data-comment-role-value="for_me" /><span class="text-xs">For me</span>
+                  <input type="radio" name="comment-role-filter" data-comment-role-value="for_me" /><span class="text-xs">
+                    For me
+                  </span>
                 </label>
                 <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
-                  <input type="radio" name="comment-role-filter" data-comment-role-value="by_me" /><span class="text-xs">By me</span>
+                  <input type="radio" name="comment-role-filter" data-comment-role-value="by_me" /><span class="text-xs">
+                    By me
+                  </span>
                 </label>
               </div>
             </div>
@@ -51,7 +78,8 @@
         <% end %>
 
         <div class="relative">
-          <i class="fas fa-search absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 text-[10px] pointer-events-none"></i>
+          <i class="fas fa-search absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 text-[10px] pointer-events-none">
+          </i>
           <input
             type="search"
             placeholder="Search…"

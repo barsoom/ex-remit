@@ -1,30 +1,47 @@
 <div id="commit-search-area" phx-hook="CommitSearch">
   <%= if @features["advanced_filters"] do %>
-    <div class={["bg-gray-100 dark:bg-gray-800 mb-4 text-sm mx-2", @features["compact_design"] && "!mb-1 rounded-xl shadow-sm"]}>
+    <div class={[
+      "bg-gray-100 dark:bg-gray-800 mb-4 text-sm mx-2",
+      @features["compact_design"] && "!mb-1 rounded-xl shadow-sm"
+    ]}>
       <div class="flex flex-wrap justify-center items-center gap-x-5 gap-y-1.5 px-3 py-2">
         <%!-- Multi-select filter dropdowns --%>
         <%= if @username do %>
           <div class="relative" data-filter-dropdown>
-            <button data-filter-dropdown-toggle data-author-toggle class="flex items-center gap-1 px-2 py-0.5 text-xs rounded border border-gray-light bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:border-gray-400">
+            <button
+              data-filter-dropdown-toggle
+              data-author-toggle
+              class="flex items-center gap-1 px-2 py-0.5 text-xs rounded border border-gray-light bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:border-gray-400"
+            >
               <i class="fas fa-user text-[10px]"></i>
               <span data-author-label>By</span>
               <span class="hidden w-1.5 h-1.5 rounded-full bg-blue-500 flex-none" data-author-active></span>
               <i class="fas fa-chevron-down text-[10px] transition-transform duration-200" data-filter-chevron></i>
             </button>
-            <div data-filter-dropdown-panel class="hidden absolute left-0 top-full mt-1 bg-white dark:bg-gray-800 border border-gray-light rounded shadow-lg z-20 max-h-60 overflow-y-auto">
+            <div
+              data-filter-dropdown-panel
+              class="hidden absolute left-0 top-full mt-1 bg-white dark:bg-gray-800 border border-gray-light rounded shadow-lg z-20 max-h-60 overflow-y-auto"
+            >
               <div data-author-checkboxes class="py-1"></div>
             </div>
           </div>
         <% end %>
 
         <div class="relative" data-filter-dropdown>
-          <button data-filter-dropdown-toggle data-projects-toggle class="flex items-center gap-1 px-2 py-0.5 text-xs rounded border border-gray-light bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:border-gray-400">
+          <button
+            data-filter-dropdown-toggle
+            data-projects-toggle
+            class="flex items-center gap-1 px-2 py-0.5 text-xs rounded border border-gray-light bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:border-gray-400"
+          >
             <i class="fas fa-folder text-[10px]"></i>
             <span data-projects-label>Projects</span>
             <span class="hidden w-1.5 h-1.5 rounded-full bg-blue-500 flex-none" data-projects-active></span>
             <i class="fas fa-chevron-down text-[10px] transition-transform duration-200" data-filter-chevron></i>
           </button>
-          <div data-filter-dropdown-panel class="hidden absolute left-0 top-full mt-1 bg-white dark:bg-gray-800 border border-gray-light rounded shadow-lg z-20 max-h-60 overflow-y-auto">
+          <div
+            data-filter-dropdown-panel
+            class="hidden absolute left-0 top-full mt-1 bg-white dark:bg-gray-800 border border-gray-light rounded shadow-lg z-20 max-h-60 overflow-y-auto"
+          >
             <div class="py-1">
               <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
                 <input type="checkbox" checked data-projects-all /><span class="text-xs">All</span>
@@ -39,13 +56,20 @@
         </div>
 
         <div class="relative" data-filter-dropdown>
-          <button data-filter-dropdown-toggle data-members-toggle class="flex items-center gap-1 px-2 py-0.5 text-xs rounded border border-gray-light bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:border-gray-400">
+          <button
+            data-filter-dropdown-toggle
+            data-members-toggle
+            class="flex items-center gap-1 px-2 py-0.5 text-xs rounded border border-gray-light bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:border-gray-400"
+          >
             <i class="fas fa-users text-[10px]"></i>
             <span data-members-label>Members</span>
             <span class="hidden w-1.5 h-1.5 rounded-full bg-blue-500 flex-none" data-members-active></span>
             <i class="fas fa-chevron-down text-[10px] transition-transform duration-200" data-filter-chevron></i>
           </button>
-          <div data-filter-dropdown-panel class="hidden absolute left-0 top-full mt-1 bg-white dark:bg-gray-800 border border-gray-light rounded shadow-lg z-20 max-h-60 overflow-y-auto">
+          <div
+            data-filter-dropdown-panel
+            class="hidden absolute left-0 top-full mt-1 bg-white dark:bg-gray-800 border border-gray-light rounded shadow-lg z-20 max-h-60 overflow-y-auto"
+          >
             <div class="py-1">
               <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
                 <input type="checkbox" checked data-members-all /><span class="text-xs">All</span>
@@ -60,41 +84,61 @@
         </div>
 
         <div class="relative" data-filter-dropdown>
-          <button data-filter-dropdown-toggle data-status-toggle class="flex items-center gap-1 px-2 py-0.5 text-xs rounded border border-gray-light bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:border-gray-400">
+          <button
+            data-filter-dropdown-toggle
+            data-status-toggle
+            class="flex items-center gap-1 px-2 py-0.5 text-xs rounded border border-gray-light bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:border-gray-400"
+          >
             <i class="fas fa-eye text-[10px]"></i>
             <span data-status-label>Status</span>
             <span class="hidden w-1.5 h-1.5 rounded-full bg-blue-500 flex-none" data-status-active></span>
             <i class="fas fa-chevron-down text-[10px] transition-transform duration-200" data-filter-chevron></i>
           </button>
-          <div data-filter-dropdown-panel class="hidden absolute left-0 top-full mt-1 bg-white dark:bg-gray-800 border border-gray-light rounded shadow-lg z-20">
+          <div
+            data-filter-dropdown-panel
+            class="hidden absolute left-0 top-full mt-1 bg-white dark:bg-gray-800 border border-gray-light rounded shadow-lg z-20"
+          >
             <div class="py-1">
               <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
-                <input type="radio" name="commit-status-filter" data-status-value="all" /><span class="text-xs">All</span>
+                <input type="radio" name="commit-status-filter" data-status-value="all" /><span class="text-xs">
+                  All
+                </span>
               </label>
               <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
-                <input type="radio" name="commit-status-filter" data-status-value="unreviewed" /><span class="text-xs">Unreviewed</span>
+                <input type="radio" name="commit-status-filter" data-status-value="unreviewed" /><span class="text-xs">
+                  Unreviewed
+                </span>
               </label>
               <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
-                <input type="radio" name="commit-status-filter" data-status-value="reviewed" /><span class="text-xs">Reviewed</span>
+                <input type="radio" name="commit-status-filter" data-status-value="reviewed" /><span class="text-xs">
+                  Reviewed
+                </span>
               </label>
             </div>
           </div>
         </div>
 
         <div class="relative" data-repo-dropdown>
-          <button data-repo-dropdown-toggle class="flex items-center gap-1 px-2 py-0.5 text-xs rounded border border-gray-light hover:border-gray-400 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400">
+          <button
+            data-repo-dropdown-toggle
+            class="flex items-center gap-1 px-2 py-0.5 text-xs rounded border border-gray-light hover:border-gray-400 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400"
+          >
             <i class="fas fa-code-branch text-[10px]"></i>
             <span data-repo-dropdown-label>Repo</span>
             <span class="hidden w-1.5 h-1.5 rounded-full bg-blue-500 flex-none" data-repo-active></span>
             <i class="fas fa-chevron-down text-[10px] transition-transform duration-200" data-repo-dropdown-chevron></i>
           </button>
-          <div data-repo-dropdown-panel class="hidden absolute left-0 top-full mt-1 bg-white dark:bg-gray-800 border border-gray-light rounded shadow-lg z-20 min-w-44 max-h-60 overflow-y-auto">
+          <div
+            data-repo-dropdown-panel
+            class="hidden absolute left-0 top-full mt-1 bg-white dark:bg-gray-800 border border-gray-light rounded shadow-lg z-20 min-w-44 max-h-60 overflow-y-auto"
+          >
             <div data-repo-checkboxes class="py-1"></div>
           </div>
         </div>
 
         <div class="relative">
-          <i class="fas fa-search absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 text-[10px] pointer-events-none"></i>
+          <i class="fas fa-search absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 text-[10px] pointer-events-none">
+          </i>
           <input
             type="search"
             placeholder="Search…"
@@ -154,11 +198,18 @@
           <%= if @unreviewed_count == 0 do %>
             <i class="fas fa-trophy text-yellow-mid"></i> Nothing left to review!
           <% else %>
-            <span><i class="fas fa-eye mr-0.5"></i> <b class="text-almost-black"><%= @unreviewed_count %></b> to review</span>
+            <span>
+              <i class="fas fa-eye mr-0.5"></i> <b class="text-almost-black"><%= @unreviewed_count %></b> to review
+            </span>
             <span>·</span>
-            <span><i class="fas fa-users mr-0.5"></i> <b class="text-almost-black"><%= @others_unreviewed_count %></b> by others</span>
+            <span>
+              <i class="fas fa-users mr-0.5"></i> <b class="text-almost-black"><%= @others_unreviewed_count %></b>
+              by others
+            </span>
             <span>·</span>
-            <span><i class="fas fa-user mr-0.5"></i> <b class="text-almost-black"><%= @my_unreviewed_count %></b> by you</span>
+            <span>
+              <i class="fas fa-user mr-0.5"></i> <b class="text-almost-black"><%= @my_unreviewed_count %></b> by you
+            </span>
             <%= if @oldest_overlong_in_review_by_me do %>
               <span>·</span>
               <a
@@ -168,7 +219,9 @@
                 id="for-phx-hook-complete-your-review"
                 phx-hook="ScrollToTarget"
                 class="text-blue-600 dark:text-blue-400"
-              ><i class="far fa-snooze zzz-animation"></i> Complete your review</a>
+              >
+                <i class="far fa-snooze zzz-animation"></i> Complete your review
+              </a>
             <% end %>
             <%= if @oldest_unreviewed_for_me && !@oldest_overlong_in_review_by_me do %>
               <span>·</span>
@@ -179,7 +232,9 @@
                 id="for-phx-hook-oldest-unreviewed"
                 phx-hook="ScrollToTarget"
                 title="Go to the oldest unreviewed"
-              >↓ <%= Utils.format_datetime(@oldest_unreviewed_for_me.committed_at) %></a>
+              >
+                ↓ <%= Utils.format_datetime(@oldest_unreviewed_for_me.committed_at) %>
+              </a>
             <% end %>
           <% end %>
         <% else %>

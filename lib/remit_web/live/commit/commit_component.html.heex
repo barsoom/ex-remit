@@ -66,11 +66,14 @@
     "}>
       <p class={if @reviewed? || @you_authored?, do: "inline", else: "mb-1"}>
         <%= Commit.message_summary(@commit) %>
-<%= if assigns[:deployed?] do %>
+        <%= if assigns[:deployed?] do %>
           <i class="fas fa-rocket text-[9px] text-gray-400 align-middle ml-1" title="Deployed to production"></i>
         <% end %>
         <%= if assigns[:comment_count] && assigns[:comment_count] > 0 do %>
-          <span class="inline-flex items-center gap-0.5 text-[10px] text-gray-400 dark:text-gray-500 align-middle ml-1" title={"#{assigns[:comment_count]} comment#{if assigns[:comment_count] != 1, do: "s"}"}>
+          <span
+            class="inline-flex items-center gap-0.5 text-[10px] text-gray-400 dark:text-gray-500 align-middle ml-1"
+            title={"#{assigns[:comment_count]} comment#{if assigns[:comment_count] != 1, do: "s"}"}
+          >
             <i class="far fa-comment"></i>
             <%= assigns[:comment_count] %>
           </span>
@@ -150,10 +153,10 @@
                 <i class="fas fa-eye text-yellow-mid dark:text-blue-400 text-xs"></i>
               </button>
             <% true -> %>
-                <%= github_avatar(@commit.reviewed_by_username, 18,
-                  shape: :hexagon,
-                  tooltip_pos: "up-right"
-                ) %>
+              <%= github_avatar(@commit.reviewed_by_username, 18,
+                shape: :hexagon,
+                tooltip_pos: "up-right"
+              ) %>
           <% end %>
         </div>
       <% else %>
@@ -161,21 +164,20 @@
           <%= cond do %>
             <% @reviewed? && @you_authored? -> %>
             <% @reviewed? && !@you_authored? && @username -> %>
-              <button phx-click="mark_unreviewed" phx-value-id={@commit.id} class="opacity-25 hover:opacity-100" title="Mark as new">
-                <i class="far fa-eye-slash"></i>
+              <button phx-click="mark_unreviewed" phx-value-id={@commit.id} class="opacity-25 hover:opacity-100">
+                <i class="far fa-eye-slash"></i> Mark as new
               </button>
             <% @being_reviewed? && @you_are_reviewing? -> %>
-              <button phx-click="mark_reviewed" phx-value-id={@commit.id} class="bg-green-light dark:bg-green-900" title="Mark as reviewed">
-                <i class="fas fa-check text-green-dark dark:text-green-400"></i>
+              <button phx-click="mark_reviewed" phx-value-id={@commit.id} class="bg-green-light dark:bg-green-900">
+                <i class="fas fa-check text-green-dark dark:text-green-400"></i> Mark as reviewed
               </button>
             <% !@you_authored? && @username && @can_review? -> %>
               <button
                 phx-click="start_review"
                 phx-value-id={@commit.id}
                 class="hover:bg-yellow-100 hover:border-yellow-mid dark:hover:bg-blue-900 dark:hover:border-blue-700"
-                title="Start review"
               >
-                <i class="fas fa-eye text-yellow-mid dark:text-blue-400"></i>
+                <i class="fas fa-eye text-yellow-mid dark:text-blue-400"></i> Start review
               </button>
             <% true -> %>
           <% end %>
