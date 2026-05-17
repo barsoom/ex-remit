@@ -61,7 +61,7 @@
       </div>
     <% end %>
     <div class={"
-      flex-1 leading-snug
+      flex-1 #{if @compact, do: "leading-tight", else: "leading-snug"}
       #{if @reviewed? || @you_authored?, do: " truncate", else: " min-w-0 break-words"}
       #{if @you_authored?, do: " opacity-50"}
     "}>
