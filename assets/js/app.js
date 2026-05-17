@@ -535,6 +535,14 @@ Hooks.FeatureToggle = {
 }
 
 document.addEventListener('click', (e) => {
+  const deployedEl = e.target.closest('[data-deployed-url]')
+  if (deployedEl?.dataset.deployedUrl) {
+    e.stopPropagation()
+    e.preventDefault()
+    window.open(deployedEl.dataset.deployedUrl, window.fluid ? '_self' : 'github_window')
+    return
+  }
+
   const btn = e.target.closest('[data-clipboard-copy]')
   if (!btn) return
   e.stopPropagation()
