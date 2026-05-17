@@ -100,17 +100,20 @@
           >
             <div class="py-1">
               <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
-                <input type="radio" name="commit-status-filter" data-status-value="all" /><span class="text-xs">
+                <input type="radio" name="commit-status-filter" data-status-value="all" />
+                <span class="text-xs">
                   All
                 </span>
               </label>
               <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
-                <input type="radio" name="commit-status-filter" data-status-value="unreviewed" /><span class="text-xs">
+                <input type="radio" name="commit-status-filter" data-status-value="unreviewed" />
+                <span class="text-xs">
                   Unreviewed
                 </span>
               </label>
               <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
-                <input type="radio" name="commit-status-filter" data-status-value="reviewed" /><span class="text-xs">
+                <input type="radio" name="commit-status-filter" data-status-value="reviewed" />
+                <span class="text-xs">
                   Reviewed
                 </span>
               </label>
@@ -323,7 +326,8 @@
           can_review?={can_review?(commit, @username, @teams_by_project)}
           compact={@features["compact_design"]}
           copy_buttons?={@features["copy_buttons"]}
-          deployed?={MapSet.member?(@deployed_shas, commit.sha)}
+          deployed?={Map.has_key?(@deployed_shas, commit.sha)}
+          deployed_url={Map.get(@deployed_shas, commit.sha)}
           comment_count={Map.get(@comment_counts, commit.sha, 0)}
           project_teams={Map.get(@teams_by_project, commit.repo, []) |> Enum.map(& &1.slug) |> Enum.join(" ")}
           member_teams={
