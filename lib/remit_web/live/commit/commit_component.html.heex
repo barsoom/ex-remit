@@ -33,6 +33,7 @@
       flex items-center no-underline
       border-b border-gray-light
       py-2 px-3
+      group
       #{if @reviewed?, do: " commit--reviewed text-gray-500 dark:text-gray-600 dark:!bg-transparent"}
       #{if @being_reviewed?, do: " commit--being-reviewed"}
       #{if @your_last_selected_commit?, do: " commit--highlight"}
@@ -91,6 +92,29 @@
         <%= Utils.format_time(@commit.committed_at) %>
       </p>
     </div>
+
+    <%= if assigns[:copy_buttons?] do %>
+      <div class="flex-none flex items-center gap-1">
+        <%= if @commit.sha do %>
+          <button
+            type="button"
+            class="opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center w-6 h-6 rounded-md text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
+            title="Copy SHA"
+            data-clipboard-copy={String.slice(@commit.sha, 0, 8)}
+          >
+            <i class="fas fa-copy text-xs"></i>
+          </button>
+        <% end %>
+        <button
+          type="button"
+          class="opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center w-6 h-6 rounded-md text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
+          title="Copy link"
+          data-clipboard-copy={@commit.url}
+        >
+          <i class="fas fa-link text-xs"></i>
+        </button>
+      </div>
+    <% end %>
 
     <%= if @being_reviewed? && !@you_are_reviewing? do %>
       <div

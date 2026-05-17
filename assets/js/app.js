@@ -534,6 +534,36 @@ Hooks.FeatureToggle = {
   }
 }
 
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-clipboard-copy]')
+  if (!btn) return
+  e.stopPropagation()
+  e.preventDefault()
+  const text = btn.dataset.clipboardCopy
+  const icon = btn.querySelector('i')
+  const confirm = () => {
+    if (!icon) return
+    const orig = icon.className
+    icon.className = orig.replace('fa-copy', 'fa-check').replace('fa-link', 'fa-check')
+    setTimeout(() => { icon.className = orig }, 1000)
+  }
+  if (navigator.clipboard?.writeText) {
+    navigator.clipboard.writeText(text).then(confirm).catch(() => fallbackCopy(text, confirm))
+  } else {
+    fallbackCopy(text, confirm)
+  }
+}, true)
+
+function fallbackCopy(text, done) {
+  const ta = Object.assign(document.createElement('textarea'), { value: text })
+  Object.assign(ta.style, { position: 'fixed', opacity: '0' })
+  document.body.appendChild(ta)
+  ta.select()
+  document.execCommand('copy')
+  document.body.removeChild(ta)
+  done?.()
+}
+
 Hooks.BuildCommitRepos = {
   mounted() {
     this.handleEvent('build-commit-repos-updated', ({ repos }) => {
