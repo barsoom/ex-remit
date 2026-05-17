@@ -156,6 +156,31 @@
         description="Collapse deploy commits and show a 'deployed' badge on reviewed commits."
         opt_in={true}
       />
+      <%= if @features["build_commit_status"] do %>
+        <% available_repos = Enum.map(@projects, &elem(&1, 0)) -- @build_commit_repos %>
+        <div id="build-commit-repos" phx-hook="BuildCommitRepos" class="ml-14 flex flex-wrap items-center gap-1">
+          <%= for repo <- @build_commit_repos do %>
+            <span class="inline-flex items-center gap-1 pl-2 pr-1.5 py-0.5 text-xs bg-gray-700 dark:bg-gray-600 text-white rounded-full select-none">
+              <%= repo %>
+              <span
+                phx-click="toggle_build_commit_repo"
+                phx-value-repo={repo}
+                class="cursor-pointer text-gray-400 hover:text-white leading-none"
+              >×</span>
+            </span>
+          <% end %>
+          <%= if available_repos != [] do %>
+            <.form for={%{}} phx-submit="toggle_build_commit_repo" class="flex items-center gap-1 shrink-0">
+              <select name="repo" class="text-xs h-5 py-0">
+                <%= for repo <- available_repos do %>
+                  <option value={repo}><%= repo %></option>
+                <% end %>
+              </select>
+              <%= submit("Add", class: "text-xs h-5 px-2 py-0") %>
+            </.form>
+          <% end %>
+        </div>
+      <% end %>
     </div>
   </div>
 </div>

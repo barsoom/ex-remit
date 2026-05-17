@@ -21,6 +21,7 @@ defmodule RemitWeb.SettingsLive do
     |> assign_teams()
     |> assign(reviewed_commit_cutoff: get_reviewed_commit_cutoff(session, %{"days" => 7, "commits" => 100}))
     |> assign(features: features)
+    |> assign(build_commit_repos: get_build_commit_repos(session))
     |> ok()
   end
 
@@ -33,6 +34,17 @@ defmodule RemitWeb.SettingsLive do
   def handle_event("remove_project_owner", %{"project" => project, "team" => team}, socket) do
     Remit.Team.remove_project(team, project)
     noreply(socket)
+  end
+
+  def handle_event("toggle_build_commit_repo", %{"repo" => repo}, socket) do
+    repos = socket.assigns.build_commit_repos
+    new_repos = if repo in repos, do: repos -- [repo], else: [repo | repos]
+    Settings.broadcast(session_id(socket), :build_commit_repos, new_repos)
+
+    socket
+    |> assign(build_commit_repos: new_repos)
+    |> push_event("build-commit-repos-updated", %{repos: new_repos})
+    |> noreply()
   end
 
   def handle_event("toggle_feature", %{"feature" => feature}, socket) do

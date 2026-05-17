@@ -18,6 +18,7 @@ defmodule RemitWeb.CommentsLive do
     socket
     |> assign(your_last_selected_id: nil)
     |> assign(features: get_feature_flags(session))
+    |> assign(build_commit_repos: get_build_commit_repos(session))
     |> assign_username(github_login(session))
     |> assign_default_params(session)
     |> assign_filtered_notifications()
@@ -99,6 +100,14 @@ defmodule RemitWeb.CommentsLive do
   end
 
   @impl Phoenix.LiveView
+  def handle_info({:setting_updated, :build_commit_repos, repos}, socket) do
+    socket
+    |> assign(build_commit_repos: repos)
+    |> assign_deployed_shas()
+    |> noreply()
+  end
+
+  @impl Phoenix.LiveView
   def handle_info(message, socket) do
     Logger.error("unexpected message #{inspect(message)}")
     {:noreply, socket}
@@ -129,8 +138,10 @@ defmodule RemitWeb.CommentsLive do
   end
 
   defp assign_deployed_shas(socket) do
-    if socket.assigns.features["build_commit_status"] do
-      shas = Commits.list_deployed_shas() |> MapSet.new()
+    repos = socket.assigns.build_commit_repos
+
+    if socket.assigns.features["build_commit_status"] && repos != [] do
+      shas = Commits.list_deployed_shas(repos) |> MapSet.new()
       assign(socket, deployed_shas: shas)
     else
       assign(socket, deployed_shas: MapSet.new())

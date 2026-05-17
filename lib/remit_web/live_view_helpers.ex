@@ -96,6 +96,12 @@ defmodule RemitWeb.LiveViewHelpers do
     Map.merge(default, Map.get(session, "reviewed_commit_cutoff", %{}))
   end
 
+  @default_build_commit_repos ["deploy-cluster"]
+
+  def get_build_commit_repos(session) do
+    Map.get(session, "build_commit_repos", @default_build_commit_repos)
+  end
+
   @feature_defaults %{
     "compact_design" => false,
     "advanced_filters" => false,

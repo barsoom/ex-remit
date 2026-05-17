@@ -95,6 +95,13 @@ defmodule RemitWeb.CommitsLive do
     |> noreply()
   end
 
+  @impl Phoenix.LiveView
+  def handle_info({:setting_updated, :build_commit_repos, repos}, socket) do
+    socket
+    |> assign(build_commit_repos: repos)
+    |> noreply()
+  end
+
   # Receive broadcasts when other clients update their state.
   @impl Phoenix.LiveView
   def handle_info({:changed_commit, commit}, socket) do
@@ -180,6 +187,7 @@ defmodule RemitWeb.CommitsLive do
     |> assign(members_of_team: get_filter(session, "commits", "members_of_team", "all"))
     |> assign(reviewed_commit_cutoff: get_reviewed_commit_cutoff(session, %{"days" => 7, "commits" => 100}))
     |> assign(features: get_feature_flags(session))
+    |> assign(build_commit_repos: get_build_commit_repos(session))
     |> assign(comment_counts: %{})
     |> assign(deployed_shas: MapSet.new())
   end
@@ -229,8 +237,10 @@ defmodule RemitWeb.CommitsLive do
   end
 
   defp assign_deployed_shas(socket) do
-    if socket.assigns.features["build_commit_status"] do
-      shas = Commits.list_deployed_shas() |> MapSet.new()
+    repos = socket.assigns.build_commit_repos
+
+    if socket.assigns.features["build_commit_status"] && repos != [] do
+      shas = Commits.list_deployed_shas(repos) |> MapSet.new()
       assign(socket, deployed_shas: shas)
     else
       assign(socket, deployed_shas: MapSet.new())

@@ -255,7 +255,7 @@
     <% end %>
 
     <%= for commit <- @commits do %>
-      <%= unless @features["build_commit_status"] && Commit.build_commit?(commit) do %>
+      <%= unless @features["build_commit_status"] && Commit.build_commit?(commit) && commit.repo in @build_commit_repos do %>
         <RemitWeb.CommitComponent.render
           id={commit.id}
           commit={commit}

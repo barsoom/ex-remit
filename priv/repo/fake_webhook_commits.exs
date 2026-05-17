@@ -75,6 +75,49 @@ else
     end
 
   Enum.each(batches, fn {repo, author, count} -> send_commits.(repo, author, count) end)
+
+  # Commits whose message starts with an 8-char short SHA (not 40-char, so never a build commit).
+  short_sha_cases = [
+    {"auctionet", Faker.username(), String.slice(Faker.sha(), 0, 8) <> " " <> Faker.message()},
+    {"deploy-cluster", Faker.username(), String.slice(Faker.sha(), 0, 8) <> " Update deploy config"},
+    {Faker.repo(), Faker.username(), String.slice(Faker.sha(), 0, 8) <> " " <> Faker.message()}
+  ]
+
+  Enum.each(short_sha_cases, fn {repo, author, message} ->
+    json =
+      Jason.encode!(
+        %{
+          ref: "refs/heads/master",
+          repository: %{master_branch: "master", name: repo, owner: %{name: "acme"}},
+          commits: [
+            %{
+              author: %{email: Faker.email(), username: author},
+              committer: %{email: Faker.email(), username: Faker.username()},
+              id: Faker.sha(),
+              url: "https://example.com/",
+              message: message,
+              timestamp: DateTime.utc_now() |> DateTime.truncate(:second) |> DateTime.to_iso8601()
+            }
+          ]
+        },
+        escape: :unicode_safe
+      )
+      |> String.to_charlist()
+
+    IO.puts("  Sending short-sha commit by #{author} on #{repo}…")
+
+    :httpc.request(
+      :post,
+      {
+        ~c"http://localhost:#{port}/webhooks/github?auth_key=dev",
+        [{~c"x-github-event", ~c"push"}],
+        ~c"application/json",
+        json
+      },
+      [],
+      []
+    )
+  end)
 end
 
 IO.puts("")

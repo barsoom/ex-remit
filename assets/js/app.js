@@ -534,6 +534,16 @@ Hooks.FeatureToggle = {
   }
 }
 
+Hooks.BuildCommitRepos = {
+  mounted() {
+    this.handleEvent('build-commit-repos-updated', ({ repos }) => {
+      const formData = new FormData()
+      repos.forEach(r => formData.append('repos[]', r))
+      fetch('/api/build_commit_repos', { method: 'post', body: formData })
+    })
+  }
+}
+
 let liveSocket = new LiveSocket("/live", Socket, {
   params: { _csrf_token: csrfToken },
   hooks: Hooks,

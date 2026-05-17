@@ -42,11 +42,10 @@
             <button
               phx-click="unresolve"
               phx-value-id={@notification.id}
-              class="flex flex-col items-center gap-0.5 px-2 py-1 rounded-lg opacity-30 hover:opacity-100"
+              class="flex items-center justify-center w-6 h-6 rounded-md opacity-30 hover:opacity-100"
               title="Mark as new"
             >
-              <i class="fas fa-undo text-sm"></i>
-              <span class="text-[9px] leading-none">Reopen</span>
+              <i class="fas fa-undo text-xs"></i>
             </button>
           <% else %>
             <i class="fas fa-check text-green-dark text-xs"></i>
@@ -61,11 +60,10 @@
             <button
               phx-click="resolve"
               phx-value-id={@notification.id}
-              class="flex flex-col items-center gap-0.5 px-2 py-1 rounded-lg bg-green-light dark:bg-green-900"
+              class="flex items-center justify-center w-6 h-6 rounded-md bg-green-light dark:bg-green-900"
               title="Resolve"
             >
-              <i class="fas fa-check text-green-dark dark:text-green-400 text-sm"></i>
-              <span class="text-[9px] leading-none">Resolve</span>
+              <i class="fas fa-check text-green-dark dark:text-green-400 text-xs"></i>
             </button>
           <% else %>
             <span title={"Unresolved since #{Utils.format_datetime(@notification.inserted_at)}"}>
@@ -96,8 +94,8 @@
           <i class="fas fa-check text-green-dark"></i>
           <span class="text-gray-dark"><%= Utils.format_datetime(@notification.resolved_at) %></span>
           <%= if @at_me? do %>
-            <button phx-click="unresolve" phx-value-id={@notification.id} class="ml-2">
-              <i class="far fa-eye-slash"></i> Mark as new
+            <button phx-click="unresolve" phx-value-id={@notification.id} class="ml-2" title="Mark as new">
+              <i class="far fa-eye-slash"></i>
             </button>
           <% end %>
         <% else %>
@@ -107,13 +105,12 @@
                 <i class="fas fa-user-friends text-green-dark"></i>
               </span>
             <% end %>
-            <button phx-click="resolve" phx-value-id={@notification.id} class="bg-green-light dark:bg-green-900">
-              <i class="fas fa-check text-green-dark dark:text-green-400"></i> Resolve
+            <button phx-click="resolve" phx-value-id={@notification.id} class="bg-green-light dark:bg-green-900" title="Resolve">
+              <i class="fas fa-check text-green-dark dark:text-green-400"></i>
             </button>
           <% else %>
             <span title={"Unresolved since #{Utils.format_datetime(@notification.inserted_at)}"}>
               <i class="far fa-comment-dots text-yellow-mid"></i>
-              <span class="text-gray-dark">Unresolved</span>
             </span>
           <% end %>
         <% end %>
