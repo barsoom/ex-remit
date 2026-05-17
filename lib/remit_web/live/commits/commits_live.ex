@@ -189,7 +189,7 @@ defmodule RemitWeb.CommitsLive do
     |> assign(features: get_feature_flags(session))
     |> assign(build_commit_repos: get_build_commit_repos(session))
     |> assign(comment_counts: %{})
-    |> assign(deployed_shas: MapSet.new())
+    |> assign(deployed_shas: %{})
   end
 
   def assign_all_teams(socket) do
@@ -240,10 +240,10 @@ defmodule RemitWeb.CommitsLive do
     repos = socket.assigns.build_commit_repos
 
     if socket.assigns.features["build_commit_status"] && repos != [] do
-      shas = Commits.list_deployed_shas(repos) |> MapSet.new()
-      assign(socket, deployed_shas: shas)
+      deployed = Commits.list_deployed_shas(repos)
+      assign(socket, deployed_shas: deployed)
     else
-      assign(socket, deployed_shas: MapSet.new())
+      assign(socket, deployed_shas: %{})
     end
   end
 

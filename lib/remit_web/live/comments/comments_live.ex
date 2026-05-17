@@ -141,10 +141,10 @@ defmodule RemitWeb.CommentsLive do
     repos = socket.assigns.build_commit_repos
 
     if socket.assigns.features["build_commit_status"] && repos != [] do
-      shas = Commits.list_deployed_shas(repos) |> MapSet.new()
-      assign(socket, deployed_shas: shas)
+      deployed = Commits.list_deployed_shas(repos)
+      assign(socket, deployed_shas: deployed)
     else
-      assign(socket, deployed_shas: MapSet.new())
+      assign(socket, deployed_shas: %{})
     end
   end
 

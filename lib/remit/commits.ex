@@ -40,7 +40,8 @@ defmodule Remit.Commits do
   def sha_exists?(sha), do: Repo.exists?(from Commit, where: [sha: ^sha])
 
   def list_deployed_shas(repos) do
-    Repo.all(from c in Commit, where: not is_nil(c.deployed_sha) and c.repo in ^repos, select: c.deployed_sha)
+    Repo.all(from c in Commit, where: not is_nil(c.deployed_sha) and c.repo in ^repos, select: {c.deployed_sha, c.url})
+    |> Map.new()
   end
 
   def delete_reviewed_older_than_days(days) when is_integer(days) do

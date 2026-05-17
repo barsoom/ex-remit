@@ -68,7 +68,12 @@
       <p class={if @reviewed? || @you_authored?, do: "inline", else: "mb-1"}>
         <%= Commit.message_summary(@commit) %>
         <%= if assigns[:deployed?] do %>
-          <i class="fas fa-rocket text-[9px] text-gray-400 align-middle ml-1" title="Deployed to production"></i>
+          <i
+            class="fas fa-rocket text-[9px] text-gray-400 align-middle ml-1 cursor-pointer"
+            title="Deployed to production"
+            data-deployed-url={assigns[:deployed_url]}
+          >
+          </i>
         <% end %>
         <%= if assigns[:comment_count] && assigns[:comment_count] > 0 do %>
           <span

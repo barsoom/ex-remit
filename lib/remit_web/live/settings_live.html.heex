@@ -172,8 +172,8 @@
       <.feature_toggle
         feature="build_commit_status"
         enabled={@features["build_commit_status"]}
-        label="Use build commits as commit status"
-        description="Collapse deploy commits and show a 'deployed' badge on reviewed commits."
+        label="Hide build commits from infra-as-code repos"
+        description="If a deploy repo is selected, its commits will be hidden. A 'deployed' badge will appear on the matching commits."
         opt_in={true}
       />
       <%= if @features["build_commit_status"] do %>
