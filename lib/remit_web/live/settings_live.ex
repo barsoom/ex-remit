@@ -105,22 +105,29 @@ defmodule RemitWeb.SettingsLive do
   defp feature_toggle(assigns) do
     ~H"""
     <label class="flex items-start gap-3 cursor-pointer select-none">
-      <input
-        type="checkbox"
-        checked={@enabled}
-        phx-click="toggle_feature"
-        phx-value-feature={@feature}
-        class="mt-0.5 cursor-pointer"
-        disabled={!assigns[:opt_in]}
-      />
+      <div class="relative block w-11 h-6 mt-0.5 shrink-0">
+        <input
+          type="checkbox"
+          checked={@enabled}
+          phx-click="toggle_feature"
+          phx-value-feature={@feature}
+          class="sr-only peer"
+          disabled={!assigns[:opt_in]}
+        />
+        <span class="block h-6 w-11 rounded-full bg-gray-300 peer-checked:bg-blue-600 transition-colors duration-200">
+        </span>
+        <span class="absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-gray-50 shadow transition-transform duration-200 peer-checked:translate-x-5">
+        </span>
+      </div>
+
       <div class="flex-1 min-w-0">
         <div class="flex items-center gap-2">
-          <p class="text-sm text-almost-black font-medium"><%= @label %></p>
+          <span class="leading-none"><%= @label %></span>
           <%= if assigns[:todo] do %>
             <span class="text-xs text-yellow-600 bg-yellow-100 px-1.5 py-0.5 rounded" title="Work in progress">🚧 WIP</span>
           <% end %>
         </div>
-        <p class="text-xs text-gray-mid"><%= @description %></p>
+        <p class="text-xs text-gray-mid mt-0.5"><%= @description %></p>
       </div>
     </label>
     """
