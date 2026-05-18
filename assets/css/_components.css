@@ -7,7 +7,7 @@
   @apply flex;
 
   &__tab {
-    @apply text-sm py-1 px-2 flex-1 text-center border-r border-b border-gray-mid bg-gray-100;
+    @apply text-sm py-1 px-2 flex-1 text-center border-r border-b border-gray-mid bg-gray-200;
     @apply no-underline;
     @apply sm:text-base sm:py-2 sm:px-3;
 
@@ -16,7 +16,7 @@
     &:last-child { border-right: 0; }
 
     .tabs__tab__text {
-      @apply ml-1;
+      @apply ml-2;
     }
 
     &.tabs__tab--settings {
@@ -43,6 +43,22 @@
       &.tabs__tab--settings i { @apply text-blue-500; }
     }
   }
+
+  &--compact {
+    @apply border-b border-gray-light;
+
+    .tabs__tab {
+      @apply bg-transparent border-r-0 border-b-2 border-transparent text-gray-500;
+      @apply hover:text-gray-700 dark:hover:text-gray-300;
+
+      &--current {
+        @apply bg-transparent text-almost-black border-b-2;
+        &.tabs__tab--commits { @apply border-green-500; }
+        &.tabs__tab--comments { @apply border-yellow-500; }
+        &.tabs__tab--settings { @apply border-blue-500; }
+      }
+    }
+  }
 }
 
 .info-box {
@@ -56,22 +72,30 @@
 .commit {
   &--highlight {
     @apply bg-yellow-200;
+    .dark & { @apply bg-blue-900; }
   }
   &--reviewed {
     @apply bg-green-light;
   }
   &--highlight&--reviewed {
     @apply bg-chartreuse;
+    .dark & { @apply bg-blue-900; }
   }
   &--being-reviewed {
     @apply bg-blue-100;
+    .dark & { @apply bg-blue-900; }
   }
   &--highlight&--being-reviewed {
     @apply bg-chartreuse;
+    .dark & { @apply bg-blue-900; }
   }
 }
 
 .comment {
+  .comment__metadata {
+    .dark & { @apply bg-gray-700; }
+  }
+
   &--resolved {
     @apply opacity-50;
   }
@@ -79,6 +103,7 @@
   &--highlight {
     .comment__metadata {
       @apply bg-yellow-300;
+      .dark & { @apply bg-blue-900; }
     }
   }
 }

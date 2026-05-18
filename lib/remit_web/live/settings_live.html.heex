@@ -1,6 +1,13 @@
 <div class="mx-6">
-  <div class="flex items-center">
-    <div class="flex-1 min-w-0 my-6">
+  <%!-- Profile --%>
+  <div class={[
+    "flex items-center",
+    if(@features["compact_design"],
+      do: "px-3 bg-gray-100 dark:bg-gray-800 py-2 mb-2 min-h-12 rounded-xl shadow-sm",
+      else: ""
+    )
+  ]}>
+    <div class={["flex-1 min-w-0", if(@features["compact_design"], do: "", else: "my-6")]}>
       <%= if @username do %>
         Logged in as: <span class="font-bold"><%= @username %></span>
         · <%= link("Log out",
@@ -15,32 +22,30 @@
     </div>
 
     <%= if @username do %>
-      <%= github_avatar(@username, 80,
+      <%= github_avatar(@username, if(@features["compact_design"], do: 40, else: 80),
         alt: "",
         class: "ml-3",
+        shape: if(@features["compact_design"], do: :hexagon, else: :default),
         tooltip: "Behold! Your GitHub avatar!",
         tooltip_pos: "left"
       ) %>
+    <% else %>
+      <%= if @features["compact_design"] do %>
+        <div
+          class="ml-3 w-10 h-10 bg-gray-300 dark:bg-gray-600 flex-none"
+          style="clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)"
+        >
+        </div>
+      <% end %>
     <% end %>
   </div>
 
-  <div>
-    <.form
-      :let={f}
-      for={%{}}
-      as={:reviewed_commit_cutoff}
-      id="reviewed_commit_cutoff_form"
-      phx-change="update_reviewed_commit_cutoff"
-      phx-hook="SetReviewedCommitCutoff"
-    >
-      Hide reviewed commits
-      after <%= text_input(f, :days, value: @reviewed_commit_cutoff["days"], size: 2) %> days
-      or <%= text_input(f, :commits, value: @reviewed_commit_cutoff["commits"], size: 3) %> commits (0 to disable).
-    </.form>
-  </div>
-
+  <%!-- GitHub teams --%>
   <%= if @username && Remit.Config.has_github_org? do %>
-    <div class="bg-gray-200 px-3 py-4 mt-6 paragraphs">
+    <div class={[
+      "bg-gray-100 dark:bg-gray-800 px-3 py-4 mt-6 paragraphs",
+      @features["compact_design"] && "rounded-xl shadow-sm"
+    ]}>
       <%= link("Import team members from GitHub",
         to: ~p"/settings",
         id: "update-github-teams",
@@ -62,9 +67,13 @@
     </div>
   <% end %>
 
-  <div class="bg-gray-200 px-3 py-4 mt-6 text-almost-black paragraphs">
+  <%!-- Commit authors --%>
+  <div class={[
+    "bg-gray-100 dark:bg-gray-800 px-3 py-4 mt-6 text-almost-black paragraphs",
+    @features["compact_design"] && "rounded-xl shadow-sm"
+  ]}>
     <h2 class="font-semibold text-xs mb-2 uppercase">
-      <i class="fas fa-info-circle fa-2x text-blue-400 align-middle mr-1"></i> A little guide to commit authors
+      <i class="fas fa-info-circle fa-2x text-blue-600 align-middle mr-1"></i> A little guide to commit authors
     </h2>
 
     <p>
@@ -79,13 +88,73 @@
     </p>
   </div>
 
-  <.projects projects={@projects} teams={@teams} />
+  <%!-- Preferences --%>
+  <div
+    id="theme-preferences"
+    phx-hook="FeatureToggle"
+    class={[
+      "bg-gray-100 dark:bg-gray-800 px-3 py-4 mt-6 text-almost-black",
+      @features["compact_design"] && "rounded-xl shadow-sm"
+    ]}
+  >
+    <h2 class="font-semibold text-xs mb-3 uppercase">Preferences</h2>
+
+    <div class="space-y-3">
+      <.form
+        :let={f}
+        for={%{}}
+        as={:reviewed_commit_cutoff}
+        id="reviewed_commit_cutoff_form"
+        phx-change="update_reviewed_commit_cutoff"
+        phx-hook="SetReviewedCommitCutoff"
+        class="flex items-center gap-2 flex-wrap"
+      >
+        <span class="leading-none">Hide reviewed commits after</span>
+        <%= text_input(f, :days, value: @reviewed_commit_cutoff["days"], class: "w-10 text-center rounded-sm") %>
+        <span class="leading-none">days or</span>
+        <%= text_input(f, :commits, value: @reviewed_commit_cutoff["commits"], class: "w-14 text-center rounded-sm") %>
+        <span class="leading-none">commits</span>
+        <span class="leading-none text-gray-mid">(0 to disable)</span>
+      </.form>
+
+      <label class="flex items-center gap-3 cursor-pointer select-none">
+        <.theme_toggle dark?={@features["dark_theme"]} />
+        <span class="leading-none font-bold">Theme</span>
+      </label>
+
+      <.toggle_preference
+        feature="inbox_count_badge"
+        enabled={@features["inbox_count_badge"]}
+        label="Unresolved comments count"
+        description="Show the number of unresolved in the comments tab header."
+      />
+
+      <.toggle_preference
+        feature="comment_count_badge"
+        enabled={@features["comment_count_badge"]}
+        label="Comment count per commit"
+        description="Show a badge with the number of comments on each commit."
+      />
+
+      <.toggle_preference
+        feature="copy_buttons"
+        enabled={@features["copy_buttons"]}
+        label="Copy SHA / link buttons"
+        description="Show copy-to-clipboard buttons on hover for each commit's short SHA and URL."
+      />
+    </div>
+  </div>
+
+  <%!-- Project ownership --%>
+  <.projects projects={@projects} teams={@teams} compact={@features["compact_design"]} />
 
   <%!-- Experimental features --%>
-  <div class="bg-gray-200 px-3 py-4 mt-6">
+  <div class={["bg-gray-100 dark:bg-gray-800 px-3 py-4 mt-6", @features["compact_design"] && "rounded-xl shadow-sm"]}>
     <h2 class="font-semibold text-xs mb-2 uppercase">
       <i class="fas fa-flask text-purple-400 mr-1"></i> Experimental features
     </h2>
+    <p>For things a bit more controversial that still need a bit of testing.</p>
+
     <div id="feature-toggles" phx-hook="FeatureToggle" class="mt-2 space-y-2">
       <.feature_toggle
         feature="compact_design"
@@ -93,21 +162,49 @@
         label="Compact design"
         description="Lighter background and refreshed UI. Takes effect after reload."
         todo={true}
+        opt_in={true}
       />
       <.feature_toggle
         feature="advanced_filters"
         enabled={@features["advanced_filters"]}
         label="Advanced filters"
-        description="Accordion filter bar with author, project, member and search filters."
-        todo={true}
+        description="Accordion filter bar with search and repo filter for commits."
+        opt_in={true}
       />
       <.feature_toggle
         feature="build_commit_status"
         enabled={@features["build_commit_status"]}
-        label="Use build commits as commit status"
-        description="Show build commit results as the commit status indicator."
-        todo={true}
+        label="Hide build commits from infra-as-code repos"
+        description="If a deploy repo is selected, its commits will be hidden. A 'deployed' badge will appear on the matching commits."
+        opt_in={true}
       />
+      <%= if @features["build_commit_status"] do %>
+        <% available_repos = Enum.map(@projects, &elem(&1, 0)) -- @build_commit_repos %>
+        <div id="build-commit-repos" phx-hook="BuildCommitRepos" class="ml-14 flex flex-wrap items-center gap-1">
+          <%= for repo <- @build_commit_repos do %>
+            <span class="inline-flex items-center gap-1 pl-2 pr-1.5 py-0.5 text-xs bg-gray-700 dark:bg-gray-600 text-white rounded-full select-none">
+              <%= repo %>
+              <span
+                phx-click="toggle_build_commit_repo"
+                phx-value-repo={repo}
+                class="cursor-pointer text-gray-400 hover:text-white leading-none"
+              >
+                ×
+              </span>
+            </span>
+          <% end %>
+          <%= if available_repos != [] do %>
+            <.form for={%{}} phx-submit="toggle_build_commit_repo" class="flex items-center gap-1 shrink-0">
+              <select name="repo" class="text-xs h-5 py-0">
+                <%= for repo <- available_repos do %>
+                  <option value={repo}><%= repo %></option>
+                <% end %>
+              </select>
+              <%= submit("Add", class: "text-xs h-5 px-2 py-0") %>
+            </.form>
+          <% end %>
+        </div>
+      <% end %>
     </div>
   </div>
 </div>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class={if (Plug.Conn.get_session(@conn, "feature_flags") || %{})["dark_theme"], do: "dark"}>
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -20,7 +20,7 @@
     </script>
     <link rel="icon" href={~p"/images/#{Application.get_env(:remit, :favicon)}"} />
   </head>
-  <body class="bg-gray-dark">
+  <body class="bg-gray-dark dark:bg-gray-900">
     <div class="mx-auto max-w-3xl min-h-screen bg-white shadow-2xl">
       <%= @inner_content %>
     </div>

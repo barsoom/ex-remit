@@ -21,6 +21,7 @@ defmodule RemitWeb.SettingsLive do
     |> assign_teams()
     |> assign(reviewed_commit_cutoff: get_reviewed_commit_cutoff(session, %{"days" => 7, "commits" => 100}))
     |> assign(features: features)
+    |> assign(build_commit_repos: get_build_commit_repos(session))
     |> ok()
   end
 
@@ -35,8 +36,29 @@ defmodule RemitWeb.SettingsLive do
     noreply(socket)
   end
 
+  def handle_event("toggle_build_commit_repo", %{"repo" => repo}, socket) do
+    repos = socket.assigns.build_commit_repos
+    new_repos = if repo in repos, do: repos -- [repo], else: [repo | repos]
+    Settings.broadcast(session_id(socket), :build_commit_repos, new_repos)
+
+    socket
+    |> assign(build_commit_repos: new_repos)
+    |> push_event("build-commit-repos-updated", %{repos: new_repos})
+    |> noreply()
+  end
+
   def handle_event("toggle_feature", %{"feature" => feature}, socket) do
     new_flags = Map.update(socket.assigns.features, feature, false, &(!&1))
+    Settings.broadcast(session_id(socket), :feature_flags, new_flags)
+
+    socket
+    |> assign(features: new_flags)
+    |> push_event("feature-flags-updated", new_flags)
+    |> noreply()
+  end
+
+  def handle_event("set_feature", %{"feature" => feature, "enabled" => enabled}, socket) do
+    new_flags = Map.put(socket.assigns.features, feature, enabled == "true")
     Settings.broadcast(session_id(socket), :feature_flags, new_flags)
 
     socket
@@ -92,27 +114,91 @@ defmodule RemitWeb.SettingsLive do
     {:noreply, socket}
   end
 
-  defp feature_toggle(assigns) do
+  defp toggle_preference(assigns) do
     ~H"""
     <label class="flex items-start gap-3 cursor-pointer select-none">
-      <input
-        type="checkbox"
-        checked={@enabled}
-        phx-click="toggle_feature"
-        phx-value-feature={@feature}
-        class="mt-0.5 cursor-pointer"
-        disabled
-      />
+      <div class="relative block w-11 h-6 mt-0.5 shrink-0">
+        <input
+          type="checkbox"
+          checked={@enabled}
+          phx-click="toggle_feature"
+          phx-value-feature={@feature}
+          class="sr-only peer"
+        />
+        <span class="block h-6 w-11 rounded-full bg-gray-300 peer-checked:bg-blue-600 transition-colors duration-200">
+        </span>
+        <span class="absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-gray-50 shadow transition-transform duration-200 peer-checked:translate-x-5">
+        </span>
+      </div>
+      <div class="flex-1 min-w-0">
+        <span class="leading-none font-bold"><%= @label %></span>
+        <p class="text-xs text-gray-mid mt-0.5"><%= @description %></p>
+      </div>
+    </label>
+    """
+  end
+
+  defp feature_toggle(assigns) do
+    ~H"""
+    <label class={[
+      "flex items-start gap-3 select-none",
+      if(assigns[:opt_in], do: "cursor-pointer", else: "cursor-not-allowed opacity-50")
+    ]}>
+      <div class="relative block w-11 h-6 mt-0.5 shrink-0">
+        <input
+          type="checkbox"
+          checked={@enabled}
+          phx-click="toggle_feature"
+          phx-value-feature={@feature}
+          class="sr-only peer"
+          disabled={!assigns[:opt_in]}
+        />
+        <span class="block h-6 w-11 rounded-full bg-gray-300 peer-checked:bg-blue-600 transition-colors duration-200">
+        </span>
+        <span class="absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-gray-50 shadow transition-transform duration-200 peer-checked:translate-x-5">
+        </span>
+      </div>
       <div class="flex-1 min-w-0">
         <div class="flex items-center gap-2">
-          <p class="text-sm text-almost-black font-medium"><%= @label %></p>
-          <%= if @todo do %>
+          <span class="leading-none font-bold"><%= @label %></span>
+          <%= if assigns[:todo] do %>
             <span class="text-xs text-yellow-600 bg-yellow-100 px-1.5 py-0.5 rounded" title="Work in progress">🚧 WIP</span>
           <% end %>
         </div>
-        <p class="text-xs text-gray-mid"><%= @description %></p>
+        <p class="text-xs text-gray-mid mt-0.5"><%= @description %></p>
       </div>
     </label>
+    """
+  end
+
+  defp theme_toggle(assigns) do
+    ~H"""
+    <div class="relative block w-11 h-6 cursor-pointer select-none">
+      <input
+        type="checkbox"
+        checked={@dark?}
+        phx-click="toggle_feature"
+        phx-value-feature="dark_theme"
+        class="sr-only peer"
+      />
+      <%!-- Track --%>
+      <span class="block h-6 w-11 rounded-full bg-gray-300 dark:bg-gray-600 peer-checked:bg-blue-600 transition-colors duration-200">
+      </span>
+      <%!-- Thumb --%>
+      <span class="absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-gray-50 shadow transition-transform duration-200 peer-checked:translate-x-5">
+      </span>
+      <%!-- Moon icon (visible when dark theme on) --%>
+      <span class="absolute left-1.5 top-1.5 hidden peer-checked:block text-white" style="font-size: 10px; line-height: 1;">
+        <i class="fas fa-moon"></i>
+      </span>
+      <%!-- Sun icon (visible when dark theme off) --%>
+      <span
+        class="absolute right-1.5 top-1.5 block peer-checked:hidden text-amber-500"
+        style="font-size: 10px; line-height: 1;"
+      >
+        <i class="fas fa-sun"></i>
+      </span>
+    </div>
     """
   end
 
@@ -130,10 +216,57 @@ defmodule RemitWeb.SettingsLive do
 
   defp projects(assigns) do
     ~H"""
-    <div class="bg-gray-200 px-3 py-4 mt-6">
+    <div class={["bg-gray-100 dark:bg-gray-800 px-3 py-4 mt-6", @compact && "rounded-xl shadow-sm"]}>
       <h2 class="font-semibold text-xs mb-2 uppercase">Project ownership</h2>
-      <%= for {project, project_teams} <- @projects do %>
-        <.project project={project} project_teams={project_teams} teams={@teams} new_design?={false} />
+      <%= if @compact do %>
+        <div class="divide-y divide-gray-300 dark:divide-gray-600">
+          <%= for {project, project_teams} <- @projects do %>
+            <.project_row project={project} project_teams={project_teams} all_teams={@teams} />
+          <% end %>
+        </div>
+      <% else %>
+        <%= for {project, project_teams} <- @projects do %>
+          <.project project={project} project_teams={project_teams} teams={@teams} />
+        <% end %>
+      <% end %>
+    </div>
+    """
+  end
+
+  defp project_row(assigns) do
+    ~H"""
+    <% available_teams = @all_teams -- @project_teams %>
+    <div class="flex items-center gap-3 py-2 min-h-[2rem]">
+      <span class="font-semibold text-xs w-32 shrink-0"><%= @project %></span>
+      <div class="flex flex-wrap gap-1 flex-1 min-w-0">
+        <%= if @project_teams == [] do %>
+          <span class="text-red-600 text-xs italic">unclaimed</span>
+        <% else %>
+          <%= for team <- @project_teams do %>
+            <span class="inline-flex items-center gap-1 pl-2 pr-1.5 py-0.5 text-xs bg-gray-700 dark:bg-gray-600 text-white rounded-full select-none">
+              <%= team.name %>
+              <span
+                phx-click="remove_project_owner"
+                phx-value-project={@project}
+                phx-value-team={team.slug}
+                class="cursor-pointer text-gray-400 hover:text-white leading-none"
+              >
+                ×
+              </span>
+            </span>
+          <% end %>
+        <% end %>
+      </div>
+      <%= if available_teams != [] do %>
+        <.form for={%{}} as={:project} phx-submit="add_project_owner" class="flex items-center gap-1 shrink-0">
+          <input type="hidden" name="project" value={@project} />
+          <select name="team" class="text-xs h-5 py-0">
+            <%= for team <- available_teams do %>
+              <option value={team.slug}><%= team.name %></option>
+            <% end %>
+          </select>
+          <%= submit("Add", class: "text-xs h-5 px-2 py-0") %>
+        </.form>
       <% end %>
     </div>
     """

@@ -2,6 +2,7 @@ defmodule RemitWeb.CommentComponent do
   @moduledoc false
   use RemitWeb, :live_component
   alias Remit.{Commit, Comment, Utils}
+  import Phoenix.HTML.Tag
 
   # We get a comment URL via webhook, but the anchor used to be incorrect for line comments.
   # It's supposed to be fixed per 2021-10-04; if we like, we could look into using it.
@@ -16,10 +17,26 @@ defmodule RemitWeb.CommentComponent do
   end
 
   defp comment_recipient_avatars(commit, comment, notification, opts) do
-    comment_recipients(commit, comment, notification)
-    |> Enum.sort()
-    |> move_element_to_front(notification.username)
-    |> Enum.map(&github_avatar(&1, :comment, opts))
+    compact = Keyword.get(opts, :compact, false)
+
+    avatar_opts =
+      Keyword.delete(opts, :compact) ++
+        [
+          shape: if(compact, do: :hexagon, else: :default),
+          class: if(compact, do: "ring-1 ring-white dark:ring-gray-900", else: "")
+        ]
+
+    avatars =
+      comment_recipients(commit, comment, notification)
+      |> Enum.sort()
+      |> move_element_to_front(notification.username)
+      |> Enum.map(&github_avatar(&1, :comment, avatar_opts))
+
+    if compact do
+      content_tag(:span, avatars, class: "inline-flex -space-x-1.5")
+    else
+      avatars
+    end
   end
 
   # For commits authored by a group, display the entire group as a joint recipient of reviewer comments.

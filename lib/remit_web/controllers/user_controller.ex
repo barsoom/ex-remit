@@ -20,6 +20,18 @@ defmodule RemitWeb.UserController do
     |> json(true)
   end
 
+  def set_build_commit_repo(conn, %{"repos" => repos}) when is_list(repos) do
+    conn
+    |> put_session("build_commit_repos", repos)
+    |> json(true)
+  end
+
+  def set_build_commit_repo(conn, _params) do
+    conn
+    |> put_session("build_commit_repos", [])
+    |> json(true)
+  end
+
   def set_feature_flag(conn, %{"feature" => feature, "enabled" => enabled}) do
     stored = get_session(conn, "feature_flags") || %{}
     enabled_bool = enabled in [true, "true", "1"]

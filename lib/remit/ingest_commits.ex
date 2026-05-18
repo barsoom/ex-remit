@@ -47,7 +47,7 @@ defmodule Remit.IngestCommits do
          owner,
          repo
        ) do
-    %Commit{
+    commit = %Commit{
       owner: owner,
       repo: repo,
       sha: sha,
@@ -57,6 +57,8 @@ defmodule Remit.IngestCommits do
       url: url,
       payload: payload
     }
+
+    %{commit | deployed_sha: Commit.extract_deployed_sha(commit)}
   end
 
   defp usernames(author, committer, message) do

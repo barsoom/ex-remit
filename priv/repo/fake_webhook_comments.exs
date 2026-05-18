@@ -10,7 +10,7 @@ shas =
   if for_user != nil do
     commits =
       Remit.Commits.list_latest(100)
-      |> Enum.filter(fn c -> Enum.member?(c.usernames, for_user) end)
+      |> Enum.filter(fn c -> c.usernames == [for_user] end)
       |> Enum.map(& &1.sha)
 
     if Enum.empty?(commits) do
@@ -43,7 +43,7 @@ started_at = DateTime.utc_now() |> DateTime.truncate(:microsecond)
       %{
         action: "created",
         comment: %{
-          id: Faker.number(),
+          id: :erlang.unique_integer([:positive]),
           user: %{
             login: if(all_usernames, do: Enum.random(all_usernames), else: Faker.username())
           },
@@ -51,7 +51,7 @@ started_at = DateTime.utc_now() |> DateTime.truncate(:microsecond)
           position: nil,
           path: nil,
           created_at: "2016-01-25T08:41:25+01:00",
-          body: Faker.comment()
+          body: if(Enum.random(1..5) <= 1, do: Faker.paragraph_comment(), else: Faker.comment())
         },
         repository: %{
           name: Faker.repo(),

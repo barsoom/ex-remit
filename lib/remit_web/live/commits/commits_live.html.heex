@@ -1,120 +1,344 @@
-<div class="info-box">
-  <%= if @username do %>
-    <p>
-      Authored by: <%= filter_link(@socket, assigns, :commits, "filter-commit-by-author", "All",
-        commits_of_author: "all"
-      ) %> · <%= filter_link(
-        @socket,
-        assigns,
-        :commits,
-        "filter-commit-by-author",
-        "Me",
-        commits_of_author: @username
-      ) %>
-    </p>
-  <% end %>
-  <p>
-    In projects of team: <%= filter_link(@socket, assigns, :commits, "filter-commit-project-team-all", "All",
-      projects_of_team: "all"
-    ) %>
-    <%= for team <- @all_teams do %>
-      · <%= filter_link(@socket, assigns, :commits, "filter-commit-project-team-#{team.slug}", team.name,
-        projects_of_team: team.slug
-      ) %>
-    <% end %>
-  </p>
-  <%= if Remit.Config.has_github_org? do %>
-    <p>
-      By members of team: <%= filter_link(@socket, assigns, :commits, "filter-commit-member-team-all", "All",
-        members_of_team: "all"
-      ) %>
-      <%= for team <- @all_teams do %>
-        · <%= filter_link(@socket, assigns, :commits, "filter-commit-member-team-#{team.slug}", team.name,
-          members_of_team: team.slug
-        ) %>
-      <% end %>
-    </p>
-  <% end %>
-</div>
+<div id="commit-search-area" phx-hook="CommitSearch">
+  <%= if @features["advanced_filters"] do %>
+    <div class={[
+      "bg-gray-100 dark:bg-gray-800 mb-4 text-sm mx-2",
+      @features["compact_design"] && "!mb-1 rounded-xl shadow-sm"
+    ]}>
+      <div class="flex flex-wrap justify-center items-center gap-x-5 gap-y-1.5 px-3 py-2">
+        <%!-- Multi-select filter dropdowns --%>
+        <%= if @username do %>
+          <div class="relative" data-filter-dropdown>
+            <button
+              data-filter-dropdown-toggle
+              data-author-toggle
+              class="flex items-center gap-1 px-2 py-0.5 text-xs rounded border border-gray-light bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:border-gray-400"
+            >
+              <i class="fas fa-user text-[10px]"></i>
+              <span data-author-label>By</span>
+              <span class="hidden w-1.5 h-1.5 rounded-full bg-blue-500 flex-none" data-author-active></span>
+              <i class="fas fa-chevron-down text-[10px] transition-transform duration-200" data-filter-chevron></i>
+            </button>
+            <div
+              data-filter-dropdown-panel
+              class="hidden absolute left-0 top-full mt-1 bg-white dark:bg-gray-800 border border-gray-light rounded shadow-lg z-20 max-h-60 overflow-y-auto"
+            >
+              <div data-author-checkboxes class="py-1"></div>
+            </div>
+          </div>
+        <% end %>
 
-<%= if @commits == [] do %>
-  <RemitWeb.NoContentComponent.render />
-<% else %>
-  <div class="info-box">
-    <%= if @username do %>
-      <%= if @unreviewed_count == 0 do %>
-        <p class="flex items-center justify-center text-base text-almost-black">
-          <i class="fas fa-trophy fa-lg text-yellow-mid mr-2"></i> Nothing left to review!
-        </p>
-      <% else %>
-        <p>
-          There's <b><%= @unreviewed_count %></b>
-          commit<%= if @unreviewed_count != 1, do: "s" %> to review
-          (<b><%= @others_unreviewed_count %></b> by others; <b><%= @my_unreviewed_count %></b>
-          by you).
-          <%= cond do %>
-            <% @oldest_overlong_in_review_by_me -> %>
-              <p>
-                <i class="far fa-snooze text-blue-600 zzz-animation"></i>
-                <b class="font-bold text-blue-900 ml-1">Still awake?</b>
-                Don't forget to complete
-                <a
-                  href={"#commit-#{@oldest_overlong_in_review_by_me.id}"}
-                  phx-click="selected"
-                  phx-value-id={@oldest_overlong_in_review_by_me.id}
-                  id="for-phx-hook-complete-your-review"
-                  phx-hook="ScrollToTarget"
-                >
-                  your review
-                </a>
-                :)
-              </p>
-            <% @oldest_unreviewed_for_me -> %>
-              <p>
-                Maybe do one from
-                <a
-                  href={"#commit-#{@oldest_unreviewed_for_me.id}"}
-                  phx-click="selected"
-                  phx-value-id={@oldest_unreviewed_for_me.id}
-                  id="for-phx-hook-oldest-unreviewed"
-                  phx-hook="ScrollToTarget"
-                >
-                  <%= Utils.format_datetime(@oldest_unreviewed_for_me.committed_at) %>
-                </a>
-                next.
-              </p>
-            <% true -> %>
-              <%= if @commits_of_author != @username do %>
-                <p>
-                  <i class="fas fa-trophy text-yellow-mid"></i> Nothing left for you to review!
-                </p>
+        <div class="relative" data-filter-dropdown>
+          <button
+            data-filter-dropdown-toggle
+            data-projects-toggle
+            class="flex items-center gap-1 px-2 py-0.5 text-xs rounded border border-gray-light bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:border-gray-400"
+          >
+            <i class="fas fa-folder text-[10px]"></i>
+            <span data-projects-label>Projects</span>
+            <span class="hidden w-1.5 h-1.5 rounded-full bg-blue-500 flex-none" data-projects-active></span>
+            <i class="fas fa-chevron-down text-[10px] transition-transform duration-200" data-filter-chevron></i>
+          </button>
+          <div
+            data-filter-dropdown-panel
+            class="hidden absolute left-0 top-full mt-1 bg-white dark:bg-gray-800 border border-gray-light rounded shadow-lg z-20 max-h-60 overflow-y-auto"
+          >
+            <div class="py-1">
+              <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
+                <input type="checkbox" checked data-projects-all /><span class="text-xs">All</span>
+              </label>
+              <%= for team <- @all_teams do %>
+                <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
+                  <input type="checkbox" data-projects-team={team.slug} /><span class="text-xs"><%= team.name %></span>
+                </label>
               <% end %>
+            </div>
+          </div>
+        </div>
+
+        <div class="relative" data-filter-dropdown>
+          <button
+            data-filter-dropdown-toggle
+            data-members-toggle
+            class="flex items-center gap-1 px-2 py-0.5 text-xs rounded border border-gray-light bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:border-gray-400"
+          >
+            <i class="fas fa-users text-[10px]"></i>
+            <span data-members-label>Members</span>
+            <span class="hidden w-1.5 h-1.5 rounded-full bg-blue-500 flex-none" data-members-active></span>
+            <i class="fas fa-chevron-down text-[10px] transition-transform duration-200" data-filter-chevron></i>
+          </button>
+          <div
+            data-filter-dropdown-panel
+            class="hidden absolute left-0 top-full mt-1 bg-white dark:bg-gray-800 border border-gray-light rounded shadow-lg z-20 max-h-60 overflow-y-auto"
+          >
+            <div class="py-1">
+              <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
+                <input type="checkbox" checked data-members-all /><span class="text-xs">All</span>
+              </label>
+              <%= for team <- @all_teams do %>
+                <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
+                  <input type="checkbox" data-members-team={team.slug} /><span class="text-xs"><%= team.name %></span>
+                </label>
+              <% end %>
+            </div>
+          </div>
+        </div>
+
+        <div class="relative" data-filter-dropdown>
+          <button
+            data-filter-dropdown-toggle
+            data-status-toggle
+            class="flex items-center gap-1 px-2 py-0.5 text-xs rounded border border-gray-light bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:border-gray-400"
+          >
+            <i class="fas fa-eye text-[10px]"></i>
+            <span data-status-label>Status</span>
+            <span class="hidden w-1.5 h-1.5 rounded-full bg-blue-500 flex-none" data-status-active></span>
+            <i class="fas fa-chevron-down text-[10px] transition-transform duration-200" data-filter-chevron></i>
+          </button>
+          <div
+            data-filter-dropdown-panel
+            class="hidden absolute left-0 top-full mt-1 bg-white dark:bg-gray-800 border border-gray-light rounded shadow-lg z-20"
+          >
+            <div class="py-1">
+              <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
+                <input type="radio" name="commit-status-filter" data-status-value="all" />
+                <span class="text-xs">
+                  All
+                </span>
+              </label>
+              <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
+                <input type="radio" name="commit-status-filter" data-status-value="unreviewed" />
+                <span class="text-xs">
+                  Unreviewed
+                </span>
+              </label>
+              <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
+                <input type="radio" name="commit-status-filter" data-status-value="reviewed" />
+                <span class="text-xs">
+                  Reviewed
+                </span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="relative" data-repo-dropdown>
+          <button
+            data-repo-dropdown-toggle
+            class="flex items-center gap-1 px-2 py-0.5 text-xs rounded border border-gray-light hover:border-gray-400 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400"
+          >
+            <i class="fas fa-code-branch text-[10px]"></i>
+            <span data-repo-dropdown-label>Repo</span>
+            <span class="hidden w-1.5 h-1.5 rounded-full bg-blue-500 flex-none" data-repo-active></span>
+            <i class="fas fa-chevron-down text-[10px] transition-transform duration-200" data-repo-dropdown-chevron></i>
+          </button>
+          <div
+            data-repo-dropdown-panel
+            class="hidden absolute left-0 top-full mt-1 bg-white dark:bg-gray-800 border border-gray-light rounded shadow-lg z-20 min-w-44 max-h-60 overflow-y-auto"
+          >
+            <div data-repo-checkboxes class="py-1"></div>
+          </div>
+        </div>
+
+        <div class="relative">
+          <i class="fas fa-search absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 text-[10px] pointer-events-none">
+          </i>
+          <input
+            type="search"
+            placeholder="Search…"
+            data-commit-search
+            class="w-24 pl-5 pr-2 py-0.5 text-xs border border-gray-light rounded bg-white dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100"
+          />
+        </div>
+      </div>
+    </div>
+  <% else %>
+    <div class={["info-box", @features["compact_design"] && "!mb-1 rounded-xl shadow-sm"]}>
+      <%= if @username do %>
+        <p>
+          Authored by: <%= filter_link(@socket, assigns, :commits, "filter-commit-by-author", "All",
+            commits_of_author: "all"
+          ) %> · <%= filter_link(
+            @socket,
+            assigns,
+            :commits,
+            "filter-commit-by-author",
+            "Me",
+            commits_of_author: @username
+          ) %>
+        </p>
+      <% end %>
+      <p>
+        In projects of team: <%= filter_link(@socket, assigns, :commits, "filter-commit-project-team-all", "All",
+          projects_of_team: "all"
+        ) %>
+        <%= for team <- @all_teams do %>
+          · <%= filter_link(@socket, assigns, :commits, "filter-commit-project-team-#{team.slug}", team.name,
+            projects_of_team: team.slug
+          ) %>
+        <% end %>
+      </p>
+      <%= if Remit.Config.has_github_org? do %>
+        <p>
+          By members of team: <%= filter_link(@socket, assigns, :commits, "filter-commit-member-team-all", "All",
+            members_of_team: "all"
+          ) %>
+          <%= for team <- @all_teams do %>
+            · <%= filter_link(@socket, assigns, :commits, "filter-commit-member-team-#{team.slug}", team.name,
+              members_of_team: team.slug
+            ) %>
           <% end %>
         </p>
       <% end %>
+    </div>
+  <% end %>
+
+  <%= if @commits == [] do %>
+    <RemitWeb.NoContentComponent.render />
+  <% else %>
+    <%= if @features["compact_design"] do %>
+      <div class="flex items-center justify-center gap-3 flex-wrap px-3 py-1 mb-4 pb-3 text-xs text-gray-mid">
+        <%= if @username do %>
+          <%= if @unreviewed_count == 0 do %>
+            <i class="fas fa-trophy text-yellow-mid"></i> Nothing left to review!
+          <% else %>
+            <span>
+              <i class="fas fa-eye mr-0.5"></i> <b class="text-almost-black"><%= @unreviewed_count %></b> to review
+            </span>
+            <span>·</span>
+            <span>
+              <i class="fas fa-users mr-0.5"></i> <b class="text-almost-black"><%= @others_unreviewed_count %></b>
+              by others
+            </span>
+            <span>·</span>
+            <span>
+              <i class="fas fa-user mr-0.5"></i> <b class="text-almost-black"><%= @my_unreviewed_count %></b> by you
+            </span>
+            <%= if @oldest_overlong_in_review_by_me do %>
+              <span>·</span>
+              <a
+                href={"#commit-#{@oldest_overlong_in_review_by_me.id}"}
+                phx-click="selected"
+                phx-value-id={@oldest_overlong_in_review_by_me.id}
+                id="for-phx-hook-complete-your-review"
+                phx-hook="ScrollToTarget"
+                class="text-gray-500 dark:text-gray-400"
+              >
+                <i class="far fa-snooze zzz-animation"></i> Complete your review
+              </a>
+            <% end %>
+            <%= if @oldest_unreviewed_for_me && !@oldest_overlong_in_review_by_me do %>
+              <span>·</span>
+              <a
+                href={"#commit-#{@oldest_unreviewed_for_me.id}"}
+                phx-click="selected"
+                phx-value-id={@oldest_unreviewed_for_me.id}
+                id="for-phx-hook-oldest-unreviewed"
+                phx-hook="ScrollToTarget"
+                title="Go to the oldest unreviewed"
+              >
+                ↓ <%= Utils.format_datetime(@oldest_unreviewed_for_me.committed_at) %>
+              </a>
+            <% end %>
+          <% end %>
+        <% else %>
+          <span>Please <.link patch={~p"/settings"}>log in</.link></span>
+          <span>·</span>
+          <span><b><%= @unreviewed_count %></b> to review</span>
+        <% end %>
+      </div>
     <% else %>
-      <p>Hello, stranger! Please <.link patch={~p"/settings"}>log in</.link>.</p>
-      <%= if @unreviewed_count == 0 do %>
-        <p>
-          <i class="fas fa-trophy text-yellow-mid"></i> Nothing left to review!
-        </p>
-      <% else %>
-        <p>There's <b><%= @unreviewed_count %></b> commit<%= if @unreviewed_count != 1, do: "s" %> to review.</p>
+      <div class="info-box">
+        <%= if @username do %>
+          <%= if @unreviewed_count == 0 do %>
+            <p class="flex items-center justify-center text-base text-almost-black">
+              <i class="fas fa-trophy fa-lg text-yellow-mid mr-2"></i> Nothing left to review!
+            </p>
+          <% else %>
+            <p>
+              There's <b><%= @unreviewed_count %></b>
+              commit<%= if @unreviewed_count != 1, do: "s" %> to review
+              (<b><%= @others_unreviewed_count %></b> by others; <b><%= @my_unreviewed_count %></b>
+              by you).
+              <%= cond do %>
+                <% @oldest_overlong_in_review_by_me -> %>
+                  <p>
+                    <i class="far fa-snooze text-blue-600 zzz-animation"></i>
+                    <b class="font-bold text-blue-900 ml-1">Still awake?</b>
+                    Don't forget to complete
+                    <a
+                      href={"#commit-#{@oldest_overlong_in_review_by_me.id}"}
+                      phx-click="selected"
+                      phx-value-id={@oldest_overlong_in_review_by_me.id}
+                      id="for-phx-hook-complete-your-review"
+                      phx-hook="ScrollToTarget"
+                    >
+                      your review
+                    </a>
+                    :)
+                  </p>
+                <% @oldest_unreviewed_for_me -> %>
+                  <p>
+                    Maybe do one from
+                    <a
+                      href={"#commit-#{@oldest_unreviewed_for_me.id}"}
+                      phx-click="selected"
+                      phx-value-id={@oldest_unreviewed_for_me.id}
+                      id="for-phx-hook-oldest-unreviewed"
+                      phx-hook="ScrollToTarget"
+                    >
+                      <%= Utils.format_datetime(@oldest_unreviewed_for_me.committed_at) %>
+                    </a>
+                    next.
+                  </p>
+                <% true -> %>
+                  <%= if @commits_of_author != @username do %>
+                    <p>
+                      <i class="fas fa-trophy text-yellow-mid"></i> Nothing left for you to review!
+                    </p>
+                  <% end %>
+              <% end %>
+            </p>
+          <% end %>
+        <% else %>
+          <p>Hello, stranger! Please <.link patch={~p"/settings"}>log in</.link>.</p>
+          <%= if @unreviewed_count == 0 do %>
+            <p>
+              <i class="fas fa-trophy text-yellow-mid"></i> Nothing left to review!
+            </p>
+          <% else %>
+            <p>There's <b><%= @unreviewed_count %></b> commit<%= if @unreviewed_count != 1, do: "s" %> to review.</p>
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
+
+    <%= for commit <- @commits do %>
+      <%= unless @features["build_commit_status"] && Commit.build_commit?(commit) && commit.repo in @build_commit_repos do %>
+        <RemitWeb.CommitComponent.render
+          id={commit.id}
+          commit={commit}
+          username={@username}
+          being_reviewed?={commit.review_started_at && !commit.reviewed_at}
+          reviewed?={commit.reviewed_at}
+          you_authored?={Commit.authored_by?(commit, @username)}
+          you_are_reviewing?={Commit.being_reviewed_by?(commit, @username)}
+          your_last_selected_commit?={@your_last_selected_commit_id == commit.id}
+          can_review?={can_review?(commit, @username, @teams_by_project)}
+          compact={@features["compact_design"]}
+          copy_buttons?={@features["copy_buttons"]}
+          deployed?={Map.has_key?(@deployed_shas, commit.sha)}
+          deployed_url={@deployed_shas[commit.sha][:url]}
+          deployed_repo={@deployed_shas[commit.sha][:repo]}
+          comment_count={Map.get(@comment_counts, commit.sha, 0)}
+          project_teams={Map.get(@teams_by_project, commit.repo, []) |> Enum.map(& &1.slug) |> Enum.join(" ")}
+          member_teams={
+            @all_teams
+            |> Enum.filter(fn t -> Enum.any?(commit.usernames, &(&1 in t.usernames)) end)
+            |> Enum.map(& &1.slug)
+            |> Enum.join(" ")
+          }
+        />
       <% end %>
     <% end %>
-  </div>
-
-  <%= for commit <- @commits do %>
-    <RemitWeb.CommitComponent.render
-      id={commit.id}
-      commit={commit}
-      username={@username}
-      being_reviewed?={commit.review_started_at && !commit.reviewed_at}
-      reviewed?={commit.reviewed_at}
-      you_authored?={Commit.authored_by?(commit, @username)}
-      you_are_reviewing?={Commit.being_reviewed_by?(commit, @username)}
-      your_last_selected_commit?={@your_last_selected_commit_id == commit.id}
-      can_review?={can_review?(commit, @username, @teams_by_project)}
-    />
   <% end %>
-<% end %>
+</div>

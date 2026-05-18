@@ -241,6 +241,9 @@ First time:
     # Optionally, seed comment notifications addressed to your own GitHub username:
     mix fake.notifications YOUR_GITHUB_USERNAME
 
+    # Optionally, seed build/deploy commits (requires existing commits in DB):
+    mix wh.build_commits
+
 Every time:
 
     # Ensure you have the Node version given in .nvmrc, e.g. by installing "nvm" and doing this (TODO: Improve this by moving into Devbox):
@@ -295,6 +298,12 @@ You can also specify which users commits to generate comments for by passising t
 Bear in mind that for this to work, there must exist commits by that username in the database. This can be accomplished by passing the `--author` flag when generating commits.
 
     mix wh.commits --author username
+
+To add fake build/deploy commits (which reference existing commits by SHA), run:
+
+    mix wh.build_commits
+
+This requires existing commits in the DB. You can pass `--count` and `--repo` (defaults to "stack").
 
 ### Working on the connection detection
 
