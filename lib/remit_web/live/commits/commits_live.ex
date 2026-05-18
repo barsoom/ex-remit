@@ -12,6 +12,7 @@ defmodule RemitWeb.CommitsLive do
 
     if connected?(socket) do
       Commits.subscribe()
+      Remit.Comments.subscribe()
       GithubAuth.subscribe(session["session_id"])
       Settings.subscribe(session["session_id"])
       Ownership.subscribe()
@@ -124,6 +125,10 @@ defmodule RemitWeb.CommitsLive do
         |> assign_comment_counts()
         |> noreply()
     end
+  end
+
+  def handle_info(:comments_changed, socket) do
+    socket |> assign_comment_counts() |> noreply()
   end
 
   def handle_info(:ownership_changed, socket) do

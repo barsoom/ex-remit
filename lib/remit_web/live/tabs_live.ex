@@ -2,7 +2,7 @@
 # Read more: https://elixirforum.com/t/tabbed-interface-with-multiple-liveviews/31670
 defmodule RemitWeb.TabsLive do
   use RemitWeb, :live_view
-  alias Remit.{Comments, GithubAuth, Settings}
+  alias Remit.{Comments, Commits, GithubAuth, Settings}
 
   defp default_tabs do
     [
@@ -12,7 +12,8 @@ defmodule RemitWeb.TabsLive do
         module: RemitWeb.CommitsLive,
         text: "Commits",
         icon: "fa-eye",
-        has_notification: false
+        has_notification: false,
+        notification_count: nil
       },
       %{
         action: :comments,
@@ -52,6 +53,7 @@ defmodule RemitWeb.TabsLive do
 
     if connected?(socket) do
       Comments.subscribe()
+      Commits.subscribe()
       GithubAuth.subscribe(session["session_id"])
       Settings.subscribe(session["session_id"])
     end
