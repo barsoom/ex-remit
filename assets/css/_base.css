@@ -18,6 +18,7 @@
   --color-gray-mid:   #9ca3af;  /* gray-400 */
   --color-gray-dark:  #d1d5db;  /* gray-300 */
   --color-almost-black: #f9fafb; /* gray-50 */
+  color-scheme: dark;
 }
 
 body {
