@@ -71,6 +71,10 @@ defmodule RemitWeb.TabsLive do
     socket |> assign_tab_notification() |> noreply()
   end
 
+  def handle_info({:new_commits, _}, socket), do: noreply(socket)
+
+  def handle_info({:changed_commit, _}, socket), do: noreply(socket)
+
   def handle_info({:setting_updated, :feature_flags, flags}, socket) do
     socket
     |> assign(inbox_count_badge: flags["inbox_count_badge"])
