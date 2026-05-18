@@ -39,6 +39,35 @@ defmodule Remit.AuthorizationTest do
     assert Authorization.can_review_commit?(commit, "anyone")
   end
 
+  test "returns false for a solo-authored own commit, even on a public project" do
+    commit = Factory.build(:commit, repo: "ownerless", usernames: ["alice"])
+    refute Authorization.can_review_commit?(commit, "alice")
+    refute Authorization.can_review_commit?(commit, "ALICE")
+  end
+
+  test "returns false for a Co-authored-by trailer on own commit" do
+    commit =
+      Factory.build(:commit,
+        repo: "ownerless",
+        usernames: ["someoneelse"],
+        message: Faker.message_with_co_authors("Some message", ["alice"])
+      )
+
+    refute Authorization.can_review_commit?(commit, "alice")
+  end
+
+  test "returns false for own commit even when on the owning team" do
+    Factory.insert!(:team,
+      slug: "alpha",
+      projects: ["myproject"],
+      review_access: :team,
+      usernames: ["alice"]
+    )
+
+    commit = Factory.build(:commit, repo: "myproject", usernames: ["alice"])
+    refute Authorization.can_review_commit?(commit, "alice")
+  end
+
   test "raises when called with a non-Commit value" do
     not_a_commit = Map.from_struct(Factory.build(:commit))
 

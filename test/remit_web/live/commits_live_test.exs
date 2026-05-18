@@ -78,6 +78,27 @@ defmodule RemitWeb.CommitsLiveTest do
     end
   end
 
+  describe "self-review block" do
+    setup %{conn: conn} do
+      conn = conn |> Plug.Test.init_test_session(%{"github_user" => @github_user})
+      conn = get(conn, "/commits?auth_key=test_auth_key")
+      %{conn: conn}
+    end
+
+    test "start_review on a self-authored commit leaves the row untouched", %{conn: conn} do
+      commit = Factory.insert!(:commit, usernames: ["dwight"], repo: "ownerless")
+
+      {:ok, view, _html} = live(conn, "/commits")
+      commits_lv = view |> live_children() |> Enum.find(&(&1.id == "commits"))
+
+      render_hook(commits_lv, "start_review", %{"id" => commit.id})
+
+      reloaded = Remit.Repo.get!(Remit.Commit, commit.id)
+      assert reloaded.review_started_at == nil
+      assert reloaded.review_started_by_username == nil
+    end
+  end
+
   describe "unit tests" do
     setup do
       create_socket()

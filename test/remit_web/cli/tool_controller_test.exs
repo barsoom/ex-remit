@@ -92,6 +92,18 @@ defmodule RemitWeb.CLI.ToolControllerTest do
       assert Repo.get!(Commit, commit.id).reviewed_at == nil
     end
 
+    test "403 for the caller's own commit", %{conn: conn} do
+      commit = Factory.insert!(:commit, repo: "ownerless", usernames: ["octocat"], reviewed_at: nil)
+
+      response =
+        conn
+        |> bearer()
+        |> post("/api/cli/commits/#{commit.id}/review")
+        |> json_response(403)
+
+      assert response["error"] == "forbidden"
+      assert Repo.get!(Commit, commit.id).reviewed_at == nil
+    end
   end
 
   describe "GET /api/cli/teams" do

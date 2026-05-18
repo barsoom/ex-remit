@@ -1,7 +1,7 @@
 defmodule RemitWeb.CommitsLive do
   use RemitWeb, :live_view
   require Logger
-  alias Remit.{Commits, Commit, GithubAuth, Ownership, Settings, Utils}
+  alias Remit.{Authorization, Commits, Commit, GithubAuth, Ownership, Repo, Settings, Utils}
 
   @max_commits Application.compile_env(:remit, :max_commits)
   @overlong_check_frequency_secs 60
@@ -33,20 +33,26 @@ defmodule RemitWeb.CommitsLive do
 
   @impl Phoenix.LiveView
   def handle_event("start_review", %{"id" => id}, socket) do
-    commit = Commits.mark_as_review_started!(id, username(socket))
-    {:noreply, assign_and_broadcast_changed_commit(socket, commit)}
+    case authorized_review_action(id, socket, &Commits.mark_as_review_started!(&1, username(socket))) do
+      {:ok, commit} -> {:noreply, assign_and_broadcast_changed_commit(socket, commit)}
+      :denied -> {:noreply, socket}
+    end
   end
 
   @impl Phoenix.LiveView
   def handle_event("mark_reviewed", %{"id" => id}, socket) do
-    commit = Commits.mark_as_reviewed!(id, username(socket))
-    {:noreply, assign_and_broadcast_changed_commit(socket, commit)}
+    case authorized_review_action(id, socket, &Commits.mark_as_reviewed!(&1, username(socket))) do
+      {:ok, commit} -> {:noreply, assign_and_broadcast_changed_commit(socket, commit)}
+      :denied -> {:noreply, socket}
+    end
   end
 
   @impl Phoenix.LiveView
   def handle_event("mark_unreviewed", %{"id" => id}, socket) do
-    commit = Commits.mark_as_unreviewed!(id)
-    {:noreply, assign_and_broadcast_changed_commit(socket, commit)}
+    case authorized_review_action(id, socket, &Commits.mark_as_unreviewed!/1) do
+      {:ok, commit} -> {:noreply, assign_and_broadcast_changed_commit(socket, commit)}
+      :denied -> {:noreply, socket}
+    end
   end
 
   @impl Phoenix.LiveView
@@ -74,6 +80,18 @@ defmodule RemitWeb.CommitsLive do
     |> assign_current_commits()
     |> assign_stats()
     |> noreply()
+  end
+
+  defp authorized_review_action(id, socket, fun) do
+    case Repo.get(Commit, id) do
+      %Commit{} = commit ->
+        if Authorization.can_review_commit?(commit, username(socket)),
+          do: {:ok, fun.(commit.id)},
+          else: :denied
+
+      _ ->
+        :denied
+    end
   end
 
   @impl Phoenix.LiveView
