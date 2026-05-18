@@ -221,6 +221,41 @@ defmodule Remit.ToolsTest do
     end
   end
 
+  describe "self-review block" do
+    test "mark_reviewed denied when the caller authored the commit" do
+      commit = Factory.insert!(:commit, repo: "ownerless", usernames: ["octocat"], reviewed_at: nil)
+
+      assert {:error, :forbidden, _} =
+               Tools.call("mark_reviewed", %{"id" => commit.id}, @review_ctx)
+
+      assert Repo.get!(Commit, commit.id).reviewed_at == nil
+    end
+
+    test "start_review denied when the caller authored the commit" do
+      commit = Factory.insert!(:commit, repo: "ownerless", usernames: ["octocat"], reviewed_at: nil)
+
+      assert {:error, :forbidden, _} =
+               Tools.call("start_review", %{"id" => commit.id}, @review_ctx)
+
+      assert Repo.get!(Commit, commit.id).review_started_at == nil
+    end
+
+    test "mark_unreviewed denied when the caller authored the commit" do
+      commit =
+        Factory.insert!(:commit,
+          repo: "ownerless",
+          usernames: ["octocat"],
+          reviewed_at: DateTime.utc_now(),
+          reviewed_by_username: "other"
+        )
+
+      assert {:error, :forbidden, _} =
+               Tools.call("mark_unreviewed", %{"id" => commit.id}, @review_ctx)
+
+      assert Repo.get!(Commit, commit.id).reviewed_at != nil
+    end
+  end
+
   describe "list_teams" do
     test "returns all teams when called with no filters" do
       Factory.insert!(:team, slug: "alpha", name: "Alpha", projects: ["p1"], usernames: ["alice"])

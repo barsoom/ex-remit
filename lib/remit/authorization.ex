@@ -5,12 +5,19 @@ defmodule Remit.Authorization do
 
   Mirrors the rules the LiveViews use to render action buttons.
   """
-  alias Remit.{Repo, Team, CommentNotification}
+  alias Remit.{Repo, Team, Commit, CommentNotification}
   import Ecto.Query
 
   def can_review_commit?(_, nil), do: false
 
-  def can_review_commit?(%Remit.Commit{repo: repo}, username) when is_binary(username) do
+  def can_review_commit?(%Commit{} = commit, username) when is_binary(username) do
+    cond do
+      Commit.authored_by?(commit, username) -> false
+      true -> on_owning_team?(commit.repo, username)
+    end
+  end
+
+  defp on_owning_team?(repo, username) do
     case teams_owning(repo) do
       [] -> true
       teams -> Enum.any?(teams, &Team.user_can_review_projects?(&1, username))
