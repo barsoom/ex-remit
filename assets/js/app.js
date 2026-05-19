@@ -139,6 +139,44 @@ Hooks.FeatureToggle = {
   }
 }
 
+document.addEventListener('click', (e) => {
+  const deployedEl = e.target.closest('[data-deployed-url]')
+  if (deployedEl?.dataset.deployedUrl) {
+    e.stopPropagation()
+    e.preventDefault()
+    window.open(deployedEl.dataset.deployedUrl, window.fluid ? '_self' : 'github_window')
+    return
+  }
+
+  const btn = e.target.closest('[data-clipboard-copy]')
+  if (!btn) return
+  e.stopPropagation()
+  e.preventDefault()
+  const text = btn.dataset.clipboardCopy
+  const icon = btn.querySelector('i')
+  const confirm = () => {
+    if (!icon) return
+    const orig = icon.className
+    icon.className = orig.replace('fa-copy', 'fa-check').replace('fa-link', 'fa-check')
+    setTimeout(() => { icon.className = orig }, 1000)
+  }
+  if (navigator.clipboard?.writeText) {
+    navigator.clipboard.writeText(text).then(confirm).catch(() => fallbackCopy(text, confirm))
+  } else {
+    fallbackCopy(text, confirm)
+  }
+}, true)
+
+function fallbackCopy(text, done) {
+  const ta = Object.assign(document.createElement('textarea'), { value: text })
+  Object.assign(ta.style, { position: 'fixed', opacity: '0' })
+  document.body.appendChild(ta)
+  ta.select()
+  document.execCommand('copy')
+  document.body.removeChild(ta)
+  done?.()
+}
+
 let liveSocket = new LiveSocket("/live", Socket, {
   params: { _csrf_token: csrfToken },
   hooks: Hooks,

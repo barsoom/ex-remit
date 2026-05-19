@@ -168,6 +168,7 @@
       you_are_reviewing?={Commit.being_reviewed_by?(commit, @username)}
       your_last_selected_commit?={@your_last_selected_commit_id == commit.id}
       can_review?={can_review?(commit, @username, @teams_by_project)}
+      copy_buttons?={@features["copy_buttons"]}
       comment_count={Map.get(@comment_counts, commit.sha, 0)}
       project_teams={Map.get(@teams_by_project, commit.repo, []) |> Enum.map(& &1.slug) |> Enum.join(" ")}
       member_teams={

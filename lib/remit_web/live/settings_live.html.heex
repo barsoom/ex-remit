@@ -136,6 +136,13 @@
         label="Badge: Total comments"
         description="Display the number of comments left on each commit, in the list of commits."
       />
+
+      <.toggle_preference
+        feature="copy_buttons"
+        enabled={@features["copy_buttons"]}
+        label="Copy SHA / link buttons"
+        description="Show copy-to-clipboard buttons on hover for each commit's short SHA and URL."
+      />
     </div>
   </div>
 
