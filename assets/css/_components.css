@@ -69,10 +69,6 @@
   @apply bg-gray-200 py-2 text-center sticky top-0 border-b border-gray-light z-10;
 }
 
-div.day-separator > a {
-  border-bottom-width: 0;
-}
-
 .commit {
   &--highlight {
     @apply bg-yellow-200;

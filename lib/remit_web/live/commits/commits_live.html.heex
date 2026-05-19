@@ -1,4 +1,4 @@
-<div class={["info-box", @features["compact_design"] && "!mb-1 rounded-xl shadow-sm"]}>
+<div class={["info-box", @features["compact_design"] && "!mb-1 mx-3 rounded-xl shadow-sm bg-gray-100 dark:bg-gray-800"]}>
   <%= if @username do %>
     <p>
       Authored by: <%= filter_link(@socket, assigns, :commits, "filter-commit-by-author", "All",

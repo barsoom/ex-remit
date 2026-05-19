@@ -6,7 +6,15 @@
   phx-hook="FixLink"
   class={[
     "comment block no-underline",
-    if(@compact, do: "border-b border-gray-light px-3 py-2", else: "my-1 bg-gray-200 dark:bg-gray-800"),
+    if(@compact,
+      do:
+        "mx-3 mb-1 rounded-xl shadow-sm #{cond do
+          @your_last_selected? -> "bg-yellow-200 dark:bg-blue-900 px-3 py-2"
+          @resolved? -> "bg-green-light dark:bg-gray-800 opacity-50 px-2 py-1"
+          true -> "bg-white dark:bg-gray-800 px-3 py-2"
+        end}",
+      else: "my-1 bg-gray-200 dark:bg-gray-800"
+    ),
     if(@your_last_selected?, do: "comment--highlight"),
     if(@resolved?, do: "comment--resolved")
   ]}
@@ -20,7 +28,7 @@
       </div>
 
       <div class="flex-1 min-w-0">
-        <p class="break-words text-sm leading-snug"><%= String.slice(@comment.body, 0, 1000) %></p>
+        <p class="break-words text-xs leading-snug"><%= String.slice(@comment.body, 0, 1000) %></p>
         <p class="text-xs text-gray-mid mt-0.5 truncate">
           Re: <i><%= if @commit, do: Commit.message_summary(@commit), else: @comment.commit_sha %></i>
           · <%= Utils.format_datetime(@comment.commented_at) %>

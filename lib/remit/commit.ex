@@ -19,7 +19,6 @@ defmodule Remit.Commit do
     field :reviewed_by_username, :string
 
     field :date_separator_before, :date, virtual: true
-    field :last_in_day?, :boolean, virtual: true
 
     timestamps()
   end
@@ -108,11 +107,6 @@ defmodule Remit.Commit do
       end)
 
     new_commits
-    |> Enum.zip(Enum.drop(new_commits, 1) ++ [nil])
-    |> Enum.map(fn
-      {commit, nil} -> %{commit | last_in_day?: true}
-      {commit, next} -> %{commit | last_in_day?: next.date_separator_before != nil}
-    end)
   end
 
   defp author_in_email?(commit, username) do

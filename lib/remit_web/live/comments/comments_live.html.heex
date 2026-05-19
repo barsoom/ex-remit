@@ -1,4 +1,4 @@
-<div class={["info-box", @features["compact_design"] && "!mb-1"]}>
+<div class={["info-box", @features["compact_design"] && "!mb-1 mx-3 rounded-xl shadow-sm bg-gray-100 dark:bg-gray-800"]}>
   <%= unless @username do %>
     <p>Hello, stranger! Please <.link patch={~p"/settings"}>log in</.link>.</p>
   <% end %>
