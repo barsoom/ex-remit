@@ -94,6 +94,9 @@ defmodule RemitWeb.CommentsLive do
   end
 
   @impl Phoenix.LiveView
+  def handle_info({:setting_updated, _, _}, socket), do: noreply(socket)
+
+  @impl Phoenix.LiveView
   def handle_info(message, socket) do
     Logger.error("unexpected message #{inspect(message)}")
     {:noreply, socket}
