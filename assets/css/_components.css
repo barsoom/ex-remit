@@ -43,6 +43,22 @@
       &.tabs__tab--settings i { @apply text-blue-500; }
     }
   }
+
+  &--compact {
+    @apply border-b border-gray-light;
+
+    .tabs__tab {
+      @apply bg-transparent border-r-0 border-b-2 border-transparent text-gray-500;
+      @apply hover:text-gray-700 dark:hover:text-gray-300;
+
+      &--current {
+        @apply bg-transparent text-almost-black border-b-2;
+        &.tabs__tab--commits { @apply border-green-500; }
+        &.tabs__tab--comments { @apply border-yellow-500; }
+        &.tabs__tab--settings { @apply border-blue-500; }
+      }
+    }
+  }
 }
 
 .info-box {
@@ -51,6 +67,10 @@
 
 .header-box {
   @apply bg-gray-200 py-2 text-center sticky top-0 border-b border-gray-light z-10;
+}
+
+div.day-separator > a {
+  border-bottom-width: 0;
 }
 
 .commit {

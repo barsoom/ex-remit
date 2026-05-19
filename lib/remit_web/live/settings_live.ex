@@ -201,10 +201,57 @@ defmodule RemitWeb.SettingsLive do
 
   defp projects(assigns) do
     ~H"""
-    <div class="bg-gray-200 px-3 py-4 mt-6">
+    <div class={["bg-gray-200 px-3 py-4 mt-6", @compact && "rounded-2xl shadow-sm"]}>
       <h2 class="font-semibold text-xs mb-2 uppercase">Project ownership</h2>
-      <%= for {project, project_teams} <- @projects do %>
-        <.project project={project} project_teams={project_teams} teams={@teams} new_design?={false} />
+      <%= if @compact do %>
+        <div class="divide-y divide-gray-300 dark:divide-gray-600">
+          <%= for {project, project_teams} <- @projects do %>
+            <.project_row project={project} project_teams={project_teams} all_teams={@teams} />
+          <% end %>
+        </div>
+      <% else %>
+        <%= for {project, project_teams} <- @projects do %>
+          <.project project={project} project_teams={project_teams} teams={@teams} />
+        <% end %>
+      <% end %>
+    </div>
+    """
+  end
+
+  defp project_row(assigns) do
+    ~H"""
+    <% available_teams = @all_teams -- @project_teams %>
+    <div class="flex items-center gap-3 py-2 min-h-[2rem]">
+      <span class="font-semibold text-xs w-32 shrink-0"><%= @project %></span>
+      <div class="flex flex-wrap gap-1 flex-1 min-w-0">
+        <%= if @project_teams == [] do %>
+          <span class="text-red-600 dark:text-red-400 text-xs italic">unclaimed</span>
+        <% else %>
+          <%= for team <- @project_teams do %>
+            <span class="inline-flex items-center gap-1 pl-2 pr-1.5 py-0.5 text-xs bg-gray-700 dark:bg-gray-600 dark:text-gray-dark text-white rounded-full select-none">
+              <%= team.name %>
+              <span
+                phx-click="remove_project_owner"
+                phx-value-project={@project}
+                phx-value-team={team.slug}
+                class="cursor-pointer text-gray-400 hover:text-white leading-none"
+              >
+                ×
+              </span>
+            </span>
+          <% end %>
+        <% end %>
+      </div>
+      <%= if available_teams != [] do %>
+        <.form for={%{}} as={:project} phx-submit="add_project_owner" class="flex items-center gap-1 shrink-0">
+          <input type="hidden" name="project" value={@project} />
+          <select name="team" class="text-xs h-5 py-0">
+            <%= for team <- available_teams do %>
+              <option value={team.slug}><%= team.name %></option>
+            <% end %>
+          </select>
+          <%= submit("Add", class: "text-xs h-5 px-2 py-0") %>
+        </.form>
       <% end %>
     </div>
     """

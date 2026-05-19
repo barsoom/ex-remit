@@ -62,6 +62,7 @@ defmodule RemitWeb.TabsLive do
     |> assign_username(github_login(session))
     |> assign_default_params(session)
     |> assign(inbox_count_badge: get_feature_flags(session)["inbox_count_badge"])
+    |> assign(compact_design: get_feature_flags(session)["compact_design"])
     |> assign_tab_notification()
     |> ok()
   end
@@ -78,6 +79,7 @@ defmodule RemitWeb.TabsLive do
   def handle_info({:setting_updated, :feature_flags, flags}, socket) do
     socket
     |> assign(inbox_count_badge: flags["inbox_count_badge"])
+    |> assign(compact_design: flags["compact_design"])
     |> assign_tab_notification()
     |> noreply()
   end

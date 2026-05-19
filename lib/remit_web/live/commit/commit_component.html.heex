@@ -1,8 +1,18 @@
-<div>
+<div class={@compact && @commit.last_in_day? && "day-separator"}>
   <%= if @commit.date_separator_before do %>
-    <h2 class="header-box">
-      <%= @commit.date_separator_before |> Utils.format_date() %>
-    </h2>
+    <%= if @compact do %>
+      <div class="flex items-center gap-3 px-3 py-1.5">
+        <div class="flex-1 h-px bg-gray-light"></div>
+        <span class="text-xs uppercase font-semibold tracking-wider text-gray-mid">
+          <%= @commit.date_separator_before |> Utils.format_date() %>
+        </span>
+        <div class="flex-1 h-px bg-gray-light"></div>
+      </div>
+    <% else %>
+      <h2 class="header-box">
+        <%= @commit.date_separator_before |> Utils.format_date() %>
+      </h2>
+    <% end %>
   <% end %>
 
   <a
@@ -15,29 +25,38 @@
       flex items-center no-underline
       border-b border-gray-light
       py-2 px-3
-      #{if @reviewed?, do: " commit--reviewed"}
+      #{if @reviewed?, do: " commit--reviewed text-gray-500 dark:text-gray-600 dark:!bg-transparent"}
       #{if @being_reviewed?, do: " commit--being-reviewed"}
       #{if @your_last_selected_commit?, do: " commit--highlight"}
     "}
   >
     <%= if @commit.usernames != [] do %>
-      <div class="flex-none mr-3 flex space-x-1">
+      <div class={[
+        "flex-none mr-3 flex",
+        if(@compact, do: "-space-x-3", else: "space-x-1"),
+        if(@reviewed?, do: "opacity-40")
+      ]}>
         <%= for username <- @commit.usernames do %>
           <%= github_avatar(
             username,
-            if(@reviewed? || @you_authored?, do: :small_commit, else: 45),
-            class: "rounded",
+            cond do
+              @compact -> 28
+              @reviewed? || @you_authored? -> :small_commit
+              true -> 45
+            end,
+            class: if(@compact, do: "rounded ring-1 ring-white dark:ring-gray-900", else: "rounded"),
+            shape: if(@compact, do: :hexagon, else: :default),
             tooltip_pos: "up-left"
           ) %>
         <% end %>
       </div>
     <% end %>
     <div class={"
-      flex-1 leading-snug
+      flex-1 #{if @compact, do: "leading-tight", else: "leading-snug"}
       #{if @reviewed? || @you_authored?, do: " truncate", else: " min-w-0 break-words"}
       #{if @you_authored?, do: " opacity-50"}
     "}>
-      <p class={if @reviewed? || @you_authored?, do: "truncate mb-0.5", else: "mb-1"}>
+      <p class={if @reviewed? || @you_authored?, do: "inline", else: "mb-1"}>
         <%= Commit.message_summary(@commit) %>
         <%= if assigns[:comment_count] && assigns[:comment_count] > 0 do %>
           <span
@@ -49,7 +68,7 @@
           </span>
         <% end %>
       </p>
-      <p class={if @reviewed? || @you_authored?, do: "truncate", else: ""}>
+      <p class={if @reviewed? || @you_authored?, do: "inline", else: ""}>
         <%= if @commit.usernames == [] && !@reviewed? do %>
           <RemitWeb.NoUsernameComponent.render />
         <% end %>
@@ -71,49 +90,106 @@
           In review<span class="bouncy-ellipsis"><span>.</span><span>.</span><span>.</span></span>
         </span>
 
-        <%= github_avatar(@commit.review_started_by_username, :small_commit, class: "opacity-75", tooltip: nil) %>
+        <%= github_avatar(@commit.review_started_by_username, :small_commit,
+          class: "opacity-75",
+          shape: if(@compact, do: :hexagon, else: :default),
+          tooltip_pos: "up-right"
+        ) %>
       </div>
     <% else %>
-      <div class="flex-none ml-2 self-center">
-        <%= cond do %>
-          <% @reviewed? && @you_authored? -> %>
-          <% @reviewed? && !@you_authored? && @username -> %>
-            <button phx-click="mark_unreviewed" phx-value-id={@commit.id} class="opacity-25 hover:opacity-100">
-              <i class="far fa-eye-slash"></i> Mark as new
-            </button>
-          <% @being_reviewed? && @you_are_reviewing? -> %>
-            <button phx-click="mark_reviewed" phx-value-id={@commit.id} class="bg-green-light dark:bg-green-900">
-              <i class="fas fa-check text-green-dark dark:text-green-400"></i> Mark as reviewed
-            </button>
-          <% !@you_authored? && @username && @can_review? -> %>
-            <button
-              phx-click="start_review"
-              phx-value-id={@commit.id}
-              class="hover:bg-yellow-100 hover:border-yellow-mid dark:hover:bg-blue-900 dark:hover:border-blue-700"
-            >
-              <i class="fas fa-eye text-yellow-mid dark:text-blue-400"></i> Start review
-            </button>
-          <% true -> %>
-        <% end %>
-      </div>
+      <%= if @compact do %>
+        <div class="flex-none ml-2 flex items-center gap-1.5">
+          <%= cond do %>
+            <% @reviewed? && @you_authored? -> %>
+              <%= github_avatar(@commit.reviewed_by_username, :small_commit, shape: :hexagon, tooltip_pos: "up-right") %>
+            <% @reviewed? && !@you_authored? && @username -> %>
+              <%= github_avatar(@commit.reviewed_by_username, 18,
+                shape: :hexagon,
+                tooltip_pos: "up-right"
+              ) %>
+              <button
+                phx-click="mark_unreviewed"
+                phx-value-id={@commit.id}
+                class="flex items-center justify-center w-6 h-6 rounded-md opacity-30 hover:opacity-100"
+                title="Reopen"
+              >
+                <i class="fas fa-undo text-xs"></i>
+              </button>
+            <% @being_reviewed? && @you_are_reviewing? -> %>
+              <button
+                phx-click="mark_reviewed"
+                phx-value-id={@commit.id}
+                class="flex items-center justify-center w-6 h-6 rounded-md bg-green-light dark:bg-green-900"
+                title="Mark as reviewed"
+              >
+                <i class="fas fa-check text-green-dark dark:text-green-400 text-xs"></i>
+              </button>
+              <button
+                phx-click="mark_unreviewed"
+                phx-value-id={@commit.id}
+                class="flex items-center justify-center w-6 h-6 rounded-md bg-red-100 dark:bg-red-900"
+                title="Cancel review"
+              >
+                <i class="fas fa-times text-red-700 dark:text-red-400 text-xs"></i>
+              </button>
+            <% !@you_authored? && @username && @can_review? -> %>
+              <button
+                phx-click="start_review"
+                phx-value-id={@commit.id}
+                class="flex items-center justify-center w-6 h-6 rounded-md hover:bg-yellow-100 hover:border-yellow-mid dark:hover:bg-blue-900 dark:hover:border-blue-700"
+                title="Start review"
+              >
+                <i class="fas fa-eye text-yellow-mid dark:text-blue-400 text-xs"></i>
+              </button>
+            <% true -> %>
+              <%= github_avatar(@commit.reviewed_by_username, 18,
+                shape: :hexagon,
+                tooltip_pos: "up-right"
+              ) %>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="flex-none ml-2 self-center">
+          <%= cond do %>
+            <% @reviewed? && @you_authored? -> %>
+            <% @reviewed? && !@you_authored? && @username -> %>
+              <button phx-click="mark_unreviewed" phx-value-id={@commit.id} class="opacity-25 hover:opacity-100">
+                <i class="far fa-eye-slash"></i> Mark as new
+              </button>
+            <% @being_reviewed? && @you_are_reviewing? -> %>
+              <button phx-click="mark_reviewed" phx-value-id={@commit.id} class="bg-green-light dark:bg-green-900">
+                <i class="fas fa-check text-green-dark dark:text-green-400"></i> Mark as reviewed
+              </button>
+            <% !@you_authored? && @username && @can_review? -> %>
+              <button
+                phx-click="start_review"
+                phx-value-id={@commit.id}
+                class="hover:bg-yellow-100 hover:border-yellow-mid dark:hover:bg-blue-900 dark:hover:border-blue-700"
+              >
+                <i class="fas fa-eye text-yellow-mid dark:text-blue-400"></i> Start review
+              </button>
+            <% true -> %>
+          <% end %>
+        </div>
 
-      <div class="flex-none ml-3">
-        <%= cond do %>
-          <% @reviewed? -> %>
-            <%= github_avatar(@commit.reviewed_by_username, :small_commit, tooltip_pos: "up-right") %>
-          <% @being_reviewed? && @you_are_reviewing? -> %>
-            <button
-              phx-click="mark_unreviewed"
-              phx-value-id={@commit.id}
-              class="bg-red-100 dark:bg-red-900"
-              title="Cancel review"
-            >
-              <i class="fas fa-eye-slash text-red-700 dark:text-red-400"></i>
-            </button>
-          <% true -> %>
-            <%= github_avatar_sized_spacer(:small_commit) %>
-        <% end %>
-      </div>
+        <div class="flex-none ml-3">
+          <%= cond do %>
+            <% @reviewed? -> %>
+              <%= github_avatar(@commit.reviewed_by_username, :small_commit, tooltip_pos: "up-right") %>
+            <% @being_reviewed? && @you_are_reviewing? -> %>
+              <button
+                phx-click="mark_unreviewed"
+                phx-value-id={@commit.id}
+                class="bg-red-100 dark:bg-red-900"
+                title="Cancel review"
+              >
+                <i class="fas fa-eye-slash text-red-700 dark:text-red-400"></i>
+              </button>
+            <% true -> %>
+              <%= github_avatar_sized_spacer(:small_commit) %>
+          <% end %>
+        </div>
+      <% end %>
     <% end %>
   </a>
 </div>

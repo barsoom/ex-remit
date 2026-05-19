@@ -29,14 +29,26 @@ defmodule RemitWeb.LiveViewHelpers do
 
     extra_classes = Keyword.get(opts, :class, "")
     tooltip = Keyword.get(opts, :tooltip, username)
-    tooltip_pos = Keyword.get(opts, :tooltip_pos, "up")
+    shape = Keyword.get(opts, :shape, :default)
+
+    {span_extra, img_class} =
+      case shape do
+        :hexagon ->
+          hex_clip = "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)"
+          {[style: "clip-path: #{hex_clip}; overflow: hidden; width: #{size}px; height: #{size}px;"], "bg-gray-mid"}
+
+        _ ->
+          {[], "rounded-sm bg-gray-mid"}
+      end
+
+    title_attr = if tooltip, do: [title: tooltip], else: []
 
     # Setting CSS dimensions because the `size` param is not always respected.
-    content_tag(:span, tooltip_attributes(tooltip, pos: tooltip_pos) ++ [class: "block #{extra_classes}"]) do
+    content_tag(:span, title_attr ++ [class: "block #{extra_classes}"] ++ span_extra) do
       img_tag(
         "https://github.com/#{username}.png?size=#{size}",
         alt: "",
-        class: "rounded-sm bg-gray-mid",
+        class: img_class,
         style: "height: #{size}px; width: #{size}px;"
       )
     end

@@ -1,7 +1,7 @@
 defmodule RemitWeb.CommentsLive do
   use RemitWeb, :live_view
   require Logger
-  alias Remit.{Comments, GithubAuth}
+  alias Remit.{Comments, GithubAuth, Settings}
 
   @max_comments Application.compile_env(:remit, :max_comments)
 
@@ -12,10 +12,12 @@ defmodule RemitWeb.CommentsLive do
     if connected?(socket) do
       Comments.subscribe()
       GithubAuth.subscribe(session["session_id"])
+      Settings.subscribe(session["session_id"])
     end
 
     socket
     |> assign(your_last_selected_id: nil)
+    |> assign(features: get_feature_flags(session))
     |> assign_username(github_login(session))
     |> assign_default_params(session)
     |> assign_filtered_notifications()
@@ -81,6 +83,13 @@ defmodule RemitWeb.CommentsLive do
   def handle_info(:logout, socket) do
     socket
     |> assign_username_and_update_filter(nil)
+    |> noreply()
+  end
+
+  @impl Phoenix.LiveView
+  def handle_info({:setting_updated, :feature_flags, flags}, socket) do
+    socket
+    |> assign(features: flags)
     |> noreply()
   end
 
