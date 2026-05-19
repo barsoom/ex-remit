@@ -60,6 +60,7 @@
   }
   &--reviewed {
     @apply bg-green-light;
+    .dark & { @apply bg-green-900; }
   }
   &--highlight&--reviewed {
     @apply bg-chartreuse;
