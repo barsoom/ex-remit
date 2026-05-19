@@ -201,7 +201,10 @@ defmodule RemitWeb.SettingsLive do
 
   defp projects(assigns) do
     ~H"""
-    <div class={["bg-gray-200 px-3 py-4 mt-6", @compact && "rounded-2xl shadow-sm"]}>
+    <div class={[
+      "px-3 py-4 mt-6",
+      if(@compact, do: "bg-gray-100 dark:bg-gray-800 rounded-xl shadow-sm", else: "bg-gray-200")
+    ]}>
       <h2 class="font-semibold text-xs mb-2 uppercase">Project ownership</h2>
       <%= if @compact do %>
         <div class="divide-y divide-gray-300 dark:divide-gray-600">
