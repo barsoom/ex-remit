@@ -1,4 +1,6 @@
 defmodule Remit.GitHubAPIClient do
+  @moduledoc false
+
   defmodule Behaviour do
     @moduledoc false
     @callback fetch_commit(String.t(), String.t(), String.t()) :: %Remit.Commit{}
