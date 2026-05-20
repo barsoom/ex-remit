@@ -4,6 +4,11 @@
   phx-click="selected"
   phx-value-id={@notification.id}
   phx-hook="FixLink"
+  data-comment-item=""
+  data-resolved={if @resolved?, do: "true", else: "false"}
+  data-for-me={if @at_me?, do: "true", else: "false"}
+  data-by-me={if assigns[:by_me?], do: "true", else: "false"}
+  data-body={String.slice(@comment.body, 0, 500)}
   class={[
     "comment block no-underline",
     if(@compact,
