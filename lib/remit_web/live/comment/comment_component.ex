@@ -57,6 +57,7 @@ defmodule RemitWeb.CommentComponent do
     end
   end
 
+  defp move_element_to_front([], _), do: []
   # special case to avoid wasted work
   defp move_element_to_front([_] = list, _), do: list
 
@@ -70,8 +71,6 @@ defmodule RemitWeb.CommentComponent do
         list
     end
   end
-
-  defp move_element_to_front([], _), do: []
 
   defp strip_html(text), do: Regex.replace(~r/<[^>]*>/, text, "")
 end
