@@ -21,6 +21,14 @@
     phx-click="selected"
     phx-value-id={@commit.id}
     phx-hook="FixLink"
+    data-commit-item=""
+    data-message={Commit.message_summary(@commit)}
+    data-sha={@commit.sha}
+    data-repo={@commit.repo}
+    data-authors={Enum.join(@commit.usernames, " ")}
+    data-project-teams={assigns[:project_teams] || ""}
+    data-member-teams={assigns[:member_teams] || ""}
+    data-reviewed={if @reviewed?, do: "true", else: "false"}
     class={"
       flex items-center no-underline
       #{if @compact, do: "mx-3 mb-1 rounded-xl shadow-sm", else: "border-b border-gray-light"}

@@ -69,11 +69,11 @@
 
   <%!-- Commit authors --%>
   <div class={[
-    "px-3 py-4 mt-6 text-almost-black paragraphs",
-    if(@features["compact_design"], do: "bg-gray-100 dark:bg-gray-800 rounded-xl shadow-sm", else: "bg-gray-200")
+    "bg-gray-100 dark:bg-gray-800 px-3 py-4 mt-6 text-almost-black paragraphs",
+    @features["compact_design"] && "rounded-xl shadow-sm"
   ]}>
     <h2 class="font-semibold text-xs mb-2 uppercase">
-      <i class="fas fa-info-circle fa-2x text-blue-400 align-middle mr-1"></i> A little guide to commit authors
+      <i class="fas fa-info-circle fa-2x text-blue-600 align-middle mr-1"></i> A little guide to commit authors
     </h2>
 
     <p>
@@ -157,7 +157,7 @@
     <h2 class="font-semibold text-xs mb-2 uppercase">
       <i class="fas fa-flask text-purple-400 mr-1"></i> Experimental features
     </h2>
-    <p>For things a bit more controversial that still need a bit of testing.</p>
+    <p class="mb-4">For things a bit more controversial that still need a bit of testing.</p>
 
     <div id="feature-toggles" phx-hook="FeatureToggle" class="mt-2 space-y-2">
       <.feature_toggle
