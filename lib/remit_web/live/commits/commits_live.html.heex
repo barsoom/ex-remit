@@ -220,9 +220,9 @@
                 phx-value-id={@oldest_overlong_in_review_by_me.id}
                 id="for-phx-hook-complete-your-review"
                 phx-hook="ScrollToTarget"
-                class="text-gray-500 dark:text-gray-400"
+                class="font-semibold text-red-600 dark:text-orange-400"
               >
-                <i class="far fa-snooze zzz-animation"></i> Complete your review
+                <i class="far fa-snooze zzz-animation"></i> Complete your review!
               </a>
             <% end %>
             <%= if @oldest_unreviewed_for_me && !@oldest_overlong_in_review_by_me do %>
@@ -261,8 +261,8 @@
               <%= cond do %>
                 <% @oldest_overlong_in_review_by_me -> %>
                   <p>
-                    <i class="far fa-snooze text-blue-600 zzz-animation"></i>
-                    <b class="font-bold text-blue-900 ml-1">Still awake?</b>
+                    <i class="far fa-snooze text-blue-600 dark:text-orange-400 zzz-animation"></i>
+                    <b class="font-bold text-blue-900 dark:text-orange-400 ml-1">Still awake?</b>
                     Don't forget to complete
                     <a
                       href={"#commit-#{@oldest_overlong_in_review_by_me.id}"}
