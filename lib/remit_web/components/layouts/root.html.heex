@@ -20,7 +20,10 @@
     </script>
     <link rel="icon" href={~p"/images/#{Application.get_env(:remit, :favicon)}"} />
   </head>
-  <body class="bg-gray-dark dark:bg-gray-900">
+  <body
+    class="bg-gray-dark dark:bg-gray-900"
+    data-username={RemitWeb.LiveViewHelpers.github_login(Plug.Conn.get_session(@conn)) || ""}
+  >
     <div class="mx-auto max-w-3xl min-h-screen bg-white shadow-2xl">
       <%= @inner_content %>
     </div>

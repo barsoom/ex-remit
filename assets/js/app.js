@@ -4,6 +4,22 @@ import topbar from "../vendor/topbar"
 import { LiveSocket } from "phoenix_live_view"
 
 
+/* CLEAR FILTER PREFS ON LOGIN/LOGOUT TRANSITION */
+
+// Filters are per-user. When the github user changes (login, logout, switch
+// account), wipe filter prefs so the next user starts fresh.
+;(() => {
+  const FILTER_KEYS = ['remit:commit_filters', 'remit:comment_filters']
+  const LAST_USER_KEY = 'remit:last_username'
+  const current = document.body?.dataset.username ?? ''
+  const last = localStorage.getItem(LAST_USER_KEY)
+  if (last !== null && last !== current) {
+    FILTER_KEYS.forEach(k => localStorage.removeItem(k))
+  }
+  localStorage.setItem(LAST_USER_KEY, current)
+})()
+
+
 /* LIVE SOCKET */
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
@@ -66,6 +82,9 @@ Hooks.Logout = {
     this.el.addEventListener("click", (e) => {
       e.preventDefault()
       fetch(`/api/logout`, { method: "post" })
+      localStorage.removeItem('remit:commit_filters')
+      localStorage.removeItem('remit:comment_filters')
+      localStorage.removeItem('remit:last_username')
     })
   }
 }
@@ -399,7 +418,6 @@ Hooks.CommentSearch = Object.assign({}, FilterHookMixin, {
   storageKey: 'remit:comment_filters',
 
   mounted() {
-    this.isLoggedIn = !!this.el.dataset.username
     this.loadPreferences()
 
     const searchInput = this.el.querySelector('[data-comment-search]')
@@ -449,12 +467,12 @@ Hooks.CommentSearch = Object.assign({}, FilterHookMixin, {
   loadPreferences() {
     try {
       const s = JSON.parse(localStorage.getItem(this.storageKey) || '{}')
-      this.resolvedFilter = s.resolvedFilter || 'unresolved'
-      this.roleFilter = s.roleFilter || (this.isLoggedIn ? 'for_me' : 'all')
+      this.resolvedFilter = s.resolvedFilter || 'all'
+      this.roleFilter = s.roleFilter || 'all'
       this.searchQuery = s.search || ''
     } catch (_) {
-      this.resolvedFilter = 'unresolved'
-      this.roleFilter = this.isLoggedIn ? 'for_me' : 'all'
+      this.resolvedFilter = 'all'
+      this.roleFilter = 'all'
       this.searchQuery = ''
     }
   },
