@@ -49,6 +49,7 @@ defmodule RemitWeb.Router do
     post "/filter_preference/:scope", UserController, :set_filter_preference
     post "/reviewed_commit_cutoff", UserController, :set_reviewed_commit_cutoff
     post "/features", UserController, :set_feature_flag
+    post "/build_commit_repos", UserController, :set_build_commit_repo
   end
 
   pipeline :webhook do

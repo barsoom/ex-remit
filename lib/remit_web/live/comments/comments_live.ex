@@ -1,7 +1,7 @@
 defmodule RemitWeb.CommentsLive do
   use RemitWeb, :live_view
   require Logger
-  alias Remit.{Comments, GithubAuth, Settings}
+  alias Remit.{Comments, Commits, GithubAuth, Settings}
 
   @max_comments Application.compile_env(:remit, :max_comments)
 
@@ -18,9 +18,11 @@ defmodule RemitWeb.CommentsLive do
     socket
     |> assign(your_last_selected_id: nil)
     |> assign(features: get_feature_flags(session))
+    |> assign(build_commit_repos: get_build_commit_repos(session))
     |> assign_username(github_login(session))
     |> assign_default_params(session)
     |> assign_filtered_notifications()
+    |> assign_deployed_shas()
     |> ok()
   end
 
@@ -67,7 +69,10 @@ defmodule RemitWeb.CommentsLive do
   @impl Phoenix.LiveView
   def handle_info(:comments_changed, socket) do
     # We just re-load from DB; filtering in memory could get fiddly if we need to hang on to both a filtered and an unfiltered list.
-    socket = assign_filtered_notifications(socket)
+    socket =
+      socket
+      |> assign_filtered_notifications()
+      |> assign_deployed_shas()
 
     {:noreply, socket}
   end
@@ -90,11 +95,17 @@ defmodule RemitWeb.CommentsLive do
   def handle_info({:setting_updated, :feature_flags, flags}, socket) do
     socket
     |> assign(features: flags)
+    |> assign_deployed_shas()
     |> noreply()
   end
 
   @impl Phoenix.LiveView
-  def handle_info({:setting_updated, _, _}, socket), do: noreply(socket)
+  def handle_info({:setting_updated, :build_commit_repos, repos}, socket) do
+    socket
+    |> assign(build_commit_repos: repos)
+    |> assign_deployed_shas()
+    |> noreply()
+  end
 
   @impl Phoenix.LiveView
   def handle_info(message, socket) do
@@ -124,6 +135,17 @@ defmodule RemitWeb.CommentsLive do
   defp assign_username(socket, username) do
     socket
     |> assign(username: username)
+  end
+
+  defp assign_deployed_shas(socket) do
+    repos = socket.assigns.build_commit_repos
+
+    if socket.assigns.features["build_commit_status"] && Enum.any?(repos) do
+      deployed = Commits.list_deployed_shas(repos)
+      assign(socket, deployed_shas: deployed)
+    else
+      assign(socket, deployed_shas: %{})
+    end
   end
 
   defp assign_filtered_notifications(socket) do

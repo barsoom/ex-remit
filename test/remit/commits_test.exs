@@ -15,6 +15,49 @@ defmodule Remit.CommitsTest do
     end
   end
 
+  describe "list_deployed_shas" do
+    test "returns deployment info keyed by build commit sha and uses deployed repo when present" do
+      _target_commit =
+        Factory.insert!(:commit,
+          sha: "buildsha1",
+          repo: "build-repo",
+          deployed_sha: "deployedsha1",
+          deployed_repo: "target-repo",
+          url: "http://example.com/buildsha1"
+        )
+
+      _fallback_commit =
+        Factory.insert!(:commit,
+          sha: "buildsha2",
+          repo: "build-repo",
+          deployed_sha: "deployedsha2",
+          deployed_repo: nil,
+          url: "http://example.com/buildsha2"
+        )
+
+      assert Commits.list_deployed_shas(["target-repo"]) == %{
+               "buildsha1" => %{
+                 url: "http://example.com/buildsha1",
+                 repo: "target-repo",
+                 deployed_sha: "deployedsha1"
+               }
+             }
+
+      assert Commits.list_deployed_shas(["build-repo"]) == %{
+               "buildsha1" => %{
+                 url: "http://example.com/buildsha1",
+                 repo: "target-repo",
+                 deployed_sha: "deployedsha1"
+               },
+               "buildsha2" => %{
+                 url: "http://example.com/buildsha2",
+                 repo: "build-repo",
+                 deployed_sha: "deployedsha2"
+               }
+             }
+    end
+  end
+
   describe "delete_reviewed_older_than_days" do
     test "deletes commits older than the given number of days, and their associated records" do
       # Since we can't (?) freeze time in this test, we make sure the newer record has a little margin.

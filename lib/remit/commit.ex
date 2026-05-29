@@ -12,6 +12,8 @@ defmodule Remit.Commit do
     field :url, :string
     field :payload, :map
     field :unlisted, :boolean
+    field :deployed_sha, :string
+    field :deployed_repo, :string
 
     field :review_started_at, :utc_datetime_usec
     field :reviewed_at, :utc_datetime_usec
@@ -94,6 +96,57 @@ defmodule Remit.Commit do
   def bot?(username), do: String.ends_with?(username, "[bot]")
 
   def botless_username(username), do: String.replace_trailing(username, "[bot]", "")
+
+  @build_commit_sha_pattern ~r/^([0-9a-fA-F]{40}|[0-9a-fA-F]{8})(?=\s|$)/
+
+  def build_commit?(commit) do
+    not is_nil(commit.message) && Regex.match?(@build_commit_sha_pattern, commit.message)
+  end
+
+  def extract_deployed_sha(commit) do
+    if build_commit?(commit) do
+      case Regex.run(@build_commit_sha_pattern, commit.message) do
+        [_, sha] -> String.downcase(sha)
+        _ -> nil
+      end
+    end
+  end
+
+  def extract_deployed_repo(%Commit{payload: payload}) when is_map(payload) do
+    payload
+    |> deployed_file_paths()
+    |> Enum.find_value(&deployed_repo_from_path/1)
+  end
+
+  def extract_deployed_repo(_), do: nil
+
+  defp deployed_file_paths(payload) do
+    Enum.flat_map(["modified", "added", "removed"], fn key ->
+      Map.get(payload, key, [])
+    end)
+  end
+
+  defp deployed_repo_from_path(path) when is_binary(path) do
+    path
+    |> String.trim()
+    |> case do
+      "" ->
+        nil
+
+      trimmed_path ->
+        trimmed_path
+        |> Path.split()
+        |> List.first()
+        |> Path.rootname()
+    end
+    |> maybe_repo_from_string()
+  end
+
+  defp maybe_repo_from_string(repo) when is_binary(repo) do
+    if repo != "" and not String.starts_with?(repo, "."), do: repo
+  end
+
+  defp maybe_repo_from_string(_), do: nil
 
   def message_summary(commit), do: commit.message |> String.split(~r/[\r\n]/) |> hd
 

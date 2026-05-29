@@ -554,6 +554,16 @@ Hooks.FeatureToggle = {
   }
 }
 
+Hooks.BuildCommitRepos = {
+  mounted() {
+    this.handleEvent('build-commit-repos-updated', ({ repos }) => {
+      const formData = new FormData()
+      repos.forEach(r => formData.append('repos[]', r))
+      fetch('/api/build_commit_repos', { method: 'post', body: formData })
+    })
+  }
+}
+
 document.addEventListener('click', (e) => {
   const deployedEl = e.target.closest('[data-deployed-url]')
   if (deployedEl?.dataset.deployedUrl) {

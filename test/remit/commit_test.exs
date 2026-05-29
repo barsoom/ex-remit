@@ -15,6 +15,41 @@ defmodule Remit.CommitTest do
     end
   end
 
+  describe "build_commit?/extract_deployed_sha" do
+    test "matches and extracts a 40-char SHA prefix" do
+      message = "0123456789abcdef0123456789abcdef01234567 deployed"
+      commit = %Commit{message: message}
+
+      assert Commit.build_commit?(commit)
+      assert Commit.extract_deployed_sha(commit) == "0123456789abcdef0123456789abcdef01234567"
+    end
+
+    test "matches and extracts an 8-char SHA prefix" do
+      message = "01234567 deployed"
+      commit = %Commit{message: message}
+
+      assert Commit.build_commit?(commit)
+      assert Commit.extract_deployed_sha(commit) == "01234567"
+    end
+
+    test "extracts a deployed repo from the commit payload" do
+      message = "01234567 deployed"
+      payload = %{"modified" => ["business-api/deployed_sha.yml"]}
+      commit = %Commit{message: message, payload: payload}
+
+      assert Commit.build_commit?(commit)
+      assert Commit.extract_deployed_sha(commit) == "01234567"
+      assert Commit.extract_deployed_repo(commit) == "business-api"
+    end
+
+    test "does not match a non-build commit message" do
+      commit = %Commit{message: "Fix bug 12345"}
+
+      refute Commit.build_commit?(commit)
+      assert Commit.extract_deployed_sha(commit) == nil
+    end
+  end
+
   describe "authored_by?" do
     test "is true if you're among the usernames, case-insensitive" do
       commit = %Commit{usernames: ["foo", "bar"]}
