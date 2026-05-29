@@ -218,21 +218,22 @@
           <% end %>
         </div>
 
-        <div class="flex-none ml-3">
+        <div class="flex-none">
           <%= cond do %>
             <% @reviewed? -> %>
-              <%= github_avatar(@commit.reviewed_by_username, :small_commit, tooltip_pos: "up-right") %>
+              <div class="ml-3">
+                <%= github_avatar(@commit.reviewed_by_username, :small_commit, tooltip_pos: "up-right") %>
+              </div>
             <% @being_reviewed? && @you_are_reviewing? -> %>
               <button
                 phx-click="mark_unreviewed"
                 phx-value-id={@commit.id}
-                class="bg-red-100 dark:bg-red-900"
+                class="bg-red-100 dark:bg-red-900 ml-3"
                 title="Cancel review"
               >
                 <i class="fas fa-eye-slash text-red-700 dark:text-red-400"></i>
               </button>
             <% true -> %>
-              <%= github_avatar_sized_spacer(:small_commit) %>
           <% end %>
         </div>
       <% end %>
