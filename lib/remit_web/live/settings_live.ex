@@ -224,20 +224,20 @@ defmodule RemitWeb.SettingsLive do
   defp project_row(assigns) do
     ~H"""
     <% available_teams = @all_teams -- @project_teams %>
-    <div class="flex items-center gap-3 py-2 min-h-[2rem]">
-      <span class="font-semibold text-xs w-32 shrink-0"><%= @project %></span>
-      <div class="flex flex-wrap gap-1 flex-1 min-w-0">
+    <div class="flex flex-col sm:flex-row sm:items-start sm:flex-wrap gap-x-3 gap-y-1 py-2 sm:min-h-[2rem]">
+      <span class="font-semibold text-xs sm:w-32 sm:shrink-0 sm:mt-0.5"><%= @project %></span>
+      <div class="flex flex-wrap gap-1 sm:flex-1 min-w-0">
         <%= if @project_teams == [] do %>
           <span class="text-red-600 dark:text-red-400 text-xs italic">unclaimed</span>
         <% else %>
           <%= for team <- @project_teams do %>
-            <span class="inline-flex items-center gap-1 pl-2 pr-1.5 py-0.5 text-xs bg-gray-700 dark:bg-gray-600 dark:text-gray-dark text-white rounded-full select-none">
+            <span class="inline-flex items-center gap-1 pl-2 pr-1.5 py-0.5 text-xs bg-gray-700 dark:bg-gray-600 dark:text-gray-dark text-white rounded-full select-none max-w-full break-all">
               <%= team.name %>
               <span
                 phx-click="remove_project_owner"
                 phx-value-project={@project}
                 phx-value-team={team.slug}
-                class="cursor-pointer text-gray-400 hover:text-white leading-none"
+                class="cursor-pointer text-gray-400 hover:text-white leading-none shrink-0"
               >
                 ×
               </span>
@@ -246,9 +246,14 @@ defmodule RemitWeb.SettingsLive do
         <% end %>
       </div>
       <%= if available_teams != [] do %>
-        <.form for={%{}} as={:project} phx-submit="add_project_owner" class="flex items-center gap-1 shrink-0">
+        <.form
+          for={%{}}
+          as={:project}
+          phx-submit="add_project_owner"
+          class="flex items-center gap-1 shrink-0 sm:ml-auto max-w-full"
+        >
           <input type="hidden" name="project" value={@project} />
-          <select name="team" class="text-xs h-5 py-0">
+          <select name="team" class="text-xs h-5 py-0 min-w-0 max-w-full">
             <%= for team <- available_teams do %>
               <option value={team.slug}><%= team.name %></option>
             <% end %>
