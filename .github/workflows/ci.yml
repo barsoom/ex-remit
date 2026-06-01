@@ -59,7 +59,7 @@ jobs:
     - uses: actions/setup-node@v6
       with:
         node-version: 20
-    - uses: nanasess/setup-chromedriver@v2
+    - uses: nanasess/setup-chromedriver@v3
 
     - uses: actions/cache/restore@v5
       id: cache-restore-mix-deps
