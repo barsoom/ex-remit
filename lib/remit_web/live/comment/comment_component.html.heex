@@ -27,7 +27,7 @@
   <%= if @compact do %>
     <div class="flex items-start gap-2">
       <div class="flex-none flex items-center gap-1 pt-0.5">
-        <%= github_avatar(@comment.commenter_username, :comment, shape: :hexagon, tooltip_pos: "up-left") %>
+        <%= github_avatar(@comment.commenter_username, :comment, tooltip_pos: "up-left") %>
         <i class="fas fa-chevron-right text-gray-300 dark:text-gray-600 text-[8px]"></i>
         <%= comment_recipient_avatars(@commit, @comment, @notification, tooltip_pos: "up-left", compact: @compact) %>
       </div>

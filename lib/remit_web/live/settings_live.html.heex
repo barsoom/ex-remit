@@ -25,18 +25,9 @@
       <%= github_avatar(@username, if(@features["compact_design"], do: 40, else: 80),
         alt: "",
         class: "ml-3",
-        shape: if(@features["compact_design"], do: :hexagon, else: :default),
         tooltip: "Behold! Your GitHub avatar!",
         tooltip_pos: "left"
       ) %>
-    <% else %>
-      <%= if @features["compact_design"] do %>
-        <div
-          class="ml-3 w-10 h-10 bg-gray-300 dark:bg-gray-600 flex-none"
-          style="clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)"
-        >
-        </div>
-      <% end %>
     <% end %>
   </div>
 

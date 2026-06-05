@@ -19,12 +19,7 @@ defmodule RemitWeb.CommentComponent do
   defp comment_recipient_avatars(commit, comment, notification, opts) do
     compact = Keyword.get(opts, :compact, false)
 
-    avatar_opts =
-      Keyword.delete(opts, :compact) ++
-        [
-          shape: if(compact, do: :hexagon, else: :default),
-          class: if(compact, do: "ring-1 ring-white dark:ring-gray-900", else: "")
-        ]
+    avatar_opts = Keyword.delete(opts, :compact)
 
     avatars =
       comment_recipients(commit, comment, notification)

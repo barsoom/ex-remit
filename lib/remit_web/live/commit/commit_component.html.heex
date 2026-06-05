@@ -55,8 +55,6 @@
               @reviewed? || @you_authored? -> :small_commit
               true -> 45
             end,
-            class: if(@compact, do: "rounded ring-1 ring-white dark:ring-gray-900", else: "rounded"),
-            shape: if(@compact, do: :hexagon, else: :default),
             tooltip_pos: "up-left"
           ) %>
         <% end %>
@@ -138,7 +136,6 @@
 
         <%= github_avatar(@commit.review_started_by_username, :small_commit,
           class: "opacity-75",
-          shape: if(@compact, do: :hexagon, else: :default),
           tooltip_pos: "up-right"
         ) %>
       </div>
@@ -147,12 +144,9 @@
         <div class="flex-none ml-2 flex items-center gap-1.5">
           <%= cond do %>
             <% @reviewed? && @you_authored? -> %>
-              <%= github_avatar(@commit.reviewed_by_username, :small_commit, shape: :hexagon, tooltip_pos: "up-right") %>
+              <%= github_avatar(@commit.reviewed_by_username, :small_commit, tooltip_pos: "up-right") %>
             <% @reviewed? && !@you_authored? && @username -> %>
-              <%= github_avatar(@commit.reviewed_by_username, 18,
-                shape: :hexagon,
-                tooltip_pos: "up-right"
-              ) %>
+              <%= github_avatar(@commit.reviewed_by_username, 18, tooltip_pos: "up-right") %>
               <button
                 phx-click="mark_unreviewed"
                 phx-value-id={@commit.id}
@@ -188,10 +182,7 @@
                 <i class="fas fa-eye text-yellow-mid dark:text-blue-400 text-xs"></i>
               </button>
             <% true -> %>
-              <%= github_avatar(@commit.reviewed_by_username, 18,
-                shape: :hexagon,
-                tooltip_pos: "up-right"
-              ) %>
+              <%= github_avatar(@commit.reviewed_by_username, 18, tooltip_pos: "up-right") %>
           <% end %>
         </div>
       <% else %>
