@@ -51,7 +51,7 @@ defmodule Remit.MixProject do
       {:gettext, "> 0.0.0"},
       {:jason, "> 0.0.0"},
       {:plug_cowboy, "> 0.0.0"},
-      {:tzdata, "> 0.0.0"},
+      {:tz, "~> 0.28"},
       {:honeybadger, "> 0.0.0"},
       {:tesla, ">= 1.5.0"},
       {:hackney, "> 0.0.0"},
