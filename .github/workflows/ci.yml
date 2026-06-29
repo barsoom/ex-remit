@@ -61,7 +61,7 @@ jobs:
         node-version: 20
     - uses: nanasess/setup-chromedriver@e913548694400f275b4070efcd90f47dbbc8914c # v3.0.0
 
-    - uses: actions/cache/restore@v5
+    - uses: actions/cache/restore@v6
       id: cache-restore-mix-deps
       with:
         path: |
@@ -73,7 +73,7 @@ jobs:
     - name: Prepare deps
       if: steps.cache-restore-mix-deps.outputs.cache-hit != 'true'
       run: mix do deps.get, deps.compile
-    - uses: actions/cache/save@v5
+    - uses: actions/cache/save@v6
       if: steps.cache-restore-mix-deps.outputs.cache-hit != 'true'
       with:
           path: |
