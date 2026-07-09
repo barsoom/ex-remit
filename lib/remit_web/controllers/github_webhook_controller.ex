@@ -14,6 +14,14 @@ defmodule RemitWeb.GithubWebhookController do
       }
     )
 
+    Sentry.Context.add_breadcrumb(
+      message: "Webhook received",
+      data: %{
+        event_name: event_name,
+        params: params
+      }
+    )
+
     if ignored_repo?(params) do
       conn |> text("Ignored")
     else

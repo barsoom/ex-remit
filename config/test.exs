@@ -44,3 +44,5 @@ config :logger, level: :warning
 config :honeybadger,
   environment_name: :test,
   api_key: "not-used"
+
+config :sentry, dsn: nil

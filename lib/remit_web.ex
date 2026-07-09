@@ -50,6 +50,8 @@ defmodule RemitWeb do
       use Phoenix.LiveView,
         layout: {RemitWeb.Layouts, :app}
 
+      on_mount Sentry.LiveViewHook
+
       import RemitWeb.Auth.LiveView
 
       unquote(html_helpers())

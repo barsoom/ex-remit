@@ -42,6 +42,15 @@ config :phoenix, :json_library, Jason
 config :elixir, :time_zone_database, Tz.TimeZoneDatabase
 config :tesla, adapter: Tesla.Adapter.Hackney
 
+config :sentry,
+  enable_source_code_context: true,
+  root_source_code_paths: [File.cwd!()],
+  traces_sampler: &Remit.SentrySampler.sample/1
+
+config :opentelemetry,
+  span_processor: {Sentry.OpenTelemetry.SpanProcessor, []},
+  sampler: {Sentry.OpenTelemetry.Sampler, []}
+
 config :esbuild,
   version: "0.17.12",
   default: [

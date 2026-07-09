@@ -9,6 +9,11 @@ defmodule Remit.MixProject do
       elixir: "~> 1.7",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
+      releases: [
+        remit: [
+          applications: [opentelemetry: :temporary]
+        ]
+      ],
       aliases: aliases(),
       deps: deps(),
       dialyzer: [
@@ -53,6 +58,14 @@ defmodule Remit.MixProject do
       {:plug_cowboy, "> 0.0.0"},
       {:tz, "~> 0.28"},
       {:honeybadger, "> 0.0.0"},
+      {:opentelemetry, "~> 1.5"},
+      {:opentelemetry_api, "~> 1.4"},
+      {:opentelemetry_cowboy, "~> 1.0"},
+      {:opentelemetry_ecto, "~> 1.2"},
+      {:opentelemetry_exporter, "~> 1.0"},
+      {:opentelemetry_phoenix, "~> 2.0"},
+      {:finch, "~> 0.21"},
+      {:sentry, "~> 13.3"},
       {:tesla, ">= 1.5.0"},
       {:hackney, "> 0.0.0"},
       {:confex, "~> 3.5.0"},

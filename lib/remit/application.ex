@@ -6,6 +6,11 @@ defmodule Remit.Application do
   use Application
 
   def start(_type, _args) do
+    Logger.add_handlers(:remit)
+    :opentelemetry_cowboy.setup()
+    OpentelemetryPhoenix.setup(adapter: :cowboy2)
+    OpentelemetryEcto.setup([:remit, :repo], db_statement: :enabled)
+
     children = [
       # Start the Ecto repository
       Remit.Repo,

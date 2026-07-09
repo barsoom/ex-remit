@@ -48,4 +48,10 @@ if config_env() == :prod do
   config :honeybadger,
     origin: {:system, "HONEYBADGER_ORIGIN"},
     environment_name: {:system, "HONEYBADGER_ENV"}
+
+  if System.get_env("SENTRY_DSN") do
+    config :remit, :logger, [
+      {:handler, :remit_sentry_log_handler, Sentry.LoggerHandler, %{config: %{metadata: :all}}}
+    ]
+  end
 end
