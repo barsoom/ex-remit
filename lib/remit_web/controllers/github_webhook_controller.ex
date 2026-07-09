@@ -7,13 +7,6 @@ defmodule RemitWeb.GithubWebhookController do
       |> Enum.into(%{})
       |> Map.fetch!("x-github-event")
 
-    Honeybadger.add_breadcrumb("Webhook received",
-      metadata: %{
-        event_name: event_name,
-        params: params
-      }
-    )
-
     Sentry.Context.add_breadcrumb(
       message: "Webhook received",
       data: %{

@@ -41,8 +41,4 @@ config :tesla, adapter: Tesla.Mock
 # Print only warnings and errors during test
 config :logger, level: :warning
 
-config :honeybadger,
-  environment_name: :test,
-  api_key: "not-used"
-
 config :sentry, dsn: nil

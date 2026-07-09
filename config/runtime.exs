@@ -45,10 +45,6 @@ if config_env() == :prod do
     github_oauth_client_id: System.get_env("GITHUB_OAUTH_CLIENT_ID"),
     github_oauth_client_secret: System.get_env("GITHUB_OAUTH_CLIENT_SECRET")
 
-  config :honeybadger,
-    origin: {:system, "HONEYBADGER_ORIGIN"},
-    environment_name: {:system, "HONEYBADGER_ENV"}
-
   if System.get_env("SENTRY_DSN") do
     config :remit, :logger, [
       {:handler, :remit_sentry_log_handler, Sentry.LoggerHandler, %{config: %{metadata: :all}}}

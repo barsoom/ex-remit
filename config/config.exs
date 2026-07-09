@@ -40,10 +40,9 @@ config :logger, :console,
 config :phoenix, :json_library, Jason
 
 config :elixir, :time_zone_database, Tz.TimeZoneDatabase
-config :tesla, adapter: Tesla.Adapter.Hackney
+config :tesla, adapter: {Tesla.Adapter.Finch, name: Remit.Finch}
 
 config :sentry,
-  client: Sentry.HackneyClient,
   enable_source_code_context: true,
   root_source_code_paths: [File.cwd!()],
   traces_sampler: &Remit.SentrySampler.sample/1

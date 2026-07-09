@@ -18,6 +18,7 @@ defmodule Remit.Application do
       RemitWeb.Telemetry,
       # Start the PubSub system
       {Phoenix.PubSub, [name: Remit.PubSub]},
+      {Finch, name: Remit.Finch},
       Remit.Ownership,
       Remit.GithubAuth,
       Remit.Periodically,

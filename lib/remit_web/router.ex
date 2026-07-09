@@ -1,6 +1,5 @@
 defmodule RemitWeb.Router do
   use RemitWeb, :router
-  use Honeybadger.Plug
   import RemitWeb.Auth.Routing
 
   pipeline :browser do
