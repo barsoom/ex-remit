@@ -43,6 +43,7 @@ config :elixir, :time_zone_database, Tz.TimeZoneDatabase
 config :tesla, adapter: Tesla.Adapter.Hackney
 
 config :sentry,
+  client: Sentry.HackneyClient,
   enable_source_code_context: true,
   root_source_code_paths: [File.cwd!()],
   traces_sampler: &Remit.SentrySampler.sample/1
