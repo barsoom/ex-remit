@@ -49,7 +49,12 @@ config :sentry,
 
 config :opentelemetry,
   span_processor: {Sentry.OpenTelemetry.SpanProcessor, []},
-  sampler: {Sentry.OpenTelemetry.Sampler, []}
+  sampler: {Sentry.OpenTelemetry.Sampler, []},
+  text_map_propagators: [
+    :trace_context,
+    :baggage,
+    Sentry.OpenTelemetry.Propagator
+  ]
 
 config :esbuild,
   version: "0.17.12",

@@ -1,5 +1,7 @@
 import Config
 
+if config_env() == :dev and File.exists?(".env"), do: DotenvParser.load_file(".env")
+
 if System.get_env("PHX_SERVER") in ["true", "1"] do
   config :remit, RemitWeb.Endpoint, server: true
 end
@@ -44,10 +46,18 @@ if config_env() == :prod do
     github_api_token: System.get_env("GITHUB_API_TOKEN"),
     github_oauth_client_id: System.get_env("GITHUB_OAUTH_CLIENT_ID"),
     github_oauth_client_secret: System.get_env("GITHUB_OAUTH_CLIENT_SECRET")
+end
 
-  if System.get_env("SENTRY_DSN") do
+if config_env() != :test do
+  sentry_dsn = System.get_env("SENTRY_DSN")
+
+  if sentry_dsn do
     config :remit, :logger, [
       {:handler, :remit_sentry_log_handler, Sentry.LoggerHandler, %{config: %{metadata: :all}}}
     ]
   end
+
+  config :sentry,
+    dsn: sentry_dsn,
+    environment_name: System.get_env("SENTRY_ENVIRONMENT", Atom.to_string(config_env()))
 end

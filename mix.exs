@@ -71,6 +71,7 @@ defmodule Remit.MixProject do
       {:tailwind, "~> 0.2", runtime: Mix.env() == :dev},
       {:mox, "> 0.0.0", only: :test},
       {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
+      {:dotenv_parser, "~> 2.0", only: :dev},
       {:git_hooks, "~> 0.7.0", only: [:dev], runtime: false},
       {:mix_test_watch, "~> 1.0", only: :dev, runtime: false},
       {:mix_audit, "~> 2.0", only: [:dev, :test], runtime: false},
