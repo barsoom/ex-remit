@@ -56,7 +56,7 @@ jobs:
       with:
         otp-version: ${{ needs.versions.outputs.erlang }}
         elixir-version: ${{ needs.versions.outputs.elixir }}
-    - uses: actions/setup-node@v6
+    - uses: actions/setup-node@v7
       with:
         node-version: 20
     - uses: nanasess/setup-chromedriver@e913548694400f275b4070efcd90f47dbbc8914c # v3.0.0
