@@ -165,6 +165,9 @@ jobs:
 
       - name: Ensure revision is newer than deployed revision
         run: stack/script/ci/ensure_revision_is_newer_than_deployed_revision.sh
+      - name: Install sentry-cli
+        continue-on-error: true
+        run: curl -sL https://sentry.io/get-cli/ | SENTRY_CLI_VERSION="3.6.2" sh
       - name: Deploy
         env:
           DEPLOYS_DISABLED: ${{ vars.DEPLOYS_DISABLED_IN_PRODUCTION }}
