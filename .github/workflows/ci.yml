@@ -171,6 +171,8 @@ jobs:
           IGNORE_AUTODEPLOY_POLICY: ${{ github.event.inputs.ignore_autodeploy_policy }}
           PIPELINE_URL: ${{ secrets.PIPELINE_URL }}
           PIPELINE_API_TOKEN: ${{ secrets.PIPELINE_API_TOKEN }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_PROJECT: remit
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
