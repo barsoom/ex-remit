@@ -63,6 +63,17 @@ defmodule RemitWeb.CommentsLive do
     |> noreply()
   end
 
+  # Advanced filter bar. The hook persists these to the session itself (via /api/filter_preference,
+  # same as the legacy filter links) and pushes them here so the query re-runs.
+  def handle_event("set_filters", params, socket) do
+    socket
+    |> assign(is: string_param(params, "is", "all"))
+    |> assign(role: string_param(params, "role", "all"))
+    |> assign(search: string_param(params, "search", ""))
+    |> assign_filtered_notifications()
+    |> noreply()
+  end
+
   # Receive broadcasts when new comments arrive or have their state changed by another user.
   @impl Phoenix.LiveView
   def handle_info(:comments_changed, socket) do
@@ -107,8 +118,16 @@ defmodule RemitWeb.CommentsLive do
   defp assign_default_params(socket, session) do
     assign(socket,
       is: get_filter(session, "comments", "is", "unresolved"),
-      role: get_filter(session, "comments", "role", if(socket.assigns.username, do: "for_me", else: "all"))
+      role: get_filter(session, "comments", "role", if(socket.assigns.username, do: "for_me", else: "all")),
+      search: get_filter(session, "comments", "search", "")
     )
+  end
+
+  defp string_param(params, key, default) do
+    case Map.get(params, key) do
+      value when is_binary(value) -> value
+      _ -> default
+    end
   end
 
   defp assign_selected_id(socket, id) when is_integer(id), do: assign(socket, your_last_selected_id: id)
@@ -127,19 +146,13 @@ defmodule RemitWeb.CommentsLive do
   end
 
   defp assign_filtered_notifications(socket) do
-    {resolved_filter, user_filter} =
-      if socket.assigns.features["advanced_filters"] do
-        {"all", "all"}
-      else
-        {socket.assigns.is, socket.assigns.role}
-      end
-
     notifications =
       Comments.list_notifications(
         limit: @max_comments,
         username: socket.assigns.username,
-        resolved_filter: resolved_filter,
-        user_filter: user_filter
+        resolved_filter: socket.assigns.is,
+        user_filter: socket.assigns.role,
+        search: socket.assigns.search
       )
 
     assign(socket, notifications: notifications)

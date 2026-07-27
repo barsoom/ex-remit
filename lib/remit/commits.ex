@@ -25,10 +25,37 @@ defmodule Remit.Commits do
       |> Commit.apply_reviewed_cutoff(filters)
       |> order_by([c], desc: c.id)
 
-    subquery(union_all(unreviewed, ^reviewed))
-    |> order_by([u], desc: u.id)
-    |> limit(^count)
+    # When the status filter pins us to one side, query just that side rather than unioning and
+    # discarding half. The reviewed side goes through a subquery so its own cutoff limit isn't
+    # overwritten by the outer one.
+    case Keyword.get(filters, :reviewed, "all") do
+      "unreviewed" ->
+        unreviewed |> order_by([c], desc: c.id) |> limit(^count) |> Repo.all()
+
+      "reviewed" ->
+        from(r in subquery(reviewed), order_by: [desc: r.id], limit: ^count) |> Repo.all()
+
+      _ ->
+        subquery(union_all(unreviewed, ^reviewed))
+        |> order_by([u], desc: u.id)
+        |> limit(^count)
+        |> Repo.all()
+    end
+  end
+
+  @doc "Distinct repo names across listed commits, for populating filter dropdowns."
+  def distinct_repos do
+    from(c in Commit, where: [unlisted: false], distinct: true, select: c.repo, order_by: c.repo)
     |> Repo.all()
+    |> Enum.reject(&is_nil/1)
+  end
+
+  @doc "Distinct commit author usernames, for populating filter dropdowns."
+  def distinct_authors do
+    from(c in Commit, where: [unlisted: false], select: fragment("DISTINCT unnest(usernames)"))
+    |> Repo.all()
+    |> Enum.reject(&is_nil/1)
+    |> Enum.sort()
   end
 
   def list_latest_shas(count) do

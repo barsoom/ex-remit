@@ -22,7 +22,20 @@
               data-filter-dropdown-panel
               class="hidden absolute left-0 top-full mt-1 bg-white dark:bg-gray-800 border border-gray-light rounded shadow-lg z-20 max-h-60 overflow-y-auto"
             >
-              <div data-author-checkboxes class="py-1"></div>
+              <div class="py-1">
+                <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
+                  <input type="checkbox" checked={@selected_authors == []} data-authors-all /><span class="text-xs">
+                    All
+                  </span>
+                </label>
+                <%= for author <- @all_authors do %>
+                  <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
+                    <input type="checkbox" checked={author in @selected_authors} data-authors-value={author} /><span class="text-xs">
+                      <%= author %>
+                    </span>
+                  </label>
+                <% end %>
+              </div>
             </div>
           </div>
         <% end %>
@@ -44,11 +57,15 @@
           >
             <div class="py-1">
               <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
-                <input type="checkbox" checked data-projects-all /><span class="text-xs">All</span>
+                <input type="checkbox" checked={@selected_project_teams == []} data-projects-all /><span class="text-xs">
+                  All
+                </span>
               </label>
               <%= for team <- @all_teams do %>
                 <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
-                  <input type="checkbox" data-projects-team={team.slug} /><span class="text-xs"><%= team.name %></span>
+                  <input type="checkbox" checked={team.slug in @selected_project_teams} data-projects-team={team.slug} /><span class="text-xs">
+                    <%= team.name %>
+                  </span>
                 </label>
               <% end %>
             </div>
@@ -72,11 +89,15 @@
           >
             <div class="py-1">
               <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
-                <input type="checkbox" checked data-members-all /><span class="text-xs">All</span>
+                <input type="checkbox" checked={@selected_member_teams == []} data-members-all /><span class="text-xs">
+                  All
+                </span>
               </label>
               <%= for team <- @all_teams do %>
                 <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
-                  <input type="checkbox" data-members-team={team.slug} /><span class="text-xs"><%= team.name %></span>
+                  <input type="checkbox" checked={team.slug in @selected_member_teams} data-members-team={team.slug} /><span class="text-xs">
+                    <%= team.name %>
+                  </span>
                 </label>
               <% end %>
             </div>
@@ -100,19 +121,34 @@
           >
             <div class="py-1">
               <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
-                <input type="radio" name="commit-status-filter" data-status-value="all" />
+                <input
+                  type="radio"
+                  name="commit-status-filter"
+                  checked={@reviewed_filter == "all"}
+                  data-status-value="all"
+                />
                 <span class="text-xs">
                   All
                 </span>
               </label>
               <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
-                <input type="radio" name="commit-status-filter" data-status-value="unreviewed" />
+                <input
+                  type="radio"
+                  name="commit-status-filter"
+                  checked={@reviewed_filter == "unreviewed"}
+                  data-status-value="unreviewed"
+                />
                 <span class="text-xs">
                   Unreviewed
                 </span>
               </label>
               <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
-                <input type="radio" name="commit-status-filter" data-status-value="reviewed" />
+                <input
+                  type="radio"
+                  name="commit-status-filter"
+                  checked={@reviewed_filter == "reviewed"}
+                  data-status-value="reviewed"
+                />
                 <span class="text-xs">
                   Reviewed
                 </span>
@@ -135,7 +171,18 @@
             data-repo-dropdown-panel
             class="hidden absolute left-0 top-full mt-1 bg-white dark:bg-gray-800 border border-gray-light rounded shadow-lg z-20 min-w-44 max-h-60 overflow-y-auto"
           >
-            <div data-repo-checkboxes class="py-1"></div>
+            <div class="py-1">
+              <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
+                <input type="checkbox" checked={@selected_repos == []} data-repos-all /><span class="text-xs">All</span>
+              </label>
+              <%= for repo <- @all_repos do %>
+                <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
+                  <input type="checkbox" checked={repo in @selected_repos} data-repos-value={repo} /><span class="text-xs">
+                    <%= repo %>
+                  </span>
+                </label>
+              <% end %>
+            </div>
           </div>
         </div>
 
@@ -145,6 +192,7 @@
           <input
             type="search"
             placeholder="Search…"
+            value={@search}
             data-commit-search
             class="w-24 pl-5 pr-2 py-0.5 text-xs border border-gray-light rounded bg-white dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100"
           />

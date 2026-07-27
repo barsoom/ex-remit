@@ -45,7 +45,41 @@ defmodule Remit.Commit do
       where: ^author in c.usernames
   end
 
+  # Multi-select filters, used by the advanced filter bar. The team-derived lists are computed in
+  # memory from the already-loaded teams rather than via subqueries, since the caller has them.
+
+  def apply_filter(q, {:repos, repos}) when is_list(repos) do
+    from c in q, where: c.repo in ^repos
+  end
+
+  def apply_filter(q, {:authors, authors}) when is_list(authors) do
+    from c in q, where: fragment("? && ?", c.usernames, ^authors)
+  end
+
+  def apply_filter(q, {:projects_of_teams, {team_projects, all_claimed_projects}}) do
+    # As with :projects_of_team, unclaimed projects are included so they don't slip through unseen.
+    from c in q,
+      where: c.repo in ^team_projects or c.repo not in ^all_claimed_projects
+  end
+
+  def apply_filter(q, {:members_of_teams, usernames}) when is_list(usernames) do
+    from c in q, where: fragment("? && ?", c.usernames, ^usernames)
+  end
+
+  def apply_filter(q, {:search, term}) when is_binary(term) do
+    pattern = "%#{escape_like(term)}%"
+
+    from c in q,
+      where:
+        ilike(c.message, ^pattern) or
+          ilike(c.sha, ^pattern) or
+          ilike(c.repo, ^pattern) or
+          fragment("array_to_string(?, ' ') ILIKE ?", c.usernames, ^pattern)
+  end
+
   def apply_filter(q, _), do: q
+
+  defp escape_like(term), do: String.replace(term, ~r/([\\%_])/, "\\\\\\1")
 
   def apply_reviewed_cutoff(q, filters) when is_list(filters),
     do: Enum.reduce(filters, q, &apply_reviewed_cutoff(&2, &1))

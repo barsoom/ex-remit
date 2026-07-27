@@ -49,20 +49,32 @@ defmodule Remit.Comments do
 
   # Private
 
-  defp do_list_notifications(%{
-         username: username,
-         resolved_filter: resolved_filter,
-         user_filter: user_filter,
-         limit: limit
-       }) do
+  defp do_list_notifications(
+         %{
+           username: username,
+           resolved_filter: resolved_filter,
+           user_filter: user_filter,
+           limit: limit
+         } = opts
+       ) do
     order_by = if resolved_filter == "resolved", do: [desc: :resolved_at], else: [desc: :id]
 
     notifications_query(username, resolved_filter, user_filter)
+    |> apply_search(Map.get(opts, :search, ""))
     |> then(fn q ->
       from [n, c] in q, limit: ^limit, order_by: ^order_by, preload: [comment: {c, [:commit, :comment_notifications]}]
     end)
     |> Repo.all()
   end
+
+  defp apply_search(query, term) when is_binary(term) and term != "" do
+    pattern = "%#{String.replace(term, ~r/([\\%_])/, "\\\\\\1")}%"
+
+    from [n, c] in query,
+      where: ilike(c.body, ^pattern) or ilike(c.commenter_username, ^pattern) or ilike(c.commit_sha, ^pattern)
+  end
+
+  defp apply_search(query, _), do: query
 
   defp notifications_query(username, resolved_filter, user_filter) do
     query = from n in CommentNotification, join: c in assoc(n, :comment)
