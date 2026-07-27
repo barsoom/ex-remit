@@ -15,7 +15,7 @@
       do:
         "mx-3 mb-1 rounded-xl shadow-sm #{cond do
           @your_last_selected? -> "bg-yellow-200 dark:bg-blue-900 px-3 py-2"
-          @resolved? -> "bg-green-light dark:bg-gray-800 opacity-50 px-2 py-1"
+          @resolved? -> "bg-green-light dark:bg-gray-800 opacity-50 px-3 py-1"
           true -> "bg-white dark:bg-gray-800 px-3 py-2"
         end}",
       else: "my-1 bg-gray-200 dark:bg-gray-800"
@@ -52,13 +52,18 @@
               <i class="fas fa-undo text-sm"></i>
             </button>
           <% else %>
-            <i class="fas fa-check text-green-dark text-xs"></i>
+            <span class="flex items-center justify-center w-6 h-6">
+              <i class="fas fa-check text-green-dark text-xs"></i>
+            </span>
           <% end %>
         <% else %>
           <%= if @at_me? do %>
             <%= if @resolved_coauthors != [] do %>
-              <span {tooltip_attributes("resolved by #{Enum.join(@resolved_coauthors, ", ")}", pos: "up-right")}>
-                <i class="fas fa-user-friends text-green-dark"></i>
+              <span
+                class="flex items-center justify-center w-6 h-6"
+                {tooltip_attributes("resolved by #{Enum.join(@resolved_coauthors, ", ")}", pos: "up-right")}
+              >
+                <i class="fas fa-user-check text-green-dark text-xs"></i>
               </span>
             <% end %>
             <button
@@ -106,7 +111,7 @@
           <%= if @at_me? do %>
             <%= if @resolved_coauthors != [] do %>
               <span {tooltip_attributes("resolved by #{Enum.join(@resolved_coauthors, ", ")}", pos: "up-right")}>
-                <i class="fas fa-user-friends text-green-dark"></i>
+                <i class="fas fa-user-check text-green-dark">!</i>
               </span>
             <% end %>
             <button phx-click="resolve" phx-value-id={@notification.id} class="bg-green-light dark:bg-green-900">
