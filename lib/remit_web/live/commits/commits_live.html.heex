@@ -24,13 +24,15 @@
             >
               <div class="py-1">
                 <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
-                  <input type="checkbox" checked={@selected_authors == []} data-authors-all /><span class="text-xs">
+                  <input type="checkbox" checked={@selected_authors == []} data-authors-all />
+                  <span class="text-xs">
                     All
                   </span>
                 </label>
                 <%= for author <- @all_authors do %>
                   <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
-                    <input type="checkbox" checked={author in @selected_authors} data-authors-value={author} /><span class="text-xs">
+                    <input type="checkbox" checked={author in @selected_authors} data-authors-value={author} />
+                    <span class="text-xs">
                       <%= author %>
                     </span>
                   </label>
@@ -57,13 +59,15 @@
           >
             <div class="py-1">
               <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
-                <input type="checkbox" checked={@selected_project_teams == []} data-projects-all /><span class="text-xs">
+                <input type="checkbox" checked={@selected_project_teams == []} data-projects-all />
+                <span class="text-xs">
                   All
                 </span>
               </label>
               <%= for team <- @all_teams do %>
                 <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
-                  <input type="checkbox" checked={team.slug in @selected_project_teams} data-projects-team={team.slug} /><span class="text-xs">
+                  <input type="checkbox" checked={team.slug in @selected_project_teams} data-projects-team={team.slug} />
+                  <span class="text-xs">
                     <%= team.name %>
                   </span>
                 </label>
@@ -89,13 +93,15 @@
           >
             <div class="py-1">
               <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
-                <input type="checkbox" checked={@selected_member_teams == []} data-members-all /><span class="text-xs">
+                <input type="checkbox" checked={@selected_member_teams == []} data-members-all />
+                <span class="text-xs">
                   All
                 </span>
               </label>
               <%= for team <- @all_teams do %>
                 <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
-                  <input type="checkbox" checked={team.slug in @selected_member_teams} data-members-team={team.slug} /><span class="text-xs">
+                  <input type="checkbox" checked={team.slug in @selected_member_teams} data-members-team={team.slug} />
+                  <span class="text-xs">
                     <%= team.name %>
                   </span>
                 </label>
@@ -177,7 +183,8 @@
               </label>
               <%= for repo <- @all_repos do %>
                 <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
-                  <input type="checkbox" checked={repo in @selected_repos} data-repos-value={repo} /><span class="text-xs">
+                  <input type="checkbox" checked={repo in @selected_repos} data-repos-value={repo} />
+                  <span class="text-xs">
                     <%= repo %>
                   </span>
                 </label>
@@ -383,6 +390,15 @@
           compact={@features["compact_design"]}
         />
       </div>
+    <% end %>
+
+    <%= if @truncated? do %>
+      <p class="px-3 py-3 text-xs text-center text-gray-mid" data-truncation-notice>
+        <i class="fas fa-info-circle mr-0.5"></i>
+        Showing the latest <%= Remit.Utils.format_count(@max_commits) %> of <%= Remit.Utils.format_count(
+          @total_matching
+        ) %> matching commits. Narrow your filters to see the rest.
+      </p>
     <% end %>
   <% end %>
 </div>

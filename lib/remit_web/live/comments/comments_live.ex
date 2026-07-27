@@ -146,15 +146,33 @@ defmodule RemitWeb.CommentsLive do
   end
 
   defp assign_filtered_notifications(socket) do
-    notifications =
-      Comments.list_notifications(
-        limit: @max_comments,
-        username: socket.assigns.username,
-        resolved_filter: socket.assigns.is,
-        user_filter: socket.assigns.role,
-        search: socket.assigns.search
-      )
+    opts = [
+      username: socket.assigns.username,
+      resolved_filter: socket.assigns.is,
+      user_filter: socket.assigns.role,
+      search: socket.assigns.search
+    ]
 
-    assign(socket, notifications: notifications)
+    notifications = Comments.list_notifications([limit: @max_comments] ++ opts)
+
+    socket
+    |> assign(notifications: notifications)
+    |> assign_truncation(notifications, opts)
+  end
+
+  # The list is always capped at @max_comments, whatever the filters say. Say so when it bites,
+  # rather than silently showing a partial list.
+  defp assign_truncation(socket, notifications, opts) do
+    shown = length(notifications)
+
+    if shown < @max_comments do
+      assign(socket, truncated?: false, total_matching: shown, max_comments: @max_comments)
+    else
+      assign(socket,
+        truncated?: true,
+        total_matching: Comments.count_notifications(opts),
+        max_comments: @max_comments
+      )
+    end
   end
 end

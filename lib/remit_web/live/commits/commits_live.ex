@@ -208,7 +208,7 @@ defmodule RemitWeb.CommitsLive do
     |> assign(commits_of_author: "all")
     |> assign(projects_of_team: get_filter(session, "commits", "projects_of_team", "all"))
     |> assign(members_of_team: get_filter(session, "commits", "members_of_team", "all"))
-    |> assign(reviewed_commit_cutoff: get_reviewed_commit_cutoff(session, %{"days" => 7, "commits" => 100}))
+    |> assign(reviewed_commit_cutoff: get_reviewed_commit_cutoff(session))
     |> assign(features: get_feature_flags(session))
     |> assign(comment_counts: %{})
     |> assign(selected_repos: get_filter(session, "commits", "repos", []))
@@ -336,13 +336,15 @@ defmodule RemitWeb.CommitsLive do
   defp commit_filter_by_members(team), do: [members_of_team: team]
 
   defp reviewed_commit_filter(cutoff) do
-    cutoff |> Enum.reduce([], fn {key, value}, filter -> reviewed_commit_filter(filter, key, value) end)
+    # Each half of the cutoff is applied only when its checkbox is on. A non-positive number counts
+    # as off too, so sessions predating the checkboxes keep working.
+    cutoff_entry(:reviewed_commit_cutoff_days, cutoff, "days") ++
+      cutoff_entry(:reviewed_commit_cutoff_commits, cutoff, "commits")
   end
 
-  defp reviewed_commit_filter(acc, key, value)
-  defp reviewed_commit_filter(acc, _, 0), do: acc
-  defp reviewed_commit_filter(acc, "days", days), do: [{:reviewed_commit_cutoff_days, days} | acc]
-  defp reviewed_commit_filter(acc, "commits", commits), do: [{:reviewed_commit_cutoff_commits, commits} | acc]
+  defp cutoff_entry(filter_key, cutoff, key) do
+    if cutoff_enabled?(cutoff, key), do: [{filter_key, cutoff[key]}], else: []
+  end
 
   def load_commits_for_display(socket) do
     Commits.list_latest(commit_filter(socket), @max_commits)
@@ -351,7 +353,23 @@ defmodule RemitWeb.CommitsLive do
   def assign_current_commits(socket) do
     socket
     |> assign_commits(load_commits_for_display(socket))
+    |> assign_truncation()
     |> assign_comment_counts()
+  end
+
+  # The list is always capped at @max_commits, whatever the cutoff settings say. Say so when it happens
+  defp assign_truncation(socket) do
+    shown = length(commits(socket))
+
+    if shown < @max_commits do
+      assign(socket, truncated?: false, total_matching: shown, max_commits: @max_commits)
+    else
+      assign(socket,
+        truncated?: true,
+        total_matching: Commits.count_latest(commit_filter(socket)),
+        max_commits: @max_commits
+      )
+    end
   end
 
   defp assign_comment_counts(socket) do

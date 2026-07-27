@@ -164,5 +164,14 @@
         />
       </div>
     <% end %>
+
+    <%= if @truncated? do %>
+      <p class="px-3 py-3 text-xs text-center text-gray-mid" data-truncation-notice>
+        <i class="fas fa-info-circle mr-0.5"></i>
+        Showing the latest <%= Remit.Utils.format_count(@max_comments) %> of <%= Remit.Utils.format_count(
+          @total_matching
+        ) %> matching comments. Narrow your filters to see the rest.
+      </p>
+    <% end %>
   <% end %>
 </div>

@@ -81,8 +81,57 @@ defmodule RemitWeb.LiveViewHelpers do
     end
   end
 
-  def get_reviewed_commit_cutoff(session, default) do
-    Map.merge(default, Map.get(session, "reviewed_commit_cutoff", %{}))
+  @default_reviewed_commit_cutoff %{
+    "days" => Application.compile_env(:remit, :reviewed_commit_cutoff_days),
+    "commits" => Application.compile_env(:remit, :reviewed_commit_cutoff_commits),
+    "days_enabled" => true,
+    "commits_enabled" => true
+  }
+
+  def default_reviewed_commit_cutoff, do: @default_reviewed_commit_cutoff
+
+  def get_reviewed_commit_cutoff(session, default \\ @default_reviewed_commit_cutoff) do
+    stored = Map.get(session, "reviewed_commit_cutoff", %{})
+
+    default
+    |> Map.merge(stored)
+    |> backfill_enabled(stored, "days")
+    |> backfill_enabled(stored, "commits")
+    |> normalize_cutoff("days")
+    |> normalize_cutoff("commits")
+  end
+
+  @doc """
+  Keeps "switched on" and "actually applies" from ever disagreeing.
+
+  A cutoff that is off, 0 or blank is stored as off with its default number restored, so switching
+  it back on always gives a working cutoff rather than a silently inactive one.
+  """
+  def normalize_cutoff(cutoff, key) do
+    if Map.get(cutoff, "#{key}_enabled", true) and is_integer(cutoff[key]) and cutoff[key] > 0 do
+      cutoff
+    else
+      cutoff
+      |> Map.put(key, @default_reviewed_commit_cutoff[key])
+      |> Map.put("#{key}_enabled", false)
+    end
+  end
+
+  # Before the checkboxes, 0 was how you switched a cutoff off. Sessions saved back then have no
+  # flag, so derive it from the number — otherwise a stored 0 would render as ticked-but-inactive.
+  defp backfill_enabled(cutoff, stored, key) do
+    flag = "#{key}_enabled"
+
+    if Map.has_key?(stored, flag) do
+      cutoff
+    else
+      Map.put(cutoff, flag, is_integer(cutoff[key]) and cutoff[key] > 0)
+    end
+  end
+
+  @doc "Whether a cutoff applies: it must be switched on and be a positive number."
+  def cutoff_enabled?(cutoff, key) do
+    Map.get(cutoff, "#{key}_enabled", true) and is_integer(cutoff[key]) and cutoff[key] > 0
   end
 
   @feature_defaults %{

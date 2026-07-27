@@ -121,9 +121,9 @@ Hooks.FilterLink = {
 Hooks.SetReviewedCommitCutoff = {
   mounted() {
     this.el.addEventListener("change", (e) => {
-      console.log(e.target.name, e.target.value);
+      const value = e.target.type === "checkbox" ? String(e.target.checked) : e.target.value;
       const formData = new FormData();
-      formData.append(e.target.name, e.target.value);
+      formData.append(e.target.name, value);
       fetch(`/api/reviewed_commit_cutoff`, { method: "post", body: formData })
     })
   }

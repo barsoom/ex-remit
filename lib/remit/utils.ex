@@ -36,6 +36,23 @@ defmodule Remit.Utils do
     date |> Calendar.strftime("%a %d %b")
   end
 
+  @doc """
+  Groups digits with thin spaces, so large counts stay readable.
+
+      iex> Remit.Utils.format_count(42)
+      "42"
+
+      iex> Remit.Utils.format_count(12345)
+      "12 345"
+  """
+  def format_count(number) when is_integer(number) do
+    number
+    |> Integer.to_string()
+    |> String.reverse()
+    |> String.replace(~r/(\d{3})(?=\d)/, "\\1 ")
+    |> String.reverse()
+  end
+
   def usernames_from_email(email) do
     # foo+bar+baz@example.com
     email

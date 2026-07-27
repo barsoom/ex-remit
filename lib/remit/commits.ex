@@ -11,19 +11,7 @@ defmodule Remit.Commits do
   def list_latest(filters, count)
 
   def list_latest(filters, count) do
-    filtered =
-      filters
-      |> Enum.reduce(Commit.listed(), &Commit.apply_filter(&2, &1))
-
-    unreviewed =
-      filtered
-      |> where([c], is_nil(c.reviewed_at))
-
-    reviewed =
-      filtered
-      |> where([c], not is_nil(c.reviewed_at))
-      |> Commit.apply_reviewed_cutoff(filters)
-      |> order_by([c], desc: c.id)
+    {unreviewed, reviewed} = filtered_legs(filters)
 
     # When the status filter pins us to one side, query just that side rather than unioning and
     # discarding half. The reviewed side goes through a subquery so its own cutoff limit isn't
@@ -41,6 +29,36 @@ defmodule Remit.Commits do
         |> limit(^count)
         |> Repo.all()
     end
+  end
+
+  @doc """
+  How many commits match the filters, ignoring the display limit.
+
+  Only worth calling when a result was actually truncated — it is a second query over the same
+  conditions, so we don't want it on every render.
+  """
+  def count_latest(filters) do
+    {unreviewed, reviewed} = filtered_legs(filters)
+
+    case Keyword.get(filters, :reviewed, "all") do
+      "unreviewed" -> Repo.aggregate(unreviewed, :count)
+      "reviewed" -> Repo.aggregate(subquery(reviewed), :count)
+      _ -> Repo.aggregate(subquery(union_all(unreviewed, ^reviewed)), :count)
+    end
+  end
+
+  defp filtered_legs(filters) do
+    filtered = Enum.reduce(filters, Commit.listed(), &Commit.apply_filter(&2, &1))
+
+    unreviewed = where(filtered, [c], is_nil(c.reviewed_at))
+
+    reviewed =
+      filtered
+      |> where([c], not is_nil(c.reviewed_at))
+      |> Commit.apply_reviewed_cutoff(filters)
+      |> order_by([c], desc: c.id)
+
+    {unreviewed, reviewed}
   end
 
   @doc "Distinct repo names across listed commits, for populating filter dropdowns."

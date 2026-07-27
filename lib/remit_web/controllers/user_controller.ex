@@ -42,6 +42,27 @@ defmodule RemitWeb.UserController do
     end)
   end
 
-  defp put_reviewed_commit_cutoff(cutoff, "days" = key, value), do: Map.put(cutoff, key, String.to_integer(value))
-  defp put_reviewed_commit_cutoff(cutoff, "commits" = key, value), do: Map.put(cutoff, key, String.to_integer(value))
+  defp put_reviewed_commit_cutoff(cutoff, key, value) when key in ~w[days commits] do
+    number =
+      case Integer.parse(String.trim(to_string(value))) do
+        {number, _} -> number
+        # blank, or not a number at all
+        :error -> 0
+      end
+
+    cutoff
+    |> Map.put(key, number)
+    |> Map.put("#{key}_enabled", true)
+    # 0 or blank switches the cutoff off, rather than storing a number that reads as on but isn't.
+    |> RemitWeb.LiveViewHelpers.normalize_cutoff(key)
+  end
+
+  defp put_reviewed_commit_cutoff(cutoff, key, value) when key in ~w[days_enabled commits_enabled] do
+    cutoff
+    |> Map.put(key, value in [true, "true", "on", "1"])
+    # Switching off restores the default number, so switching back on gives a working cutoff.
+    |> RemitWeb.LiveViewHelpers.normalize_cutoff(String.replace_suffix(key, "_enabled", ""))
+  end
+
+  defp put_reviewed_commit_cutoff(cutoff, _key, _value), do: cutoff
 end

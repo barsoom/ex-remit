@@ -13,6 +13,9 @@ config :remit,
   # If too low, we may miss stuff. If too high, performance may suffer.
   max_commits: 300,
   max_comments: 150,
+  # Defaults for the per-user "hide reviewed commits after" setting.
+  reviewed_commit_cutoff_days: 90,
+  reviewed_commit_cutoff_commits: 300,
   github_org_slug: {:system, "GITHUB_ORG_SLUG", ""},
   github_api_client: Remit.GitHubAPIClient,
   ignored_repo_prefixes: {:system, "IGNORED_REPO_PREFIXES", ""}

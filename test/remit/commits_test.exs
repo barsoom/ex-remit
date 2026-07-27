@@ -156,6 +156,75 @@ defmodule Remit.CommitsTest do
     end
   end
 
+  describe "list_latest/2 and the reviewed cutoff" do
+    setup do
+      old = Factory.insert!(:commit, sha: "old-reviewed", reviewed_at: DateTime.utc_now(), committed_at: days_ago(30))
+      new = Factory.insert!(:commit, sha: "new-reviewed", reviewed_at: DateTime.utc_now(), committed_at: days_ago(1))
+      unreviewed = Factory.insert!(:commit, sha: "unreviewed", reviewed_at: nil, committed_at: days_ago(30))
+      %{old: old, new: new, unreviewed: unreviewed}
+    end
+
+    test "a days cutoff hides reviewed commits older than it, but never unreviewed ones" do
+      shas = Commits.list_latest([reviewed_commit_cutoff_days: 7], 99) |> Enum.map(& &1.sha) |> Enum.sort()
+      assert shas == ["new-reviewed", "unreviewed"]
+    end
+
+    test "a commits cutoff limits how many reviewed commits are included" do
+      shas = Commits.list_latest([reviewed_commit_cutoff_commits: 1], 99) |> Enum.map(& &1.sha) |> Enum.sort()
+      assert shas == ["new-reviewed", "unreviewed"]
+    end
+
+    test "no cutoff filters means no cutoff is applied — this is what the 0 setting produces" do
+      shas = Commits.list_latest([], 99) |> Enum.map(& &1.sha) |> Enum.sort()
+      assert shas == ["new-reviewed", "old-reviewed", "unreviewed"]
+    end
+
+    test "the count argument caps the result even when no cutoff applies" do
+      # @max_commits is an unconditional ceiling: no user setting can lift it.
+      assert length(Commits.list_latest([], 2)) == 2
+      assert length(Commits.list_latest([], 1)) == 1
+    end
+
+    defp days_ago(days), do: DateTime.utc_now() |> DateTime.add(-days * 24 * 60 * 60)
+  end
+
+  describe "count_latest/1" do
+    test "counts every match, ignoring any display limit" do
+      for n <- 1..12, do: Factory.insert!(:commit, repo: "alpha", sha: "a#{n}")
+      for n <- 1..3, do: Factory.insert!(:commit, repo: "beta", sha: "b#{n}")
+
+      assert Commits.count_latest([]) == 15
+      assert length(Commits.list_latest([], 5)) == 5
+
+      assert Commits.count_latest(repos: ["alpha"]) == 12
+      assert Commits.count_latest(repos: ["beta"]) == 3
+    end
+
+    test "respects the reviewed status filter" do
+      Factory.insert!(:commit, reviewed_at: nil)
+      Factory.insert!(:commit, reviewed_at: nil)
+      Factory.insert!(:commit, reviewed_at: DateTime.utc_now())
+
+      assert Commits.count_latest(reviewed: "unreviewed") == 2
+      assert Commits.count_latest(reviewed: "reviewed") == 1
+      assert Commits.count_latest([]) == 3
+    end
+
+    test "respects the reviewed cutoff" do
+      Factory.insert!(:commit, reviewed_at: nil)
+      Factory.insert!(:commit, reviewed_at: DateTime.utc_now(), committed_at: days_ago(30))
+
+      assert Commits.count_latest([]) == 2
+      assert Commits.count_latest(reviewed_commit_cutoff_days: 7) == 1
+    end
+
+    test "agrees with list_latest when nothing is truncated" do
+      for n <- 1..4, do: Factory.insert!(:commit, sha: "s#{n}")
+
+      assert Commits.count_latest([]) == length(Commits.list_latest([], 99))
+    end
+  end
+
   describe "distinct_repos/0" do
     test "returns each listed repo once, sorted" do
       Factory.insert!(:commit, repo: "beta")

@@ -7,6 +7,20 @@ defmodule Remit.Comments do
     do_list_notifications(Enum.into(opts, %{}))
   end
 
+  @doc """
+  How many notifications match the filters, ignoring the display limit.
+
+  Only worth calling when a result was actually truncated — it is a second query over the same
+  conditions, so we don't want it on every render.
+  """
+  def count_notifications(opts) when is_list(opts) do
+    %{username: username, resolved_filter: resolved_filter, user_filter: user_filter} = opts = Enum.into(opts, %{})
+
+    notifications_query(username, resolved_filter, user_filter)
+    |> apply_search(Map.get(opts, :search, ""))
+    |> Repo.aggregate(:count)
+  end
+
   def list_other_comments_in_the_same_thread(comment) do
     comment |> Comment.other_comments_in_the_same_thread() |> Repo.all()
   end

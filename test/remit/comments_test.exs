@@ -55,6 +55,25 @@ defmodule Remit.CommentsTest do
       assert length(list([])) == 1
     end
 
+    test "count_notifications counts every match, ignoring the display limit" do
+      for n <- 1..8, do: notification_for("body #{n}")
+
+      assert Comments.count_notifications(username: nil, resolved_filter: "all", user_filter: "all") == 8
+      assert length(list(limit: 3)) == 3
+    end
+
+    test "count_notifications respects the search and resolved filters" do
+      notification_for("needle one", resolved_at: nil)
+      notification_for("needle two", resolved_at: DateTime.utc_now())
+      notification_for("other", resolved_at: nil)
+
+      base = [username: nil, user_filter: "all"]
+
+      assert Comments.count_notifications(base ++ [resolved_filter: "all", search: "needle"]) == 2
+      assert Comments.count_notifications(base ++ [resolved_filter: "unresolved", search: "needle"]) == 1
+      assert Comments.count_notifications(base ++ [resolved_filter: "all"]) == 3
+    end
+
     test "combines with the resolved filter" do
       notification_for("keep me", resolved_at: nil)
       notification_for("keep me too", resolved_at: DateTime.utc_now())

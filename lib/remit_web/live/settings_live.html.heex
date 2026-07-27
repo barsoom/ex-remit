@@ -98,14 +98,53 @@
         id="reviewed_commit_cutoff_form"
         phx-change="update_reviewed_commit_cutoff"
         phx-hook="SetReviewedCommitCutoff"
-        class="flex items-center gap-2 flex-wrap"
+        class="space-y-1"
       >
-        <span class="leading-none">Hide reviewed commits after</span>
-        <%= text_input(f, :days, value: @reviewed_commit_cutoff["days"], class: "w-10 text-center rounded-sm") %>
-        <span class="leading-none">days or</span>
-        <%= text_input(f, :commits, value: @reviewed_commit_cutoff["commits"], class: "w-14 text-center rounded-sm") %>
-        <span class="leading-none">commits</span>
-        <span class="leading-none text-gray-mid">(0 to disable)</span>
+        <% days_on = @reviewed_commit_cutoff["days_enabled"] %>
+        <% commits_on = @reviewed_commit_cutoff["commits_enabled"] %>
+
+        <label class="flex items-center gap-3 flex-wrap cursor-pointer select-none">
+          <div class="relative block w-11 h-6 shrink-0">
+            <%= checkbox(f, :days_enabled, checked: days_on, class: "sr-only peer") %>
+            <span class="block h-6 w-11 rounded-full bg-gray-300 dark:bg-gray-600 peer-checked:bg-blue-600 transition-colors duration-200">
+            </span>
+            <span class="absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-gray-50 shadow transition-transform duration-200 peer-checked:translate-x-5">
+            </span>
+          </div>
+          <span class={["leading-none", !days_on && "text-gray-mid"]}>Hide reviewed commits after</span>
+          <%= text_input(f, :days,
+            value: @reviewed_commit_cutoff["days"],
+            disabled: !days_on,
+            class: "w-10 text-center rounded-sm disabled:opacity-50"
+          ) %>
+          <span class={["leading-none", !days_on && "text-gray-mid"]}>days</span>
+        </label>
+        <p class="text-xs text-gray-mid ml-14">
+          Hides reviewed commits committed longer ago than this. Unreviewed commits are never hidden.
+          Default <%= @default_cutoff["days"] %>.
+        </p>
+
+        <label class="flex items-center gap-3 flex-wrap cursor-pointer select-none">
+          <div class="relative block w-11 h-6 shrink-0">
+            <%= checkbox(f, :commits_enabled, checked: commits_on, class: "sr-only peer") %>
+            <span class="block h-6 w-11 rounded-full bg-gray-300 dark:bg-gray-600 peer-checked:bg-blue-600 transition-colors duration-200">
+            </span>
+            <span class="absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-gray-50 shadow transition-transform duration-200 peer-checked:translate-x-5">
+            </span>
+          </div>
+          <span class={["leading-none", !commits_on && "text-gray-mid"]}>Hide reviewed commits after</span>
+          <%= text_input(f, :commits,
+            value: @reviewed_commit_cutoff["commits"],
+            disabled: !commits_on,
+            class: "w-14 text-center rounded-sm disabled:opacity-50"
+          ) %>
+          <span class={["leading-none", !commits_on && "text-gray-mid"]}>commits</span>
+        </label>
+        <p class="text-xs text-gray-mid ml-14">
+          Keeps only this many of the most recent reviewed commits.
+          Default <%= @default_cutoff["commits"] %>.
+          The list shows at most <%= Remit.Utils.format_count(@max_commits) %> commits either way.
+        </p>
       </.form>
 
       <label class="flex items-center gap-3 cursor-pointer select-none">

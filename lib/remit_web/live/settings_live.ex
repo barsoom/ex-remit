@@ -19,8 +19,10 @@ defmodule RemitWeb.SettingsLive do
     |> assign(username: github_login(session))
     |> assign_projects()
     |> assign_teams()
-    |> assign(reviewed_commit_cutoff: get_reviewed_commit_cutoff(session, %{"days" => 7, "commits" => 100}))
+    |> assign(reviewed_commit_cutoff: get_reviewed_commit_cutoff(session))
     |> assign(features: features)
+    |> assign(max_commits: Application.get_env(:remit, :max_commits))
+    |> assign(default_cutoff: default_reviewed_commit_cutoff())
     |> ok()
   end
 
@@ -67,17 +69,24 @@ defmodule RemitWeb.SettingsLive do
     |> noreply()
   end
 
-  def handle_event(
-        "update_reviewed_commit_cutoff",
-        %{"reviewed_commit_cutoff" => %{"days" => days, "commits" => commits}},
-        socket
-      ) do
-    Settings.broadcast(session_id(socket), :reviewed_commit_cutoff, %{
-      "days" => String.to_integer(days),
-      "commits" => String.to_integer(commits)
-    })
+  def handle_event("update_reviewed_commit_cutoff", %{"reviewed_commit_cutoff" => params}, socket) do
+    current = socket.assigns.reviewed_commit_cutoff
 
-    noreply(socket)
+    cutoff =
+      %{
+        "days" => submitted_number(params, "days", current),
+        "commits" => submitted_number(params, "commits", current),
+        "days_enabled" => checked?(params["days_enabled"]),
+        "commits_enabled" => checked?(params["commits_enabled"])
+      }
+      |> normalize_cutoff("days")
+      |> normalize_cutoff("commits")
+
+    Settings.broadcast(session_id(socket), :reviewed_commit_cutoff, cutoff)
+
+    socket
+    |> assign(reviewed_commit_cutoff: cutoff)
+    |> noreply()
   end
 
   @impl Phoenix.LiveView
@@ -210,6 +219,23 @@ defmodule RemitWeb.SettingsLive do
   end
 
   defp session_id(socket), do: socket.assigns.session_id
+
+  # A switched-off number input is disabled, so the browser leaves it out of the form entirely —
+  # keep what it held. A submitted but blank field, on the other hand, is a deliberate "off".
+  defp submitted_number(params, key, current) do
+    case Map.fetch(params, key) do
+      :error ->
+        current[key]
+
+      {:ok, raw} ->
+        case Integer.parse(String.trim(to_string(raw))) do
+          {number, _} -> number
+          :error -> 0
+        end
+    end
+  end
+
+  defp checked?(value), do: value in [true, "true", "on", "1"]
 
   defp projects(assigns) do
     ~H"""
