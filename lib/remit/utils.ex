@@ -37,7 +37,7 @@ defmodule Remit.Utils do
   end
 
   @doc """
-  Groups digits with thin spaces, so large counts stay readable.
+  Groups digits in threes with a space, so large counts stay readable.
 
       iex> Remit.Utils.format_count(42)
       "42"
