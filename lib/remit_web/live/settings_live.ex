@@ -239,8 +239,8 @@ defmodule RemitWeb.SettingsLive do
               Project
             </th>
             <%= for team <- @teams do %>
-              <th class="w-px py-1 px-2 font-semibold text-center whitespace-nowrap">
-                <%= team.name %>
+              <th class="w-px py-1 px-1 min-[650px]:px-2 font-semibold text-center" title={team.name}>
+                <span class="block truncate max-w-[2.5rem] min-[650px]:max-w-none"><%= team.name %></span>
               </th>
             <% end %>
           </tr>
@@ -261,7 +261,7 @@ defmodule RemitWeb.SettingsLive do
                 </span>
               </td>
               <%= for team <- @teams do %>
-                <td class="text-center py-1 px-2">
+                <td class="text-center py-1 px-1 min-[650px]:px-2">
                   <label class="block cursor-pointer" title={"#{team.name} owns #{project}"}>
                     <input
                       type="checkbox"
