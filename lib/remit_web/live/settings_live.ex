@@ -35,6 +35,18 @@ defmodule RemitWeb.SettingsLive do
     noreply(socket)
   end
 
+  def handle_event("toggle_project_owner", %{"project" => project, "team" => slug}, socket) do
+    team = Remit.Team.get_by_slug(slug)
+
+    if project in team.projects do
+      Remit.Team.remove_project(team, project)
+    else
+      Remit.Team.add_project(team, project)
+    end
+
+    noreply(socket)
+  end
+
   def handle_event("toggle_feature", %{"feature" => feature}, socket) do
     new_flags = Map.update(socket.assigns.features, feature, false, &(!&1))
     Settings.broadcast(session_id(socket), :feature_flags, new_flags)
@@ -207,11 +219,7 @@ defmodule RemitWeb.SettingsLive do
     ]}>
       <h2 class="font-semibold text-xs mb-2 uppercase">Project ownership</h2>
       <%= if @compact do %>
-        <div class="divide-y divide-gray-300 dark:divide-gray-600">
-          <%= for {project, project_teams} <- @projects do %>
-            <.project_row project={project} project_teams={project_teams} all_teams={@teams} />
-          <% end %>
-        </div>
+        <.project_matrix projects={@projects} teams={@teams} />
       <% else %>
         <%= for {project, project_teams} <- @projects do %>
           <.project project={project} project_teams={project_teams} teams={@teams} />
@@ -221,46 +229,55 @@ defmodule RemitWeb.SettingsLive do
     """
   end
 
-  defp project_row(assigns) do
+  defp project_matrix(assigns) do
     ~H"""
-    <% available_teams = @all_teams -- @project_teams %>
-    <div class="flex flex-col sm:flex-row sm:items-start sm:flex-wrap gap-x-3 gap-y-1 py-2 sm:min-h-[2rem]">
-      <span class="font-semibold text-xs sm:w-32 sm:shrink-0 sm:mt-0.5"><%= @project %></span>
-      <div class="flex flex-wrap gap-1 sm:flex-1 min-w-0">
-        <%= if @project_teams == [] do %>
-          <span class="text-red-600 dark:text-red-400 text-xs italic">unclaimed</span>
-        <% else %>
-          <%= for team <- @project_teams do %>
-            <span class="inline-flex items-center gap-1 pl-2 pr-1.5 py-0.5 text-xs bg-gray-700 dark:bg-gray-600 dark:text-gray-dark text-white rounded-full select-none max-w-full break-all">
-              <%= team.name %>
-              <span
-                phx-click="remove_project_owner"
-                phx-value-project={@project}
-                phx-value-team={team.slug}
-                class="cursor-pointer text-gray-400 hover:text-white leading-none shrink-0"
-              >
-                ×
-              </span>
-            </span>
-          <% end %>
-        <% end %>
-      </div>
-      <%= if available_teams != [] do %>
-        <.form
-          for={%{}}
-          as={:project}
-          phx-submit="add_project_owner"
-          class="flex items-center gap-1 shrink-0 sm:ml-auto max-w-full"
-        >
-          <input type="hidden" name="project" value={@project} />
-          <select name="team" class="text-xs h-5 py-0 min-w-0 max-w-full">
-            <%= for team <- available_teams do %>
-              <option value={team.slug}><%= team.name %></option>
+    <div class="overflow-x-auto overflow-y-visible -mx-3 px-3">
+      <table class="text-xs border-collapse w-full">
+        <thead>
+          <tr class="sticky top-0 z-10 bg-gray-100 dark:bg-gray-800">
+            <th class="sticky left-0 z-20 w-full bg-gray-100 dark:bg-gray-800 text-left font-semibold py-1 pr-3">
+              Project
+            </th>
+            <%= for team <- @teams do %>
+              <th class="w-px py-1 px-2 font-semibold text-center whitespace-nowrap">
+                <%= team.name %>
+              </th>
             <% end %>
-          </select>
-          <%= submit("Add", class: "text-xs h-5 px-2 py-0") %>
-        </.form>
-      <% end %>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-300 dark:divide-gray-600">
+          <%= for {project, project_teams} <- @projects do %>
+            <% owned_slugs = MapSet.new(project_teams, & &1.slug) %>
+            <tr class="hover:bg-gray-200 dark:hover:bg-gray-700 group">
+              <td class="sticky left-0 z-10 bg-gray-100 dark:bg-gray-800 group-hover:bg-gray-200 dark:group-hover:bg-gray-700 py-1 pr-3 break-words">
+                <span
+                  class={project_teams == [] && "text-red-600 dark:text-red-400"}
+                  title={project_teams == [] && "Unclaimed"}
+                >
+                  <%= project %>
+                  <%= if project_teams == [] do %>
+                    <i class="fas fa-exclamation-triangle ml-1"></i>
+                  <% end %>
+                </span>
+              </td>
+              <%= for team <- @teams do %>
+                <td class="text-center py-1 px-2">
+                  <label class="block cursor-pointer" title={"#{team.name} owns #{project}"}>
+                    <input
+                      type="checkbox"
+                      class="cursor-pointer align-middle"
+                      checked={MapSet.member?(owned_slugs, team.slug)}
+                      phx-click="toggle_project_owner"
+                      phx-value-project={project}
+                      phx-value-team={team.slug}
+                    />
+                  </label>
+                </td>
+              <% end %>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
     </div>
     """
   end
