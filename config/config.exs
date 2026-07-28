@@ -49,6 +49,8 @@ config :sentry,
   enable_source_code_context: true,
   root_source_code_paths: [File.cwd!()],
   in_app_otp_apps: [:remit],
+  enable_logs: true,
+  logs: [level: :warning, metadata: :all, capture_metadata: :all],
   traces_sampler: &Remit.SentrySampler.sample/1
 
 config :opentelemetry,

@@ -49,15 +49,7 @@ if config_env() == :prod do
 end
 
 if config_env() != :test do
-  sentry_dsn = System.get_env("SENTRY_DSN")
-
-  if sentry_dsn do
-    config :remit, :logger, [
-      {:handler, :remit_sentry_log_handler, Sentry.LoggerHandler, %{config: %{metadata: :all}}}
-    ]
-  end
-
   config :sentry,
-    dsn: sentry_dsn,
+    dsn: System.get_env("SENTRY_DSN"),
     environment_name: System.get_env("SENTRY_ENVIRONMENT", Atom.to_string(config_env()))
 end
