@@ -48,6 +48,7 @@ config :tesla, adapter: {Tesla.Adapter.Finch, name: Remit.Finch}
 config :sentry,
   enable_source_code_context: true,
   root_source_code_paths: [File.cwd!()],
+  in_app_otp_apps: [:remit],
   traces_sampler: &Remit.SentrySampler.sample/1
 
 config :opentelemetry,
