@@ -90,8 +90,8 @@ defmodule Remit.MixProject do
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate", "test"],
+      # npm install provides the Tailwind CLI, so it has to come first.
       "assets.setup": [
-        "tailwind.install --if-missing",
         "cmd npm install --prefix assets",
         "esbuild.install --if-missing"
       ],

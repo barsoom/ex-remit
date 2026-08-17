@@ -70,8 +70,12 @@ config :esbuild,
     env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
   ]
 
+# We run the npm-installed Tailwind CLI rather than the standalone binary: the
+# standalone bundles its own old Node, which our PostCSS plugins have outgrown.
+# The version lives in assets/package.json.
 config :tailwind,
-  version: "3.2.7",
+  version_check: false,
+  path: Path.expand("../assets/node_modules/.bin/tailwindcss", __DIR__),
   default: [
     args: ~w(
       --config=tailwind.config.js
