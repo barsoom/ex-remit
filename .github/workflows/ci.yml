@@ -116,6 +116,8 @@ jobs:
         env:
           DOCKER_BUILD_SUMMARY: false
         with:
+          outputs: type=image,oci-mediatypes=false
+          provenance: false
           build-args: |
             MIX_ENV=prod
             APP_NAME=remit
