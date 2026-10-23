@@ -10,6 +10,11 @@ import Config
 # which you should run after static files are built and
 # before starting your production server.
 
+# Redirect HTTP to HTTPS behind a TLS-terminating proxy (e.g. Heroku), which matters
+# because the auth_key is passed in the URL. Phoenix reads force_ssl at compile time,
+# so it must be set here, not in runtime.exs.
+config :remit, RemitWeb.Endpoint, force_ssl: [rewrite_on: [:x_forwarded_proto]]
+
 # Do not print debug messages in production
 config :logger, level: :info
 
