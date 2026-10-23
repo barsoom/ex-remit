@@ -9,25 +9,25 @@
   ]}>
     <div class={["flex-1 min-w-0", if(@features["compact_design"], do: "", else: "my-6")]}>
       <%= if @username do %>
-        Logged in as: <span class="font-bold"><%= @username %></span>
-        · <%= link("Log out",
+        Logged in as: <span class="font-bold">{@username}</span>
+        · {link("Log out",
           to: ~p"/settings",
           id: "logout",
           class: ~w(cursor-pointer underline),
           "phx-hook": "Logout"
-        ) %>
+        )}
       <% else %>
-        <%= link("Log in with GitHub", to: ~p"/login") %>
+        {link("Log in with GitHub", to: ~p"/login")}
       <% end %>
     </div>
 
     <%= if @username do %>
-      <%= github_avatar(@username, if(@features["compact_design"], do: 40, else: 80),
+      {github_avatar(@username, if(@features["compact_design"], do: 40, else: 80),
         alt: "",
         class: "ml-3",
         tooltip: "Behold! Your GitHub avatar!",
         tooltip_pos: "left"
-      ) %>
+      )}
     <% end %>
   </div>
 
@@ -37,22 +37,22 @@
       "bg-gray-100 dark:bg-gray-800 px-3 py-4 mt-6 paragraphs",
       @features["compact_design"] && "rounded-xl shadow-sm"
     ]}>
-      <%= link("Import team members from GitHub",
+      {link("Import team members from GitHub",
         to: ~p"/settings",
         id: "update-github-teams",
         "phx-hook": "UpdateGithubTeams"
-      ) %>
+      )}
 
       <p>
         This is only necessary when team membership changes.
       </p>
 
       <p>
-        This will only update the teams that are <%= link("visible to you on GitHub",
+        This will only update the teams that are {link("visible to you on GitHub",
           to: "https://github.com/orgs/#{Remit.Config.github_org_slug()}/teams"
-        ) %>.
+        )}.
         If you're not seeing the changes you expect, ask a member of the
-        <span class="font-semibold"><%= Remit.Config.github_org_slug() %></span>
+        <span class="font-semibold">{Remit.Config.github_org_slug()}</span>
         organization with higher access to do this.
       </p>
     </div>
@@ -105,45 +105,41 @@
 
         <label class="flex items-center gap-3 flex-wrap cursor-pointer select-none">
           <div class="relative block w-11 h-6 shrink-0">
-            <%= checkbox(f, :days_enabled, checked: days_on, class: "sr-only peer") %>
-            <span class="block h-6 w-11 rounded-full bg-gray-300 dark:bg-gray-600 peer-checked:bg-blue-600 transition-colors duration-200">
-            </span>
-            <span class="absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-gray-50 shadow transition-transform duration-200 peer-checked:translate-x-5">
-            </span>
+            {checkbox(f, :days_enabled, checked: days_on, class: "sr-only peer")}
+            <span class="block h-6 w-11 rounded-full bg-gray-300 dark:bg-gray-600 peer-checked:bg-blue-600 transition-colors duration-200"></span>
+            <span class="absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-gray-50 shadow transition-transform duration-200 peer-checked:translate-x-5"></span>
           </div>
           <span class={["leading-none", !days_on && "text-gray-mid"]}>Hide reviewed commits after</span>
-          <%= text_input(f, :days,
+          {text_input(f, :days,
             value: @reviewed_commit_cutoff["days"],
             disabled: !days_on,
             class: "w-10 text-center rounded-sm disabled:opacity-50"
-          ) %>
+          )}
           <span class={["leading-none", !days_on && "text-gray-mid"]}>days</span>
         </label>
         <p class="text-xs text-gray-mid ml-14">
           Hides reviewed commits committed longer ago than this. Unreviewed commits are never hidden.
-          Default <%= @default_cutoff["days"] %>.
+          Default {@default_cutoff["days"]}.
         </p>
 
         <label class="flex items-center gap-3 flex-wrap cursor-pointer select-none">
           <div class="relative block w-11 h-6 shrink-0">
-            <%= checkbox(f, :commits_enabled, checked: commits_on, class: "sr-only peer") %>
-            <span class="block h-6 w-11 rounded-full bg-gray-300 dark:bg-gray-600 peer-checked:bg-blue-600 transition-colors duration-200">
-            </span>
-            <span class="absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-gray-50 shadow transition-transform duration-200 peer-checked:translate-x-5">
-            </span>
+            {checkbox(f, :commits_enabled, checked: commits_on, class: "sr-only peer")}
+            <span class="block h-6 w-11 rounded-full bg-gray-300 dark:bg-gray-600 peer-checked:bg-blue-600 transition-colors duration-200"></span>
+            <span class="absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-gray-50 shadow transition-transform duration-200 peer-checked:translate-x-5"></span>
           </div>
           <span class={["leading-none", !commits_on && "text-gray-mid"]}>Hide reviewed commits after</span>
-          <%= text_input(f, :commits,
+          {text_input(f, :commits,
             value: @reviewed_commit_cutoff["commits"],
             disabled: !commits_on,
             class: "w-14 text-center rounded-sm disabled:opacity-50"
-          ) %>
+          )}
           <span class={["leading-none", !commits_on && "text-gray-mid"]}>commits</span>
         </label>
         <p class="text-xs text-gray-mid ml-14">
           Keeps only this many of the most recent reviewed commits.
-          Default <%= @default_cutoff["commits"] %>.
-          The list shows at most <%= Remit.Utils.format_count(@max_commits) %> commits either way.
+          Default {@default_cutoff["commits"]}.
+          The list shows at most {Remit.Utils.format_count(@max_commits)} commits either way.
         </p>
       </.form>
 

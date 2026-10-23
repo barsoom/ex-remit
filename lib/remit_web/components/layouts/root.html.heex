@@ -7,7 +7,7 @@
     <meta name="csrf-token" content={get_csrf_token()} />
     <meta name="auth_key" content={Plug.Conn.get_session(@conn, "auth_key")} />
     <.live_title suffix=" · Remit">
-      <%= assigns[:page_title] || "Remit" %>
+      {assigns[:page_title] || "Remit"}
     </.live_title>
     <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
     <link
@@ -25,7 +25,7 @@
     data-username={RemitWeb.LiveViewHelpers.github_login(Plug.Conn.get_session(@conn)) || ""}
   >
     <div class="mx-auto max-w-3xl min-h-screen bg-white shadow-2xl">
-      <%= @inner_content %>
+      {@inner_content}
     </div>
   </body>
 </html>

@@ -2,8 +2,8 @@ defmodule RemitWeb.LiveViewHelpers do
   @moduledoc false
   alias Remit.Commit
   alias RemitWeb.Router.Helpers, as: Routes
-  import Phoenix.HTML.Link
-  import Phoenix.HTML.Tag
+  import PhoenixHTMLHelpers.Link
+  import PhoenixHTMLHelpers.Tag
 
   @small_commit_px 25
 

@@ -11,7 +11,7 @@ defmodule RemitWeb.Layouts do
         <i class={["fas", @icon]}></i>
         <%= if @notification_count && @notification_count > 0 do %>
           <span class="inline-flex items-center justify-center absolute top-0 -right-2.5 min-w-[0.75rem] h-3 px-1 text-[8px] font-light leading-none text-red-100 dark:text-blue-100 bg-red-600 dark:bg-blue-600 rounded-full">
-            <%= @notification_count %>
+            {@notification_count}
           </span>
         <% else %>
           <%= if @show_notification_bell do %>
@@ -19,7 +19,7 @@ defmodule RemitWeb.Layouts do
           <% end %>
         <% end %>
       </span>
-      <span class="tabs__tab__text"><%= @text %></span>
+      <span class="tabs__tab__text">{@text}</span>
     </.link>
     """
   end

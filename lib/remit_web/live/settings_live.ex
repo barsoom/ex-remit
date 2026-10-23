@@ -2,7 +2,7 @@ defmodule RemitWeb.SettingsLive do
   use RemitWeb, :live_view
   require Logger
   alias Remit.{GithubAuth, Ownership, Settings}
-  import Phoenix.HTML.{Form, Link}
+  import PhoenixHTMLHelpers.{Form, Link}
 
   @impl Phoenix.LiveView
   def mount(_params, session, socket) do
@@ -135,19 +135,17 @@ defmodule RemitWeb.SettingsLive do
           class="sr-only peer"
           disabled={!assigns[:opt_in]}
         />
-        <span class="block h-6 w-11 rounded-full bg-gray-300 peer-checked:bg-blue-600 transition-colors duration-200">
-        </span>
-        <span class="absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-gray-50 shadow transition-transform duration-200 peer-checked:translate-x-5">
-        </span>
+        <span class="block h-6 w-11 rounded-full bg-gray-300 peer-checked:bg-blue-600 transition-colors duration-200"></span>
+        <span class="absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-gray-50 shadow transition-transform duration-200 peer-checked:translate-x-5"></span>
       </div>
       <div class="flex-1 min-w-0">
         <div class="flex items-center gap-2">
-          <span class="leading-none"><%= @label %></span>
+          <span class="leading-none">{@label}</span>
           <%= if assigns[:todo] do %>
             <span class="text-xs text-yellow-600 bg-yellow-100 px-1.5 py-0.5 rounded" title="Work in progress">🚧 WIP</span>
           <% end %>
         </div>
-        <p class="text-xs text-gray-mid mt-0.5"><%= @description %></p>
+        <p class="text-xs text-gray-mid mt-0.5">{@description}</p>
       </div>
     </label>
     """
@@ -164,14 +162,12 @@ defmodule RemitWeb.SettingsLive do
           phx-value-feature={@feature}
           class="sr-only peer"
         />
-        <span class="block h-6 w-11 rounded-full bg-gray-300 peer-checked:bg-blue-600 transition-colors duration-200">
-        </span>
-        <span class="absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-gray-50 shadow transition-transform duration-200 peer-checked:translate-x-5">
-        </span>
+        <span class="block h-6 w-11 rounded-full bg-gray-300 peer-checked:bg-blue-600 transition-colors duration-200"></span>
+        <span class="absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-gray-50 shadow transition-transform duration-200 peer-checked:translate-x-5"></span>
       </div>
       <div class="flex-1 min-w-0">
-        <span class="leading-none"><%= @label %></span>
-        <p class="text-xs text-gray-mid mt-0.5"><%= @description %></p>
+        <span class="leading-none">{@label}</span>
+        <p class="text-xs text-gray-mid mt-0.5">{@description}</p>
       </div>
     </label>
     """
@@ -188,11 +184,9 @@ defmodule RemitWeb.SettingsLive do
         class="sr-only peer"
       />
       <%!-- Track --%>
-      <span class="block h-6 w-11 rounded-full bg-gray-300 dark:bg-gray-600 peer-checked:bg-blue-600 transition-colors duration-200">
-      </span>
+      <span class="block h-6 w-11 rounded-full bg-gray-300 dark:bg-gray-600 peer-checked:bg-blue-600 transition-colors duration-200"></span>
       <%!-- Thumb --%>
-      <span class="absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-gray-50 shadow transition-transform duration-200 peer-checked:translate-x-5">
-      </span>
+      <span class="absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-gray-50 shadow transition-transform duration-200 peer-checked:translate-x-5"></span>
       <%!-- Moon icon (visible when dark theme on) --%>
       <span class="absolute left-1.5 top-1.5 hidden peer-checked:block text-white" style="font-size: 10px; line-height: 1;">
         <i class="fas fa-moon"></i>
@@ -266,7 +260,7 @@ defmodule RemitWeb.SettingsLive do
             </th>
             <%= for team <- @teams do %>
               <th class="w-px py-1 px-1 min-[650px]:px-2 font-semibold text-center" title={team.name}>
-                <span class="block truncate max-w-[2.5rem] min-[650px]:max-w-none"><%= team.name %></span>
+                <span class="block truncate max-w-[2.5rem] min-[650px]:max-w-none">{team.name}</span>
               </th>
             <% end %>
           </tr>
@@ -280,7 +274,7 @@ defmodule RemitWeb.SettingsLive do
                   class={project_teams == [] && "text-red-600 dark:text-red-400"}
                   title={project_teams == [] && "Unclaimed"}
                 >
-                  <%= project %>
+                  {project}
                   <%= if project_teams == [] do %>
                     <i class="fas fa-exclamation-triangle ml-1"></i>
                   <% end %>
@@ -312,7 +306,7 @@ defmodule RemitWeb.SettingsLive do
     ~H"""
     <div class="mb-1">
       <div class="flex">
-        <span class="flex-1 font-semibold"><%= @project %></span>
+        <span class="flex-1 font-semibold">{@project}</span>
         <.team_dropdown project={@project} teams={@teams -- @project_teams} />
       </div>
       <.teams project={@project} teams={@project_teams} />
@@ -328,10 +322,10 @@ defmodule RemitWeb.SettingsLive do
       <input type="hidden" name="project" value={@project} />
       <select name="team">
         <%= for team <- @teams do %>
-          <option value={team.slug}><%= team.name %></option>
+          <option value={team.slug}>{team.name}</option>
         <% end %>
       </select>
-      <%= submit("add owner") %>
+      {submit("add owner")}
     </.form>
     """
   end
@@ -349,7 +343,7 @@ defmodule RemitWeb.SettingsLive do
         <.form for={%{}} as={:project} phx-submit="remove_project_owner">
           <input type="hidden" name="project" value={@project} />
           <input type="hidden" name="team" value={team.slug} />
-          <li class="ml-3"><%= team.name %><%= submit("remove", class: "ml-2") %></li>
+          <li class="ml-3">{team.name}{submit("remove", class: "ml-2")}</li>
         </.form>
       <% end %>
     </ul>

@@ -104,8 +104,7 @@
         <% end %>
 
         <div class="relative">
-          <i class="fas fa-search absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 text-[10px] pointer-events-none">
-          </i>
+          <i class="fas fa-search absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 text-[10px] pointer-events-none"></i>
           <input
             type="search"
             placeholder="Search…"
@@ -121,25 +120,25 @@
       <% end %>
 
       <p>
-        <%= filter_link(@socket, assigns, :comments, "filter-comment-unresolved", "Unresolved", is: "unresolved") %> · <%= filter_link(
+        {filter_link(@socket, assigns, :comments, "filter-comment-unresolved", "Unresolved", is: "unresolved")} · {filter_link(
           @socket,
           assigns,
           :comments,
           "filter-comment-resolved",
           "Resolved",
           is: "resolved"
-        ) %> · <%= filter_link(@socket, assigns, :comments, "filter-comment-all", "All comments", is: "all") %>
+        )} · {filter_link(@socket, assigns, :comments, "filter-comment-all", "All comments", is: "all")}
       </p>
       <%= if @username do %>
         <p>
-          <%= filter_link(@socket, assigns, :comments, "filter-comment-for-me", "For me", role: "for_me") %> · <%= filter_link(
+          {filter_link(@socket, assigns, :comments, "filter-comment-for-me", "For me", role: "for_me")} · {filter_link(
             @socket,
             assigns,
             :comments,
             "filter-comment-by-me",
             "By me",
             role: "by_me"
-          ) %> · <%= filter_link(@socket, assigns, :comments, "filter-comment-by-all", "For anyone", role: "all") %>
+          )} · {filter_link(@socket, assigns, :comments, "filter-comment-by-all", "For anyone", role: "all")}
         </p>
       <% end %>
     <% end %>
@@ -168,9 +167,7 @@
     <%= if @truncated? do %>
       <p class="px-3 py-3 text-xs text-center text-gray-mid" data-truncation-notice>
         <i class="fas fa-info-circle mr-0.5"></i>
-        Showing the latest <%= Remit.Utils.format_count(@max_comments) %> of <%= Remit.Utils.format_count(
-          @total_matching
-        ) %> matching comments. Narrow your filters to see the rest.
+        Showing the latest {Remit.Utils.format_count(@max_comments)} of {Remit.Utils.format_count(@total_matching)} matching comments. Narrow your filters to see the rest.
       </p>
     <% end %>
   <% end %>

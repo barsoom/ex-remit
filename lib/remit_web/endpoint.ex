@@ -24,7 +24,7 @@ defmodule RemitWeb.Endpoint do
   socket "/live", Phoenix.LiveView.Socket,
     websocket: [
       # Timeout for Heroku: https://hexdocs.pm/phoenix/heroku.html#making-our-project-ready-for-heroku
-      websocket: [timeout: 45_000],
+      timeout: 45_000,
       connect_info: [session: @session_options]
     ]
 

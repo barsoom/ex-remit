@@ -33,7 +33,7 @@
                   <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
                     <input type="checkbox" checked={author in @selected_authors} data-authors-value={author} />
                     <span class="text-xs">
-                      <%= author %>
+                      {author}
                     </span>
                   </label>
                 <% end %>
@@ -68,7 +68,7 @@
                 <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
                   <input type="checkbox" checked={team.slug in @selected_project_teams} data-projects-team={team.slug} />
                   <span class="text-xs">
-                    <%= team.name %>
+                    {team.name}
                   </span>
                 </label>
               <% end %>
@@ -102,7 +102,7 @@
                 <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
                   <input type="checkbox" checked={team.slug in @selected_member_teams} data-members-team={team.slug} />
                   <span class="text-xs">
-                    <%= team.name %>
+                    {team.name}
                   </span>
                 </label>
               <% end %>
@@ -185,7 +185,7 @@
                 <label class="flex items-center gap-2 px-3 py-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer whitespace-nowrap">
                   <input type="checkbox" checked={repo in @selected_repos} data-repos-value={repo} />
                   <span class="text-xs">
-                    <%= repo %>
+                    {repo}
                   </span>
                 </label>
               <% end %>
@@ -194,8 +194,7 @@
         </div>
 
         <div class="relative">
-          <i class="fas fa-search absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 text-[10px] pointer-events-none">
-          </i>
+          <i class="fas fa-search absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 text-[10px] pointer-events-none"></i>
           <input
             type="search"
             placeholder="Search…"
@@ -208,37 +207,37 @@
     <% else %>
       <%= if @username do %>
         <p>
-          Authored by: <%= filter_link(@socket, assigns, :commits, "filter-commit-by-author", "All",
+          Authored by: {filter_link(@socket, assigns, :commits, "filter-commit-by-author-all", "All",
             commits_of_author: "all"
-          ) %> · <%= filter_link(
+          )} · {filter_link(
             @socket,
             assigns,
             :commits,
-            "filter-commit-by-author",
+            "filter-commit-by-author-me",
             "Me",
             commits_of_author: @username
-          ) %>
+          )}
         </p>
       <% end %>
       <p>
-        In projects of team: <%= filter_link(@socket, assigns, :commits, "filter-commit-project-team-all", "All",
+        In projects of team: {filter_link(@socket, assigns, :commits, "filter-commit-project-team-all", "All",
           projects_of_team: "all"
-        ) %>
+        )}
         <%= for team <- @all_teams do %>
-          · <%= filter_link(@socket, assigns, :commits, "filter-commit-project-team-#{team.slug}", team.name,
+          · {filter_link(@socket, assigns, :commits, "filter-commit-project-team-#{team.slug}", team.name,
             projects_of_team: team.slug
-          ) %>
+          )}
         <% end %>
       </p>
       <%= if Remit.Config.has_github_org? do %>
         <p>
-          By members of team: <%= filter_link(@socket, assigns, :commits, "filter-commit-member-team-all", "All",
+          By members of team: {filter_link(@socket, assigns, :commits, "filter-commit-member-team-all", "All",
             members_of_team: "all"
-          ) %>
+          )}
           <%= for team <- @all_teams do %>
-            · <%= filter_link(@socket, assigns, :commits, "filter-commit-member-team-#{team.slug}", team.name,
+            · {filter_link(@socket, assigns, :commits, "filter-commit-member-team-#{team.slug}", team.name,
               members_of_team: team.slug
-            ) %>
+            )}
           <% end %>
         </p>
       <% end %>
@@ -256,16 +255,15 @@
             <i class="fas fa-trophy text-yellow-mid"></i> Nothing left to review!
           <% else %>
             <span>
-              <i class="fas fa-eye mr-0.5"></i> <b class="text-almost-black"><%= @unreviewed_count %></b> to review
+              <i class="fas fa-eye mr-0.5"></i> <b class="text-almost-black">{@unreviewed_count}</b> to review
             </span>
             <span>·</span>
             <span>
-              <i class="fas fa-users mr-0.5"></i> <b class="text-almost-black"><%= @others_unreviewed_count %></b>
-              by others
+              <i class="fas fa-users mr-0.5"></i> <b class="text-almost-black">{@others_unreviewed_count}</b> by others
             </span>
             <span>·</span>
             <span>
-              <i class="fas fa-user mr-0.5"></i> <b class="text-almost-black"><%= @my_unreviewed_count %></b> by you
+              <i class="fas fa-user mr-0.5"></i> <b class="text-almost-black">{@my_unreviewed_count}</b> by you
             </span>
             <%= if @oldest_overlong_in_review_by_me do %>
               <span>·</span>
@@ -290,14 +288,14 @@
                 phx-hook="ScrollToTarget"
                 title="Go to the oldest unreviewed"
               >
-                ↓ <%= Utils.format_datetime(@oldest_unreviewed_for_me.committed_at) %>
+                ↓ {Utils.format_datetime(@oldest_unreviewed_for_me.committed_at)}
               </a>
             <% end %>
           <% end %>
         <% else %>
           <span>Please <.link patch={~p"/settings"}>log in</.link></span>
           <span>·</span>
-          <span><b><%= @unreviewed_count %></b> to review</span>
+          <span><b>{@unreviewed_count}</b> to review</span>
         <% end %>
       </div>
     <% else %>
@@ -309,9 +307,10 @@
             </p>
           <% else %>
             <p>
-              There's <b><%= @unreviewed_count %></b>
-              commit<%= if @unreviewed_count != 1, do: "s" %> to review
-              (<b><%= @others_unreviewed_count %></b> by others; <b><%= @my_unreviewed_count %></b>
+              There's <b>{@unreviewed_count}</b>
+              commit{if @unreviewed_count != 1, do: "s"} to review
+              (<b>{@others_unreviewed_count}</b>
+              by others; <b>{@my_unreviewed_count}</b>
               by you).
               <%= cond do %>
                 <% @oldest_overlong_in_review_by_me -> %>
@@ -340,7 +339,7 @@
                       id="for-phx-hook-oldest-unreviewed"
                       phx-hook="ScrollToTarget"
                     >
-                      <%= Utils.format_datetime(@oldest_unreviewed_for_me.committed_at) %>
+                      {Utils.format_datetime(@oldest_unreviewed_for_me.committed_at)}
                     </a>
                     next.
                   </p>
@@ -360,7 +359,7 @@
               <i class="fas fa-trophy text-yellow-mid"></i> Nothing left to review!
             </p>
           <% else %>
-            <p>There's <b><%= @unreviewed_count %></b> commit<%= if @unreviewed_count != 1, do: "s" %> to review.</p>
+            <p>There's <b>{@unreviewed_count}</b> commit{if @unreviewed_count != 1, do: "s"} to review.</p>
           <% end %>
         <% end %>
       </div>
@@ -395,9 +394,7 @@
     <%= if @truncated? do %>
       <p class="px-3 py-3 text-xs text-center text-gray-mid" data-truncation-notice>
         <i class="fas fa-info-circle mr-0.5"></i>
-        Showing the latest <%= Remit.Utils.format_count(@max_commits) %> of <%= Remit.Utils.format_count(
-          @total_matching
-        ) %> matching commits. Narrow your filters to see the rest.
+        Showing the latest {Remit.Utils.format_count(@max_commits)} of {Remit.Utils.format_count(@total_matching)} matching commits. Narrow your filters to see the rest.
       </p>
     <% end %>
   <% end %>

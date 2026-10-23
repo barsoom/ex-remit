@@ -4,13 +4,13 @@
       <div class="flex items-center gap-3 px-3 py-1.5">
         <div class="flex-1 h-px bg-gray-light"></div>
         <span class="text-xs uppercase font-semibold tracking-wider text-gray-mid">
-          <%= @commit.date_separator_before |> Utils.format_date() %>
+          {@commit.date_separator_before |> Utils.format_date()}
         </span>
         <div class="flex-1 h-px bg-gray-light"></div>
       </div>
     <% else %>
       <h2 class="header-box">
-        <%= @commit.date_separator_before |> Utils.format_date() %>
+        {@commit.date_separator_before |> Utils.format_date()}
       </h2>
     <% end %>
   <% end %>
@@ -48,7 +48,7 @@
         if(@reviewed?, do: "opacity-40")
       ]}>
         <%= for username <- @commit.usernames do %>
-          <%= github_avatar(
+          {github_avatar(
             username,
             cond do
               @compact -> 28
@@ -56,7 +56,7 @@
               true -> 45
             end,
             tooltip_pos: "up-left"
-          ) %>
+          )}
         <% end %>
       </div>
     <% end %>
@@ -66,14 +66,14 @@
       #{if @you_authored?, do: " opacity-50"}
     "}>
       <p class={if @reviewed? || @you_authored?, do: "inline", else: "mb-1"}>
-        <%= Commit.message_summary(@commit) %>
+        {Commit.message_summary(@commit)}
         <%= if assigns[:comment_count] && assigns[:comment_count] > 0 do %>
           <span
             class="inline-flex items-center gap-0.5 text-[10px] text-gray-400 dark:text-gray-500 align-middle ml-1"
             title={"#{assigns[:comment_count]} comment#{if assigns[:comment_count] != 1, do: "s"}"}
           >
             <i class="far fa-comment"></i>
-            <%= assigns[:comment_count] %>
+            {assigns[:comment_count]}
           </span>
         <% end %>
       </p>
@@ -81,12 +81,12 @@
         <%= if @commit.usernames == [] && !@reviewed? do %>
           <RemitWeb.NoUsernameComponent.render />
         <% end %>
-        in <%= content_tag(
+        in {content_tag(
           if(@reviewed? || @you_authored?, do: :span, else: :b),
           @commit.repo,
           tooltip_attributes("#{@commit.owner}/#{@commit.repo}")
-        ) %>
-        <%= Utils.format_time(@commit.committed_at) %>
+        )}
+        {Utils.format_time(@commit.committed_at)}
       </p>
     </div>
 
@@ -134,19 +134,19 @@
           In review<span class="bouncy-ellipsis"><span>.</span><span>.</span><span>.</span></span>
         </span>
 
-        <%= github_avatar(@commit.review_started_by_username, :small_commit,
+        {github_avatar(@commit.review_started_by_username, :small_commit,
           class: "opacity-75",
           tooltip_pos: "up-right"
-        ) %>
+        )}
       </div>
     <% else %>
       <%= if @compact do %>
         <div class="flex-none ml-2 flex items-center gap-1.5">
           <%= cond do %>
             <% @reviewed? && @you_authored? -> %>
-              <%= github_avatar(@commit.reviewed_by_username, :small_commit, tooltip_pos: "up-right") %>
+              {github_avatar(@commit.reviewed_by_username, :small_commit, tooltip_pos: "up-right")}
             <% @reviewed? && !@you_authored? && @username -> %>
-              <%= github_avatar(@commit.reviewed_by_username, 18, tooltip_pos: "up-right") %>
+              {github_avatar(@commit.reviewed_by_username, 18, tooltip_pos: "up-right")}
               <button
                 phx-click="mark_unreviewed"
                 phx-value-id={@commit.id}
@@ -182,7 +182,7 @@
                 <i class="fas fa-eye text-yellow-mid dark:text-blue-400 text-xs"></i>
               </button>
             <% true -> %>
-              <%= github_avatar(@commit.reviewed_by_username, 18, tooltip_pos: "up-right") %>
+              {github_avatar(@commit.reviewed_by_username, 18, tooltip_pos: "up-right")}
           <% end %>
         </div>
       <% else %>
@@ -213,7 +213,7 @@
           <%= cond do %>
             <% @reviewed? -> %>
               <div class="ml-3">
-                <%= github_avatar(@commit.reviewed_by_username, :small_commit, tooltip_pos: "up-right") %>
+                {github_avatar(@commit.reviewed_by_username, :small_commit, tooltip_pos: "up-right")}
               </div>
             <% @being_reviewed? && @you_are_reviewing? -> %>
               <button

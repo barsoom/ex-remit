@@ -2,7 +2,7 @@ defmodule RemitWeb.CommentComponent do
   @moduledoc false
   use RemitWeb, :live_component
   alias Remit.{Commit, Comment, Utils}
-  import Phoenix.HTML.Tag
+  import PhoenixHTMLHelpers.Tag
 
   # We get a comment URL via webhook, but the anchor used to be incorrect for line comments.
   # It's supposed to be fixed per 2021-10-04; if we like, we could look into using it.
