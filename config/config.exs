@@ -22,6 +22,7 @@ config :remit,
 
 # Configures the endpoint
 config :remit, RemitWeb.Endpoint,
+  adapter: Bandit.PhoenixAdapter,
   url: [host: "localhost"],
   # Overridden in prod.secret.exs.
   secret_key_base: "VwHFDH5VSFj8+cVvqb/2V15wtR9RMmkpIVnID1PrHMWTT7LNxSn/Nl0RGDavQGER",

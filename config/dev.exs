@@ -45,12 +45,7 @@ end
 # watchers to your application. For example, we use it
 # with webpack to recompile .js and .css sources.
 config :remit, RemitWeb.Endpoint,
-  http: [
-    port: System.get_env("PORT") || 45361,
-    protocol_options: [
-      idle_timeout: 15_000
-    ]
-  ],
+  http: [port: System.get_env("PORT") || 45361],
   debug_errors: true,
   code_reloader: true,
   check_origin: false,

@@ -6,8 +6,8 @@ defmodule Remit.Application do
   use Application
 
   def start(_type, _args) do
-    :opentelemetry_cowboy.setup()
-    OpentelemetryPhoenix.setup(adapter: :cowboy2)
+    OpentelemetryBandit.setup()
+    OpentelemetryPhoenix.setup(adapter: :bandit)
     OpentelemetryEcto.setup([:remit, :repo], db_statement: :enabled)
 
     children = [
