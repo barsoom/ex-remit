@@ -1,6 +1,6 @@
 defmodule Remit.Commits do
   @moduledoc false
-  alias Remit.{Repo, Commit}
+  alias Remit.{Authorization, Repo, Commit}
   import Ecto.Query
 
   def list_latest(count) do
@@ -98,6 +98,23 @@ defmodule Remit.Commits do
 
   def mark_as_review_started!(id, reviewer_username) when is_binary(reviewer_username) do
     update!(id, review_started_at: now(), review_started_by_username: reviewer_username)
+  end
+
+  # The row lock keeps a concurrent review action from changing the state between the check and the update.
+  def review_action(action, id, username) do
+    Repo.transaction(fn ->
+      commit = Repo.one(from c in Commit, where: c.id == ^id, lock: "FOR UPDATE")
+
+      if commit && Authorization.can_review_commit?(action, commit, username) do
+        case action do
+          "start_review" -> mark_as_review_started!(commit.id, username)
+          "mark_reviewed" -> mark_as_reviewed!(commit.id, username)
+          "mark_unreviewed" -> mark_as_unreviewed!(commit.id)
+        end
+      else
+        Repo.rollback(:denied)
+      end
+    end)
   end
 
   def subscribe, do: Phoenix.PubSub.subscribe(Remit.PubSub, "commits")

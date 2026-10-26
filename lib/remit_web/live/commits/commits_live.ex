@@ -1,7 +1,7 @@
 defmodule RemitWeb.CommitsLive do
   use RemitWeb, :live_view
   require Logger
-  alias Remit.{Commits, Commit, GithubAuth, Ownership, Settings, Utils}
+  alias Remit.{Authorization, Commits, Commit, GithubAuth, Ownership, Settings, Utils}
 
   @max_commits Application.compile_env(:remit, :max_commits)
   @overlong_check_frequency_secs 60
@@ -34,21 +34,11 @@ defmodule RemitWeb.CommitsLive do
   end
 
   @impl Phoenix.LiveView
-  def handle_event("start_review", %{"id" => id}, socket) do
-    commit = Commits.mark_as_review_started!(id, username(socket))
-    {:noreply, assign_and_broadcast_changed_commit(socket, commit)}
-  end
-
-  @impl Phoenix.LiveView
-  def handle_event("mark_reviewed", %{"id" => id}, socket) do
-    commit = Commits.mark_as_reviewed!(id, username(socket))
-    {:noreply, assign_and_broadcast_changed_commit(socket, commit)}
-  end
-
-  @impl Phoenix.LiveView
-  def handle_event("mark_unreviewed", %{"id" => id}, socket) do
-    commit = Commits.mark_as_unreviewed!(id)
-    {:noreply, assign_and_broadcast_changed_commit(socket, commit)}
+  def handle_event(action, %{"id" => id}, socket) when action in ~w(start_review mark_reviewed mark_unreviewed) do
+    case Commits.review_action(action, id, username(socket)) do
+      {:ok, commit} -> {:noreply, assign_and_broadcast_changed_commit(socket, commit)}
+      {:error, :denied} -> {:noreply, socket}
+    end
   end
 
   @impl Phoenix.LiveView
@@ -478,22 +468,8 @@ defmodule RemitWeb.CommitsLive do
     end)
   end
 
-  defp can_review?(commit, username, teams_by_project)
-
-  defp can_review?(_, nil, _), do: false
-
-  defp can_review?(commit, username, teams_by_project) do
-    teams = Map.get(teams_by_project, commit.repo, [])
-
-    case teams do
-      [] ->
-        # no assigned owner for this project, treat as public
-        true
-
-      teams ->
-        Enum.any?(teams, &Remit.Team.user_can_review_projects?(&1, username))
-    end
-  end
+  defp can_review?(commit, username, teams_by_project),
+    do: Authorization.can_review_repo?(Map.get(teams_by_project, commit.repo, []), username)
 
   defp username(socket), do: socket.assigns.username
   defp commits(socket), do: socket.assigns.commits
