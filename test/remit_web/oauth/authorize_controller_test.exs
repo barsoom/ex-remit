@@ -145,13 +145,14 @@ defmodule RemitWeb.OAuth.AuthorizeControllerTest do
           Tesla.Mock.json(%{"login" => "bob"})
       end)
 
-      {:ok, state} = JWT.sign_oauth_state(%{"csrf" => "abc", "authorize_params" => authorize_query()})
-      %{state: state}
+      handoff = get(build_conn(), "/oauth/authorize?" <> URI.encode_query(authorize_query()))
+      %URI{query: q} = URI.parse(redirected_to(handoff, 302))
+      %{state: URI.decode_query(q)["state"], csrf: get_session(handoff, "oauth_csrf")}
     end
 
-    test "org member gets a code for the original authorize request", %{conn: conn, state: state} do
+    test "org member gets a code for the original authorize request", %{conn: conn, state: state, csrf: csrf} do
       expect_membership_check("bob-gh-token", :active)
-      conn = github_callback(conn, %{"oauth_csrf" => "abc"}, state)
+      conn = github_callback(conn, %{"oauth_csrf" => csrf}, state)
 
       %URI{query: q} = URI.parse(redirected_to(conn, 302))
       {:ok, claims} = JWT.verify_code(URI.decode_query(q)["code"])
@@ -161,9 +162,9 @@ defmodule RemitWeb.OAuth.AuthorizeControllerTest do
       assert get_session(conn, "oauth_csrf") == nil
     end
 
-    test "non-member is sent back to the client with access_denied", %{conn: conn, state: state} do
+    test "non-member is sent back to the client with access_denied", %{conn: conn, state: state, csrf: csrf} do
       expect_membership_check("bob-gh-token", :inactive)
-      conn = github_callback(conn, %{"oauth_csrf" => "abc"}, state)
+      conn = github_callback(conn, %{"oauth_csrf" => csrf}, state)
 
       assert %{"error" => "access_denied", "state" => "client-state-123"} = callback_params(conn)
     end

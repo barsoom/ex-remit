@@ -39,9 +39,8 @@ defmodule RemitWeb.OAuth.AuthorizeController do
     expected_csrf = get_session(conn, "oauth_csrf")
     conn = delete_session(conn, "oauth_csrf")
 
-    with {:ok, %{"csrf" => csrf, "authorize_params" => authorize_params}} <- JWT.verify_oauth_state(state_token),
+    with {:ok, %{"csrf" => csrf, "authorize_params" => validated}} <- JWT.verify_oauth_state(state_token),
          true <- is_binary(expected_csrf) and Plug.Crypto.secure_compare(csrf, expected_csrf),
-         {:ok, validated} <- validate_authorize_params(authorize_params),
          token when is_binary(token) <- GithubAuth.get_access_token(github_code),
          %Remit.Github.User{login: login} = user when is_binary(login) <-
            GitHubAPIClient.get_user(token) do
