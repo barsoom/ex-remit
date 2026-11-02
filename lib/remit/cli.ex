@@ -12,7 +12,8 @@ defmodule Remit.CLI do
     whoami                      Print the GitHub login of the current token
     stats                       Aggregate review stats
     commits                     List commits (alias for `commits list`)
-    commits list  [--author X --repo R --status unreviewed|reviewed|all --limit N]
+    commits list  [--author X --repo R --projects-of-team T --members-of-team T
+                   --status unreviewed|reviewed|all --limit N]
     commits review        <id|sha>  Mark commit reviewed
     commits unreview      <id|sha>  Reset review state
     commits start-review  <id|sha>  Mark "review in progress"
@@ -44,6 +45,7 @@ defmodule Remit.CLI do
 
   Subcommands:
     list  [--author USER --repo REPO --status unreviewed|reviewed|all --limit N]
+          [--projects-of-team SLUG --members-of-team SLUG]
                                       List commits in the review feed
     review        <id|sha>            Mark commit reviewed
     unreview      <id|sha>            Reset review state
@@ -74,6 +76,8 @@ defmodule Remit.CLI do
           base_url: :string,
           author: :string,
           repo: :string,
+          projects_of_team: :string,
+          members_of_team: :string,
           status: :string,
           limit: :integer,
           is: :string,
@@ -141,7 +145,14 @@ defmodule Remit.CLI do
   defp dispatch(["commits", "list"], flags, base_url) do
     query =
       Enum.reject(
-        [{:author, flags[:author]}, {:repo, flags[:repo]}, {:status, flags[:status]}, {:limit, flags[:limit]}],
+        [
+          {:author, flags[:author]},
+          {:repo, flags[:repo]},
+          {:projects_of_team, flags[:projects_of_team]},
+          {:members_of_team, flags[:members_of_team]},
+          {:status, flags[:status]},
+          {:limit, flags[:limit]}
+        ],
         fn {_, v} -> is_nil(v) end
       )
 

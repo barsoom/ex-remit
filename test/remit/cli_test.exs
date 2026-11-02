@@ -57,6 +57,19 @@ defmodule Remit.CLITest do
     assert %{"path" => "/api/cli/commits", "query" => "repo=my-repo&status=unreviewed"} =
              run(["--json", "--base-url", server_url, "commits", "list", "--repo", "my-repo", "--status", "unreviewed"])
 
+    assert %{"query" => "projects_of_team=my-team&members_of_team=other-team"} =
+             run([
+               "--json",
+               "--base-url",
+               server_url,
+               "commits",
+               "list",
+               "--projects-of-team",
+               "my-team",
+               "--members-of-team",
+               "other-team"
+             ])
+
     assert %{"method" => "POST", "path" => "/api/cli/commits/42/review"} =
              run(["--base-url", server_url, "--json", "commits", "review", "42"])
 
