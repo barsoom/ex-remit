@@ -12,7 +12,7 @@ defmodule Remit.CLI do
     whoami                      Print the GitHub login of the current token
     stats                       Aggregate review stats
     commits                     List commits (alias for `commits list`)
-    commits list  [--author X --limit N]
+    commits list  [--author X --repo R --status unreviewed|reviewed|all --limit N]
     commits review        <id|sha>  Mark commit reviewed
     commits unreview      <id|sha>  Reset review state
     commits start-review  <id|sha>  Mark "review in progress"
@@ -43,7 +43,8 @@ defmodule Remit.CLI do
   Usage: remit commits <subcommand> [args]
 
   Subcommands:
-    list  [--author USER --limit N]   List commits in the review feed
+    list  [--author USER --repo REPO --status unreviewed|reviewed|all --limit N]
+                                      List commits in the review feed
     review        <id|sha>            Mark commit reviewed
     unreview      <id|sha>            Reset review state
     start-review  <id|sha>            Mark "review in progress"
@@ -72,6 +73,8 @@ defmodule Remit.CLI do
           json: :boolean,
           base_url: :string,
           author: :string,
+          repo: :string,
+          status: :string,
           limit: :integer,
           is: :string,
           role: :string,
@@ -138,7 +141,7 @@ defmodule Remit.CLI do
   defp dispatch(["commits", "list"], flags, base_url) do
     query =
       Enum.reject(
-        [{:author, flags[:author]}, {:limit, flags[:limit]}],
+        [{:author, flags[:author]}, {:repo, flags[:repo]}, {:status, flags[:status]}, {:limit, flags[:limit]}],
         fn {_, v} -> is_nil(v) end
       )
 
