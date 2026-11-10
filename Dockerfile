@@ -1,6 +1,9 @@
 ARG ERLANG_VERSION
 ARG ELIXIR_VERSION
 ARG ALPINE_VERSION
+ARG NODE_IMAGE_TAG
+
+FROM node:${NODE_IMAGE_TAG} AS node
 
 FROM hexpm/elixir:${ELIXIR_VERSION}-erlang-${ERLANG_VERSION}-alpine-${ALPINE_VERSION} AS build
 
@@ -11,7 +14,11 @@ ENV MIX_HOME=/tmp/mix \
 
 WORKDIR /app
 
-RUN apk --no-cache add git npm && \
+COPY --from=node /usr/local/bin/node /usr/local/bin/
+COPY --from=node /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/npm
+
+RUN apk --no-cache add git libstdc++ libatomic && \
+  ln -s ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm && \
   mix local.hex --force && \
   mix local.rebar --force
 

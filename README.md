@@ -252,8 +252,8 @@ First time:
 
 Every time:
 
-    # Ensure you have the Node version given in .nvmrc, e.g. by installing "nvm" and doing this (TODO: Improve this by moving into Devbox):
-    nvm install; nvm use
+    # Ensure you have the Node version given in .node-version, e.g. by installing "nvm" and doing this (TODO: Improve this by moving into Devbox):
+    nvm install $(cat .node-version)
 
     mix phx.server
 

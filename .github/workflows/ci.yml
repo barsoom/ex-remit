@@ -20,11 +20,13 @@ jobs:
           echo "erlang=$(grep 'erlang_version' elixir_buildpack.config | cut -d'=' -f2)" >> "$GITHUB_OUTPUT"
           echo "elixir=$(grep 'elixir_version' elixir_buildpack.config | cut -d'=' -f2)" >> "$GITHUB_OUTPUT"
           echo "alpine=$(grep 'alpine_version' elixir_buildpack.config | cut -d'=' -f2)" >> "$GITHUB_OUTPUT"
+          echo "node_image_tag=$(cat .node-version)-alpine$(grep 'alpine_version' elixir_buildpack.config | cut -d'=' -f2 | cut -d'.' -f1,2)" >> "$GITHUB_OUTPUT"
           echo "postgres=$(yq '.docker_services.postgres.version' < dev.yml)" >> "$GITHUB_OUTPUT"
     outputs:
       elixir: ${{ steps.versions.outputs.elixir }}
       erlang: ${{ steps.versions.outputs.erlang }}
       alpine: ${{ steps.versions.outputs.alpine }}
+      node_image_tag: ${{ steps.versions.outputs.node_image_tag }}
       postgres: ${{ steps.versions.outputs.postgres }}
 
   test:
@@ -58,7 +60,7 @@ jobs:
         elixir-version: ${{ needs.versions.outputs.elixir }}
     - uses: actions/setup-node@v7
       with:
-        node-version: 20
+        node-version-file: .node-version
     - uses: nanasess/setup-chromedriver@e913548694400f275b4070efcd90f47dbbc8914c # v3.0.0
 
     - uses: actions/cache/restore@v6
@@ -126,6 +128,7 @@ jobs:
             ERLANG_VERSION=${{ needs.versions.outputs.erlang }}
             ELIXIR_VERSION=${{ needs.versions.outputs.elixir }}
             ALPINE_VERSION=${{ needs.versions.outputs.alpine }}
+            NODE_IMAGE_TAG=${{ needs.versions.outputs.node_image_tag }}
             REVISION=${{ github.sha }}
           context: .
           push: ${{ github.ref_name == github.event.repository.default_branch }}
